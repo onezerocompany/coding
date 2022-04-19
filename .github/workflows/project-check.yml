@@ -1,0 +1,23 @@
+name: Check global project
+
+on: [push, pull_request]
+
+jobs:
+  lint_global:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          path: .
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+          registry-url: 'https://npm.pkg.github.com'
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install dependencies
+        run: npm install
+      - name: Lint project
+        run: npx prettier --check .
