@@ -77,3 +77,4 @@ $RECYCLE.BIN/
 # Custom gitignore
 node_modules/
 **/coverage
+**/dist
