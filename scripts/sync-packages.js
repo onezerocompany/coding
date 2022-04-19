@@ -21,7 +21,14 @@ var { resolve } = require('path');
 var packagesDir = resolve(__dirname, '../packages');
 var mainPackage = require(resolve(__dirname, '../package.json'));
 
-const fieldsToCopy = ['author', 'license', 'repository', 'bugs', 'homepage', 'version'];
+const fieldsToCopy = [
+  'author',
+  'license',
+  'repository',
+  'bugs',
+  'homepage',
+  'version',
+];
 for (const package of readdirSync(packagesDir)) {
   const packageDir = resolve(packagesDir, package);
   const packageJsonPath = resolve(packageDir, 'package.json');
@@ -54,4 +61,4 @@ for (const package of readdirSync(packagesDir)) {
 
 execSync('npm run sort-package-json', {
   cwd: resolve(__dirname, '..'),
-})
+});
