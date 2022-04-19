@@ -29,12 +29,10 @@
   ],
   "scripts": {
     "commit": "./packages/commit/dist/cli.js",
-    "format": "npx prettier --write .",
     "lint": "npx prettier --check .",
     "prepare": "husky install && npm run build -ws",
     "sort-package-json": "npx sort-package-json \"package.json\" \"packages/*/package.json\"",
-    "sync-packages": "node scripts/sync-packages.js",
-    "test": "npx jest --silent --coverage"
+    "sync-packages": "node scripts/sync-packages.js"
   },
   "prettier": "@onezerocompany/prettier-config",
   "jest": {
@@ -62,7 +60,8 @@
     },
     "projects": [
       "<rootDir>/packages/commit",
-      "<rootDir>/packages/eslint-config"
+      "<rootDir>/packages/eslint-config",
+      "<rootDir>/packages/prettier-config"
     ],
     "rootDir": "./"
   },
@@ -70,6 +69,7 @@
     "@onezerocompany/commit": "file:packages/commit",
     "@onezerocompany/prettier-config": "file:packages/prettier-config",
     "@types/jest": "^27.4.1",
+    "ajv": "^8.11.0",
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "prettier": "^2.6.2",
