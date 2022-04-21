@@ -17,6 +17,8 @@
     "enable": true
   },
 
+  "json.schemaDownload.enable": true,
+
   "jest.rootPath": "./",
   "jest.showCoverageOnLoad": true,
   "jest.coverageFormatter": "GutterFormatter",
