@@ -5,7 +5,8 @@
   "keywords": [
     "tooling",
     "code quality",
-    "guides"
+    "guides",
+    "configs"
   ],
   "homepage": "https://github.com/onezerocompany/coding#readme",
   "bugs": {
@@ -21,15 +22,19 @@
     "email": "code-support@onezero.company",
     "url": "https://onezero.company"
   },
+  "workspaces": [
+    "packages/prettier-config"
+  ],
   "scripts": {
     "commit": "./packages/commit/dist/cli.js",
     "lint": "npx prettier --check .",
     "format": "npx prettier --write .",
-    "prepare": "husky install",
+    "prepare": "npx husky install && npm run build -ws",
     "sort-package-json": "npx sort-package-json \"package.json\" \"packages/*/package.json\"",
     "sync-packages": "node scripts/sync-packages.js",
     "test": "npx jest --silent --coverage"
   },
+  "prettier": "@onezerocompany/prettier-config",
   "jest": {
     "collectCoverage": true,
     "coverageDirectory": "coverage",
@@ -62,6 +67,7 @@
     "rootDir": "./"
   },
   "devDependencies": {
+    "@onezerocompany/prettier-config": "^0.0.0",
     "@types/jest": "^27.4.1",
     "husky": "^7.0.4",
     "jest": "^27.5.1",

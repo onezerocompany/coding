@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# pass the file to the commit tool under the --file flag
+commit_msg_file="$1"
+npm run commit -- validate --file "$commit_msg_file"
