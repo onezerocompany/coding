@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: 16
           cache: npm
-          registry-url: "https://npm.pkg.github.com"
-          cache-dependency-path: "**/package-lock.json"
+          registry-url: 'https://npm.pkg.github.com'
+          cache-dependency-path: '**/package-lock.json'
       - name: Install dependencies
         working-directory: packages/prettier-config
         run: npm install
@@ -37,8 +37,8 @@ jobs:
         with:
           node-version: 16
           cache: npm
-          registry-url: "https://npm.pkg.github.com"
-          cache-dependency-path: "**/package-lock.json"
+          registry-url: 'https://npm.pkg.github.com'
+          cache-dependency-path: '**/package-lock.json'
       - name: Install dependencies
         working-directory: packages/prettier-config
         run: npm install
