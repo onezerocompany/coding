@@ -8,30 +8,30 @@
 
  */
 
-const { execSync } = require('child_process');
+const { execSync } = require("child_process");
 var {
   writeFileSync,
   cpSync,
   statSync,
   existsSync,
   readdirSync,
-} = require('fs');
-var { resolve } = require('path');
+} = require("fs");
+var { resolve } = require("path");
 
-var packagesDir = resolve(__dirname, '../packages');
-var mainPackage = require(resolve(__dirname, '../package.json'));
+var packagesDir = resolve(__dirname, "../packages");
+var mainPackage = require(resolve(__dirname, "../package.json"));
 
 const fieldsToCopy = [
-  'author',
-  'license',
-  'repository',
-  'bugs',
-  'homepage',
-  'version',
+  "author",
+  "license",
+  "repository",
+  "bugs",
+  "homepage",
+  "version",
 ];
 for (const package of readdirSync(packagesDir)) {
   const packageDir = resolve(packagesDir, package);
-  const packageJsonPath = resolve(packageDir, 'package.json');
+  const packageJsonPath = resolve(packageDir, "package.json");
   // skip if not a directory
   if (!statSync(packageDir).isDirectory()) continue;
   // skip if package.json doesn't exist
@@ -50,15 +50,15 @@ for (const package of readdirSync(packagesDir)) {
   execSync(`npx prettier --write package.json`, { cwd: packageDir });
 
   // update the license
-  cpSync(resolve(__dirname, '../LICENSE'), resolve(packageDir, 'LICENSE'));
+  cpSync(resolve(__dirname, "../LICENSE"), resolve(packageDir, "LICENSE"));
 
   // update the .prettierignore
   cpSync(
-    resolve(__dirname, '../.prettierignore'),
-    resolve(packageDir, '.prettierignore'),
+    resolve(__dirname, "../.prettierignore"),
+    resolve(packageDir, ".prettierignore")
   );
 }
 
-execSync('npm run sort-package-json', {
-  cwd: resolve(__dirname, '..'),
+execSync("npm run sort-package-json", {
+  cwd: resolve(__dirname, ".."),
 });
