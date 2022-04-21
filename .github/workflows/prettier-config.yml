@@ -24,8 +24,8 @@ jobs:
       - name: Lint project
         working-directory: packages/prettier-config
         run: npm run lint
-  test_prettier_config:
-    name: Test Prettier Config
+  validate_prettier_config:
+    name: Schema Validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
