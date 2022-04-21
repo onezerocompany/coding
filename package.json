@@ -29,7 +29,7 @@
     "commit": "./packages/commit/dist/cli.js",
     "lint": "npx prettier --check .",
     "format": "npx prettier --write .",
-    "prepare": "husky install && npm run build -ws",
+    "prepare": "npx husky install && npm run build -ws",
     "sort-package-json": "npx sort-package-json \"package.json\" \"packages/*/package.json\"",
     "sync-packages": "node scripts/sync-packages.js",
     "test": "npx jest --silent --coverage"
