@@ -34,8 +34,8 @@
   },
   "scripts": {
     "build": "echo 'package does not require building'",
-    "format": "prettier --write . && eslint --fix .",
-    "lint": "prettier --check . && eslint .",
+    "format": "npx prettier --write . && npx eslint --fix .",
+    "lint": "npx prettier --check . && npx eslint .",
     "test": "npx jest --silent --coverage"
   },
   "eslintConfig": {
