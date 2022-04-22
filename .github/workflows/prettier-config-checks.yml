@@ -4,13 +4,6 @@ on: [push]
 
 jobs:
   checks:
-    name: Checks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v3
-        with:
-          path: .
-      - uses: ./.github/workflows/package-checks.yml
-        with:
-          directory: 'packages/prettier-config'
+    uses: ./.github/workflows/package-checks.yml
+    with:
+      directory: 'packages/prettier-config'
