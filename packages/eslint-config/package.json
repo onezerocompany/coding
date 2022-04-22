@@ -90,6 +90,8 @@
     "nyc": "^15.1.0"
   },
   "peerDependencies": {
+    "@onezerocompany/prettier-config": "../prettier-config",
+    "@onezerocompany/tsconfig": "../tsconfig",
     "@next/eslint-plugin-next": "^12.1.4",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",

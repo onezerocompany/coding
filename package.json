@@ -8,6 +8,7 @@
     "guides",
     "configs"
   ],
+  "private": true,
   "homepage": "https://github.com/onezerocompany/coding#readme",
   "bugs": {
     "url": "https://github.com/onezerocompany/coding/issues/new"
@@ -70,15 +71,10 @@
   },
   "devDependencies": {
     "@onezerocompany/prettier-config": "file:packages/prettier-config",
-    "@onezerocompany/tsconfig": "file:packages/tsconfig",
-    "@onezerocompany/eslint-config": "file:packages/eslint-config",
     "@types/jest": "^27.4.1",
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "prettier": "^2.6.2",
     "ts-jest": "^27.1.4"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

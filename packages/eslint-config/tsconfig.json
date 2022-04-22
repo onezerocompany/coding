@@ -1,5 +1,5 @@
 {
-  "extends": "@onezerocompany/tsconfig/bases/node16.json",
+  "extends": "@onezerocompany/tsconfig/bases/node16",
   "include": [
     "test/**/*.spec.ts",
     "test/**/*.spec.js",

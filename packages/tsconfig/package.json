@@ -7,15 +7,6 @@
   "bugs": {
     "url": "https://github.com/onezerocompany/coding/issues/new"
   },
-  "exports": {
-    ".": "./bases/node16.json",
-    "./node14": "./bases/node14.json",
-    "./node16": "./bases/node16.json",
-    "./node17": "./bases/node17.json",
-    "./next": "./bases/next.json",
-    "./nuxt": "./bases/nuxt.json",
-    "./vue": "./bases/vue.json"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/onezerocompany/coding.git",
@@ -50,7 +41,9 @@
     "ajv": "^8.11.0",
     "ajv-draft-04": "^1.0.0",
     "jest": "^27.5.1",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "@onezerocompany/prettier-config": "../prettier-config",
+    "@onezerocompany/eslint-config": "../eslint-config"
   },
   "publishConfig": {
     "access": "public"
