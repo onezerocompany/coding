@@ -1,7 +1,6 @@
 {
   "name": "onezero-coding",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
   "description": "guides and tools to help OneZero code better",
   "keywords": [
     "tooling",
@@ -9,6 +8,7 @@
     "guides",
     "configs"
   ],
+  "private": true,
   "homepage": "https://github.com/onezerocompany/coding#readme",
   "bugs": {
     "url": "https://github.com/onezerocompany/coding/issues/new"
@@ -25,7 +25,8 @@
   },
   "workspaces": [
     "packages/prettier-config",
-    "packages/tsconfig"
+    "packages/tsconfig",
+    "packages/eslint-config"
   ],
   "scripts": {
     "commit": "./packages/commit/dist/cli.js",
@@ -69,14 +70,11 @@
     "rootDir": "./"
   },
   "devDependencies": {
-    "@onezerocompany/prettier-config": "^0.0.0",
+    "@onezerocompany/prettier-config": "file:packages/prettier-config",
     "@types/jest": "^27.4.1",
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "prettier": "^2.6.2",
     "ts-jest": "^27.1.4"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

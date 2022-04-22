@@ -1,0 +1,28 @@
+{
+  "extends": "@onezerocompany/tsconfig/bases/node16",
+  "include": [
+    "test/**/*.spec.ts",
+    "test/**/*.spec.js",
+    "test/validation/*.ts",
+    "test/**/*.js",
+    "test/**/*.jsx",
+    "test/**/*.ts",
+    "test/**/*.tsx"
+  ],
+  "files": ["./test/files/test.tsx"],
+  "ignorePatterns": [
+    "**/node_modules",
+    "**/package-lock.json",
+    "**/.git",
+    "**/dist",
+    "**/*.d.ts"
+  ],
+  "compilerOptions": {
+    "allowJs": true,
+    "jsx": "preserve",
+    "jsxFactory": "React.createElement",
+    "types": ["node", "jest"],
+    "sourceMap": true,
+    "outDir": "./dist"
+  }
+}

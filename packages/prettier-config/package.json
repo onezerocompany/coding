@@ -1,6 +1,6 @@
 {
   "name": "@onezerocompany/prettier-config",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "OneZero Company Prettier Configuration used on all of our projects",
   "homepage": "https://github.com/onezerocompany/coding#readme",
   "bugs": {
@@ -31,6 +31,7 @@
   },
   "prettier": "./",
   "eslintConfig": {
+    "extends": "@onezerocompany/eslint-config/base",
     "env": {
       "es6": true,
       "jest": true,
@@ -38,14 +39,15 @@
     },
     "parserOptions": {
       "ecmaVersion": 2021
-    },
-    "extends": "../eslint-config/configs/base.js"
+    }
   },
   "devDependencies": {
     "ajv": "^8.11.0",
     "ajv-draft-04": "^1.0.0",
     "jest": "^27.5.1",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "@onezerocompany/eslint-config": "../eslint-config",
+    "@onezerocompany/prettier-config": "../prettier-config"
   },
   "publishConfig": {
     "access": "public"
