@@ -1,7 +1,6 @@
 {
   "name": "onezero-coding",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
   "description": "guides and tools to help OneZero code better",
   "keywords": [
     "tooling",
@@ -25,7 +24,8 @@
   },
   "workspaces": [
     "packages/prettier-config",
-    "packages/tsconfig"
+    "packages/tsconfig",
+    "packages/eslint-config"
   ],
   "scripts": {
     "commit": "./packages/commit/dist/cli.js",
@@ -69,7 +69,9 @@
     "rootDir": "./"
   },
   "devDependencies": {
-    "@onezerocompany/prettier-config": "^0.0.0",
+    "@onezerocompany/prettier-config": "file:packages/prettier-config",
+    "@onezerocompany/tsconfig": "file:packages/tsconfig",
+    "@onezerocompany/eslint-config": "file:packages/eslint-config",
     "@types/jest": "^27.4.1",
     "husky": "^7.0.4",
     "jest": "^27.5.1",

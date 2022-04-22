@@ -1,0 +1,108 @@
+{
+  "name": "@onezerocompany/eslint-config",
+  "version": "0.0.1",
+  "description": "ESLint configuration for OneZero Company",
+  "homepage": "https://github.com/onezerocompany/coding#readme",
+  "bugs": {
+    "url": "https://github.com/onezerocompany/coding/issues/new"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onezerocompany/coding.git",
+    "directory": "packages/eslint-config"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "OneZero Company",
+    "email": "code-support@onezero.company",
+    "url": "https://onezero.company"
+  },
+  "main": "src/configs/base.js",
+  "files": [
+    "configs/",
+    "rules/",
+    "LICENSE",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./configs/base.js",
+    "./base": "./configs/base.js",
+    "./typescript": "./configs/typescript.js",
+    "./react": "./configs/react.js",
+    "./next": "./configs/next.js",
+    "./vue3": "./configs/vue3.js"
+  },
+  "scripts": {
+    "build": "echo 'package does not require building'",
+    "format": "prettier --write . && eslint --fix .",
+    "lint": "prettier --check . && eslint .",
+    "test": "npx jest --silent --coverage"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "jest": true,
+      "node": true
+    },
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "./configs/react.js",
+      "prettier"
+    ],
+    "ignorePatterns": [
+      "**/node_modules/**",
+      "coverage/**"
+    ],
+    "root": true
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "node_modules",
+      "dist",
+      "/test/files",
+      "/test/validation"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "<rootDir>/tsconfig.json"
+      }
+    },
+    "rootDir": "./",
+    "testPathIgnorePatterns": [
+      "node_modules",
+      "dist",
+      "test/files",
+      "test/validation"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  },
+  "prettier": "@onezerocompany/prettier-config",
+  "devDependencies": {
+    "@types/eslint": "^8.4.1",
+    "@types/jest": "^27.4.1",
+    "@types/react": "^18.0.1",
+    "glob": "^8.0.1",
+    "jest": "^27.5.1",
+    "nyc": "^15.1.0"
+  },
+  "peerDependencies": {
+    "@next/eslint-plugin-next": "^12.1.4",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-node": "^0.3.6",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.1.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "eslint-plugin-vue": "^8.6.0",
+    "react": "^18.0.0"
+  }
+}

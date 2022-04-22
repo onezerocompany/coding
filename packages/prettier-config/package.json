@@ -1,6 +1,6 @@
 {
   "name": "@onezerocompany/prettier-config",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "OneZero Company Prettier Configuration used on all of our projects",
   "homepage": "https://github.com/onezerocompany/coding#readme",
   "bugs": {
@@ -38,8 +38,7 @@
     },
     "parserOptions": {
       "ecmaVersion": 2021
-    },
-    "extends": "../eslint-config/configs/base.js"
+    }
   },
   "devDependencies": {
     "ajv": "^8.11.0",
