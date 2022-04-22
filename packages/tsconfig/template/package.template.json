@@ -1,0 +1,6 @@
+{
+  "main": "tsconfig.json",
+  "publishConfig": {
+    "access": "public"
+  }
+}

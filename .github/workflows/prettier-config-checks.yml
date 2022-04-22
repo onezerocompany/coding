@@ -1,0 +1,10 @@
+name: Prettier Config
+
+on: [push]
+
+jobs:
+  checks:
+    name: Checks
+    uses: ./.github/workflows/package-checks.yml
+    with:
+      directory: 'packages/prettier-config'
