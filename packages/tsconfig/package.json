@@ -1,0 +1,46 @@
+{
+  "name": "@onezerocompany/tsconfig",
+  "version": "0.0.0",
+  "description": "TSConfig Base for OneZero Company",
+  "homepage": "https://github.com/onezerocompany/coding#readme",
+  "bugs": {
+    "url": "https://github.com/onezerocompany/coding/issues/new"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onezerocompany/coding.git",
+    "directory": "packages/tsconfig"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "OneZero Company",
+    "email": "code-support@onezero.company",
+    "url": "https://onezero.company"
+  },
+  "main": "tsconfig.json",
+  "scripts": {
+    "build": "./scripts/generate.js",
+    "format": "prettier --write . && eslint --fix .",
+    "lint": "prettier --check . && eslint .",
+    "test": "npx jest --coverage"
+  },
+  "prettier": "@onezerocompany/prettier-config",
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "jest": true,
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2021
+    },
+    "extends": "../eslint-config/configs/base.js"
+  },
+  "devDependencies": {
+    "@onezerocompany/prettier-config": "file:../prettier-config",
+    "ajv": "^8.11.0",
+    "ajv-draft-04": "^1.0.0",
+    "jest": "^27.5.1",
+    "node-fetch": "^2.6.7"
+  }
+}
