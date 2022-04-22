@@ -1,0 +1,11 @@
+name: TSConfigs
+
+on: [push]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/package-checks.yml
+        with:
+          directory: 'packages/tsconfig'

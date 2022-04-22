@@ -1,9 +1,15 @@
-name: Prettier Config
+name: Check Package
 
-on: [push]
+on:
+  workflow_call:
+    inputs:
+      directory:
+        type: string
+        required: true
+        description: The working directory to run the check in
 
 jobs:
-  lint_prettier_config:
+  lint_package:
     name: Formatting Check
     runs-on: ubuntu-latest
     steps:
@@ -19,13 +25,13 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           cache-dependency-path: '**/package-lock.json'
       - name: Install dependencies
-        working-directory: packages/prettier-config
+        working-directory: ${{ inputs.directory }}
         run: npm install
       - name: Lint project
-        working-directory: packages/prettier-config
+        working-directory: ${{ inputs.directory }}
         run: npm run lint
-  validate_prettier_config:
-    name: Schema Validation
+  test_package:
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
@@ -40,8 +46,8 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           cache-dependency-path: '**/package-lock.json'
       - name: Install dependencies
-        working-directory: packages/prettier-config
+        working-directory: ${{ inputs.directory }}
         run: npm install
       - name: Test Prettier Config
-        working-directory: packages/prettier-config
+        working-directory: ${{ inputs.directory }}
         run: npm run test
