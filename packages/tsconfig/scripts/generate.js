@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable import/no-dynamic-require */
 
 'use strict';
 
