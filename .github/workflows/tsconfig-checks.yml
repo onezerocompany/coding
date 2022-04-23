@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   checks:
-    name: Checks
+    name: TSConfigs
     uses: ./.github/workflows/package-checks.yml
     with:
       directory: 'packages/tsconfig'
