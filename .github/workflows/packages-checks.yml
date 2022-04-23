@@ -1,22 +1,30 @@
-name: Check Package
+name: Check Packages
 
 on:
-  workflow_call:
-    inputs:
-      directory:
-        type: string
-        required: true
-        description: The working directory to run the check in
+  push:
+    branches-ignore:
+      - main
 
 jobs:
   lint_package:
     name: Formatting
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - prettier-config
+          - eslint-config
+          - tsconfig
+    defaults:
+      run:
+        working-directory: packages/${{ matrix.package }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
         with:
           path: .
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -24,19 +32,32 @@ jobs:
           cache: npm
           registry-url: 'https://npm.pkg.github.com'
           cache-dependency-path: '**/package-lock.json'
+
       - name: Install dependencies
         run: npm install
+
       - name: Lint project
-        working-directory: ${{ inputs.directory }}
         run: npm run lint
+
   test_package:
     name: Unit Tests
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - prettier-config
+          - eslint-config
+          - tsconfig
+    defaults:
+      run:
+        working-directory: packages/${{ matrix.package }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
         with:
           path: .
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -44,8 +65,9 @@ jobs:
           cache: npm
           registry-url: 'https://npm.pkg.github.com'
           cache-dependency-path: '**/package-lock.json'
+
       - name: Install dependencies
         run: npm install
+
       - name: Test Prettier Config
-        working-directory: ${{ inputs.directory }}
         run: npm run test
