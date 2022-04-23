@@ -1,0 +1,16 @@
+name: Prettier Config
+
+on:
+  release:
+    types:
+      - released
+
+jobs:
+  checks:
+    name: Checks
+    uses: ./.github/workflows/package-publish.yml
+    with:
+      directory: 'packages/prettier-config'
+      build: false
+      # set version tag based on release tag
+      version: '{{ github.ref_name }}'
