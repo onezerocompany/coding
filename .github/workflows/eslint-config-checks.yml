@@ -5,6 +5,6 @@ on: [push]
 jobs:
   checks:
     name: Checks
-    uses: ./.github/workflows/package-checks.yml
+    uses: ./.github/workflows/shared/package-checks.yml
     with:
       directory: 'packages/eslint-config'
