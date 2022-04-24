@@ -1,27 +1,26 @@
 name: Publish Package
 
 on:
-  workflow_call:
-    inputs:
-      directory:
-        type: string
-        required: true
-        description: The working directory to run the check in
-      build:
-        type: boolean
-        required: false
-        default: false
-        description: Whether the package requires a build
-      version:
-        type: string
-        required: true
-        default: '1.0.0'
-        description: The version tag to publish
+  release:
+    types: [released]
 
 jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - directory: packages/prettier-config
+            build: false
+          - directory: packages/eslint-config
+            build: false
+          - directory: packages/tsconfig
+            build: false
+    defaults:
+      run:
+        working-directory: ${{ matrix.package.directory }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
@@ -37,19 +36,17 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
+        working-directory: .
         run: npm install
 
       - name: Build
-        if: ${{ inputs.build }}
-        working-directory: ${{ inputs.directory }}
+        if: ${{ matrix.package.build }}
         run: npm run build
 
       - name: Package Version
-        working-directory: ${{ inputs.directory }}
-        run: npm version ${{ inputs.version }} --no-git-tag-version
+        run: npm version ${{ github.ref_name }} --no-git-tag-version
 
       - name: Publish
-        working-directory: ${{ inputs.directory }}
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
