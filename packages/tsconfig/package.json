@@ -1,7 +1,6 @@
 {
   "name": "@onezerocompany/tsconfig",
   "version": "0.0.1",
-  "private": true,
   "description": "TSConfig Base for OneZero Company",
   "homepage": "https://github.com/onezerocompany/coding#readme",
   "bugs": {
