@@ -48,9 +48,10 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - prettier-config
-          - eslint-config
-          - tsconfig
+          - packages/prettier-config
+          - packages/eslint-config
+          - packages/tsconfig
+          - packages/commit
     defaults:
       run:
         working-directory: ${{ matrix.package }}
