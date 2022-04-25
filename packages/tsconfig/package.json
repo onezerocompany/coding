@@ -37,12 +37,12 @@
     "root": true
   },
   "devDependencies": {
+    "@onezerocompany/eslint-config": "../eslint-config",
+    "@onezerocompany/prettier-config": "../prettier-config",
     "ajv": "^8.11.0",
     "ajv-draft-04": "^1.0.0",
     "jest": "^27.5.1",
-    "node-fetch": "^2.6.7",
-    "@onezerocompany/prettier-config": "../prettier-config",
-    "@onezerocompany/eslint-config": "../eslint-config"
+    "node-fetch": "^2.6.7"
   },
   "publishConfig": {
     "access": "public"
