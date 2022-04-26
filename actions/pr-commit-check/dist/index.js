@@ -9812,7 +9812,7 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 
-const githubToken = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_token');
+const githubToken = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('token');
 const prNumber = parseInt((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('pull_request'), 10);
 async function run() {
     const octokit = (0,_actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit)(githubToken);

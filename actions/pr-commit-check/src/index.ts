@@ -2,7 +2,7 @@ import { getInput } from '@actions/core';
 import github, { getOctokit } from '@actions/github';
 import { validateMessage } from '@onezerocompany/commit';
 
-const githubToken = getInput('github_token');
+const githubToken = getInput('token');
 const prNumber = parseInt(getInput('pull_request'), 10);
 
 async function run() {
