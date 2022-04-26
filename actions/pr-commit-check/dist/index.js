@@ -9045,12 +9045,13 @@ class CommitMessage {
             .split('\n');
         const maxLineLength = lines.reduce((max, line) => Math.max(max, line.length), 0);
         const extraChars = 8;
+        const sideChars = 2;
         const newLines = [
-            '-'.repeat(maxLineLength + extraChars),
-            `|   ${' '.repeat(maxLineLength)}   |`,
-            ...lines.map((line) => `|   ${line.padEnd(maxLineLength)}   |`),
-            `|   ${' '.repeat(maxLineLength)}   |`,
-            '-'.repeat(maxLineLength + extraChars),
+            `╭${'─'.repeat(maxLineLength + extraChars - sideChars)}╮`,
+            `│   ${' '.repeat(maxLineLength)}   │`,
+            ...lines.map((line) => `│   ${line.padEnd(maxLineLength)}   │`),
+            `│   ${' '.repeat(maxLineLength)}   │`,
+            `╰${'─'.repeat(maxLineLength + extraChars - sideChars)}╯`,
         ];
         return newLines.join('\n');
     }
@@ -9818,7 +9819,7 @@ const prNumber = parseInt(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('p
 }), 10);
 async function run() {
     const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(githubToken);
-    const { data: result } = await octokit.graphql(`
+    const { data } = await octokit.graphql(`
     query issues($owner: String!, $repo: String!, $pullRequestNumber: Int!) {
       repository(owner: $owner, name: $repo) {
         pullRequest(number: $pullRequestNumber) {
@@ -9838,11 +9839,11 @@ async function run() {
         repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
         pullRequestNumber: prNumber,
     });
-    if (result.repository.pullRequest.merged) {
+    if (data.repository.pullRequest.merged) {
         console.log('Pull request is already merged, skipping commit check');
         process.exit(0);
     }
-    const commits = result.repository.pullRequest.commits.nodes;
+    const commits = data.repository.pullRequest.commits.nodes;
     const valid = commits.every((commit) => {
         const validation = (0,_onezerocompany_commit__WEBPACK_IMPORTED_MODULE_2__/* .validateMessage */ .Nj)({ message: commit.message });
         if (validation.errors) {

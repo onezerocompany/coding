@@ -13,7 +13,7 @@ const prNumber = parseInt(
 async function run() {
   const octokit = github.getOctokit(githubToken);
 
-  const { data: result } = await octokit.graphql(
+  const { data } = await octokit.graphql(
     `
     query issues($owner: String!, $repo: String!, $pullRequestNumber: Int!) {
       repository(owner: $owner, name: $repo) {
@@ -37,12 +37,12 @@ async function run() {
     },
   );
 
-  if (result.repository.pullRequest.merged) {
+  if (data.repository.pullRequest.merged) {
     console.log('Pull request is already merged, skipping commit check');
     process.exit(0);
   }
 
-  const commits = result.repository.pullRequest.commits.nodes;
+  const commits = data.repository.pullRequest.commits.nodes;
   const valid = commits.every((commit: { message: string }) => {
     const validation = validateMessage({ message: commit.message });
     if (validation.errors) {
