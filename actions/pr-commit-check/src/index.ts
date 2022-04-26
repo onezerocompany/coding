@@ -49,12 +49,19 @@ async function run() {
     process.exit(0);
   }
 
-  const commits = repository.pullRequest.commits.nodes;
   const errors: ValidationError[] = [];
-  const valid = commits.every((commit: { message: string }) => {
+  const commits = repository.pullRequest.commits.nodes.map(
+    (node: { commit: { message: string } }) => ({
+      message: node.commit.message,
+    }),
+  ) as { message: string }[];
+
+  core.setOutput('commits', JSON.stringify(commits));
+
+  const valid = commits.every((commit) => {
     const validation = validateMessage({ message: commit.message });
+    errors.push(...validation.errors);
     if (validation.errors) {
-      errors.push(...validation.errors);
       for (const error of validation.errors) {
         console.error(error.displayString);
       }

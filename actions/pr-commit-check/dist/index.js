@@ -9848,12 +9848,15 @@ async function run() {
         console.log('Pull request is already merged, skipping commit check');
         process.exit(0);
     }
-    const commits = repository.pullRequest.commits.nodes;
     const errors = [];
+    const commits = repository.pullRequest.commits.nodes.map((node) => ({
+        message: node.commit.message,
+    }));
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('commits', JSON.stringify(commits));
     const valid = commits.every((commit) => {
         const validation = (0,_onezerocompany_commit__WEBPACK_IMPORTED_MODULE_2__/* .validateMessage */ .Nj)({ message: commit.message });
+        errors.push(...validation.errors);
         if (validation.errors) {
-            errors.push(...validation.errors);
             for (const error of validation.errors) {
                 console.error(error.displayString);
             }
