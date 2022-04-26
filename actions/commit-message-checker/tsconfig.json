@@ -1,0 +1,9 @@
+{
+  "extends": "@onezerocompany/tsconfig/bases/node16.json",
+  "exclude": ["dist/", "coverage/"],
+  "include": ["src/**/*.ts"],
+  "compilerOptions": {
+    "moduleResolution": "Node",
+    "declaration": false
+  }
+}
