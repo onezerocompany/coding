@@ -9819,10 +9819,15 @@ const prNumber = parseInt(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('p
 }), 10);
 async function run() {
     const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(githubToken);
-    const { data } = await octokit.graphql(`
-    query issues($owner: String!, $repo: String!, $pullRequestNumber: Int!) {
+    const repo = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo;
+    const owner = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner;
+    console.log(`Repo: ${repo}`);
+    console.log(`Owner: ${owner}`);
+    console.log(`PR: ${prNumber}`);
+    const { repository } = await octokit.graphql(`
+    query issues($owner: String!, $repo: String!, $prNumber: Int!) {
       repository(owner: $owner, name: $repo) {
-        pullRequest(number: $pullRequestNumber) {
+        pullRequest(number: $prNumber) {
           merged,
           commits(first:250) {
             nodes {
@@ -9837,22 +9842,26 @@ async function run() {
   `, {
         owner: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner,
         repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
-        pullRequestNumber: prNumber,
+        prNumber,
     });
-    if (data.repository.pullRequest.merged) {
+    if (repository.pullRequest.merged) {
         console.log('Pull request is already merged, skipping commit check');
         process.exit(0);
     }
-    const commits = data.repository.pullRequest.commits.nodes;
+    const commits = repository.pullRequest.commits.nodes;
+    const errors = [];
     const valid = commits.every((commit) => {
         const validation = (0,_onezerocompany_commit__WEBPACK_IMPORTED_MODULE_2__/* .validateMessage */ .Nj)({ message: commit.message });
         if (validation.errors) {
+            errors.push(...validation.errors);
             for (const error of validation.errors) {
                 console.error(error.displayString);
             }
         }
         return validation.valid;
     });
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('valid', valid);
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('errors', JSON.stringify(errors));
     if (valid) {
         process.exit(0);
     }
