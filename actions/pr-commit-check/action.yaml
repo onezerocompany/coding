@@ -1,0 +1,14 @@
+name: 'Commit Message Validation'
+description: 'Validates commit messages'
+inputs:
+  token:
+    description: 'GitHub token with repo scope'
+    required: true
+    default: ${{ github.token }}
+  pull_request:
+    description: 'The pull request number'
+    required: true
+    default: ${{ github.event.number }}
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
