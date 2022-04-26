@@ -16,4 +16,4 @@ jobs:
         with:
           path: .
       - name: Run check
-        uses: ./actions/commit-check
+        uses: ./actions/commit-message-checker
