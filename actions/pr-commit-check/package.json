@@ -1,5 +1,5 @@
 {
-  "name": "@onezerocompany/commit-check-action",
+  "name": "pr-commit-check",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,6 +8,8 @@
   },
   "devDependencies": {
     "@onezerocompany/commit": "file:../../packages/commit",
+    "@onezerocompany/prettier-config": "file:../../packages/prettier-config",
+    "@onezerocompany/eslint-config": "file:../../packages/eslint-config",
     "@vercel/ncc": "^0.33.4"
   },
   "dependencies": {

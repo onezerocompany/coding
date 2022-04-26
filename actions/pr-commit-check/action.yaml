@@ -1,10 +1,10 @@
 name: 'Commit Message Validation'
 description: 'Validates commit messages'
 inputs:
-  github_token:
+  token:
     description: 'GitHub token with repo scope'
     required: true
-    default: ${{ secrets.GITHUB_TOKEN }}
+    default: ${{ github.token }}
   pull_request:
     description: 'The pull request number'
     required: true

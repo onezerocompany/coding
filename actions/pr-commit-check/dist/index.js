@@ -8307,6 +8307,7 @@ var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
 exports.Nj = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
+/* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.ChangeLogType; } });
@@ -9185,6 +9186,7 @@ function validateFooter(message, bodyContent) {
     }
     return [];
 }
+// eslint-disable-next-line max-lines-per-function
 function validateMessage(inputs) {
     const errors = [];
     if (inputs.message) {
@@ -9475,7 +9477,7 @@ class SubjectValidator extends Validator_1.Validator {
             }));
         }
         // subject must not contain parantheses or colons
-        if (/[\(\):]/.test(this.content)) {
+        if (/[():]/u.test(this.content)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'subject must not contain parantheses or colons',
@@ -9811,7 +9813,7 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 const githubToken = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_token');
-const prNumber = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('pull_request');
+const prNumber = parseInt((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('pull_request'), 10);
 async function run() {
     const octokit = (0,_actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit)(githubToken);
     const { data: result } = await octokit.graphql(`

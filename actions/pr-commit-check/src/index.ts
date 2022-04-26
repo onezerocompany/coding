@@ -3,7 +3,7 @@ import github, { getOctokit } from '@actions/github';
 import { validateMessage } from '@onezerocompany/commit';
 
 const githubToken = getInput('github_token');
-const prNumber = getInput('pull_request');
+const prNumber = parseInt(getInput('pull_request'), 10);
 
 async function run() {
   const octokit = getOctokit(githubToken);

@@ -27,7 +27,8 @@
     "packages/prettier-config",
     "packages/tsconfig",
     "packages/eslint-config",
-    "packages/commit"
+    "packages/commit",
+    "actions/pr-commit-check"
   ],
   "scripts": {
     "commit": "./packages/commit/dist/cli.js",
@@ -66,7 +67,8 @@
       "<rootDir>/packages/commit",
       "<rootDir>/packages/eslint-config",
       "<rootDir>/packages/prettier-config",
-      "<rootDir>/packages/tsconfig"
+      "<rootDir>/packages/tsconfig",
+      "<rootDir>/actions/pr-commit-check"
     ],
     "rootDir": "./"
   },
