@@ -9812,10 +9812,12 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 
-const githubToken = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('token');
-const prNumber = parseInt((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('pull_request'), 10);
+const githubToken = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('token');
+const prNumber = parseInt(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('pull_request', {
+    trimWhitespace: true,
+}), 10);
 async function run() {
-    const octokit = (0,_actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit)(githubToken);
+    const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(githubToken);
     const { data: result } = await octokit.graphql(`
     query issues($owner: String!, $repo: String!, $pullRequestNumber: Int!) {
       repository(owner: $owner, name: $repo) {
@@ -9832,8 +9834,8 @@ async function run() {
       }
     }
   `, {
-        owner: (_actions_github__WEBPACK_IMPORTED_MODULE_1___default().context.repo.owner),
-        repo: (_actions_github__WEBPACK_IMPORTED_MODULE_1___default().context.repo.repo),
+        owner: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner,
+        repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
         pullRequestNumber: prNumber,
     });
     if (result.repository.pullRequest.merged) {

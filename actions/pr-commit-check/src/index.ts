@@ -1,12 +1,17 @@
-import { getInput } from '@actions/core';
-import github, { getOctokit } from '@actions/github';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
 import { validateMessage } from '@onezerocompany/commit';
 
-const githubToken = getInput('token');
-const prNumber = parseInt(getInput('pull_request'), 10);
+const githubToken = core.getInput('token');
+const prNumber = parseInt(
+  core.getInput('pull_request', {
+    trimWhitespace: true,
+  }),
+  10,
+);
 
 async function run() {
-  const octokit = getOctokit(githubToken);
+  const octokit = github.getOctokit(githubToken);
 
   const { data: result } = await octokit.graphql(
     `
