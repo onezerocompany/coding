@@ -17,13 +17,6 @@
     "email": "code-support@onezero.company",
     "url": "https://onezero.company"
   },
-  "main": "src/configs/base.js",
-  "files": [
-    "configs/",
-    "rules/",
-    "LICENSE",
-    "README.md"
-  ],
   "exports": {
     ".": "./configs/base.js",
     "./base": "./configs/base.js",
@@ -32,12 +25,20 @@
     "./next": "./configs/next.js",
     "./vue3": "./configs/vue3.js"
   },
+  "main": "src/configs/base.js",
+  "files": [
+    "configs/",
+    "rules/",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "build": "echo 'package does not require building'",
     "format": "npx prettier --write . && npx eslint --fix .",
     "lint": "npx prettier --check . && npx eslint .",
     "test": "npx jest --silent --coverage"
   },
+  "prettier": "@onezerocompany/prettier-config",
   "eslintConfig": {
     "env": {
       "es6": true,
@@ -80,7 +81,6 @@
       "^.+\\.tsx?$": "ts-jest"
     }
   },
-  "prettier": "@onezerocompany/prettier-config",
   "devDependencies": {
     "@types/eslint": "^8.4.1",
     "@types/jest": "^27.4.1",
@@ -90,9 +90,9 @@
     "nyc": "^15.1.0"
   },
   "peerDependencies": {
+    "@next/eslint-plugin-next": "^12.1.4",
     "@onezerocompany/prettier-config": "../prettier-config",
     "@onezerocompany/tsconfig": "../tsconfig",
-    "@next/eslint-plugin-next": "^12.1.4",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "eslint": "^7.32.0",

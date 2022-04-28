@@ -1,0 +1,15 @@
+name: Check PR
+
+on: [pull_request]
+
+jobs:
+  check_messages:
+    runs-on: ubuntu-latest
+    name: Check Commit Messages
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          path: .
+      - name: Run check
+        uses: ./actions/pr-commit-check

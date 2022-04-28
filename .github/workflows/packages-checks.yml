@@ -13,12 +13,13 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - prettier-config
-          - eslint-config
-          - tsconfig
+          - packages/prettier-config
+          - packages/eslint-config
+          - packages/tsconfig
+          - packages/commit
     defaults:
       run:
-        working-directory: packages/${{ matrix.package }}
+        working-directory: ${{ matrix.package }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
@@ -47,12 +48,13 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - prettier-config
-          - eslint-config
-          - tsconfig
+          - packages/prettier-config
+          - packages/eslint-config
+          - packages/tsconfig
+          - packages/commit
     defaults:
       run:
-        working-directory: packages/${{ matrix.package }}
+        working-directory: ${{ matrix.package }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v3

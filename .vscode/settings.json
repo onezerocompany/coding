@@ -7,9 +7,18 @@
     "**/node_modules": true,
     "**/package-lock.json": true,
     "**/.git": true,
-    "**/.docusaurus": true,
     "**/dist": true,
-    "**/coverage": true
+    "**/coverage": true,
+    "**/dist-reference": true
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/package-lock.json": true,
+    "**/.git": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/dist-reference": true
   },
 
   "eslint.workingDirectories": ["packages/eslint-config", "packages/commit"],

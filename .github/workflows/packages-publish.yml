@@ -18,6 +18,8 @@ jobs:
             build: false
           - directory: packages/tsconfig
             build: false
+          - directory: packages/commit
+            build: true
     defaults:
       run:
         working-directory: ${{ matrix.package.directory }}
