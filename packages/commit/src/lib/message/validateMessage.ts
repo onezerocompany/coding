@@ -89,7 +89,10 @@ export function validateMessage(inputs: { message: string }): {
     if (errors.length > 0) return { valid: false, errors };
     errors.push(...validateEmoji(inputs.message));
     errors.push(...new ScopeValidator(parsed.scope).errors);
-    errors.push(...new SubjectValidator(parsed.subject).errors);
+    errors.push(
+      ...new SubjectValidator({ subject: parsed.subject, maxLength: 48 })
+        .errors,
+    );
     if (parsed.messageBody) {
       errors.push(...new BodyValidator(parsed.messageBody).errors);
     }

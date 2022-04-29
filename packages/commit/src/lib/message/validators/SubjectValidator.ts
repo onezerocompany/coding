@@ -2,6 +2,13 @@ import { ValidationError, ValidationErrorLevel } from './ValidationError';
 import { Validator } from './Validator';
 
 export class SubjectValidator extends Validator {
+  private readonly maxLength: number;
+
+  public constructor(input: { subject: string; maxLength: number }) {
+    super(input.subject);
+    this.maxLength = input.maxLength;
+  }
+
   public override get normalized(): string {
     return (
       this.content
@@ -59,7 +66,6 @@ export class SubjectValidator extends Validator {
 
   private checkLength(errors: ValidationError[]): void {
     const minSubjectLength = 10;
-    const maxSubjectLength = 48;
 
     // subject must be longer than 10 characters
     if (this.content.length < minSubjectLength) {
@@ -72,11 +78,11 @@ export class SubjectValidator extends Validator {
     }
 
     // subject must be shorter than 48 characters
-    if (this.content.length > maxSubjectLength) {
+    if (this.content.length > this.maxLength) {
       errors.push(
         new ValidationError({
           level: ValidationErrorLevel.fatal,
-          message: `subject must be at most ${maxSubjectLength} characters`,
+          message: `subject must be at most ${this.maxLength} characters`,
         }),
       );
     }

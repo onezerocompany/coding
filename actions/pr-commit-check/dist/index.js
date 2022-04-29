@@ -9201,7 +9201,8 @@ function validateMessage(inputs) {
             return { valid: false, errors };
         errors.push(...validateEmoji(inputs.message));
         errors.push(...new ScopeValidator_1.ScopeValidator(parsed.scope).errors);
-        errors.push(...new SubjectValidator_1.SubjectValidator(parsed.subject).errors);
+        errors.push(...new SubjectValidator_1.SubjectValidator({ subject: parsed.subject, maxLength: 48 })
+            .errors);
         if (parsed.messageBody) {
             errors.push(...new BodyValidator_1.BodyValidator(parsed.messageBody).errors);
         }
@@ -9452,6 +9453,10 @@ exports.SubjectValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
 class SubjectValidator extends Validator_1.Validator {
+    constructor(input) {
+        super(input.subject);
+        this.maxLength = input.maxLength;
+    }
     get normalized() {
         return (this.content
             // remove leading and trailing whitespace
@@ -9495,7 +9500,6 @@ class SubjectValidator extends Validator_1.Validator {
     }
     checkLength(errors) {
         const minSubjectLength = 10;
-        const maxSubjectLength = 48;
         // subject must be longer than 10 characters
         if (this.content.length < minSubjectLength) {
             errors.push(new ValidationError_1.ValidationError({
@@ -9504,10 +9508,10 @@ class SubjectValidator extends Validator_1.Validator {
             }));
         }
         // subject must be shorter than 48 characters
-        if (this.content.length > maxSubjectLength) {
+        if (this.content.length > this.maxLength) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
-                message: `subject must be at most ${maxSubjectLength} characters`,
+                message: `subject must be at most ${this.maxLength} characters`,
             }));
         }
     }
