@@ -17,6 +17,7 @@ import { scopeQuestion } from '../questions/scope';
 import { authorsQuestion } from '../questions/authors';
 import { subjectQuestion } from '../questions/subject';
 import { setupCommit } from '../../lib/utils/setupCommit';
+import { validateMessage } from '../../lib/message/validateMessage';
 
 // eslint-disable-next-line max-lines-per-function
 async function createCommit(
@@ -60,6 +61,21 @@ async function createCommit(
       },
     },
     {
+      title: 'Verify commit message',
+      async task(): Promise<void> {
+        return new Promise((resolve, reject) => {
+          const validation = validateMessage({
+            message: commitMessage.message,
+          });
+          if (validation.valid) {
+            resolve();
+          } else {
+            reject(new Error('Failed to validate commit message'));
+          }
+        });
+      },
+    },
+    {
       title: 'Create commit',
       async task(): Promise<void> {
         return new Promise((resolve, reject) => {
@@ -67,7 +83,7 @@ async function createCommit(
           const messageFile = resolvePath(gitRoot, '.commit-message');
           writeFileSync(messageFile, commitMessage.message);
           // create the commit
-          const command = `git commit -s -F ${messageFile}`;
+          const command = `git commit --no-verify --signoff -F ${messageFile}`;
           const commitProcess = exec(command, { cwd: gitRoot });
           // create process should exit with code 0
           commitProcess.on('exit', (code) => {

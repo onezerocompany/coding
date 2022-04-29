@@ -64,12 +64,13 @@ export class CommitMessage {
     );
 
     const extraChars = 8;
+    const sideChars = 2;
     const newLines = [
-      '-'.repeat(maxLineLength + extraChars),
-      `|   ${' '.repeat(maxLineLength)}   |`,
-      ...lines.map((line) => `|   ${line.padEnd(maxLineLength)}   |`),
-      `|   ${' '.repeat(maxLineLength)}   |`,
-      '-'.repeat(maxLineLength + extraChars),
+      `╭${'─'.repeat(maxLineLength + extraChars - sideChars)}╮`,
+      `│   ${' '.repeat(maxLineLength)}   │`,
+      ...lines.map((line) => `│   ${line.padEnd(maxLineLength)}   │`),
+      `│   ${' '.repeat(maxLineLength)}   │`,
+      `╰${'─'.repeat(maxLineLength + extraChars - sideChars)}╯`,
     ];
 
     return newLines.join('\n');
