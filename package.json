@@ -28,7 +28,8 @@
     "packages/tsconfig",
     "packages/eslint-config",
     "packages/commit",
-    "actions/pr-commit-check"
+    "actions/pr-commit-check",
+    "actions/publish-dart-package"
   ],
   "scripts": {
     "commit": "./packages/commit/dist/cli.js",
@@ -68,7 +69,8 @@
       "<rootDir>/packages/eslint-config",
       "<rootDir>/packages/prettier-config",
       "<rootDir>/packages/tsconfig",
-      "<rootDir>/actions/pr-commit-check"
+      "<rootDir>/actions/pr-commit-check",
+      "<rootDir>/actions/publish-dart-package"
     ],
     "rootDir": "./"
   },

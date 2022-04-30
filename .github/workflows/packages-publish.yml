@@ -5,8 +5,32 @@ on:
     types: [released]
 
 jobs:
-  publish:
-    name: Publish
+  publish_dart:
+    name: Publish Dart Package
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - directory: packages/onezero_flutter_hints
+            build: false
+    defaults:
+      run:
+        working-directory: ${{ matrix.package.directory }}
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          path: .
+
+      - name: Publish package
+        uses: ./actions/publish-dart-package
+        with:
+          auth: ${{ secrets.PUB_AUTH }}
+          flutter: true
+          version: ${{ github.ref_name }}
+  publish_node:
+    name: Publish Node Package
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
