@@ -1,0 +1,22 @@
+name: 'Publish Dart Package'
+description: 'Validates commit messages'
+inputs:
+  pub_credentials:
+    description: 'Google account access token from ~/.pub-cache/credentials.json'
+    required: true
+    default: ${{ secrets.PUB_CREDENTIALS }}
+  working_directory:
+    description: 'Directory to run the action in'
+    required: true
+    default: '.'
+  dry_run:
+    description: 'Perform a dry run only, do not publish'
+    required: false
+    default: 'false'
+  flutter:
+    description: 'Use Flutter instead of Dart SDK'
+    required: false
+    default: 'false'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
