@@ -34,6 +34,10 @@ for (const package of readdirSync(packagesDir)) {
   const packageJsonPath = resolve(packageDir, 'package.json');
   // skip if not a directory
   if (!statSync(packageDir).isDirectory()) continue;
+
+  // update the license
+  cpSync(resolve(__dirname, '../LICENSE'), resolve(packageDir, 'LICENSE'));
+
   // skip if package.json doesn't exist
   if (!existsSync(packageJsonPath)) continue;
 
