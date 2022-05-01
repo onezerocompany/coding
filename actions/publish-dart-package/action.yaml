@@ -4,7 +4,6 @@ inputs:
   pub_credentials:
     description: 'Google account access token from ~/.pub-cache/credentials.json'
     required: true
-    default: ${{ secrets.PUB_CREDENTIALS }}
   working_directory:
     description: 'Directory to run the action in'
     required: true
@@ -17,6 +16,10 @@ inputs:
     description: 'Use Flutter instead of Dart SDK'
     required: false
     default: 'false'
+  version:
+    description: 'Version to publish'
+    required: true
+    default: ${{ github.ref_name }}
 runs:
   using: 'node16'
   main: 'dist/index.js'
