@@ -1708,7 +1708,7 @@ const external_child_process_namespaceObject = require("child_process");
 
 
 // load the credentials
-const pubCredentials = core.getInput('pub-credentials');
+const pubCredentials = core.getInput('pub_credentials');
 if (pubCredentials?.length === 0) {
     core.setFailed('No pub credentials found');
     process.exit(1);
