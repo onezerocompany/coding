@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import { cwd } from 'process';
 import { mkdirSync, writeFileSync, symlinkSync } from 'fs';
 import { execSync } from 'child_process';
+import { homedir } from 'os';
 
 // load the credentials
 const pubCredentials = core.getInput('pub_credentials');
@@ -28,11 +29,13 @@ async function run() {
   console.log('Running in directory:', directory);
 
   // apply the credentials
-  const libraryFolder = resolve('~/Library/Application Support/dart');
+  const libraryFolder = resolve(
+    `${homedir()}/Library/Application Support/dart`,
+  );
   mkdirSync(libraryFolder, { recursive: true, mode: 0o700 });
   const pubspecFile = resolve(libraryFolder, 'pub-credentials.json');
   writeFileSync(pubspecFile, pubCredentials);
-  symlinkSync(pubspecFile, resolve('~/.pub-cache/credentials.json'));
+  symlinkSync(pubspecFile, resolve(`${homedir()}/.pub-cache/credentials.json`));
 
   // Publish the package
   execSync(
