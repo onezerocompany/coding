@@ -1730,9 +1730,11 @@ async function run() {
     console.log('Running in directory:', directory);
     // apply the credentials
     const libraryFolder = (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/Library/Application Support/dart`);
-    (0,external_fs_.mkdirSync)(libraryFolder, { recursive: true, mode: 0o700 });
+    (0,external_fs_.mkdirSync)(libraryFolder, { mode: 0o700, recursive: true });
     const pubspecFile = (0,external_path_.resolve)(libraryFolder, 'pub-credentials.json');
     (0,external_fs_.writeFileSync)(pubspecFile, pubCredentials);
+    const pubCacheFolder = (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/.pub-cache`);
+    (0,external_fs_.mkdirSync)(pubCacheFolder, { mode: 0o700, recursive: true });
     (0,external_fs_.symlinkSync)(pubspecFile, (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/.pub-cache/credentials.json`));
     // Publish the package
     (0,external_child_process_namespaceObject.execSync)(`${isFlutter ? 'flutter' : 'dart'} pub publish${dryRun ? ' --dry-run' : ''}`, { cwd: directory });
