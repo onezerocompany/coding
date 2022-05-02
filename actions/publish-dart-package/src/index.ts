@@ -32,9 +32,11 @@ async function run() {
   const libraryFolder = resolve(
     `${homedir()}/Library/Application Support/dart`,
   );
-  mkdirSync(libraryFolder, { recursive: true, mode: 0o700 });
+  mkdirSync(libraryFolder, { mode: 0o700, recursive: true });
   const pubspecFile = resolve(libraryFolder, 'pub-credentials.json');
   writeFileSync(pubspecFile, pubCredentials);
+  const pubCacheFolder = resolve(`${homedir()}/.pub-cache`);
+  mkdirSync(pubCacheFolder, { mode: 0o700, recursive: true });
   symlinkSync(pubspecFile, resolve(`${homedir()}/.pub-cache/credentials.json`));
 
   // Publish the package
