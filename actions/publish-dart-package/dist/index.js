@@ -1701,7 +1701,10 @@ const external_process_namespaceObject = require("process");
 var external_fs_ = __nccwpck_require__(147);
 ;// CONCATENATED MODULE: external "child_process"
 const external_child_process_namespaceObject = require("child_process");
+// EXTERNAL MODULE: external "os"
+var external_os_ = __nccwpck_require__(37);
 ;// CONCATENATED MODULE: ./src/index.ts
+
 
 
 
@@ -1726,11 +1729,11 @@ async function run() {
     const directory = (0,external_path_.resolve)((0,external_process_namespaceObject.cwd)(), workingDirectory);
     console.log('Running in directory:', directory);
     // apply the credentials
-    const libraryFolder = (0,external_path_.resolve)('~/Library/Application Support/dart');
+    const libraryFolder = (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/Library/Application Support/dart`);
     (0,external_fs_.mkdirSync)(libraryFolder, { recursive: true, mode: 0o700 });
     const pubspecFile = (0,external_path_.resolve)(libraryFolder, 'pub-credentials.json');
     (0,external_fs_.writeFileSync)(pubspecFile, pubCredentials);
-    (0,external_fs_.symlinkSync)(pubspecFile, (0,external_path_.resolve)('~/.pub-cache/credentials.json'));
+    (0,external_fs_.symlinkSync)(pubspecFile, (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/.pub-cache/credentials.json`));
     // Publish the package
     (0,external_child_process_namespaceObject.execSync)(`${isFlutter ? 'flutter' : 'dart'} pub publish${dryRun ? ' --dry-run' : ''}`, { cwd: directory });
 }

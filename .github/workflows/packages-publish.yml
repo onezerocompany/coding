@@ -23,12 +23,16 @@ jobs:
         with:
           path: .
 
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+
       - name: Publish package
         uses: ./actions/publish-dart-package
         with:
           pub_credentials: ${{ secrets.pub_credentials }}
           flutter: true
           version: ${{ github.ref_name }}
+
   publish_node:
     name: Publish Node Package
     runs-on: ubuntu-latest
