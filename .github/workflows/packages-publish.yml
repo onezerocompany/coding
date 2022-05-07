@@ -42,8 +42,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            onezerocompany/devcontainers/universal:latest
-            onezerocompany/devcontainers/universal:${{ github.ref }}
+            onezerocompany/devcontainer-universal:latest
+            onezerocompany/devcontainer-universal:${{ github.ref }}
 
   publish_dart:
     name: Publish Dart Package
