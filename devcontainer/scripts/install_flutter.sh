@@ -24,7 +24,7 @@ echo "export PATH=\"$HOME/.flutter/bin:\$PATH\"\\n" >> ~/.bashrc
 echo "export PATH=\"$HOME/.flutter/bin:\$PATH\"\\n" >> ~/.zshrc
 
 # Pre-download development binaries
-flutter precache
+/home/vscode/.flutter/bin/flutter precache
 
 # Return to home folder
 cd ~
