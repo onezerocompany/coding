@@ -43,7 +43,7 @@ jobs:
           push: true
           tags: |
             onezerocompany/devcontainer-universal:latest
-            onezerocompany/devcontainer-universal:${{ github.ref }}
+            onezerocompany/devcontainer-universal:${{ github.ref_name }}
 
   publish_dart:
     name: Publish Dart Package
