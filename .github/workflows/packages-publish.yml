@@ -52,7 +52,7 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - directory: packages/flutter_hints
+          - directory: packages/flutter_lints
             build: false
     defaults:
       run:
