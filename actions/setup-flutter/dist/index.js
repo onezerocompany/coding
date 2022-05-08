@@ -1697,47 +1697,86 @@ var core = __nccwpck_require__(117);
 var external_path_ = __nccwpck_require__(17);
 ;// CONCATENATED MODULE: external "process"
 const external_process_namespaceObject = require("process");
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(147);
-;// CONCATENATED MODULE: external "child_process"
-const external_child_process_namespaceObject = require("child_process");
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(37);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(147);
+;// CONCATENATED MODULE: ./src/credentials.ts
+
+
+
+function applyCredentials(credentials) {
+    if (credentials.length > 0) {
+        process.stdout.write('Applying credentials...');
+        const libraryFolder = (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/Library/Application Support/dart`);
+        const pubCacheFolder = (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/.pub-cache`);
+        const pubspecFile = (0,external_path_.resolve)(libraryFolder, 'pub-credentials.json');
+        // create folders
+        (0,external_fs_.mkdirSync)(libraryFolder, { mode: 0o700, recursive: true });
+        (0,external_fs_.mkdirSync)(pubCacheFolder, { mode: 0o700, recursive: true });
+        // write the credential files
+        (0,external_fs_.writeFileSync)(pubspecFile, credentials);
+        (0,external_fs_.symlinkSync)(pubspecFile, (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/.pub-cache/credentials.json`));
+    }
+}
+
+// EXTERNAL MODULE: external "https"
+var external_https_ = __nccwpck_require__(687);
+;// CONCATENATED MODULE: external "child_process"
+const external_child_process_namespaceObject = require("child_process");
+;// CONCATENATED MODULE: ./src/setup.ts
+
+
+
+
+const os = (0,external_os_.platform)();
+const ext = os === 'linux' ? 'tar.xz' : 'zip';
+async function downloadUrlToFile(url, file) {
+    return new Promise((resolve, reject) => {
+        const stream = (0,external_fs_.createWriteStream)(file);
+        stream.on('finish', resolve);
+        stream.on('error', reject);
+        (0,external_https_.get)(url, (response) => {
+            response.pipe(stream);
+        }).on('error', reject);
+    });
+}
+// https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.10.5-stable.tar.xz
+async function setup(input) {
+    const base = 'https://storage.googleapis.com/flutter_infra_release/releases';
+    const folder = `${input.channel}/${os}`;
+    const url = `${base}/${folder}/flutter_${os}_${input.version}-${input.channel}.${ext}`;
+    const file = `${(0,external_os_.homedir)()}/flutter_${os}_${input.version}-${input.channel}.${ext}`;
+    await downloadUrlToFile(url, file);
+    console.log('Downloaded:', file);
+    if (os === 'linux') {
+        await (0,external_child_process_namespaceObject.exec)(`tar -xf ${file}`);
+        await (0,external_child_process_namespaceObject.exec)(`rm ${file}`);
+    }
+    else {
+        await (0,external_child_process_namespaceObject.exec)(`unzip ${file}`);
+        await (0,external_child_process_namespaceObject.exec)(`rm ${file}`);
+    }
+    await (0,external_child_process_namespaceObject.exec)('echo "export PATH="$HOME/flutter/bin:$PATH"\\n" >> ~/.bashrc');
+}
+
 ;// CONCATENATED MODULE: ./src/index.ts
 
 
 
 
 
-
-// load the credentials
+// inputs
+const workingDirectory = core.getInput('working_directory') ?? '.';
 const pubCredentials = core.getInput('pub_credentials');
-if (pubCredentials?.length === 0) {
-    core.setFailed('No pub credentials found');
-    process.exit(1);
-}
-const workingDirectory = core.getInput('working_directory', {
-    required: true,
-});
-const dryRun = core.getInput('dry_run', {
-    required: true,
-});
-const isFlutter = core.getInput('flutter', {
-    required: true,
-});
 async function run() {
     const directory = (0,external_path_.resolve)((0,external_process_namespaceObject.cwd)(), workingDirectory);
     console.log('Running in directory:', directory);
-    // apply the credentials
-    const libraryFolder = (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/Library/Application Support/dart`);
-    (0,external_fs_.mkdirSync)(libraryFolder, { mode: 0o700, recursive: true });
-    const pubspecFile = (0,external_path_.resolve)(libraryFolder, 'pub-credentials.json');
-    (0,external_fs_.writeFileSync)(pubspecFile, pubCredentials);
-    const pubCacheFolder = (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/.pub-cache`);
-    (0,external_fs_.mkdirSync)(pubCacheFolder, { mode: 0o700, recursive: true });
-    (0,external_fs_.symlinkSync)(pubspecFile, (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/.pub-cache/credentials.json`));
-    // Publish the package
-    (0,external_child_process_namespaceObject.execSync)(`${isFlutter ? 'flutter' : 'dart'} pub publish${dryRun ? ' --dry-run' : ''}`, { cwd: directory });
+    applyCredentials(pubCredentials);
+    await setup({
+        version: core.getInput('version'),
+        channel: core.getInput('channel'),
+    });
 }
 run();
 
