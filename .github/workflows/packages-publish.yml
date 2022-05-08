@@ -52,7 +52,7 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - directory: packages/onezero_flutter_hints
+          - directory: packages/flutter_hints
             build: false
     defaults:
       run:
