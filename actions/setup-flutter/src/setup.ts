@@ -4,6 +4,19 @@ import { get } from 'https';
 import { execSync } from 'child_process';
 import { addPath } from '@actions/core';
 
+function currentPlatform() {
+  switch (platform()) {
+    case 'darwin':
+      return 'macos';
+    case 'win32':
+      return 'windows';
+    case 'linux':
+      return 'linux';
+    default:
+      throw new Error(`Unsupported platform: ${platform()}`);
+  }
+}
+
 function urlForVersion(input: {
   platform: string;
   version: string;
@@ -35,15 +48,18 @@ async function downloadFile(input: { url: string; file: string }) {
 }
 
 export async function setup(input: { version: string; channel: string }) {
-  const currentPlatform = platform();
-  const download = urlForVersion({ ...input, platform: currentPlatform });
+  // download the sdk
+  const download = urlForVersion({ ...input, platform: currentPlatform() });
   await downloadFile(download);
 
-  if (currentPlatform === 'linux') {
-    execSync(`tar -xf ${download.file} -C ${homedir()}`);
-  } else {
+  // decompress the file
+  if (currentPlatform() === 'windows') {
     execSync(`unzip ${download.file} -d ${homedir()}`);
+  } else {
+    execSync(`tar -xf ${download.file} -C ${homedir()}`);
   }
+
+  // remove the downloaded file
   rmSync(download.file);
 
   // install flutter into profiles

@@ -1730,6 +1730,18 @@ const external_child_process_namespaceObject = require("child_process");
 
 
 
+function currentPlatform() {
+    switch ((0,external_os_.platform)()) {
+        case 'darwin':
+            return 'macos';
+        case 'win32':
+            return 'windows';
+        case 'linux':
+            return 'linux';
+        default:
+            throw new Error(`Unsupported platform: ${(0,external_os_.platform)()}`);
+    }
+}
 function urlForVersion(input) {
     const base = 'https://storage.googleapis.com/flutter_infra_release/releases';
     const ext = input.platform === 'linux' ? 'tar.xz' : 'zip';
@@ -1750,15 +1762,17 @@ async function downloadFile(input) {
     });
 }
 async function setup(input) {
-    const currentPlatform = (0,external_os_.platform)();
-    const download = urlForVersion({ ...input, platform: currentPlatform });
+    // download the sdk
+    const download = urlForVersion({ ...input, platform: currentPlatform() });
     await downloadFile(download);
-    if (currentPlatform === 'linux') {
-        (0,external_child_process_namespaceObject.execSync)(`tar -xf ${download.file} -C ${(0,external_os_.homedir)()}`);
-    }
-    else {
+    // decompress the file
+    if (currentPlatform() === 'windows') {
         (0,external_child_process_namespaceObject.execSync)(`unzip ${download.file} -d ${(0,external_os_.homedir)()}`);
     }
+    else {
+        (0,external_child_process_namespaceObject.execSync)(`tar -xf ${download.file} -C ${(0,external_os_.homedir)()}`);
+    }
+    // remove the downloaded file
     (0,external_fs_.rmSync)(download.file);
     // install flutter into profiles
     (0,core.addPath)(`${(0,external_os_.homedir)()}/flutter/bin`);
