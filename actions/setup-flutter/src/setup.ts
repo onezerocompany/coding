@@ -50,19 +50,25 @@ async function downloadFile(input: { url: string; file: string }) {
 export async function setup(input: { version: string; channel: string }) {
   // download the sdk
   const download = urlForVersion({ ...input, platform: currentPlatform() });
+  process.stdout.write(`Downloading ${download.url}...`);
   await downloadFile(download);
+  process.stdout.write(' done\n');
 
   // decompress the file
+  process.stdout.write('Decompressing...');
   if (download.file.endsWith('.zip')) {
-    execSync(`unzip ${download.file} -d ${homedir()}`);
+    execSync(`unzip ${download.file} -d ${homedir()}`, { stdio: 'ignore' });
   } else if (download.file.endsWith('.tar.xz')) {
-    execSync(`tar -xf ${download.file} -C ${homedir()}`);
+    execSync(`tar -xf ${download.file} -C ${homedir()}`, { stdio: 'ignore' });
   } else {
     throw new Error(`Unsupported file extension: ${download.file}`);
   }
+  process.stdout.write(' done\n');
 
   // remove the downloaded file
+  process.stdout.write('Cleaning up...');
   rmSync(download.file);
+  process.stdout.write(' done\n');
 
   // install flutter into profiles
   addPath(`${homedir()}/flutter/bin`);
