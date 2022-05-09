@@ -1,38 +1,51 @@
 import { platform, homedir } from 'os';
-import { createWriteStream } from 'fs';
+import { createWriteStream, rmSync } from 'fs';
 import { get } from 'https';
-import { exec } from 'child_process';
+import { execSync } from 'child_process';
+import { addPath } from '@actions/core';
 
-const os = platform();
-const ext = os === 'linux' ? 'tar.xz' : 'zip';
+function urlForVersion(input: {
+  platform: string;
+  version: string;
+  channel: string;
+}): {
+  url: string;
+  file: string;
+} {
+  const base = 'https://storage.googleapis.com/flutter_infra_release/releases';
+  const ext = input.platform === 'linux' ? 'tar.xz' : 'zip';
+  const folder = `${input.channel}/${input.platform}`;
+  return {
+    url: `${base}/${folder}/flutter_${input.platform}_${input.version}-${input.channel}.${ext}`,
+    file: `${homedir()}/flutter_${input.platform}_${input.version}-${
+      input.channel
+    }.${ext}`,
+  };
+}
 
-async function downloadUrlToFile(url: string, file: string) {
+async function downloadFile(input: { url: string; file: string }) {
   return new Promise((resolve, reject) => {
-    const stream = createWriteStream(file);
+    const stream = createWriteStream(input.file);
     stream.on('finish', resolve);
     stream.on('error', reject);
-    get(url, (response) => {
+    get(input.url, (response) => {
       response.pipe(stream);
     }).on('error', reject);
   });
 }
 
-// https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.10.5-stable.tar.xz
 export async function setup(input: { version: string; channel: string }) {
-  const base = 'https://storage.googleapis.com/flutter_infra_release/releases';
-  const folder = `${input.channel}/${os}`;
-  const url = `${base}/${folder}/flutter_${os}_${input.version}-${input.channel}.${ext}`;
-  const file = `${homedir()}/flutter_${os}_${input.version}-${
-    input.channel
-  }.${ext}`;
-  await downloadUrlToFile(url, file);
-  console.log('Downloaded:', file);
-  if (os === 'linux') {
-    await exec(`tar -xf ${file}`);
-    await exec(`rm ${file}`);
+  const currentPlatform = platform();
+  const download = urlForVersion({ ...input, platform: currentPlatform });
+  await downloadFile(download);
+
+  if (currentPlatform === 'linux') {
+    execSync(`tar -xf ${download.file} -C ${homedir()}`);
   } else {
-    await exec(`unzip ${file}`);
-    await exec(`rm ${file}`);
+    execSync(`unzip ${download.file} -d ${homedir()}`);
   }
-  await exec('echo "export PATH="$HOME/flutter/bin:$PATH"\\n" >> ~/.bashrc');
+  rmSync(download.file);
+
+  // install flutter into profiles
+  addPath(`${homedir()}/flutter/bin`);
 }

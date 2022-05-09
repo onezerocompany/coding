@@ -1729,35 +1729,39 @@ const external_child_process_namespaceObject = require("child_process");
 
 
 
-const os = (0,external_os_.platform)();
-const ext = os === 'linux' ? 'tar.xz' : 'zip';
-async function downloadUrlToFile(url, file) {
+
+function urlForVersion(input) {
+    const base = 'https://storage.googleapis.com/flutter_infra_release/releases';
+    const ext = input.platform === 'linux' ? 'tar.xz' : 'zip';
+    const folder = `${input.channel}/${input.platform}`;
+    return {
+        url: `${base}/${folder}/flutter_${input.platform}_${input.version}-${input.channel}.${ext}`,
+        file: `${(0,external_os_.homedir)()}/flutter_${input.platform}_${input.version}-${input.channel}.${ext}`,
+    };
+}
+async function downloadFile(input) {
     return new Promise((resolve, reject) => {
-        const stream = (0,external_fs_.createWriteStream)(file);
+        const stream = (0,external_fs_.createWriteStream)(input.file);
         stream.on('finish', resolve);
         stream.on('error', reject);
-        (0,external_https_.get)(url, (response) => {
+        (0,external_https_.get)(input.url, (response) => {
             response.pipe(stream);
         }).on('error', reject);
     });
 }
-// https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.10.5-stable.tar.xz
 async function setup(input) {
-    const base = 'https://storage.googleapis.com/flutter_infra_release/releases';
-    const folder = `${input.channel}/${os}`;
-    const url = `${base}/${folder}/flutter_${os}_${input.version}-${input.channel}.${ext}`;
-    const file = `${(0,external_os_.homedir)()}/flutter_${os}_${input.version}-${input.channel}.${ext}`;
-    await downloadUrlToFile(url, file);
-    console.log('Downloaded:', file);
-    if (os === 'linux') {
-        await (0,external_child_process_namespaceObject.exec)(`tar -xf ${file}`);
-        await (0,external_child_process_namespaceObject.exec)(`rm ${file}`);
+    const currentPlatform = (0,external_os_.platform)();
+    const download = urlForVersion({ ...input, platform: currentPlatform });
+    await downloadFile(download);
+    if (currentPlatform === 'linux') {
+        (0,external_child_process_namespaceObject.execSync)(`tar -xf ${download.file} -C ${(0,external_os_.homedir)()}`);
     }
     else {
-        await (0,external_child_process_namespaceObject.exec)(`unzip ${file}`);
-        await (0,external_child_process_namespaceObject.exec)(`rm ${file}`);
+        (0,external_child_process_namespaceObject.execSync)(`unzip ${download.file} -d ${(0,external_os_.homedir)()}`);
     }
-    await (0,external_child_process_namespaceObject.exec)('echo "export PATH="$HOME/flutter/bin:$PATH"\\n" >> ~/.bashrc');
+    (0,external_fs_.rmSync)(download.file);
+    // install flutter into profiles
+    (0,core.addPath)(`${(0,external_os_.homedir)()}/flutter/bin`);
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts
