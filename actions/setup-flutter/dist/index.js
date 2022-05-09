@@ -1766,11 +1766,14 @@ async function setup(input) {
     const download = urlForVersion({ ...input, platform: currentPlatform() });
     await downloadFile(download);
     // decompress the file
-    if (currentPlatform() === 'windows') {
+    if (download.file.endsWith('.zip')) {
         (0,external_child_process_namespaceObject.execSync)(`unzip ${download.file} -d ${(0,external_os_.homedir)()}`);
     }
-    else {
+    else if (download.file.endsWith('.tar.xz')) {
         (0,external_child_process_namespaceObject.execSync)(`tar -xf ${download.file} -C ${(0,external_os_.homedir)()}`);
+    }
+    else {
+        throw new Error(`Unsupported file extension: ${download.file}`);
     }
     // remove the downloaded file
     (0,external_fs_.rmSync)(download.file);

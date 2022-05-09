@@ -53,10 +53,12 @@ export async function setup(input: { version: string; channel: string }) {
   await downloadFile(download);
 
   // decompress the file
-  if (currentPlatform() === 'windows') {
+  if (download.file.endsWith('.zip')) {
     execSync(`unzip ${download.file} -d ${homedir()}`);
-  } else {
+  } else if (download.file.endsWith('.tar.xz')) {
     execSync(`tar -xf ${download.file} -C ${homedir()}`);
+  } else {
+    throw new Error(`Unsupported file extension: ${download.file}`);
   }
 
   // remove the downloaded file
