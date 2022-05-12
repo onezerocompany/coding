@@ -52,7 +52,7 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - directory: packages/onezero_flutter_hints
+          - directory: packages/flutter_lints
             build: false
     defaults:
       run:
@@ -63,15 +63,16 @@ jobs:
         with:
           path: .
 
-      - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
-
-      - name: Publish package
-        uses: ./actions/publish-dart-package
+      - name: Setup Flutter
+        uses: ./actions/setup-flutter
         with:
-          pub_credentials: ${{ secrets.pub_credentials }}
-          flutter: true
-          version: ${{ github.ref_name }}
+          working_directory: ${{ matrix.package.directory }}
+          pub_credentials: ${{ secrets.PUB_CREDENTIALS }}
+          version: 2.10.5
+          channel: stable
+
+      - name: Publish Dart Package
+        run: flutter pub publish
 
   publish_node:
     name: Publish Node Package

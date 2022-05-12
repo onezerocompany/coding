@@ -3,23 +3,19 @@ description: 'Validates commit messages'
 inputs:
   pub_credentials:
     description: 'Google account access token from ~/.pub-cache/credentials.json'
-    required: true
+    required: false
   working_directory:
     description: 'Directory to run the action in'
-    required: true
+    required: false
     default: '.'
-  dry_run:
-    description: 'Perform a dry run only, do not publish'
-    required: false
-    default: 'false'
-  flutter:
-    description: 'Use Flutter instead of Dart SDK'
-    required: false
-    default: 'false'
   version:
-    description: 'Version to publish'
-    required: true
-    default: ${{ github.ref_name }}
+    description: Flutter version to use'
+    required: false
+    default: 2.10.5
+  channel:
+    description: 'Channel to read the flutter version from'
+    required: false
+    default: stable
 runs:
   using: 'node16'
   main: 'dist/index.js'
