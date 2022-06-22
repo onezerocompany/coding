@@ -78,4 +78,5 @@ $RECYCLE.BIN/
 node_modules/
 **/coverage
 **/dist
+**/dist-reference
 **/*.log

@@ -64,7 +64,7 @@ const tasks = new Listr(
       title: 'Load changed files from git',
       async task(ctx: SetupContext): Promise<void> {
         return new Promise((resolve) => {
-          const files = getGitFiles();
+          const files = getGitFiles(ctx.gitRoot);
           ctx.files = files;
           resolve();
         });
