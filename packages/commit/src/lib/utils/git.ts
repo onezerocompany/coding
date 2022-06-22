@@ -25,7 +25,7 @@ function getStagedFiles(gitRoot: string): string[] {
  */
 export function findGitRoot(): string {
   // find the git folder by walking up the directory tree
-  let dir = __dirname;
+  let dir = process.cwd();
   while (dir !== '/') {
     const gitFolder = resolve(dir, '.git');
     if (existsSync(gitFolder) && statSync(gitFolder).isDirectory()) {
