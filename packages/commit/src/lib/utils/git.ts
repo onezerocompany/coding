@@ -66,6 +66,6 @@ export function getGitFiles(gitFolder: string): FileItem[] {
         }));
       });
   } catch {
-    return [];
+    throw new Error(`Could not fetch git files from: ${gitFolder}`);
   }
 }

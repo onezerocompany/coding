@@ -78,5 +78,6 @@ $RECYCLE.BIN/
 node_modules/
 **/coverage
 **/dist
+!actions/setup-flutter/dist
 **/dist-reference
 **/*.log
