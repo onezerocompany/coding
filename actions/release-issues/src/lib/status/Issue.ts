@@ -19,10 +19,10 @@ export class Issue {
   comments: Comment[];
   context: Context;
 
-  title() {
+  get title() {
     return `🚀 ${this.version.displayString} [Release Tracker]`;
   }
-  body() {
+  get body() {
     let lines: string[][] = [];
     lines.push([
       '<!-- JSON BEGIN',
@@ -69,19 +69,17 @@ export class Issue {
       };
     } = await octokit.graphql(
       `
-        query issues($owner: String!, $repo: String!, $title: String!) {
+        query issues($owner: String!, $repo: String!) {
           repository(owner: $owner, name: $repo) {
             issues(
-              first: 1
+              last: 10
               labels: ["release-tracker"]
-              filterBy: {
-                title: $title
-              }
+              states: [OPEN]
             ) {
               nodes {
                 number
-                title
                 body
+                title
               }
             }
           }
@@ -93,23 +91,30 @@ export class Issue {
       },
     );
 
-    const jsonContent = getContentBetweenTags(
-      '<!-- JSON BEGIN',
-      'JSON END -->',
-    )(data.repository.issues.nodes[0]?.body ?? '');
-
-    const json = JSON.parse(jsonContent) as IssueJSON;
-    const issue = Issue.fromJson(json);
-
-    if (
-      issue.version.major === this.version.major &&
-      issue.version.minor === this.version.minor &&
-      issue.version.patch === this.version.patch
-    ) {
-      return true;
+    if (data.repository.issues.nodes.length === 0) {
+      return false;
     }
 
-    return false;
+    const titleMatch = this.title;
+    return data.repository.issues.nodes.some((issueNode) => {
+      const jsonContent = getContentBetweenTags(
+        '<!-- JSON BEGIN',
+        'JSON END -->',
+      )(issueNode.body);
+
+      const json = JSON.parse(jsonContent) as IssueJSON;
+      const issue = Issue.fromJson(json);
+
+      if (
+        issue.version.major === this.version.major &&
+        issue.version.minor === this.version.minor &&
+        issue.version.patch === this.version.patch
+      ) {
+        return true;
+      }
+
+      return issue.title && issue.title === titleMatch;
+    });
   }
 
   async create() {

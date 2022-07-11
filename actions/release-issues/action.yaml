@@ -5,9 +5,10 @@ inputs:
     description: 'GitHub token with repo scope'
     required: true
     default: ${{ github.token }}
-  settings:
-    description: 'Settings file contents'
-    required: false
+  settings_file:
+    description: 'Path to the settings file'
+    required: true
+    default: .release-settings.yml
 runs:
   using: 'node16'
   main: 'dist/index.js'

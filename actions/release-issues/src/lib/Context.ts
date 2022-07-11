@@ -4,6 +4,9 @@ import { CommitMessage, parseMessage, Version } from '@onezerocompany/commit';
 import type { PushEvent } from '@octokit/webhooks-definitions/schema';
 import { Settings } from './settings/Settings';
 import { Issue } from './status/Issue';
+import { parse } from 'yaml';
+import { resolve } from 'path';
+import { readFileSync } from 'fs';
 
 export enum Action {
   create = 'create',
@@ -33,18 +36,23 @@ export class Context {
   public readonly commits?: Commit[] = [];
   public readonly issue = new Issue(this);
 
+  private loadSettings(): Settings {
+    const file =
+      core.getInput('settings', {
+        trimWhitespace: true,
+        required: false,
+      }) ?? '.release-settings.yml';
+    const filePath = resolve(process.cwd(), file);
+    core.debug(`Loading settings from ${filePath}`);
+
+    const content = readFileSync(filePath, 'utf8');
+    const settings = parse(content);
+
+    return new Settings(settings);
+  }
+
   constructor() {
-    // Load the settings
-    const content = core.getInput('settings', {
-      trimWhitespace: true,
-      required: false,
-    });
-    core.debug(`settings: ${content}`);
-
-    const parsedSettings = content ? JSON.parse(content) : {};
-    this.settings = new Settings(parsedSettings);
-    core.debug(`settings loaded: ${JSON.stringify(this.settings)}`);
-
+    this.settings = this.loadSettings();
     switch (github.context.eventName) {
       // push to main branch
       case 'push':
