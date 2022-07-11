@@ -18489,6 +18489,7 @@ class Context {
         const { repository, } = await octokit.graphql(`
         query loadLabel($owner: String!, $repo: String!, $name: String!) {
           repository(owner: $owner, name: $repo) {
+            id
             labels(
               first: 1
               query: $name
