@@ -126,8 +126,8 @@ export class Issue {
     // create the issue using the graphql api
     await octokit.graphql(
       `
-        mutation createIssue($repositoryId: ID!, labelIds: [ID!], title: String!, body: String!) {
-          createIssue(input: { repositoryId: $repositoryId, labelIds: $labelIds, title: $title, body: $body }) {
+        mutation createIssue($repositoryId: ID!, $labelId: ID!, $title: String!, $body: String!) {
+          createIssue(input: { repositoryId: $repositoryId, labelIds: [$labelId], title: $title, body: $body }) {
             issue {
               number
               url
