@@ -10175,9 +10175,14 @@ class Context {
     issue = new Issue(this);
     constructor() {
         // Load the settings
-        const jsonSettings = core.getInput('settings');
-        const parsedSettings = jsonSettings ? JSON.parse(jsonSettings) : {};
+        const content = core.getInput('settings', {
+            trimWhitespace: true,
+            required: false,
+        });
+        core.debug(`settings: ${content}`);
+        const parsedSettings = content ? JSON.parse(content) : {};
         this.settings = new Settings(parsedSettings);
+        core.debug(`settings loaded: ${JSON.stringify(this.settings)}`);
         switch (github.context.eventName) {
             // push to main branch
             case 'push':
