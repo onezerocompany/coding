@@ -1,14 +1,9 @@
+import { VersionBump } from '../versions/VersionBump';
+
 /* eslint-disable max-lines */
 export enum ChangeLogType {
   internal = 'internal',
   external = 'external',
-}
-
-export enum VersionBumpType {
-  none = 'none',
-  patch = 'patch',
-  minor = 'minor',
-  major = 'major',
 }
 
 export interface CommitCategory {
@@ -21,7 +16,7 @@ export interface CommitCategory {
     type: ChangeLogType;
   };
   versioning: {
-    bump: VersionBumpType;
+    bump: VersionBump;
     canBreak: boolean;
   };
 }
@@ -38,7 +33,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.external,
     },
     versioning: {
-      bump: VersionBumpType.minor,
+      bump: VersionBump.minor,
       canBreak: true,
     },
   },
@@ -53,7 +48,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.external,
     },
     versioning: {
-      bump: VersionBumpType.minor,
+      bump: VersionBump.minor,
       canBreak: false,
     },
   },
@@ -68,7 +63,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -83,7 +78,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.external,
     },
     versioning: {
-      bump: VersionBumpType.minor,
+      bump: VersionBump.minor,
       canBreak: true,
     },
   },
@@ -98,7 +93,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.external,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -113,7 +108,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.external,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -128,7 +123,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -143,7 +138,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -158,7 +153,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -173,7 +168,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -188,7 +183,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -203,7 +198,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -218,7 +213,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -233,7 +228,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: true,
     },
   },
@@ -248,7 +243,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -263,7 +258,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: true,
     },
   },
@@ -278,7 +273,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -293,7 +288,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -308,7 +303,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -323,7 +318,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -338,7 +333,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -353,7 +348,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -368,7 +363,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -383,7 +378,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -398,7 +393,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -413,7 +408,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.minor,
+      bump: VersionBump.minor,
       canBreak: true,
     },
   },
@@ -428,7 +423,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.none,
+      bump: VersionBump.none,
       canBreak: false,
     },
   },
@@ -443,7 +438,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.external,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: true,
     },
   },
@@ -458,7 +453,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: true,
     },
   },
@@ -473,7 +468,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.external,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: true,
     },
   },
@@ -488,7 +483,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -503,7 +498,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -518,7 +513,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -533,7 +528,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -548,7 +543,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -563,7 +558,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -578,7 +573,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: true,
     },
   },
@@ -593,7 +588,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -608,7 +603,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -623,7 +618,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBumpType.patch,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
@@ -642,7 +637,7 @@ export function categoryForTag(tag?: string): CommitCategory {
         type: ChangeLogType.internal,
       },
       versioning: {
-        bump: VersionBumpType.none,
+        bump: VersionBump.none,
         canBreak: false,
       },
     }

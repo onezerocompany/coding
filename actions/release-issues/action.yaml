@@ -1,0 +1,26 @@
+name: 'Release Issues'
+description: 'Creates issues that help track releases and deploy them'
+inputs:
+  token:
+    description: 'GitHub token with repo scope'
+    required: true
+    default: ${{ github.token }}
+  branch:
+    description: 'Branch to read commits from'
+    required: true
+    default: 'main'
+  tracks:
+    description: 'Release tracks to use'
+    required: true
+    default: 'release'
+  action:
+    description: 'What action to perform'
+    required: true
+    default: 'create'
+  version_template:
+    description: 'Version template to use'
+    required: true
+    default: '<major>.<minor>.<patch>-<track>'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

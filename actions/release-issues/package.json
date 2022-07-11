@@ -1,0 +1,55 @@
+{
+  "name": "release-issues",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "npx ncc build src/index.ts -o dist",
+    "test": "npx jest"
+  },
+  "devDependencies": {
+    "@octokit/webhooks-definitions": "^3.67.3",
+    "@onezerocompany/commit": "file:../../packages/commit",
+    "@onezerocompany/eslint-config": "file:../../packages/eslint-config",
+    "@onezerocompany/prettier-config": "file:../../packages/prettier-config",
+    "@vercel/ncc": "^0.33.4"
+  },
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "@actions/github": "^5.0.1"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "<rootDir>/tsconfig.json"
+      }
+    },
+    "rootDir": "./",
+    "testPathIgnorePatterns": [
+      "node_modules/",
+      "dist/"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "parserOptions": {
+      "project": "./tsconfig.spec.json",
+      "tsconfigRootDir": "./"
+    },
+    "extends": "@onezerocompany/eslint-config/configs/typescript.js",
+    "ignorePatterns": [
+      "dist/",
+      "coverage/",
+      "jest.config.js",
+      "tsconfig.json",
+      "package.json",
+      "README.md",
+      "yarn.lock"
+    ],
+    "root": true
+  }
+}

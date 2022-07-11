@@ -8306,7 +8306,7 @@ function wrappy (fn, cb) {
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-__webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.Nj = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
+exports.Gf = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
@@ -8331,15 +8331,15 @@ __webpack_unused_export__ = ({ enumerable: true, get: function () { return Valid
 var CommitMessage_1 = __nccwpck_require__(3921);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return CommitMessage_1.CommitMessage; } });
 var parseMessage_1 = __nccwpck_require__(6198);
-__webpack_unused_export__ = ({ enumerable: true, get: function () { return parseMessage_1.parseMessage; } });
+Object.defineProperty(exports, "kW", ({ enumerable: true, get: function () { return parseMessage_1.parseMessage; } }));
 var validateMessage_1 = __nccwpck_require__(5429);
-Object.defineProperty(exports, "Nj", ({ enumerable: true, get: function () { return validateMessage_1.validateMessage; } }));
+__webpack_unused_export__ = ({ enumerable: true, get: function () { return validateMessage_1.validateMessage; } });
 var VersionBump_1 = __nccwpck_require__(4033);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionBump_1.VersionBump; } });
 var VersionTrack_1 = __nccwpck_require__(5352);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } });
 var Version_1 = __nccwpck_require__(8691);
-__webpack_unused_export__ = ({ enumerable: true, get: function () { return Version_1.Version; } });
+Object.defineProperty(exports, "Gf", ({ enumerable: true, get: function () { return Version_1.Version; } }));
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -9909,35 +9909,6 @@ module.exports = JSON.parse('{"emojis":[{"emoji":"👩‍👩‍👧‍👧","na
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -9958,72 +9929,294 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+// ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(7117);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(4005);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _onezerocompany_commit__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(4670);
+
+// EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(7117);
+// EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(4005);
+// EXTERNAL MODULE: ../../packages/commit/dist/index.js
+var dist = __nccwpck_require__(4670);
+;// CONCATENATED MODULE: ./src/lib/settings/Track.ts
+var Track;
+(function (Track) {
+    Track["alpha"] = "alpha";
+    Track["beta"] = "beta";
+    Track["release"] = "release";
+})(Track || (Track = {}));
+
+;// CONCATENATED MODULE: ./src/lib/settings/Platform.ts
+var Platform;
+(function (Platform) {
+    Platform["ios"] = "ios";
+    Platform["android"] = "android";
+    Platform["web"] = "web";
+    Platform["macos"] = "macos";
+    Platform["windows"] = "windows";
+    Platform["linux"] = "linux";
+    Platform["website"] = "website";
+    Platform["npm"] = "npm";
+    Platform["pub"] = "pub";
+    Platform["docker"] = "docker";
+})(Platform || (Platform = {}));
+
+;// CONCATENATED MODULE: ./src/lib/settings/TrackSettings.ts
+
+
+class TrackSettings {
+    enabled;
+    version;
+    requirements;
+    release;
+    static defaultEnabled(track) {
+        switch (track) {
+            case Track.alpha:
+                return false;
+            case Track.beta:
+                return false;
+            case Track.release:
+                return true;
+        }
+    }
+    static defaultVersionTemplate(track) {
+        switch (track) {
+            case Track.alpha:
+                return '{{version}}-alpha';
+            case Track.beta:
+                return '{{version}}-beta';
+            case Track.release:
+                return '{{version}}';
+        }
+    }
+    constructor(inputs) {
+        const track = inputs?.track ?? Track.release;
+        this.enabled = inputs?.json?.enabled ?? TrackSettings.defaultEnabled(track);
+        this.version = {
+            template: inputs?.json?.version?.template ??
+                TrackSettings.defaultVersionTemplate(track),
+        };
+        this.requirements = {
+            tests: inputs?.json?.requirements?.tests ?? [],
+        };
+        this.release = {
+            manual: inputs?.json?.release?.manual ?? true,
+            waitForTracks: inputs?.json?.release?.waitForTracks ?? [],
+            platforms: inputs?.json?.release?.platforms ?? [],
+            allowedUsers: inputs?.json?.release?.allowedUsers ?? [],
+        };
+        // filter out non existent tracks
+        this.release.waitForTracks = this.release.waitForTracks.filter((track) => Track[track] !== undefined);
+        // filter out non existent platforms
+        this.release.platforms = this.release.platforms.filter((platform) => Platform[platform] !== undefined);
+    }
+}
+
+;// CONCATENATED MODULE: ./src/lib/settings/Settings.ts
+
+
+class Settings {
+    alpha;
+    beta;
+    release;
+    constructor(json) {
+        const settings = json ? json : {};
+        this.alpha = new TrackSettings({
+            track: Track.alpha,
+            json: settings.alpha,
+        });
+        this.beta = new TrackSettings({
+            track: Track.beta,
+            json: settings.beta,
+        });
+        this.release = new TrackSettings({
+            track: Track.release,
+            json: settings.release,
+        });
+    }
+}
+
+;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
+function getContentBetweenTags(before, after) {
+    return (content) => {
+        const beforeIndex = content.indexOf(before);
+        const afterIndex = content.indexOf(after);
+        if (beforeIndex === -1 || afterIndex === -1) {
+            return '';
+        }
+        return content.substring(beforeIndex + before.length, afterIndex);
+    };
+}
+
+;// CONCATENATED MODULE: ./src/lib/status/Issue.ts
 
 
 
-const githubToken = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('token');
-const prNumber = parseInt(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('pull_request', {
-    trimWhitespace: true,
-}), 10);
-async function run() {
-    const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(githubToken);
-    const repo = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo;
-    const owner = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner;
-    console.log(`Repo: ${repo}`);
-    console.log(`Owner: ${owner}`);
-    console.log(`PR: ${prNumber}`);
-    const { repository } = await octokit.graphql(`
-    query issues($owner: String!, $repo: String!, $prNumber: Int!) {
-      repository(owner: $owner, name: $repo) {
-        pullRequest(number: $prNumber) {
-          merged,
-          commits(first:250) {
-            nodes {
-              commit {
-                message
+// import { getContentBetweenTags } from '../../utils/getContentBetweenTags';
+
+class Issue {
+    number;
+    version;
+    comments;
+    context;
+    title() {
+        return `🚀 ${this.version.displayString} [Release Tracker]`;
+    }
+    body() {
+        let lines = [];
+        lines.push([
+            '<!-- JSON BEGIN',
+            JSON.stringify(this.toJson()),
+            'JSON END -->',
+        ]);
+        lines.push(['### Details', `\`version: ${this.version.displayString}\``]);
+        return lines
+            .map((line) => line.join('\n'))
+            .join('\n\n')
+            .trim();
+    }
+    toJson() {
+        return JSON.stringify({
+            version: this.version.toJson(),
+        });
+    }
+    static fromJson(json) {
+        const context = new Context();
+        return new Issue(context, {
+            comments: [],
+            version: dist/* Version.fromJson */.Gf.fromJson(json.version),
+        });
+    }
+    async exists() {
+        // check if issue exists using the graphql api
+        const octokit = github.getOctokit(this.context.token);
+        const { data, } = await octokit.graphql(`
+        query issues($owner: String!, $repo: String!, $title: String!) {
+          repository(owner: $owner, name: $repo) {
+            issues(
+              first: 1
+              labels: ["release-tracker"]
+              filterBy: {
+                title: $title
+              }
+            ) {
+              nodes {
+                number
+                title
+                body
               }
             }
           }
         }
-      }
-    }
-  `, {
-        owner: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner,
-        repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
-        prNumber,
-    });
-    if (repository.pullRequest.merged) {
-        console.log('Pull request is already merged, skipping commit check');
-        process.exit(0);
-    }
-    const errors = [];
-    const commits = repository.pullRequest.commits.nodes.map((node) => ({
-        message: node.commit.message,
-    }));
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('commits', JSON.stringify(commits));
-    const valid = commits.every((commit) => {
-        const validation = (0,_onezerocompany_commit__WEBPACK_IMPORTED_MODULE_2__/* .validateMessage */ .Nj)({ message: commit.message });
-        errors.push(...validation.errors);
-        if (validation.errors) {
-            for (const error of validation.errors) {
-                console.error(error.displayString);
-            }
+      `, {
+            owner: this.context.repo.owner,
+            repo: this.context.repo.repo,
+        });
+        const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(data.repository.issues.nodes[0]?.body ?? '');
+        const json = JSON.parse(jsonContent);
+        const issue = Issue.fromJson(json);
+        if (issue.version.major === this.version.major &&
+            issue.version.minor === this.version.minor &&
+            issue.version.patch === this.version.patch) {
+            return true;
         }
-        return validation.valid;
-    });
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('valid', valid);
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('errors', JSON.stringify(errors));
-    if (valid) {
-        process.exit(0);
+        return false;
     }
-    else {
-        process.exit(1);
+    async create() {
+        const octokit = github.getOctokit(this.context.token);
+        // create the issue using the graphql api
+        await octokit.graphql(`
+        mutation createIssue($owner: String!, $repo: String!, $title: String!, $body: String!) {
+          createIssue(input: { owner: $owner, repo: $repo, title: $title, body: $body }) {
+            issue {
+              number
+              url
+            }
+          }
+        }
+      `, {
+            ...this.context.repo,
+            title: this.title,
+            body: this.body,
+            labels: ['release-tracker'],
+        });
+    }
+    constructor(context, inputs) {
+        this.version = inputs?.version ?? new dist/* Version */.Gf();
+        this.comments = inputs?.comments ?? [];
+        this.context = context;
+    }
+}
+
+;// CONCATENATED MODULE: ./src/lib/Context.ts
+
+
+
+
+
+var Action;
+(function (Action) {
+    Action["create"] = "create";
+    Action["update"] = "update";
+    Action["stop"] = "stop";
+})(Action || (Action = {}));
+class Context {
+    // general context
+    token = core.getInput('token');
+    repo = {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+    };
+    // settings set in the repo
+    settings;
+    // specific to this run of the action
+    action;
+    commits = [];
+    issue = new Issue(this);
+    constructor() {
+        // Load the settings
+        const jsonSettings = core.getInput('settings');
+        const parsedSettings = jsonSettings ? JSON.parse(jsonSettings) : {};
+        this.settings = new Settings(parsedSettings);
+        switch (github.context.eventName) {
+            // push to main branch
+            case 'push':
+                const pushEvent = github.context.payload;
+                // make sure the push is to the main branch
+                if (pushEvent.ref !== 'refs/heads/main') {
+                    core.setFailed('Only pushes to the main branch are supported');
+                    this.action = Action.stop;
+                    break;
+                }
+                this.action = Action.create;
+                // convert the commits to a list of Commit objects
+                this.commits = pushEvent.commits.map((commit) => ({
+                    sha: commit.id,
+                    message: (0,dist/* parseMessage */.kW)(commit.message),
+                }));
+                this.issue = new Issue(this, {
+                    comments: [],
+                    version: new dist/* Version */.Gf(),
+                });
+                break;
+            default:
+                core.setFailed('Unsupported event');
+                this.action = Action.stop;
+        }
+    }
+}
+
+;// CONCATENATED MODULE: ./src/index.ts
+
+const context = new Context();
+async function run() {
+    if (context.action === Action.create) {
+        if (!(await context.issue.exists())) {
+            await context.issue.create();
+        }
+    }
+    if (context.action === Action.update) {
+        // update based on changes to issue
     }
 }
 run();

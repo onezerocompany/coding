@@ -1,9 +1,5 @@
 /* eslint-disable import/max-dependencies */
-export {
-  categories,
-  ChangeLogType,
-  VersionBumpType,
-} from './lib/categories/categories';
+export { categories, ChangeLogType } from './lib/categories/categories';
 
 export { emojiForShortcode } from './lib/categories/emoji/emoji';
 
@@ -21,3 +17,7 @@ export { Validator } from './lib/message/validators/Validator';
 export { CommitMessage } from './lib/message/CommitMessage';
 export { parseMessage } from './lib/message/parseMessage';
 export { validateMessage } from './lib/message/validateMessage';
+
+export { VersionBump } from './lib/versions/VersionBump';
+export { VersionTrack } from './lib/versions/VersionTrack';
+export { Version } from './lib/versions/Version';

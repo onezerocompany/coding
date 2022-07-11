@@ -1,0 +1,19 @@
+name: Automatic Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v3
+        with:
+          path: .
+
+      - name: Create Release
+        uses: ./actions/version-release

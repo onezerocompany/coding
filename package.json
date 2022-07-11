@@ -29,7 +29,8 @@
     "packages/eslint-config",
     "packages/commit",
     "actions/pr-commit-check",
-    "actions/setup-flutter"
+    "actions/setup-flutter",
+    "actions/release-issues"
   ],
   "scripts": {
     "commit": "./packages/commit/dist/cli.js",
@@ -70,7 +71,8 @@
       "<rootDir>/packages/prettier-config",
       "<rootDir>/packages/tsconfig",
       "<rootDir>/actions/pr-commit-check",
-      "<rootDir>/actions/setup-flutter"
+      "<rootDir>/actions/setup-flutter",
+      "<rootDir>/actions/release-issues"
     ],
     "rootDir": "./"
   },

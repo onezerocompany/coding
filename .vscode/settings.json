@@ -7,7 +7,7 @@
     "**/node_modules": true,
     "**/package-lock.json": true,
     "**/.git": true,
-    "**/dist": true,
+    "**/dist": false,
     "**/coverage": true,
     "**/dist-reference": true
   },
