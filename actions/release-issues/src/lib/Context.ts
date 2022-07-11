@@ -31,18 +31,19 @@ export class Context {
   public readonly settings: Settings;
 
   // specific to this run of the action
-
   public readonly action: Action;
   public readonly commits?: Commit[] = [];
   public readonly issue = new Issue(this);
 
   private loadSettings(): Settings {
-    const file =
-      core.getInput('settings', {
-        trimWhitespace: true,
-        required: false,
-      }) ?? '.release-settings.yml';
-    const filePath = resolve(process.cwd(), file);
+    const file = core.getInput('settings_file', {
+      trimWhitespace: true,
+      required: false,
+    });
+    const filePath = resolve(
+      process.cwd(),
+      file.length === 0 ? '.release-settings.yml' : file,
+    );
     core.debug(`Loading settings from ${filePath}`);
 
     const content = readFileSync(filePath, 'utf8');

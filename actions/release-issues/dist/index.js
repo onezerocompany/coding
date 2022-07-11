@@ -18480,11 +18480,11 @@ class Context {
     commits = [];
     issue = new Issue(this);
     loadSettings() {
-        const file = core.getInput('settings', {
+        const file = core.getInput('settings_file', {
             trimWhitespace: true,
             required: false,
-        }) ?? '.release-settings.yml';
-        const filePath = (0,external_path_.resolve)(process.cwd(), file);
+        });
+        const filePath = (0,external_path_.resolve)(process.cwd(), file.length === 0 ? '.release-settings.yml' : file);
         core.debug(`Loading settings from ${filePath}`);
         const content = (0,external_fs_.readFileSync)(filePath, 'utf8');
         const settings = (0,yaml_dist/* parse */.Qc)(content);
