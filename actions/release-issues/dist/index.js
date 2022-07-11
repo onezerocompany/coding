@@ -18345,7 +18345,7 @@ function getContentBetweenTags(before, after) {
 
 
 
-// import { getContentBetweenTags } from '../../utils/getContentBetweenTags';
+
 
 class Issue {
     number;
@@ -18383,7 +18383,7 @@ class Issue {
     async exists() {
         // check if issue exists using the graphql api
         const octokit = github.getOctokit(this.context.token);
-        const { data, } = await octokit.graphql(`
+        const { repository, } = await octokit.graphql(`
         query issues($owner: String!, $repo: String!) {
           repository(owner: $owner, name: $repo) {
             issues(
@@ -18403,11 +18403,15 @@ class Issue {
             owner: this.context.repo.owner,
             repo: this.context.repo.repo,
         });
-        if (data.repository.issues.nodes.length === 0) {
+        if (!repository?.issues) {
+            (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
+            return false;
+        }
+        if (repository?.issues.nodes.length === 0) {
             return false;
         }
         const titleMatch = this.title;
-        return data.repository.issues.nodes.some((issueNode) => {
+        return (repository?.issues?.nodes.some((issueNode) => {
             const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
             const json = JSON.parse(jsonContent);
             const issue = Issue.fromJson(json);
@@ -18417,7 +18421,7 @@ class Issue {
                 return true;
             }
             return issue.title && issue.title === titleMatch;
-        });
+        }) ?? false);
     }
     async create() {
         const octokit = github.getOctokit(this.context.token);

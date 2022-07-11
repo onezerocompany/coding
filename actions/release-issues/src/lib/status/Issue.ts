@@ -1,8 +1,8 @@
 import * as github from '@actions/github';
 import { Version } from '@onezerocompany/commit';
 import type { VersionJSON } from '@onezerocompany/commit/dist/lib/versions/Version';
+import { debug } from '@actions/core';
 import { getContentBetweenTags } from '../../utils/getContentBetweenTags';
-// import { getContentBetweenTags } from '../../utils/getContentBetweenTags';
 import { Context } from '../Context';
 import type { Comment } from './Comment';
 
@@ -54,17 +54,15 @@ export class Issue {
     // check if issue exists using the graphql api
     const octokit = github.getOctokit(this.context.token);
     const {
-      data,
+      repository,
     }: {
-      data: {
-        repository: {
-          issues: {
-            nodes: {
-              number: number;
-              title: string;
-              body: string;
-            }[];
-          };
+      repository?: {
+        issues?: {
+          nodes: {
+            number: number;
+            title: string;
+            body: string;
+          }[];
         };
       };
     } = await octokit.graphql(
@@ -91,30 +89,37 @@ export class Issue {
       },
     );
 
-    if (data.repository.issues.nodes.length === 0) {
+    if (!repository?.issues) {
+      debug(`No issues found in: ${JSON.stringify(repository)}`);
+      return false;
+    }
+
+    if (repository?.issues.nodes.length === 0) {
       return false;
     }
 
     const titleMatch = this.title;
-    return data.repository.issues.nodes.some((issueNode) => {
-      const jsonContent = getContentBetweenTags(
-        '<!-- JSON BEGIN',
-        'JSON END -->',
-      )(issueNode.body);
+    return (
+      repository?.issues?.nodes.some((issueNode) => {
+        const jsonContent = getContentBetweenTags(
+          '<!-- JSON BEGIN',
+          'JSON END -->',
+        )(issueNode.body);
 
-      const json = JSON.parse(jsonContent) as IssueJSON;
-      const issue = Issue.fromJson(json);
+        const json = JSON.parse(jsonContent) as IssueJSON;
+        const issue = Issue.fromJson(json);
 
-      if (
-        issue.version.major === this.version.major &&
-        issue.version.minor === this.version.minor &&
-        issue.version.patch === this.version.patch
-      ) {
-        return true;
-      }
+        if (
+          issue.version.major === this.version.major &&
+          issue.version.minor === this.version.minor &&
+          issue.version.patch === this.version.patch
+        ) {
+          return true;
+        }
 
-      return issue.title && issue.title === titleMatch;
-    });
+        return issue.title && issue.title === titleMatch;
+      }) ?? false
+    );
   }
 
   async create() {
