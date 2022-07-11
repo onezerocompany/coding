@@ -3,7 +3,7 @@ import { Version } from '@onezerocompany/commit';
 import type { VersionJSON } from '@onezerocompany/commit/dist/lib/versions/Version';
 import { debug } from '@actions/core';
 import { getContentBetweenTags } from '../../utils/getContentBetweenTags';
-import { Context } from '../Context';
+import type { Context } from '../Context';
 import type { Comment } from './Comment';
 
 export interface IssueJSON {
@@ -42,8 +42,7 @@ export class Issue {
     });
   }
 
-  public static fromJson(json: IssueJSON) {
-    const context = new Context();
+  public static fromJson(context: Context, json: IssueJSON) {
     return new Issue(context, {
       comments: [],
       version: Version.fromJson(json.version),
@@ -107,7 +106,7 @@ export class Issue {
         )(issueNode.body);
 
         const json = JSON.parse(jsonContent) as IssueJSON;
-        const issue = Issue.fromJson(json);
+        const issue = Issue.fromJson(this.context, json);
 
         if (
           issue.version.major === this.version.major &&
@@ -127,8 +126,8 @@ export class Issue {
     // create the issue using the graphql api
     await octokit.graphql(
       `
-        mutation createIssue($owner: String!, $repo: String!, $title: String!, $body: String!) {
-          createIssue(input: { owner: $owner, repo: $repo, title: $title, body: $body }) {
+        mutation createIssue($repositoryId: ID!, labelIds: [ID!], title: String!, body: String!) {
+          createIssue(input: { repositoryId: $repositoryId, labelIds: $labelIds, title: $title, body: $body }) {
             issue {
               number
               url
@@ -137,10 +136,10 @@ export class Issue {
         }
       `,
       {
-        ...this.context.repo,
+        repositoryId: this.context.repositoryId,
+        labelIds: [this.context.releaseTrackerLabelId],
         title: this.title,
         body: this.body,
-        labels: ['release-tracker'],
       },
     );
   }

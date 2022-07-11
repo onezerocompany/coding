@@ -18346,7 +18346,6 @@ function getContentBetweenTags(before, after) {
 
 
 
-
 class Issue {
     number;
     version;
@@ -18373,8 +18372,7 @@ class Issue {
             version: this.version.toJson(),
         });
     }
-    static fromJson(json) {
-        const context = new Context();
+    static fromJson(context, json) {
         return new Issue(context, {
             comments: [],
             version: dist/* Version.fromJson */.Gf.fromJson(json.version),
@@ -18414,7 +18412,7 @@ class Issue {
         return (repository?.issues?.nodes.some((issueNode) => {
             const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
             const json = JSON.parse(jsonContent);
-            const issue = Issue.fromJson(json);
+            const issue = Issue.fromJson(this.context, json);
             if (issue.version.major === this.version.major &&
                 issue.version.minor === this.version.minor &&
                 issue.version.patch === this.version.patch) {
@@ -18427,8 +18425,8 @@ class Issue {
         const octokit = github.getOctokit(this.context.token);
         // create the issue using the graphql api
         await octokit.graphql(`
-        mutation createIssue($owner: String!, $repo: String!, $title: String!, $body: String!) {
-          createIssue(input: { owner: $owner, repo: $repo, title: $title, body: $body }) {
+        mutation createIssue($repositoryId: ID!, labelIds: [ID!], title: String!, body: String!) {
+          createIssue(input: { repositoryId: $repositoryId, labelIds: $labelIds, title: $title, body: $body }) {
             issue {
               number
               url
@@ -18436,10 +18434,10 @@ class Issue {
           }
         }
       `, {
-            ...this.context.repo,
+            repositoryId: this.context.repositoryId,
+            labelIds: [this.context.releaseTrackerLabelId],
             title: this.title,
             body: this.body,
-            labels: ['release-tracker'],
         });
     }
     constructor(context, inputs) {
@@ -18477,12 +18475,39 @@ class Context {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
     };
+    repositoryId;
+    releaseTrackerLabelId;
     // settings set in the repo
     settings;
     // specific to this run of the action
     action;
     commits = [];
     issue = new Issue(this);
+    async load() {
+        const octokit = github.getOctokit(this.token);
+        // load the release tracker label id from the graphql api
+        const { repository, } = await octokit.graphql(`
+        query loadLabel($owner: String!, $repo: String!, $name: String!) {
+          repository(owner: $owner, name: $repo) {
+            labels(
+              first: 1
+              query: $name
+            ) {
+              nodes {
+                id
+                name
+              }
+            }
+          }
+        }
+      `, {
+            owner: this.repo.owner,
+            repo: this.repo.repo,
+            name: 'release-tracker',
+        });
+        this.repositoryId = repository?.id ?? '';
+        this.releaseTrackerLabelId = repository?.labels.nodes[0]?.id ?? '';
+    }
     loadSettings() {
         const file = core.getInput('settings_file', {
             trimWhitespace: true,
@@ -18528,6 +18553,7 @@ class Context {
 
 const context = new Context();
 async function run() {
+    await context.load();
     if (context.action === Action.create) {
         if (!(await context.issue.exists())) {
             await context.issue.create();

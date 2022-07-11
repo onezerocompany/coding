@@ -3,6 +3,7 @@ import { Action, Context } from './lib/Context';
 const context = new Context();
 
 async function run() {
+  await context.load();
   if (context.action === Action.create) {
     if (!(await context.issue.exists())) {
       await context.issue.create();

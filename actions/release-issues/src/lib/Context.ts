@@ -26,6 +26,8 @@ export class Context {
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
   };
+  public repositoryId?: string;
+  public releaseTrackerLabelId?: string;
 
   // settings set in the repo
   public readonly settings: Settings;
@@ -34,6 +36,48 @@ export class Context {
   public readonly action: Action;
   public readonly commits?: Commit[] = [];
   public readonly issue = new Issue(this);
+
+  public async load() {
+    const octokit = github.getOctokit(this.token);
+
+    // load the release tracker label id from the graphql api
+    const {
+      repository,
+    }: {
+      repository?: {
+        id: string;
+        labels: {
+          nodes: {
+            id: string;
+            name: string;
+          }[];
+        };
+      };
+    } = await octokit.graphql(
+      `
+        query loadLabel($owner: String!, $repo: String!, $name: String!) {
+          repository(owner: $owner, name: $repo) {
+            labels(
+              first: 1
+              query: $name
+            ) {
+              nodes {
+                id
+                name
+              }
+            }
+          }
+        }
+      `,
+      {
+        owner: this.repo.owner,
+        repo: this.repo.repo,
+        name: 'release-tracker',
+      },
+    );
+    this.repositoryId = repository?.id ?? '';
+    this.releaseTrackerLabelId = repository?.labels.nodes[0]?.id ?? '';
+  }
 
   private loadSettings(): Settings {
     const file = core.getInput('settings_file', {
