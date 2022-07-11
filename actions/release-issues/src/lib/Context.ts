@@ -64,7 +64,6 @@ export class Context {
             ) {
               nodes {
                 id
-                name
               }
             }
           }

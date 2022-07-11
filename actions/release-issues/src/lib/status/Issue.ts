@@ -137,7 +137,7 @@ export class Issue {
       `,
       {
         repositoryId: this.context.repositoryId,
-        labelIds: [this.context.releaseTrackerLabelId],
+        labelId: this.context.releaseTrackerLabelId,
         title: this.title,
         body: this.body,
       },
