@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import type { Context } from './lib/Context';
+import type { Context } from './lib/context/Context';
 
 // Fetch the latest 100 releases from the repository
 export async function fetchReleases(

@@ -18231,6 +18231,129 @@ var core = __nccwpck_require__(7117);
 var github = __nccwpck_require__(4005);
 // EXTERNAL MODULE: ../../packages/commit/dist/index.js
 var dist = __nccwpck_require__(4670);
+;// CONCATENATED MODULE: ./src/utils/titlecase.ts
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
+;// CONCATENATED MODULE: ./src/lib/items/ItemStatus.ts
+// Status of an item in a release
+var ItemStatus;
+(function (ItemStatus) {
+    // the item is successfully completed
+    ItemStatus["succeeded"] = "succeeded";
+    // the item has failed
+    ItemStatus["failed"] = "failed";
+    // the item is waiting on another item to complete
+    ItemStatus["pending"] = "pending";
+    // the item is in progress
+    ItemStatus["inProgress"] = "in-progress";
+    // the item was skipped
+    ItemStatus["skipped"] = "skipped";
+    // the status of the item is unknown
+    ItemStatus["unknown"] = "unknown";
+})(ItemStatus || (ItemStatus = {}));
+
+;// CONCATENATED MODULE: ./src/lib/items/icons.ts
+
+const icons = {
+    [ItemStatus.succeeded]: { icon: '✅', code: 'white_check_mark' },
+    [ItemStatus.failed]: { icon: '❌', code: 'x' },
+    [ItemStatus.inProgress]: { icon: '🔄', code: 'arrows_counterclockwise' },
+    [ItemStatus.pending]: { icon: '⏳', code: 'hourglass_flowing_sand' },
+    [ItemStatus.skipped]: { icon: '⏭️', code: 'next_track_button' },
+    [ItemStatus.unknown]: { icon: '❓', code: 'question_mark' },
+};
+
+;// CONCATENATED MODULE: ./src/lib/items/ItemType.ts
+var ItemType;
+(function (ItemType) {
+    ItemType["release"] = "release";
+    ItemType["coverage"] = "coverage";
+    ItemType["tests"] = "tests";
+})(ItemType || (ItemType = {}));
+
+;// CONCATENATED MODULE: ./src/lib/items/labels.ts
+
+
+const labels = {
+    [ItemType.release]: {
+        [ItemStatus.succeeded]: 'Release was cleared successfully',
+        [ItemStatus.failed]: 'Release was declined',
+        [ItemStatus.pending]: 'Waiting for release',
+        [ItemStatus.inProgress]: 'Release in progress',
+        [ItemStatus.skipped]: 'Release was skipped',
+        [ItemStatus.unknown]: 'Release status unknown',
+    },
+    [ItemType.coverage]: {
+        [ItemStatus.succeeded]: 'Coverage is sufficient',
+        [ItemStatus.failed]: 'Coverage is insufficient',
+        [ItemStatus.pending]: 'Waiting for coverage',
+        [ItemStatus.inProgress]: 'Coverage in progress',
+        [ItemStatus.skipped]: 'Coverage was skipped',
+        [ItemStatus.unknown]: 'Coverage status unknown',
+    },
+    [ItemType.tests]: {
+        [ItemStatus.succeeded]: 'Tests have all passed',
+        [ItemStatus.failed]: 'Tests have failed',
+        [ItemStatus.pending]: 'Waiting for tests',
+        [ItemStatus.inProgress]: 'Tests in progress',
+        [ItemStatus.skipped]: 'Tests were skipped',
+        [ItemStatus.unknown]: 'Tests status unknown',
+    },
+};
+
+;// CONCATENATED MODULE: ./src/lib/items/update/updateRelease.ts
+
+async function updateRelease() {
+    return ItemStatus.unknown;
+}
+
+;// CONCATENATED MODULE: ./src/lib/items/Item.ts
+
+
+
+
+
+class Item {
+    type;
+    metadata;
+    get json() {
+        return {
+            type: this.type,
+            status: this.status,
+            lineStatus: this.statusLine,
+        };
+    }
+    get labels() {
+        return labels[this.type];
+    }
+    get statusLine() {
+        return `- ${icons[this.status]} ${this.labels[this.status]}`;
+    }
+    // status
+    _status = ItemStatus.unknown;
+    get status() {
+        return this._status;
+    }
+    async update() {
+        switch (this.type) {
+            case ItemType.release:
+                this._status = await updateRelease();
+                break;
+            default:
+                throw new Error(`Unknown item type: ${this.type}`);
+        }
+        return this.status;
+    }
+    constructor(inputs) {
+        this.type = inputs.type;
+        this.metadata = inputs.metadata;
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/lib/settings/Track.ts
 var Track;
 (function (Track) {
@@ -18305,6 +18428,92 @@ class TrackSettings {
     }
 }
 
+;// CONCATENATED MODULE: ./src/lib/issue/sections.ts
+
+
+
+
+
+function sectionsForSettings(settings) {
+    let sections = [];
+    for (const track of Object.values(Track)) {
+        let items = [];
+        const trackSettings = new TrackSettings({
+            track,
+            json: settings,
+        });
+        if (trackSettings.enabled) {
+            if (trackSettings.release) {
+                items.push(new Item({
+                    type: ItemType.release,
+                    metadata: {
+                        track: track,
+                    },
+                }));
+            }
+        }
+        sections.push({
+            title: toTitleCase(track),
+            items,
+        });
+    }
+    return sections;
+}
+
+;// CONCATENATED MODULE: ./src/lib/issue/Issue.ts
+
+
+
+class Issue {
+    number;
+    version;
+    comments;
+    sections;
+    get title() {
+        return `🚀 ${this.version.displayString} [Release Tracker]`;
+    }
+    get body() {
+        let lines = [];
+        lines.push([
+            '<!-- JSON BEGIN',
+            JSON.stringify(this.toJson()),
+            'JSON END -->',
+        ]);
+        lines.push([
+            '### Details',
+            `\`version: ${this.version.displayString}\``,
+            '---',
+        ]);
+        for (const section of this.sections) {
+            lines.push([
+                `### ${section.title}`,
+                ...section.items.map((item) => item.statusLine),
+                '---',
+            ]);
+        }
+        return lines
+            .map((line) => line.join('\n'))
+            .join('\n\n')
+            .trim();
+    }
+    toJson() {
+        return JSON.stringify({
+            version: this.version.toJson(),
+        });
+    }
+    static fromJson(json) {
+        return new Issue({
+            comments: [],
+            version: dist/* Version.fromJson */.Gf.fromJson(json.version),
+        });
+    }
+    constructor(inputs) {
+        this.version = inputs?.version ?? new dist/* Version */.Gf();
+        this.comments = inputs?.comments ?? [];
+        this.sections = sectionsForSettings(context.settings);
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/lib/settings/Settings.ts
 
 
@@ -18329,137 +18538,37 @@ class Settings {
     }
 }
 
-;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
-function getContentBetweenTags(before, after) {
-    return (content) => {
-        const beforeIndex = content.indexOf(before);
-        const afterIndex = content.indexOf(after);
-        if (beforeIndex === -1 || afterIndex === -1) {
-            return '';
-        }
-        return content.substring(beforeIndex + before.length, afterIndex);
-    };
-}
-
-;// CONCATENATED MODULE: ./src/lib/status/Issue.ts
-
-
-
-
-class Issue {
-    number;
-    version;
-    comments;
-    context;
-    get title() {
-        return `🚀 ${this.version.displayString} [Release Tracker]`;
-    }
-    get body() {
-        let lines = [];
-        lines.push([
-            '<!-- JSON BEGIN',
-            JSON.stringify(this.toJson()),
-            'JSON END -->',
-        ]);
-        lines.push(['### Details', `\`version: ${this.version.displayString}\``]);
-        return lines
-            .map((line) => line.join('\n'))
-            .join('\n\n')
-            .trim();
-    }
-    toJson() {
-        return JSON.stringify({
-            version: this.version.toJson(),
-        });
-    }
-    static fromJson(context, json) {
-        return new Issue(context, {
-            comments: [],
-            version: dist/* Version.fromJson */.Gf.fromJson(json.version),
-        });
-    }
-    async exists() {
-        // check if issue exists using the graphql api
-        const octokit = github.getOctokit(this.context.token);
-        const { repository, } = await octokit.graphql(`
-        query issues($owner: String!, $repo: String!) {
-          repository(owner: $owner, name: $repo) {
-            issues(
-              last: 10
-              labels: ["release-tracker"]
-              states: [OPEN]
-            ) {
-              nodes {
-                number
-                body
-                title
-              }
-            }
-          }
-        }
-      `, {
-            owner: this.context.repo.owner,
-            repo: this.context.repo.repo,
-        });
-        if (!repository?.issues) {
-            (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
-            return false;
-        }
-        if (repository?.issues.nodes.length === 0) {
-            return false;
-        }
-        const titleMatch = this.title;
-        return (repository?.issues?.nodes.some((issueNode) => {
-            const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
-            const json = JSON.parse(jsonContent);
-            const issue = Issue.fromJson(this.context, json);
-            if (issue.version.major === this.version.major &&
-                issue.version.minor === this.version.minor &&
-                issue.version.patch === this.version.patch) {
-                return true;
-            }
-            return issue.title && issue.title === titleMatch;
-        }) ?? false);
-    }
-    async create() {
-        const octokit = github.getOctokit(this.context.token);
-        // create the issue using the graphql api
-        await octokit.graphql(`
-        mutation createIssue($repositoryId: ID!, $labelId: ID!, $title: String!, $body: String!) {
-          createIssue(input: { repositoryId: $repositoryId, labelIds: [$labelId], title: $title, body: $body }) {
-            issue {
-              number
-              url
-            }
-          }
-        }
-      `, {
-            repositoryId: this.context.repositoryId,
-            labelId: this.context.releaseTrackerLabelId,
-            title: this.title,
-            body: this.body,
-        });
-    }
-    constructor(context, inputs) {
-        this.version = inputs?.version ?? new dist/* Version */.Gf();
-        this.comments = inputs?.comments ?? [];
-        this.context = context;
-    }
-}
-
-// EXTERNAL MODULE: ../../node_modules/yaml/dist/index.js
-var yaml_dist = __nccwpck_require__(8447);
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(7147);
-;// CONCATENATED MODULE: ./src/lib/Context.ts
+// EXTERNAL MODULE: ../../node_modules/yaml/dist/index.js
+var yaml_dist = __nccwpck_require__(8447);
+;// CONCATENATED MODULE: ./src/lib/context/loadSettings.ts
 
 
 
 
 
+function loadSettings() {
+    const file = (0,core.getInput)('settings_file', {
+        trimWhitespace: true,
+        required: false,
+    });
+    const filePath = (0,external_path_.resolve)(process.cwd(), file.length === 0 ? '.release-settings.yml' : file);
+    (0,core.debug)(`Loading settings from ${filePath}`);
+    const content = (0,external_fs_.readFileSync)(filePath, 'utf8');
+    const settings = (0,yaml_dist/* parse */.Qc)(content);
+    return new Settings(settings);
+}
 
+;// CONCATENATED MODULE: ./src/lib/context/Context.ts
+// External Imports
+
+
+// OneZero Imports
+
+// Internal Imports
 
 
 var Action;
@@ -18470,7 +18579,8 @@ var Action;
 })(Action || (Action = {}));
 class Context {
     // general context
-    token = core.getInput('token');
+    token = (0,core.getInput)('token');
+    octokit;
     repo = {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
@@ -18482,9 +18592,9 @@ class Context {
     // specific to this run of the action
     action;
     commits = [];
-    issue = new Issue(this);
+    issue = new Issue();
     async load() {
-        const octokit = github.getOctokit(this.token);
+        const octokit = (0,github.getOctokit)(this.token);
         // load the release tracker label id from the graphql api
         const { repository, } = await octokit.graphql(`
         query loadLabel($owner: String!, $repo: String!, $name: String!) {
@@ -18508,26 +18618,16 @@ class Context {
         this.repositoryId = repository?.id ?? '';
         this.releaseTrackerLabelId = repository?.labels.nodes[0]?.id ?? '';
     }
-    loadSettings() {
-        const file = core.getInput('settings_file', {
-            trimWhitespace: true,
-            required: false,
-        });
-        const filePath = (0,external_path_.resolve)(process.cwd(), file.length === 0 ? '.release-settings.yml' : file);
-        core.debug(`Loading settings from ${filePath}`);
-        const content = (0,external_fs_.readFileSync)(filePath, 'utf8');
-        const settings = (0,yaml_dist/* parse */.Qc)(content);
-        return new Settings(settings);
-    }
     constructor() {
-        this.settings = this.loadSettings();
+        this.octokit = (0,github.getOctokit)(this.token);
+        this.settings = loadSettings();
         switch (github.context.eventName) {
             // push to main branch
             case 'push':
                 const pushEvent = github.context.payload;
                 // make sure the push is to the main branch
                 if (pushEvent.ref !== 'refs/heads/main') {
-                    core.setFailed('Only pushes to the main branch are supported');
+                    (0,core.setFailed)('Only pushes to the main branch are supported');
                     this.action = Action.stop;
                     break;
                 }
@@ -18537,26 +18637,134 @@ class Context {
                     sha: commit.id,
                     message: (0,dist/* parseMessage */.kW)(commit.message),
                 }));
-                this.issue = new Issue(this, {
+                this.issue = new Issue({
                     comments: [],
                     version: new dist/* Version */.Gf(),
                 });
                 break;
             default:
-                core.setFailed('Unsupported event');
+                (0,core.setFailed)('Unsupported event');
                 this.action = Action.stop;
         }
     }
 }
+const context = new Context();
+const graphql = context.octokit.graphql;
+
+;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
+
+3;
+
+async function createIssue(issue) {
+    try {
+        await graphql(`
+        mutation createIssue(
+          $repositoryId: ID!
+          $labelId: ID!
+          $title: String!
+          $body: String!
+        ) {
+          createIssue(
+            input: {
+              repositoryId: $repositoryId
+              labelIds: [$labelId]
+              title: $title
+              body: $body
+            }
+          ) {
+            issue {
+              number
+              url
+            }
+          }
+        }
+      `, {
+            repositoryId: context.repositoryId,
+            labelId: context.releaseTrackerLabelId,
+            title: issue.title,
+            body: issue.body,
+        });
+        return { created: true };
+    }
+    catch (error) {
+        (0,core.setFailed)(error);
+        return { created: false };
+    }
+}
+
+;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
+function getContentBetweenTags(before, after) {
+    return (content) => {
+        const beforeIndex = content.indexOf(before);
+        const afterIndex = content.indexOf(after);
+        if (beforeIndex === -1 || afterIndex === -1) {
+            return '';
+        }
+        return content.substring(beforeIndex + before.length, afterIndex);
+    };
+}
+
+;// CONCATENATED MODULE: ./src/lib/issue/issueExists.ts
+
+
+
+
+
+async function issueExists(issue) {
+    // check if issue exists using the graphql api
+    const { repository, } = await graphql(`
+      query issues($owner: String!, $repo: String!) {
+        repository(owner: $owner, name: $repo) {
+          issues(last: 10, labels: ["release-tracker"], states: [OPEN]) {
+            nodes {
+              number
+              body
+              title
+            }
+          }
+        }
+      }
+    `, {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+    });
+    if (!repository?.issues) {
+        (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
+        return false;
+    }
+    if (repository?.issues.nodes.length === 0) {
+        return false;
+    }
+    const titleMatch = issue.title;
+    return (repository?.issues?.nodes.some((issueNode) => {
+        const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
+        const json = JSON.parse(jsonContent);
+        const issue = Issue.fromJson(json);
+        if (issue.version.major === issue.version.major &&
+            issue.version.minor === issue.version.minor &&
+            issue.version.patch === issue.version.patch) {
+            return true;
+        }
+        return issue.title && issue.title === titleMatch;
+    }) ?? false);
+}
 
 ;// CONCATENATED MODULE: ./src/index.ts
 
-const context = new Context();
+
+
+
 async function run() {
     await context.load();
     if (context.action === Action.create) {
-        if (!(await context.issue.exists())) {
-            await context.issue.create();
+        if (!(await issueExists(context.issue))) {
+            const { created } = await createIssue(context.issue);
+            if (created) {
+                (0,core.info)(`Created issue ${context.issue.title}`);
+            }
+            else {
+                (0,core.setFailed)('Failed to create issue');
+            }
         }
     }
     if (context.action === Action.update) {

@@ -1,12 +1,15 @@
-import * as core from '@actions/core';
-import * as github from '@actions/github';
-import { CommitMessage, parseMessage, Version } from '@onezerocompany/commit';
+// External Imports
+import { getInput, setFailed } from '@actions/core';
+import { context as githubContext, getOctokit } from '@actions/github';
 import type { PushEvent } from '@octokit/webhooks-definitions/schema';
-import { Settings } from './settings/Settings';
-import { Issue } from './status/Issue';
-import { parse } from 'yaml';
-import { resolve } from 'path';
-import { readFileSync } from 'fs';
+
+// OneZero Imports
+import { CommitMessage, parseMessage, Version } from '@onezerocompany/commit';
+
+// Internal Imports
+import { Issue } from '../issue/Issue';
+import type { Settings } from '../settings/Settings';
+import { loadSettings } from './loadSettings';
 
 export enum Action {
   create = 'create',
@@ -21,10 +24,11 @@ export interface Commit {
 
 export class Context {
   // general context
-  public readonly token = core.getInput('token');
+  public readonly token = getInput('token');
+  public readonly octokit;
   public readonly repo = {
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
+    owner: githubContext.repo.owner,
+    repo: githubContext.repo.repo,
   };
   public repositoryId?: string;
   public releaseTrackerLabelId?: string;
@@ -35,10 +39,10 @@ export class Context {
   // specific to this run of the action
   public readonly action: Action;
   public readonly commits?: Commit[] = [];
-  public readonly issue = new Issue(this);
+  public readonly issue = new Issue();
 
   public async load() {
-    const octokit = github.getOctokit(this.token);
+    const octokit = getOctokit(this.token);
 
     // load the release tracker label id from the graphql api
     const {
@@ -79,33 +83,17 @@ export class Context {
     this.releaseTrackerLabelId = repository?.labels.nodes[0]?.id ?? '';
   }
 
-  private loadSettings(): Settings {
-    const file = core.getInput('settings_file', {
-      trimWhitespace: true,
-      required: false,
-    });
-    const filePath = resolve(
-      process.cwd(),
-      file.length === 0 ? '.release-settings.yml' : file,
-    );
-    core.debug(`Loading settings from ${filePath}`);
-
-    const content = readFileSync(filePath, 'utf8');
-    const settings = parse(content);
-
-    return new Settings(settings);
-  }
-
   constructor() {
-    this.settings = this.loadSettings();
-    switch (github.context.eventName) {
+    this.octokit = getOctokit(this.token);
+    this.settings = loadSettings();
+    switch (githubContext.eventName) {
       // push to main branch
       case 'push':
-        const pushEvent: PushEvent = github.context.payload as PushEvent;
+        const pushEvent: PushEvent = githubContext.payload as PushEvent;
 
         // make sure the push is to the main branch
         if (pushEvent.ref !== 'refs/heads/main') {
-          core.setFailed('Only pushes to the main branch are supported');
+          setFailed('Only pushes to the main branch are supported');
           this.action = Action.stop;
           break;
         }
@@ -118,7 +106,7 @@ export class Context {
           message: parseMessage(commit.message),
         }));
 
-        this.issue = new Issue(this, {
+        this.issue = new Issue({
           comments: [],
           version: new Version(),
         });
@@ -126,8 +114,11 @@ export class Context {
         break;
 
       default:
-        core.setFailed('Unsupported event');
+        setFailed('Unsupported event');
         this.action = Action.stop;
     }
   }
 }
+
+export const context = new Context();
+export const graphql = context.octokit.graphql;

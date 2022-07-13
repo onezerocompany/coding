@@ -21,7 +21,13 @@
     "**/dist-reference": true
   },
 
-  "eslint.workingDirectories": ["packages/eslint-config", "packages/commit"],
+  "eslint.workingDirectories": [
+    "packages/eslint-config",
+    "packages/commit",
+    "actions/pr-commit-check",
+    "actions/release-issues",
+    "actions/setup-flutter"
+  ],
   "eslint.codeAction.showDocumentation": {
     "enable": true
   },
