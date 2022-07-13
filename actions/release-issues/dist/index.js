@@ -18754,6 +18754,7 @@ async function issueExists(issue) {
 
 
 
+(0,core.debug)(`Context: ${JSON.stringify(context, null, 2)}`);
 async function run() {
     await context.load();
     if (context.action === Action.create) {
