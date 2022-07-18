@@ -18235,60 +18235,8 @@ var Action;
     Action["stop"] = "stop";
 })(Action || (Action = {}));
 
-;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
-
-// eslint-disable-next-line max-lines-per-function
-async function createIssue(globals) {
-    const { graphql, context } = globals;
-    const { issue } = context;
-    try {
-        await graphql(`
-        mutation createIssue(
-          $repositoryId: ID!
-          $labelId: ID!
-          $title: String!
-          $content: String!
-        ) {
-          createIssue(
-            input: {
-              repositoryId: $repositoryId
-              labelIds: [$labelId]
-              title: $title
-              body: $content
-            }
-          ) {
-            issue {
-              number
-              url
-            }
-          }
-        }
-      `, {
-            repositoryId: context.repo.id,
-            labelId: context.repo.trackerLabelId,
-            title: issue.title,
-            content: issue.content,
-        });
-        return { created: true };
-    }
-    catch (createError) {
-        (0,core.error)(createError);
-        return { created: false };
-    }
-}
-
-;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
-function getContentBetweenTags(before, after) {
-    return (content) => {
-        const beforeIndex = content.indexOf(before);
-        const afterIndex = content.indexOf(after);
-        if (beforeIndex === -1 || afterIndex === -1) {
-            return '';
-        }
-        return content.substring(beforeIndex + before.length, afterIndex);
-    };
-}
-
+// EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(4005);
 // EXTERNAL MODULE: ../../packages/commit/dist/lib/versions/Version.js
 var Version = __nccwpck_require__(8691);
 ;// CONCATENATED MODULE: ./src/utils/titlecase.ts
@@ -18599,51 +18547,6 @@ class Issue {
     }
 }
 
-;// CONCATENATED MODULE: ./src/lib/issue/issueExists.ts
-
-
-
-const query = `
-  query issues($owner: String!, $repo: String!) {
-    repository(owner: $owner, name: $repo) {
-      issues(last: 10, labels: ["release-tracker"], states: [OPEN]) {
-        nodes {
-          number
-          body
-          title
-        }
-      }
-    }
-  }
-`;
-function issueMatch(globals, issue, issueNode) {
-    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
-    const json = JSON.parse(jsonContent);
-    const jsonIssue = Issue.fromJson(globals, json);
-    if (issue.version.major === jsonIssue.version.major &&
-        issue.version.minor === jsonIssue.version.minor &&
-        issue.version.patch === jsonIssue.version.patch) {
-        return true;
-    }
-    return jsonIssue.title === issue.title;
-}
-async function issueExists(globals) {
-    const { graphql, context } = globals;
-    const { issue } = context;
-    // check if issue exists using the graphql api
-    const { repository } = await graphql(query, {
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-    });
-    if (!repository?.issues || repository.issues.nodes.length === 0) {
-        (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
-        return false;
-    }
-    return repository.issues.nodes.some((issueNode) => issueMatch(globals, issue, issueNode));
-}
-
-// EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(4005);
 ;// CONCATENATED MODULE: ./src/lib/context/currentAction.ts
 
 
@@ -18716,7 +18619,7 @@ class Context {
 
 
 
-const loadContext_query = `
+const query = `
   query loadLabel($owner: String!, $repo: String!, $label: String!) {
     repository(owner: $owner, name: $repo) {
       id
@@ -18732,7 +18635,7 @@ const loadContext_query = `
   }
 `;
 async function loadContext(graphql) {
-    const { repository } = await graphql(loadContext_query, {
+    const { repository } = await graphql(query, {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         label: 'release-tracker',
@@ -18804,8 +18707,7 @@ function loadSettings() {
     (0,core.debug)(`Loading settings from ${filePath}`);
     const content = (0,external_fs_.readFileSync)(filePath, 'utf8');
     const settings = (0,yaml_dist/* parse */.Qc)(content);
-    const jsonIndent = 2;
-    (0,core.debug)(`Loaded settings: ${JSON.stringify(settings, null, jsonIndent)}`);
+    (0,core.debug)(`Loaded settings: ${JSON.stringify(settings, null)}`);
     return new Settings(settings);
 }
 
@@ -18814,12 +18716,112 @@ function loadSettings() {
 
 
 
+const jsonIndent = 2;
 async function getGlobals() {
     const octokit = (0,github.getOctokit)((0,core.getInput)('token'));
     const { graphql } = octokit;
     const context = await loadContext(graphql);
     const settings = loadSettings();
     return { context, settings, octokit, graphql };
+}
+
+;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
+
+
+// eslint-disable-next-line max-lines-per-function
+async function createIssue(globals) {
+    const { graphql, context } = globals;
+    const { issue } = context;
+    (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, jsonIndent)}`);
+    try {
+        await graphql(`
+        mutation createIssue(
+          $repositoryId: ID!
+          $labelId: ID!
+          $title: String!
+          $content: String!
+        ) {
+          createIssue(
+            input: {
+              repositoryId: $repositoryId
+              labelIds: [$labelId]
+              title: $title
+              body: $content
+            }
+          ) {
+            issue {
+              number
+              url
+            }
+          }
+        }
+      `, {
+            repositoryId: context.repo.id,
+            labelId: context.repo.trackerLabelId,
+            title: issue.title,
+            content: issue.content,
+        });
+        return { created: true };
+    }
+    catch (createError) {
+        (0,core.error)(createError);
+        return { created: false };
+    }
+}
+
+;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
+function getContentBetweenTags(before, after) {
+    return (content) => {
+        const beforeIndex = content.indexOf(before);
+        const afterIndex = content.indexOf(after);
+        if (beforeIndex === -1 || afterIndex === -1) {
+            return '';
+        }
+        return content.substring(beforeIndex + before.length, afterIndex);
+    };
+}
+
+;// CONCATENATED MODULE: ./src/lib/issue/issueExists.ts
+
+
+
+const issueExists_query = `
+  query issues($owner: String!, $repo: String!) {
+    repository(owner: $owner, name: $repo) {
+      issues(last: 10, labels: ["release-tracker"], states: [OPEN]) {
+        nodes {
+          number
+          body
+          title
+        }
+      }
+    }
+  }
+`;
+function issueMatch(globals, issue, issueNode) {
+    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
+    const json = JSON.parse(jsonContent);
+    const jsonIssue = Issue.fromJson(globals, json);
+    if (issue.version.major === jsonIssue.version.major &&
+        issue.version.minor === jsonIssue.version.minor &&
+        issue.version.patch === jsonIssue.version.patch) {
+        return true;
+    }
+    return jsonIssue.title === issue.title;
+}
+async function issueExists(globals) {
+    const { graphql, context } = globals;
+    const { issue } = context;
+    // check if issue exists using the graphql api
+    const { repository } = await graphql(issueExists_query, {
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+    });
+    if (!repository?.issues || repository.issues.nodes.length === 0) {
+        (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
+        return false;
+    }
+    return repository.issues.nodes.some((issueNode) => issueMatch(globals, issue, issueNode));
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts

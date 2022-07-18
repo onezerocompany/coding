@@ -1,5 +1,6 @@
 import { debug } from '@actions/core';
 import type { Globals } from './globals';
+import { jsonIndent } from './globals';
 
 const query = `
   query releases($owner: String!, $repo: String!) {
@@ -37,7 +38,7 @@ export async function fetchReleases(
     owner: context.repo.owner,
     repo: context.repo.repo,
   });
-  const jsonPadding = 2;
-  debug(JSON.stringify(result, null, jsonPadding));
+
+  debug(JSON.stringify(result, null, jsonIndent));
   return result.repository?.releases?.edges.node ?? [];
 }

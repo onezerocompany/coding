@@ -1,5 +1,6 @@
-import { error as logError } from '@actions/core';
+import { debug, error as logError } from '@actions/core';
 import type { Globals } from '../../globals';
+import { jsonIndent } from '../../globals';
 
 // eslint-disable-next-line max-lines-per-function
 export async function createIssue(
@@ -7,6 +8,13 @@ export async function createIssue(
 ): Promise<{ created: boolean }> {
   const { graphql, context } = globals;
   const { issue } = context;
+  debug(
+    `Creating issue ${issue.title}: ${JSON.stringify(
+      issue.json,
+      null,
+      jsonIndent,
+    )}`,
+  );
   try {
     await graphql(
       `
@@ -38,6 +46,7 @@ export async function createIssue(
         content: issue.content,
       },
     );
+
     return { created: true };
   } catch (createError: unknown) {
     logError(createError as Error);
