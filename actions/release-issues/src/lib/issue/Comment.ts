@@ -1,10 +1,10 @@
 import type { Track } from '../settings/Track';
 
 export class Comment {
-  content: string;
-  releasesTrack?: Track;
+  public content: string;
+  public releasesTrack?: Track;
 
-  constructor(content: string) {
+  public constructor(content: string) {
     this.content = content;
   }
 }

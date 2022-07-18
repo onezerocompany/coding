@@ -104,7 +104,7 @@ describe('version', () => {
   it('should create correct json object', () => {
     const version = new Version({ major: 0, minor: 2, patch: 6 });
     version.includeRelease = true;
-    expect(version.toJson()).toEqual({
+    expect(version.json).toEqual({
       display: '0.2.6-release',
       major: 0,
       minor: 2,

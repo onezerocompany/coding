@@ -4,7 +4,7 @@ import { get } from 'https';
 import { execSync } from 'child_process';
 import { addPath } from '@actions/core';
 
-function currentPlatform() {
+function currentPlatform(): string {
   switch (platform()) {
     case 'darwin':
       return 'macos';
@@ -36,18 +36,24 @@ function urlForVersion(input: {
   };
 }
 
-async function downloadFile(input: { url: string; file: string }) {
+async function downloadFile(input: {
+  url: string;
+  file: string;
+}): Promise<void> {
   return new Promise((resolve, reject) => {
     const stream = createWriteStream(input.file);
     stream.on('finish', resolve);
     stream.on('error', reject);
-    get(input.url, (response) => {
-      response.pipe(stream);
+    get(input.url, (fileResponse) => {
+      fileResponse.pipe(stream);
     }).on('error', reject);
   });
 }
 
-export async function setup(input: { version: string; channel: string }) {
+export async function setup(input: {
+  version: string;
+  channel: string;
+}): Promise<void> {
   // download the sdk
   const download = urlForVersion({ ...input, platform: currentPlatform() });
   process.stdout.write(`Downloading ${download.url}...`);

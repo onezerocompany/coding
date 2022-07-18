@@ -1,7 +1,8 @@
+import { Platform } from './Platform';
 import { Track } from './Track';
 import { TrackSettings } from './TrackSettings';
 
-describe('Track settings', () => {
+describe('track settings', () => {
   it('should work without providing anything', () => {
     const settings = new TrackSettings();
     expect(settings.enabled).toBe(true);
@@ -63,8 +64,8 @@ describe('Track settings', () => {
         },
         release: {
           manual: false,
-          waitForTracks: ['alpha', 'beta'],
-          platforms: ['linux', 'macos', 'windows', 'fake'],
+          waitForTracks: [Track.alpha, Track.beta],
+          platforms: [Platform.linux, Platform.macos, Platform.windows],
           allowedUsers: ['lucasilverentand'],
         },
       },

@@ -1,8 +1,7 @@
 import { ItemType } from './ItemType';
 import { ItemStatus } from './ItemStatus';
-import type { ItemLabels } from './Item';
 
-export const labels: { [key in ItemType]: ItemLabels } = {
+export const labels: { [t in ItemType]: { [s in ItemStatus]: string } } = {
   [ItemType.release]: {
     [ItemStatus.succeeded]: 'Release was cleared successfully',
     [ItemStatus.failed]: 'Release was declined',

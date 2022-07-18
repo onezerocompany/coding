@@ -1,4 +1,4 @@
-// Status of an item in a release
+// status of an item in a release
 export enum ItemStatus {
   // the item is successfully completed
   succeeded = 'succeeded',

@@ -134,7 +134,7 @@ module.exports = {
 
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/require-await.md
     'require-await': ['off'],
-    '@typescript-eslint/require-await': rules['require-await'],
+    '@typescript-eslint/require-await': 'off',
 
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/return-await.md
     'no-return-await': ['off'],

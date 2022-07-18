@@ -5,8 +5,6 @@ import { ItemType } from './ItemType';
 import { labels } from './labels';
 import { updateRelease } from './update/updateRelease';
 
-export type ItemLabels = { [key in ItemStatus]: string };
-
 export interface ItemJSON {
   type: ItemType;
   status: ItemStatus;
@@ -20,6 +18,12 @@ export interface ItemMetadata {
 export class Item {
   public readonly type: ItemType;
   public metadata: ItemMetadata;
+  private localStatus = ItemStatus.unknown;
+
+  public constructor(inputs: { type: ItemType; metadata: ItemMetadata }) {
+    this.type = inputs.type;
+    this.metadata = inputs.metadata;
+  }
 
   public get json(): ItemJSON {
     return {
@@ -29,33 +33,26 @@ export class Item {
     };
   }
 
-  public get labels(): ItemLabels {
+  public get labels(): { [key in ItemStatus]: string } {
     return labels[this.type];
   }
 
   public get statusLine(): string {
-    return `- ${icons[this.status]} ${this.labels[this.status]}`;
+    return `- :${icons[this.status].code}: ${this.labels[this.status]}`;
   }
 
-  // status
-  private _status = ItemStatus.unknown;
   public get status(): ItemStatus {
-    return this._status;
+    return this.localStatus;
   }
 
-  async update(): Promise<ItemStatus> {
+  public async update(): Promise<ItemStatus> {
     switch (this.type) {
       case ItemType.release:
-        this._status = await updateRelease();
+        this.localStatus = await updateRelease();
         break;
       default:
         throw new Error(`Unknown item type: ${this.type}`);
     }
     return this.status;
-  }
-
-  constructor(inputs: { type: ItemType; metadata: ItemMetadata }) {
-    this.type = inputs.type;
-    this.metadata = inputs.metadata;
   }
 }

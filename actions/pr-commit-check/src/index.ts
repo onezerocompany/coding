@@ -1,82 +1,65 @@
-import * as core from '@actions/core';
-import * as github from '@actions/github';
-import { validateMessage, ValidationError } from '@onezerocompany/commit';
+import {
+  error as logError,
+  getInput,
+  info as logInfo,
+  setOutput,
+} from '@actions/core';
+import { context } from '@actions/github';
+import type { ValidationError } from '@onezerocompany/commit';
+import { validateMessage } from '@onezerocompany/commit';
+import { fetchPullRequest } from './fetchPullRequest';
 
-const githubToken = core.getInput('token');
 const prNumber = parseInt(
-  core.getInput('pull_request', {
+  getInput('pull_request', {
     trimWhitespace: true,
   }),
   10,
 );
 
-async function run() {
-  const octokit = github.getOctokit(githubToken);
+const { repo, owner } = context.repo;
 
-  const repo = github.context.repo.repo;
-  const owner = github.context.repo.owner;
+function printContext(): void {
+  logInfo(`repository: ${repo}`);
+  logInfo(`owner: ${owner}`);
+  logInfo(`pr: ${prNumber}`);
+}
 
-  console.log(`Repo: ${repo}`);
-  console.log(`Owner: ${owner}`);
-  console.log(`PR: ${prNumber}`);
+async function run(): Promise<void> {
+  printContext();
+  const { repository } = await fetchPullRequest(owner, repo, prNumber);
 
-  const { repository } = await octokit.graphql(
-    `
-    query issues($owner: String!, $repo: String!, $prNumber: Int!) {
-      repository(owner: $owner, name: $repo) {
-        pullRequest(number: $prNumber) {
-          merged,
-          commits(first:250) {
-            nodes {
-              commit {
-                message
-              }
-            }
-          }
-        }
-      }
-    }
-  `,
-    {
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      prNumber,
-    },
-  );
-
-  if (repository.pullRequest.merged) {
-    console.log('Pull request is already merged, skipping commit check');
+  if (repository?.pullRequest.merged === true) {
+    logInfo('Pull request is already merged, skipping commit check');
     process.exit(0);
   }
 
   const errors: ValidationError[] = [];
-  const commits = repository.pullRequest.commits.nodes.map(
-    (node: { commit: { message: string } }) => ({
-      message: node.commit.message,
-    }),
-  ) as { message: string }[];
+  const commits =
+    repository?.pullRequest.commits.nodes.map(
+      (node: { commit: { message: string } }) => ({
+        message: node.commit.message,
+      }),
+    ) ?? [];
 
-  core.setOutput('commits', JSON.stringify(commits));
+  setOutput('commits', JSON.stringify(commits));
 
   const valid = commits.every((commit) => {
     const validation = validateMessage({ message: commit.message });
     errors.push(...validation.errors);
-    if (validation.errors) {
-      for (const error of validation.errors) {
-        console.error(error.displayString);
+    if (validation.errors.length > 0) {
+      for (const validationError of validation.errors) {
+        logError(validationError.displayString);
       }
     }
     return validation.valid;
   });
 
-  core.setOutput('valid', valid);
-  core.setOutput('errors', JSON.stringify(errors));
+  setOutput('valid', valid);
+  setOutput('errors', JSON.stringify(errors));
 
-  if (valid) {
-    process.exit(0);
-  } else {
-    process.exit(1);
-  }
+  if (valid) process.exit(0);
+  else process.exit(1);
 }
 
-run();
+// eslint-disable-next-line no-void
+void run();

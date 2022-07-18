@@ -13,7 +13,4 @@ describe('title case', () => {
   it('should work with multiple words with punctuation', () => {
     expect(toTitleCase('foo bar.')).toBe('Foo Bar.');
   });
-  it('should work with multiple words with punctuation', () => {
-    expect(toTitleCase('foo bar, baz')).toBe('Foo Bar, Baz');
-  });
 });

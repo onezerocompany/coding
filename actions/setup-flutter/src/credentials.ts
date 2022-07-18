@@ -2,7 +2,7 @@ import { resolve } from 'path';
 import { homedir } from 'os';
 import { mkdirSync, writeFileSync, symlinkSync } from 'fs';
 
-export function applyCredentials(credentials: string) {
+export function applyCredentials(credentials: string): void {
   if (credentials.length > 0) {
     process.stdout.write('Applying credentials...');
 

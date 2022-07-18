@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 
 describe('commit-check', () => {
   it('dist should be up-to-date', async () => {
+    expect.assertions(1);
     // generate reference
     execSync('npx ncc build src/index.ts -o dist-reference', {
       cwd: resolve(__dirname, '..'),
@@ -13,11 +14,13 @@ describe('commit-check', () => {
       resolve(__dirname, '..', 'dist-reference', 'index.js'),
       'utf8',
     );
+
     // load the dist
     const dist = readFileSync(
       resolve(__dirname, '..', 'dist', 'index.js'),
       'utf8',
     );
+
     // compare
     expect(dist).toEqual(reference);
   });

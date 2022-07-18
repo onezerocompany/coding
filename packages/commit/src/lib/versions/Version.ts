@@ -60,6 +60,19 @@ export class Version {
     return display;
   }
 
+  public get json(): VersionJSON {
+    return {
+      major: this.major,
+      minor: this.minor,
+      patch: this.patch,
+      track: this.track,
+      template: this.template,
+      includeTrack: this.includeTrack,
+      includeRelease: this.includeRelease,
+      display: this.displayString,
+    };
+  }
+
   public static sort = (lhs: Version, rhs: Version): number => {
     if (lhs.major > rhs.major) {
       return 1;
@@ -98,19 +111,6 @@ export class Version {
       includeTrack: json.includeTrack,
       includeRelease: json.includeRelease,
     });
-  }
-
-  public toJson(): VersionJSON {
-    return {
-      major: this.major,
-      minor: this.minor,
-      patch: this.patch,
-      track: this.track,
-      template: this.template,
-      includeTrack: this.includeTrack,
-      includeRelease: this.includeRelease,
-      display: this.displayString,
-    };
   }
 
   public bump(bump: VersionBump): Version {

@@ -1,14 +1,14 @@
-import { Version } from '@onezerocompany/commit';
 import type { VersionJSON } from '@onezerocompany/commit/dist/lib/versions/Version';
-import { context } from '../context/Context';
+import { Version } from '@onezerocompany/commit/dist/lib/versions/Version';
+import type { Globals } from '../../globals';
 import type { Item } from '../items/Item';
 import type { Comment } from './Comment';
-import { sectionsForSettings } from './sections';
+import { getSections } from './getSections';
 
 export interface IssueJSON {
-  number: number;
+  number: number | undefined;
   title: string;
-  body: string;
+  content: string;
   version: VersionJSON;
 }
 
@@ -18,21 +18,32 @@ export interface ItemSection {
 }
 
 export class Issue {
-  number?: number;
-  version: Version;
-  comments: Comment[];
-  sections: ItemSection[];
+  public number?: number;
+  public version: Version;
+  public comments: Comment[];
+  public sections: ItemSection[];
 
-  get title() {
+  public constructor(inputs?: {
+    comments: Comment[];
+    version: Version;
+    globals: Globals;
+  }) {
+    this.version = inputs?.version ?? new Version();
+    this.comments = inputs?.comments ?? [];
+    if (inputs?.globals) {
+      this.sections = getSections(inputs.globals);
+    } else {
+      this.sections = [];
+    }
+  }
+
+  public get title(): string {
     return `🚀 ${this.version.displayString} [Release Tracker]`;
   }
-  get body() {
-    let lines: string[][] = [];
-    lines.push([
-      '<!-- JSON BEGIN',
-      JSON.stringify(this.toJson()),
-      'JSON END -->',
-    ]);
+
+  public get content(): string {
+    const lines: string[][] = [];
+    lines.push(['<!-- JSON BEGIN', JSON.stringify(this.json), 'JSON END -->']);
     lines.push([
       '### Details',
       `\`version: ${this.version.displayString}\``,
@@ -41,6 +52,7 @@ export class Issue {
 
     for (const section of this.sections) {
       lines.push([
+        '\n',
         `### ${section.title}`,
         ...section.items.map((item) => item.statusLine),
         '---',
@@ -53,22 +65,20 @@ export class Issue {
       .trim();
   }
 
-  public toJson() {
-    return JSON.stringify({
-      version: this.version.toJson(),
-    });
+  public get json(): IssueJSON {
+    return {
+      number: this.number,
+      title: this.title,
+      content: this.content,
+      version: this.version.json,
+    };
   }
 
-  public static fromJson(json: IssueJSON) {
+  public static fromJson(globals: Globals, json: IssueJSON): Issue {
     return new Issue({
       comments: [],
       version: Version.fromJson(json.version),
+      globals,
     });
-  }
-
-  constructor(inputs?: { comments: Comment[]; version: Version }) {
-    this.version = inputs?.version ?? new Version();
-    this.comments = inputs?.comments ?? [];
-    this.sections = sectionsForSettings(context.settings);
   }
 }

@@ -1,9 +1,11 @@
-import { setFailed } from '@actions/core';
-3;
-import { context, graphql } from '../context/Context';
-import type { Issue } from './Issue';
+import type { Globals } from '../../globals';
 
-export async function createIssue(issue: Issue): Promise<{ created: boolean }> {
+// eslint-disable-next-line max-lines-per-function
+export async function createIssue(
+  globals: Globals,
+): Promise<{ created: boolean }> {
+  const { graphql, context } = globals;
+  const { issue } = context;
   try {
     await graphql(
       `
@@ -11,14 +13,14 @@ export async function createIssue(issue: Issue): Promise<{ created: boolean }> {
           $repositoryId: ID!
           $labelId: ID!
           $title: String!
-          $body: String!
+          $content: String!
         ) {
           createIssue(
             input: {
               repositoryId: $repositoryId
               labelIds: [$labelId]
               title: $title
-              body: $body
+              body: $content
             }
           ) {
             issue {
@@ -29,15 +31,14 @@ export async function createIssue(issue: Issue): Promise<{ created: boolean }> {
         }
       `,
       {
-        repositoryId: context.repositoryId,
-        labelId: context.releaseTrackerLabelId,
+        repositoryId: context.repo.id,
+        labelId: context.repo.trackerLabelId,
         title: issue.title,
-        body: issue.body,
+        content: issue.content,
       },
     );
     return { created: true };
-  } catch (error: any) {
-    setFailed(error);
+  } catch {
     return { created: false };
   }
 }

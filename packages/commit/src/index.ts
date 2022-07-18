@@ -20,4 +20,4 @@ export { validateMessage } from './lib/message/validateMessage';
 
 export { VersionBump } from './lib/versions/VersionBump';
 export { VersionTrack } from './lib/versions/VersionTrack';
-export { Version } from './lib/versions/Version';
+export { Version, VersionJSON } from './lib/versions/Version';

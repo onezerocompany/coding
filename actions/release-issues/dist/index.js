@@ -8306,7 +8306,7 @@ function wrappy (fn, cb) {
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-exports.Gf = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
+__webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
@@ -8339,7 +8339,7 @@ __webpack_unused_export__ = ({ enumerable: true, get: function () { return Versi
 var VersionTrack_1 = __nccwpck_require__(5352);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } });
 var Version_1 = __nccwpck_require__(8691);
-Object.defineProperty(exports, "Gf", ({ enumerable: true, get: function () { return Version_1.Version; } }));
+__webpack_unused_export__ = ({ enumerable: true, get: function () { return Version_1.Version; } });
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -9625,6 +9625,18 @@ class Version {
         display = display.replace(/^[^a-zA-Z0-9]*/gu, '');
         return display;
     }
+    get json() {
+        return {
+            major: this.major,
+            minor: this.minor,
+            patch: this.patch,
+            track: this.track,
+            template: this.template,
+            includeTrack: this.includeTrack,
+            includeRelease: this.includeRelease,
+            display: this.displayString,
+        };
+    }
     static fromJson(json) {
         return new Version({
             major: json.major,
@@ -9646,18 +9658,6 @@ class Version {
             includeTrack: json.includeTrack,
             includeRelease: json.includeRelease,
         });
-    }
-    toJson() {
-        return {
-            major: this.major,
-            minor: this.minor,
-            patch: this.patch,
-            track: this.track,
-            template: this.template,
-            includeTrack: this.includeTrack,
-            includeRelease: this.includeRelease,
-            display: this.displayString,
-        };
     }
     bump(bump) {
         switch (bump) {
@@ -18227,19 +18227,75 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(7117);
-// EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(4005);
-// EXTERNAL MODULE: ../../packages/commit/dist/index.js
-var dist = __nccwpck_require__(4670);
+;// CONCATENATED MODULE: ./src/lib/context/Action.ts
+var Action;
+(function (Action) {
+    Action["create"] = "create";
+    Action["update"] = "update";
+    Action["stop"] = "stop";
+})(Action || (Action = {}));
+
+;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
+// eslint-disable-next-line max-lines-per-function
+async function createIssue(globals) {
+    const { graphql, context } = globals;
+    const { issue } = context;
+    try {
+        await graphql(`
+        mutation createIssue(
+          $repositoryId: ID!
+          $labelId: ID!
+          $title: String!
+          $content: String!
+        ) {
+          createIssue(
+            input: {
+              repositoryId: $repositoryId
+              labelIds: [$labelId]
+              title: $title
+              body: $content
+            }
+          ) {
+            issue {
+              number
+              url
+            }
+          }
+        }
+      `, {
+            repositoryId: context.repo.id,
+            labelId: context.repo.trackerLabelId,
+            title: issue.title,
+            content: issue.content,
+        });
+        return { created: true };
+    }
+    catch {
+        return { created: false };
+    }
+}
+
+;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
+function getContentBetweenTags(before, after) {
+    return (content) => {
+        const beforeIndex = content.indexOf(before);
+        const afterIndex = content.indexOf(after);
+        if (beforeIndex === -1 || afterIndex === -1) {
+            return '';
+        }
+        return content.substring(beforeIndex + before.length, afterIndex);
+    };
+}
+
+// EXTERNAL MODULE: ../../packages/commit/dist/lib/versions/Version.js
+var Version = __nccwpck_require__(8691);
 ;// CONCATENATED MODULE: ./src/utils/titlecase.ts
 function toTitleCase(str) {
-    return str.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
+    return str.replace(/\w\S*/gu, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/ItemStatus.ts
-// Status of an item in a release
+// status of an item in a release
 var ItemStatus;
 (function (ItemStatus) {
     // the item is successfully completed
@@ -18308,7 +18364,9 @@ const labels = {
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateRelease.ts
 
 async function updateRelease() {
-    return ItemStatus.unknown;
+    return new Promise((resolve) => {
+        resolve(ItemStatus.unknown);
+    });
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/Item.ts
@@ -18320,6 +18378,11 @@ async function updateRelease() {
 class Item {
     type;
     metadata;
+    localStatus = ItemStatus.unknown;
+    constructor(inputs) {
+        this.type = inputs.type;
+        this.metadata = inputs.metadata;
+    }
     get json() {
         return {
             type: this.type,
@@ -18331,26 +18394,20 @@ class Item {
         return labels[this.type];
     }
     get statusLine() {
-        return `- ${icons[this.status]} ${this.labels[this.status]}`;
+        return `- :${icons[this.status].code}: ${this.labels[this.status]}`;
     }
-    // status
-    _status = ItemStatus.unknown;
     get status() {
-        return this._status;
+        return this.localStatus;
     }
     async update() {
         switch (this.type) {
             case ItemType.release:
-                this._status = await updateRelease();
+                this.localStatus = await updateRelease();
                 break;
             default:
                 throw new Error(`Unknown item type: ${this.type}`);
         }
         return this.status;
-    }
-    constructor(inputs) {
-        this.type = inputs.type;
-        this.metadata = inputs.metadata;
     }
 }
 
@@ -18385,13 +18442,56 @@ class TrackSettings {
     version;
     requirements;
     release;
+    constructor(inputs) {
+        const track = inputs?.track ?? Track.release;
+        this.enabled = inputs?.json?.enabled ?? TrackSettings.defaultEnabled(track);
+        this.version = {
+            template: inputs?.json?.version.template ??
+                TrackSettings.defaultVersionTemplate(track),
+        };
+        this.requirements = {
+            tests: inputs?.json?.requirements.tests ?? [],
+        };
+        this.release = {
+            manual: inputs?.json?.release.manual ?? true,
+            // convert array of strings to array of tracks
+            waitForTracks: (inputs?.json?.release.waitForTracks.filter((waitTrack) => Object.keys(Track).includes(waitTrack)) ?? []),
+            // convert array of strings to array of platforms
+            platforms: (inputs?.json?.release.platforms.filter((platform) => Object.keys(Platform).includes(platform)) ?? []),
+            allowedUsers: inputs?.json?.release.allowedUsers ?? [],
+        };
+        // filter out non existent tracks
+        this.release.waitForTracks = this.release.waitForTracks.filter((waitTrack) => Object.keys(Track).includes(waitTrack));
+        // filter out non existent platforms
+        this.release.platforms = this.release.platforms.filter((platform) => Object.keys(Platform).includes(platform));
+    }
+    get json() {
+        return {
+            enabled: this.enabled,
+            version: {
+                template: this.version.template,
+            },
+            requirements: {
+                tests: this.requirements.tests,
+            },
+            release: {
+                manual: this.release.manual,
+                waitForTracks: this.release.waitForTracks,
+                platforms: this.release.platforms,
+                allowedUsers: this.release.allowedUsers,
+            },
+        };
+    }
+    static fromJson(json) {
+        return new TrackSettings({ json });
+    }
     static defaultEnabled(track) {
         switch (track) {
             case Track.alpha:
                 return false;
             case Track.beta:
                 return false;
-            case Track.release:
+            default:
                 return true;
         }
     }
@@ -18401,56 +18501,34 @@ class TrackSettings {
                 return '{{version}}-alpha';
             case Track.beta:
                 return '{{version}}-beta';
-            case Track.release:
+            default:
                 return '{{version}}';
         }
     }
-    constructor(inputs) {
-        const track = inputs?.track ?? Track.release;
-        this.enabled = inputs?.json?.enabled ?? TrackSettings.defaultEnabled(track);
-        this.version = {
-            template: inputs?.json?.version?.template ??
-                TrackSettings.defaultVersionTemplate(track),
-        };
-        this.requirements = {
-            tests: inputs?.json?.requirements?.tests ?? [],
-        };
-        this.release = {
-            manual: inputs?.json?.release?.manual ?? true,
-            waitForTracks: inputs?.json?.release?.waitForTracks ?? [],
-            platforms: inputs?.json?.release?.platforms ?? [],
-            allowedUsers: inputs?.json?.release?.allowedUsers ?? [],
-        };
-        // filter out non existent tracks
-        this.release.waitForTracks = this.release.waitForTracks.filter((track) => Track[track] !== undefined);
-        // filter out non existent platforms
-        this.release.platforms = this.release.platforms.filter((platform) => Platform[platform] !== undefined);
-    }
 }
 
-;// CONCATENATED MODULE: ./src/lib/issue/sections.ts
+;// CONCATENATED MODULE: ./src/lib/issue/getSections.ts
 
 
 
 
 
-function sectionsForSettings(settings) {
-    let sections = [];
+function getSections(globals) {
+    const { settings } = globals;
+    const sections = [];
     for (const track of Object.values(Track)) {
-        let items = [];
+        const items = [];
         const trackSettings = new TrackSettings({
             track,
-            json: settings,
+            json: settings[track],
         });
         if (trackSettings.enabled) {
-            if (trackSettings.release) {
-                items.push(new Item({
-                    type: ItemType.release,
-                    metadata: {
-                        track: track,
-                    },
-                }));
-            }
+            items.push(new Item({
+                type: ItemType.release,
+                metadata: {
+                    track,
+                },
+            }));
         }
         sections.push({
             title: toTitleCase(track),
@@ -18463,22 +18541,27 @@ function sectionsForSettings(settings) {
 ;// CONCATENATED MODULE: ./src/lib/issue/Issue.ts
 
 
-
 class Issue {
     number;
     version;
     comments;
     sections;
+    constructor(inputs) {
+        this.version = inputs?.version ?? new Version.Version();
+        this.comments = inputs?.comments ?? [];
+        if (inputs?.globals) {
+            this.sections = getSections(inputs.globals);
+        }
+        else {
+            this.sections = [];
+        }
+    }
     get title() {
         return `🚀 ${this.version.displayString} [Release Tracker]`;
     }
-    get body() {
-        let lines = [];
-        lines.push([
-            '<!-- JSON BEGIN',
-            JSON.stringify(this.toJson()),
-            'JSON END -->',
-        ]);
+    get content() {
+        const lines = [];
+        lines.push(['<!-- JSON BEGIN', JSON.stringify(this.json), 'JSON END -->']);
         lines.push([
             '### Details',
             `\`version: ${this.version.displayString}\``,
@@ -18486,6 +18569,7 @@ class Issue {
         ]);
         for (const section of this.sections) {
             lines.push([
+                '\n',
                 `### ${section.title}`,
                 ...section.items.map((item) => item.statusLine),
                 '---',
@@ -18496,46 +18580,170 @@ class Issue {
             .join('\n\n')
             .trim();
     }
-    toJson() {
-        return JSON.stringify({
-            version: this.version.toJson(),
-        });
+    get json() {
+        return {
+            number: this.number,
+            title: this.title,
+            content: this.content,
+            version: this.version.json,
+        };
     }
-    static fromJson(json) {
+    static fromJson(globals, json) {
         return new Issue({
             comments: [],
-            version: dist/* Version.fromJson */.Gf.fromJson(json.version),
+            version: Version.Version.fromJson(json.version),
+            globals,
         });
-    }
-    constructor(inputs) {
-        this.version = inputs?.version ?? new dist/* Version */.Gf();
-        this.comments = inputs?.comments ?? [];
-        this.sections = sectionsForSettings(context.settings);
     }
 }
 
-;// CONCATENATED MODULE: ./src/lib/settings/Settings.ts
+;// CONCATENATED MODULE: ./src/lib/issue/issueExists.ts
 
 
-class Settings {
-    alpha;
-    beta;
-    release;
-    constructor(json) {
-        const settings = json ? json : {};
-        this.alpha = new TrackSettings({
-            track: Track.alpha,
-            json: settings.alpha,
-        });
-        this.beta = new TrackSettings({
-            track: Track.beta,
-            json: settings.beta,
-        });
-        this.release = new TrackSettings({
-            track: Track.release,
-            json: settings.release,
-        });
+
+const query = `
+  query issues($owner: String!, $repo: String!) {
+    repository(owner: $owner, name: $repo) {
+      issues(last: 10, labels: ["release-tracker"], states: [OPEN]) {
+        nodes {
+          number
+          body
+          title
+        }
+      }
     }
+  }
+`;
+function issueMatch(globals, issue, issueNode) {
+    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
+    const json = JSON.parse(jsonContent);
+    const jsonIssue = Issue.fromJson(globals, json);
+    if (issue.version.major === jsonIssue.version.major &&
+        issue.version.minor === jsonIssue.version.minor &&
+        issue.version.patch === jsonIssue.version.patch) {
+        return true;
+    }
+    return jsonIssue.title === issue.title;
+}
+async function issueExists(globals) {
+    const { graphql, context } = globals;
+    const { issue } = context;
+    // check if issue exists using the graphql api
+    const { repository } = await graphql(query, {
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+    });
+    if (!repository?.issues || repository.issues.nodes.length === 0) {
+        (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
+        return false;
+    }
+    return repository.issues.nodes.some((issueNode) => issueMatch(globals, issue, issueNode));
+}
+
+// EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(4005);
+;// CONCATENATED MODULE: ./src/lib/context/currentAction.ts
+
+
+
+function currentAction() {
+    const { eventName } = github.context;
+    if (eventName === 'push') {
+        const pushEvent = github.context.payload;
+        if (pushEvent.ref !== 'refs/heads/main') {
+            (0,core.setFailed)('Only pushes to the main branch are supported');
+            return Action.stop;
+        }
+        return Action.create;
+    }
+    (0,core.setFailed)(new Error('Unsupported event'));
+    return Action.stop;
+}
+
+// EXTERNAL MODULE: ../../packages/commit/dist/index.js
+var dist = __nccwpck_require__(4670);
+;// CONCATENATED MODULE: ./src/lib/context/loadCommits.ts
+
+
+
+function loadCommits() {
+    const { eventName } = github.context;
+    if (eventName === 'push') {
+        const pushEvent = github.context.payload;
+        if (pushEvent.ref !== 'refs/heads/main') {
+            (0,core.setFailed)('Only pushes to the main branch are supported');
+            return [];
+        }
+        return pushEvent.commits.map((commit) => ({
+            sha: commit.id,
+            message: (0,dist/* parseMessage */.kW)(commit.message),
+        }));
+    }
+    (0,core.setFailed)('Unsupported event');
+    return [];
+}
+
+;// CONCATENATED MODULE: ./src/lib/context/Context.ts
+
+
+
+
+
+class Context {
+    repo;
+    // specific to this run of the action
+    action;
+    commits;
+    issue;
+    constructor(input) {
+        this.repo = input.repo;
+        this.action = currentAction();
+        switch (this.action) {
+            case Action.create:
+                this.commits = loadCommits();
+                this.issue = new Issue();
+                break;
+            default:
+                (0,core.setFailed)('Unsupported action');
+                this.issue = new Issue();
+        }
+    }
+}
+
+;// CONCATENATED MODULE: ./src/lib/context/loadContext.ts
+
+
+const loadContext_query = `
+  query loadLabel($owner: String!, $repo: String!, $label: String!) {
+    repository(owner: $owner, name: $repo) {
+      id
+      labels(
+        first: 1
+        query: $label
+      ) {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+`;
+async function loadContext(graphql) {
+    const { repository } = await graphql(loadContext_query, {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        label: 'release-tracker',
+    });
+    const repositoryId = repository?.id ?? '';
+    const releaseTrackerLabelId = repository?.labels.nodes[0]?.id ?? '';
+    return new Context({
+        repo: {
+            id: repositoryId,
+            trackerLabelId: releaseTrackerLabelId,
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+        },
+    });
 }
 
 // EXTERNAL MODULE: external "path"
@@ -18544,7 +18752,37 @@ var external_path_ = __nccwpck_require__(1017);
 var external_fs_ = __nccwpck_require__(7147);
 // EXTERNAL MODULE: ../../node_modules/yaml/dist/index.js
 var yaml_dist = __nccwpck_require__(8447);
-;// CONCATENATED MODULE: ./src/lib/context/loadSettings.ts
+;// CONCATENATED MODULE: ./src/lib/settings/Settings.ts
+
+
+class Settings {
+    alpha;
+    beta;
+    release;
+    constructor(json) {
+        this.alpha = new TrackSettings({
+            track: Track.alpha,
+            json: json.alpha,
+        });
+        this.beta = new TrackSettings({
+            track: Track.beta,
+            json: json.beta,
+        });
+        this.release = new TrackSettings({
+            track: Track.release,
+            json: json.release,
+        });
+    }
+    get json() {
+        return {
+            alpha: this.alpha.json,
+            beta: this.beta.json,
+            release: this.release.json,
+        };
+    }
+}
+
+;// CONCATENATED MODULE: ./src/lib/settings/loadSettings.ts
 
 
 
@@ -18562,191 +18800,17 @@ function loadSettings() {
     return new Settings(settings);
 }
 
-;// CONCATENATED MODULE: ./src/lib/context/Context.ts
-// External Imports
-
-
-// OneZero Imports
-
-// Internal Imports
-
-
-var Action;
-(function (Action) {
-    Action["create"] = "create";
-    Action["update"] = "update";
-    Action["stop"] = "stop";
-})(Action || (Action = {}));
-class Context {
-    // general context
-    token = (0,core.getInput)('token');
-    octokit;
-    repo = {
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-    };
-    repositoryId;
-    releaseTrackerLabelId;
-    // settings set in the repo
-    settings;
-    // specific to this run of the action
-    action;
-    commits = [];
-    issue = new Issue();
-    async load() {
-        const octokit = (0,github.getOctokit)(this.token);
-        // load the release tracker label id from the graphql api
-        const { repository, } = await octokit.graphql(`
-        query loadLabel($owner: String!, $repo: String!, $name: String!) {
-          repository(owner: $owner, name: $repo) {
-            id
-            labels(
-              first: 1
-              query: $name
-            ) {
-              nodes {
-                id
-              }
-            }
-          }
-        }
-      `, {
-            owner: this.repo.owner,
-            repo: this.repo.repo,
-            name: 'release-tracker',
-        });
-        this.repositoryId = repository?.id ?? '';
-        this.releaseTrackerLabelId = repository?.labels.nodes[0]?.id ?? '';
-    }
-    constructor() {
-        this.octokit = (0,github.getOctokit)(this.token);
-        this.settings = loadSettings();
-        switch (github.context.eventName) {
-            // push to main branch
-            case 'push':
-                const pushEvent = github.context.payload;
-                // make sure the push is to the main branch
-                if (pushEvent.ref !== 'refs/heads/main') {
-                    (0,core.setFailed)('Only pushes to the main branch are supported');
-                    this.action = Action.stop;
-                    break;
-                }
-                this.action = Action.create;
-                // convert the commits to a list of Commit objects
-                this.commits = pushEvent.commits.map((commit) => ({
-                    sha: commit.id,
-                    message: (0,dist/* parseMessage */.kW)(commit.message),
-                }));
-                this.issue = new Issue({
-                    comments: [],
-                    version: new dist/* Version */.Gf(),
-                });
-                break;
-            default:
-                (0,core.setFailed)('Unsupported event');
-                this.action = Action.stop;
-        }
-    }
-}
-const context = new Context();
-const graphql = context.octokit.graphql;
-
-;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
-
-3;
-
-async function createIssue(issue) {
-    try {
-        await graphql(`
-        mutation createIssue(
-          $repositoryId: ID!
-          $labelId: ID!
-          $title: String!
-          $body: String!
-        ) {
-          createIssue(
-            input: {
-              repositoryId: $repositoryId
-              labelIds: [$labelId]
-              title: $title
-              body: $body
-            }
-          ) {
-            issue {
-              number
-              url
-            }
-          }
-        }
-      `, {
-            repositoryId: context.repositoryId,
-            labelId: context.releaseTrackerLabelId,
-            title: issue.title,
-            body: issue.body,
-        });
-        return { created: true };
-    }
-    catch (error) {
-        (0,core.setFailed)(error);
-        return { created: false };
-    }
-}
-
-;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
-function getContentBetweenTags(before, after) {
-    return (content) => {
-        const beforeIndex = content.indexOf(before);
-        const afterIndex = content.indexOf(after);
-        if (beforeIndex === -1 || afterIndex === -1) {
-            return '';
-        }
-        return content.substring(beforeIndex + before.length, afterIndex);
-    };
-}
-
-;// CONCATENATED MODULE: ./src/lib/issue/issueExists.ts
+;// CONCATENATED MODULE: ./src/globals.ts
 
 
 
 
-
-async function issueExists(issue) {
-    // check if issue exists using the graphql api
-    const { repository, } = await graphql(`
-      query issues($owner: String!, $repo: String!) {
-        repository(owner: $owner, name: $repo) {
-          issues(last: 10, labels: ["release-tracker"], states: [OPEN]) {
-            nodes {
-              number
-              body
-              title
-            }
-          }
-        }
-      }
-    `, {
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-    });
-    if (!repository?.issues) {
-        (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
-        return false;
-    }
-    if (repository?.issues.nodes.length === 0) {
-        return false;
-    }
-    const titleMatch = issue.title;
-    return (repository?.issues?.nodes.some((issueNode) => {
-        const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
-        const json = JSON.parse(jsonContent);
-        const issue = Issue.fromJson(json);
-        if (issue.version.major === issue.version.major &&
-            issue.version.minor === issue.version.minor &&
-            issue.version.patch === issue.version.patch) {
-            return true;
-        }
-        return issue.title && issue.title === titleMatch;
-    }) ?? false);
+async function getGlobals() {
+    const octokit = (0,github.getOctokit)((0,core.getInput)('token'));
+    const { graphql } = octokit;
+    const context = await loadContext(graphql);
+    const settings = loadSettings();
+    return { context, settings, octokit, graphql };
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts
@@ -18754,25 +18818,28 @@ async function issueExists(issue) {
 
 
 
-(0,core.debug)(`Context: ${JSON.stringify(context, null, 2)}`);
+
 async function run() {
-    await context.load();
-    if (context.action === Action.create) {
-        if (!(await issueExists(context.issue))) {
-            const { created } = await createIssue(context.issue);
-            if (created) {
-                (0,core.info)(`Created issue ${context.issue.title}`);
+    const globals = await getGlobals();
+    const { context } = globals;
+    switch (context.action) {
+        case Action.create:
+            if (!(await issueExists(globals))) {
+                const { created } = await createIssue(globals);
+                if (created) {
+                    (0,core.info)(`Created issue ${globals.context.issue.title}`);
+                }
+                else {
+                    (0,core.setFailed)('Failed to create issue');
+                }
             }
-            else {
-                (0,core.setFailed)('Failed to create issue');
-            }
-        }
-    }
-    if (context.action === Action.update) {
-        // update based on changes to issue
+            break;
+        default:
+            (0,core.setFailed)('Unsupported action');
     }
 }
-run();
+// eslint-disable-next-line no-void
+void run();
 
 })();
 

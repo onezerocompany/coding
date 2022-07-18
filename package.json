@@ -35,7 +35,7 @@
   "scripts": {
     "commit": "./packages/commit/dist/cli.js",
     "format": "npx prettier --write .",
-    "lint": "npx prettier --check .",
+    "lint": "npx prettier --check --ignore-path ./.prettierignore-precommit .",
     "prepare": "npx husky install && npm run build -ws",
     "sort-package-json": "npx sort-package-json \"package.json\" \"packages/*/package.json\"",
     "sync-packages": "node scripts/sync-packages.js",

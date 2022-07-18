@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build": "npx ncc build src/index.ts -o dist",
+    "format": "prettier --write . && eslint --fix .",
+    "lint": "prettier --check . && eslint .",
     "test": "npx jest"
   },
   "devDependencies": {
@@ -39,9 +41,10 @@
       "project": "./tsconfig.spec.json",
       "tsconfigRootDir": "./"
     },
-    "extends": "@onezerocompany/eslint-config/configs/typescript.js",
+    "extends": "@onezerocompany/eslint-config/typescript",
     "ignorePatterns": [
       "dist/",
+      "dist-reference/",
       "coverage/",
       "jest.config.js",
       "tsconfig.json",

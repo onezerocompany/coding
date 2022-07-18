@@ -1691,12 +1691,12 @@ var __webpack_exports__ = {};
 // ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(117);
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(17);
 ;// CONCATENATED MODULE: external "process"
 const external_process_namespaceObject = require("process");
+// EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(117);
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(37);
 // EXTERNAL MODULE: external "fs"
@@ -1756,8 +1756,8 @@ async function downloadFile(input) {
         const stream = (0,external_fs_.createWriteStream)(input.file);
         stream.on('finish', resolve);
         stream.on('error', reject);
-        (0,external_https_.get)(input.url, (response) => {
-            response.pipe(stream);
+        (0,external_https_.get)(input.url, (fileResponse) => {
+            fileResponse.pipe(stream);
         }).on('error', reject);
     });
 }
@@ -1794,18 +1794,19 @@ async function setup(input) {
 
 
 // inputs
-const workingDirectory = core.getInput('working_directory') ?? '.';
-const pubCredentials = core.getInput('pub_credentials');
+const workingDirectory = (0,core.getInput)('working_directory');
+const pubCredentials = (0,core.getInput)('pub_credentials');
 async function run() {
     const directory = (0,external_path_.resolve)((0,external_process_namespaceObject.cwd)(), workingDirectory);
-    console.log('Running in directory:', directory);
+    (0,core.debug)(`Running in directory: ${directory}`);
     applyCredentials(pubCredentials);
     await setup({
-        version: core.getInput('version'),
-        channel: core.getInput('channel'),
+        version: (0,core.getInput)('version'),
+        channel: (0,core.getInput)('channel'),
     });
 }
-run();
+// eslint-disable-next-line no-void
+void run();
 
 })();
 

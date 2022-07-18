@@ -9625,6 +9625,18 @@ class Version {
         display = display.replace(/^[^a-zA-Z0-9]*/gu, '');
         return display;
     }
+    get json() {
+        return {
+            major: this.major,
+            minor: this.minor,
+            patch: this.patch,
+            track: this.track,
+            template: this.template,
+            includeTrack: this.includeTrack,
+            includeRelease: this.includeRelease,
+            display: this.displayString,
+        };
+    }
     static fromJson(json) {
         return new Version({
             major: json.major,
@@ -9646,18 +9658,6 @@ class Version {
             includeTrack: json.includeTrack,
             includeRelease: json.includeRelease,
         });
-    }
-    toJson() {
-        return {
-            major: this.major,
-            minor: this.minor,
-            patch: this.patch,
-            track: this.track,
-            template: this.template,
-            includeTrack: this.includeTrack,
-            includeRelease: this.includeRelease,
-            display: this.displayString,
-        };
     }
     bump(bump) {
         switch (bump) {
@@ -9909,35 +9909,6 @@ module.exports = JSON.parse('{"emojis":[{"emoji":"👩‍👩‍👧‍👧","na
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -9958,75 +9929,89 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+// ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(7117);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(4005);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _onezerocompany_commit__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(4670);
+
+// EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(7117);
+// EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(4005);
+// EXTERNAL MODULE: ../../packages/commit/dist/index.js
+var dist = __nccwpck_require__(4670);
+;// CONCATENATED MODULE: ./src/fetchPullRequest.ts
 
 
-
-const githubToken = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('token');
-const prNumber = parseInt(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('pull_request', {
-    trimWhitespace: true,
-}), 10);
-async function run() {
-    const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(githubToken);
-    const repo = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo;
-    const owner = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner;
-    console.log(`Repo: ${repo}`);
-    console.log(`Owner: ${owner}`);
-    console.log(`PR: ${prNumber}`);
-    const { repository } = await octokit.graphql(`
-    query issues($owner: String!, $repo: String!, $prNumber: Int!) {
-      repository(owner: $owner, name: $repo) {
-        pullRequest(number: $prNumber) {
-          merged,
-          commits(first:250) {
-            nodes {
-              commit {
-                message
-              }
+const query = `
+  query issues($owner: String!, $repo: String!, $prNumber: Int!) {
+    repository(owner: $owner, name: $repo) {
+      pullRequest(number: $prNumber) {
+        merged,
+        commits(first:100) {
+          nodes {
+            commit {
+              message
             }
           }
         }
       }
     }
-  `, {
-        owner: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner,
-        repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
+  }
+`;
+async function fetchPullRequest(owner, repo, prNumber) {
+    const octokit = (0,github.getOctokit)((0,core.getInput)('token'));
+    const output = await octokit.graphql(query, {
+        owner,
+        repo,
         prNumber,
     });
-    if (repository.pullRequest.merged) {
-        console.log('Pull request is already merged, skipping commit check');
+    return output;
+}
+
+;// CONCATENATED MODULE: ./src/index.ts
+
+
+
+
+const prNumber = parseInt((0,core.getInput)('pull_request', {
+    trimWhitespace: true,
+}), 10);
+const { repo, owner } = github.context.repo;
+function printContext() {
+    (0,core.info)(`repository: ${repo}`);
+    (0,core.info)(`owner: ${owner}`);
+    (0,core.info)(`pr: ${prNumber}`);
+}
+async function run() {
+    printContext();
+    const { repository } = await fetchPullRequest(owner, repo, prNumber);
+    if (repository?.pullRequest.merged === true) {
+        (0,core.info)('Pull request is already merged, skipping commit check');
         process.exit(0);
     }
     const errors = [];
-    const commits = repository.pullRequest.commits.nodes.map((node) => ({
+    const commits = repository?.pullRequest.commits.nodes.map((node) => ({
         message: node.commit.message,
-    }));
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('commits', JSON.stringify(commits));
+    })) ?? [];
+    (0,core.setOutput)('commits', JSON.stringify(commits));
     const valid = commits.every((commit) => {
-        const validation = (0,_onezerocompany_commit__WEBPACK_IMPORTED_MODULE_2__/* .validateMessage */ .Nj)({ message: commit.message });
+        const validation = (0,dist/* validateMessage */.Nj)({ message: commit.message });
         errors.push(...validation.errors);
-        if (validation.errors) {
-            for (const error of validation.errors) {
-                console.error(error.displayString);
+        if (validation.errors.length > 0) {
+            for (const validationError of validation.errors) {
+                (0,core.error)(validationError.displayString);
             }
         }
         return validation.valid;
     });
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('valid', valid);
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('errors', JSON.stringify(errors));
-    if (valid) {
+    (0,core.setOutput)('valid', valid);
+    (0,core.setOutput)('errors', JSON.stringify(errors));
+    if (valid)
         process.exit(0);
-    }
-    else {
+    else
         process.exit(1);
-    }
 }
-run();
+// eslint-disable-next-line no-void
+void run();
 
 })();
 

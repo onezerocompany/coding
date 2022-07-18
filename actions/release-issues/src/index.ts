@@ -1,23 +1,28 @@
-import { debug, info, setFailed } from '@actions/core';
-import { Action, context } from './lib/context/Context';
+import { info, setFailed } from '@actions/core';
+import { Action } from './lib/context/Action';
 import { createIssue } from './lib/issue/createIssue';
 import { issueExists } from './lib/issue/issueExists';
+import { getGlobals } from './globals';
 
-debug(`Context: ${JSON.stringify(context, null, 2)}`);
-async function run() {
-  await context.load();
-  if (context.action === Action.create) {
-    if (!(await issueExists(context.issue))) {
-      const { created } = await createIssue(context.issue);
-      if (created) {
-        info(`Created issue ${context.issue.title}`);
-      } else {
-        setFailed('Failed to create issue');
+async function run(): Promise<void> {
+  const globals = await getGlobals();
+  const { context } = globals;
+
+  switch (context.action) {
+    case Action.create:
+      if (!(await issueExists(globals))) {
+        const { created } = await createIssue(globals);
+        if (created) {
+          info(`Created issue ${globals.context.issue.title}`);
+        } else {
+          setFailed('Failed to create issue');
+        }
       }
-    }
-  }
-  if (context.action === Action.update) {
-    // update based on changes to issue
+      break;
+    default:
+      setFailed('Unsupported action');
   }
 }
-run();
+
+// eslint-disable-next-line no-void
+void run();
