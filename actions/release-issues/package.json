@@ -40,7 +40,7 @@
       "node": true
     },
     "parserOptions": {
-      "project": "./tsconfig.json",
+      "project": "./tsconfig.spec.json",
       "tsconfigRootDir": "./"
     },
     "extends": "@onezerocompany/eslint-config/typescript",

@@ -18236,6 +18236,7 @@ var Action;
 })(Action || (Action = {}));
 
 ;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
+
 // eslint-disable-next-line max-lines-per-function
 async function createIssue(globals) {
     const { graphql, context } = globals;
@@ -18270,7 +18271,8 @@ async function createIssue(globals) {
         });
         return { created: true };
     }
-    catch {
+    catch (createError) {
+        (0,core.error)(createError);
         return { created: false };
     }
 }
@@ -18797,6 +18799,8 @@ function loadSettings() {
     (0,core.debug)(`Loading settings from ${filePath}`);
     const content = (0,external_fs_.readFileSync)(filePath, 'utf8');
     const settings = (0,yaml_dist/* parse */.Qc)(content);
+    const jsonIndent = 2;
+    (0,core.debug)(`Loaded settings: ${JSON.stringify(settings, null, jsonIndent)}`);
     return new Settings(settings);
 }
 

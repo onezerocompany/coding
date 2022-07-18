@@ -19,6 +19,8 @@ export function loadSettings(): Settings {
 
   const content = readFileSync(filePath, 'utf8');
   const settings = parse(content) as SettingsJSON;
+  const jsonIndent = 2;
+  debug(`Loaded settings: ${JSON.stringify(settings, null, jsonIndent)}`);
 
   return new Settings(settings);
 }
