@@ -18715,6 +18715,7 @@ class Context {
 ;// CONCATENATED MODULE: ./src/lib/context/loadContext.ts
 
 
+
 const loadContext_query = `
   query loadLabel($owner: String!, $repo: String!, $label: String!) {
     repository(owner: $owner, name: $repo) {
@@ -18738,6 +18739,10 @@ async function loadContext(graphql) {
     });
     const repositoryId = repository?.id ?? '';
     const releaseTrackerLabelId = repository?.labels.nodes[0]?.id ?? '';
+    (0,core.debug)(`repositoryId: ${repositoryId}`);
+    (0,core.debug)(`releaseTrackerLabelId: ${releaseTrackerLabelId}`);
+    (0,core.debug)(`owner: ${github.context.repo.owner}`);
+    (0,core.debug)(`repository: ${github.context.repo.repo}`);
     return new Context({
         repo: {
             id: repositoryId,

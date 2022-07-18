@@ -1,3 +1,4 @@
+import { debug } from '@actions/core';
 import type { getOctokit } from '@actions/github';
 import { context as githubContext } from '@actions/github';
 import { Context } from './Context';
@@ -41,6 +42,11 @@ export async function loadContext(
 
   const repositoryId = repository?.id ?? '';
   const releaseTrackerLabelId = repository?.labels.nodes[0]?.id ?? '';
+
+  debug(`repositoryId: ${repositoryId}`);
+  debug(`releaseTrackerLabelId: ${releaseTrackerLabelId}`);
+  debug(`owner: ${githubContext.repo.owner}`);
+  debug(`repository: ${githubContext.repo.repo}`);
 
   return new Context({
     repo: {
