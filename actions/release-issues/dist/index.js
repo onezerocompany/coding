@@ -18272,8 +18272,7 @@ async function createIssue(globals) {
         });
         return { created: true };
     }
-    catch (createError) {
-        (0,core.error)(createError);
+    catch {
         return { created: false };
     }
 }

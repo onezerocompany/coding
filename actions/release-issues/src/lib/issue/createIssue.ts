@@ -1,4 +1,4 @@
-import { debug, error as logError } from '@actions/core';
+import { debug } from '@actions/core';
 import type { Globals } from '../../globals';
 
 // eslint-disable-next-line max-lines-per-function
@@ -41,8 +41,7 @@ export async function createIssue(
     );
 
     return { created: true };
-  } catch (createError: unknown) {
-    logError(createError as Error);
+  } catch {
     return { created: false };
   }
 }
