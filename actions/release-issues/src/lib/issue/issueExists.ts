@@ -43,18 +43,22 @@ function issueMatch(
     'JSON END -->',
   )(issueNode.body);
 
-  const json = JSON.parse(jsonContent) as IssueJSON;
-  const jsonIssue = Issue.fromJson(globals, json);
+  try {
+    const json = JSON.parse(jsonContent) as IssueJSON;
+    const jsonIssue = Issue.fromJson(globals, json);
 
-  if (
-    issue.version.major === jsonIssue.version.major &&
-    issue.version.minor === jsonIssue.version.minor &&
-    issue.version.patch === jsonIssue.version.patch
-  ) {
-    return true;
+    if (
+      issue.version.major === jsonIssue.version.major &&
+      issue.version.minor === jsonIssue.version.minor &&
+      issue.version.patch === jsonIssue.version.patch
+    ) {
+      return true;
+    }
+
+    return jsonIssue.title === issue.title;
+  } catch {
+    return false;
   }
-
-  return jsonIssue.title === issue.title;
 }
 
 export async function issueExists(globals: Globals): Promise<boolean> {
