@@ -18519,7 +18519,6 @@ class Issue {
         ]);
         for (const section of this.sections) {
             lines.push([
-                '\n',
                 `### ${section.title}`,
                 ...section.items.map((item) => item.statusLine),
                 '---',
@@ -18534,7 +18533,6 @@ class Issue {
         return {
             number: this.number,
             title: this.title,
-            content: this.content,
             version: this.version.json,
         };
     }

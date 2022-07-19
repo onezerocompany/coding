@@ -8,7 +8,6 @@ import { getSections } from './getSections';
 export interface IssueJSON {
   number: number | undefined;
   title: string;
-  content: string;
   version: VersionJSON;
 }
 
@@ -52,7 +51,6 @@ export class Issue {
 
     for (const section of this.sections) {
       lines.push([
-        '\n',
         `### ${section.title}`,
         ...section.items.map((item) => item.statusLine),
         '---',
@@ -69,7 +67,6 @@ export class Issue {
     return {
       number: this.number,
       title: this.title,
-      content: this.content,
       version: this.version.json,
     };
   }
