@@ -6,7 +6,7 @@ describe('issues', () => {
     expect(issue.json).toEqual({
       // eslint-disable-next-line no-undefined
       number: undefined,
-      title: '🚀 0.0.1 [Release Tracker]',
+      title: '🚀 Release 0.0.1',
       version: {
         display: '0.0.1',
         includeRelease: false,

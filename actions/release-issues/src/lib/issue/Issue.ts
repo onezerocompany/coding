@@ -29,7 +29,7 @@ export class Issue {
   }
 
   public get title(): string {
-    return `🚀 ${this.version.displayString} [Release Tracker]`;
+    return `🚀 Release ${this.version.displayString}`;
   }
 
   public get content(): string {

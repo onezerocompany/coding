@@ -11,5 +11,5 @@ export const icons: {
   [ItemStatus.inProgress]: { icon: '🔄', code: 'arrows_counterclockwise' },
   [ItemStatus.pending]: { icon: '⏳', code: 'hourglass_flowing_sand' },
   [ItemStatus.skipped]: { icon: '⏭️', code: 'next_track_button' },
-  [ItemStatus.unknown]: { icon: '❓', code: 'question_mark' },
+  [ItemStatus.unknown]: { icon: '❓', code: 'question' },
 };

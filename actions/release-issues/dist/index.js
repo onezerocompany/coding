@@ -18272,7 +18272,7 @@ const icons = {
     [ItemStatus.inProgress]: { icon: '🔄', code: 'arrows_counterclockwise' },
     [ItemStatus.pending]: { icon: '⏳', code: 'hourglass_flowing_sand' },
     [ItemStatus.skipped]: { icon: '⏭️', code: 'next_track_button' },
-    [ItemStatus.unknown]: { icon: '❓', code: 'question_mark' },
+    [ItemStatus.unknown]: { icon: '❓', code: 'question' },
 };
 
 ;// CONCATENATED MODULE: ./src/lib/items/ItemType.ts
@@ -18504,7 +18504,7 @@ class Issue {
         this.sections = [];
     }
     get title() {
-        return `🚀 ${this.version.displayString} [Release Tracker]`;
+        return `🚀 Release ${this.version.displayString}`;
     }
     get content() {
         const lines = [];
