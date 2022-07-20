@@ -33,11 +33,7 @@ interface QueryOutput {
   };
 }
 
-function issueMatch(
-  globals: Globals,
-  issue: Issue,
-  issueNode: IssueNode,
-): boolean {
+function issueMatch(issue: Issue, issueNode: IssueNode): boolean {
   const jsonContent = getContentBetweenTags(
     '<!-- JSON BEGIN',
     'JSON END -->',
@@ -45,7 +41,7 @@ function issueMatch(
 
   try {
     const json = JSON.parse(jsonContent) as IssueJSON;
-    const jsonIssue = Issue.fromJson(globals, json);
+    const jsonIssue = Issue.fromJson(json);
 
     if (
       issue.version.major === jsonIssue.version.major &&
@@ -77,6 +73,6 @@ export async function issueExists(globals: Globals): Promise<boolean> {
   }
 
   return repository.issues.nodes.some((issueNode) =>
-    issueMatch(globals, issue, issueNode),
+    issueMatch(issue, issueNode),
   );
 }

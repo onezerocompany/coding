@@ -22,18 +22,10 @@ export class Issue {
   public comments: Comment[];
   public sections: ItemSection[];
 
-  public constructor(inputs?: {
-    comments: Comment[];
-    version: Version;
-    globals: Globals;
-  }) {
+  public constructor(inputs?: { comments: Comment[]; version: Version }) {
     this.version = inputs?.version ?? new Version();
     this.comments = inputs?.comments ?? [];
-    if (inputs?.globals) {
-      this.sections = getSections(inputs.globals);
-    } else {
-      this.sections = [];
-    }
+    this.sections = [];
   }
 
   public get title(): string {
@@ -71,11 +63,15 @@ export class Issue {
     };
   }
 
-  public static fromJson(globals: Globals, json: IssueJSON): Issue {
+  public static fromJson(json: IssueJSON): Issue {
     return new Issue({
       comments: [],
       version: Version.fromJson(json.version),
-      globals,
     });
+  }
+
+  public setup(globals: Globals): void {
+    // this.sections = await getSections(globals);
+    this.sections = getSections(globals);
   }
 }

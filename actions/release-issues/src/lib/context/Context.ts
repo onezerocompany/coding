@@ -1,4 +1,5 @@
 import { setFailed } from '@actions/core';
+import { Version } from '@onezerocompany/commit';
 import { Issue } from '../issue/Issue';
 import { Action } from './Action';
 import type { Commit } from './Commit';
@@ -22,7 +23,10 @@ export class Context {
     switch (this.action) {
       case Action.create:
         this.commits = loadCommits();
-        this.issue = new Issue();
+        this.issue = new Issue({
+          comments: [],
+          version: new Version(),
+        });
         break;
       default:
         setFailed('Unsupported action');

@@ -8306,7 +8306,7 @@ function wrappy (fn, cb) {
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-__webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
+exports.Gf = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
@@ -8339,7 +8339,7 @@ __webpack_unused_export__ = ({ enumerable: true, get: function () { return Versi
 var VersionTrack_1 = __nccwpck_require__(5352);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } });
 var Version_1 = __nccwpck_require__(8691);
-__webpack_unused_export__ = ({ enumerable: true, get: function () { return Version_1.Version; } });
+Object.defineProperty(exports, "Gf", ({ enumerable: true, get: function () { return Version_1.Version; } }));
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -18237,6 +18237,8 @@ var Action;
 
 // EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(4005);
+// EXTERNAL MODULE: ../../packages/commit/dist/index.js
+var dist = __nccwpck_require__(4670);
 // EXTERNAL MODULE: ../../packages/commit/dist/lib/versions/Version.js
 var Version = __nccwpck_require__(8691);
 ;// CONCATENATED MODULE: ./src/utils/titlecase.ts
@@ -18499,12 +18501,7 @@ class Issue {
     constructor(inputs) {
         this.version = inputs?.version ?? new Version.Version();
         this.comments = inputs?.comments ?? [];
-        if (inputs?.globals) {
-            this.sections = getSections(inputs.globals);
-        }
-        else {
-            this.sections = [];
-        }
+        this.sections = [];
     }
     get title() {
         return `🚀 ${this.version.displayString} [Release Tracker]`;
@@ -18536,12 +18533,15 @@ class Issue {
             version: this.version.json,
         };
     }
-    static fromJson(globals, json) {
+    static fromJson(json) {
         return new Issue({
             comments: [],
             version: Version.Version.fromJson(json.version),
-            globals,
         });
+    }
+    setup(globals) {
+        // this.sections = await getSections(globals);
+        this.sections = getSections(globals);
     }
 }
 
@@ -18563,8 +18563,6 @@ function currentAction() {
     return Action.stop;
 }
 
-// EXTERNAL MODULE: ../../packages/commit/dist/index.js
-var dist = __nccwpck_require__(4670);
 ;// CONCATENATED MODULE: ./src/lib/context/loadCommits.ts
 
 
@@ -18592,6 +18590,7 @@ function loadCommits() {
 
 
 
+
 class Context {
     repo;
     // specific to this run of the action
@@ -18604,7 +18603,10 @@ class Context {
         switch (this.action) {
             case Action.create:
                 this.commits = loadCommits();
-                this.issue = new Issue();
+                this.issue = new Issue({
+                    comments: [],
+                    version: new dist/* Version */.Gf(),
+                });
                 break;
             default:
                 (0,core.setFailed)('Unsupported action');
@@ -18720,7 +18722,9 @@ async function getGlobals() {
     const { graphql } = octokit;
     const context = await loadContext(graphql);
     const settings = loadSettings();
-    return { context, settings, octokit, graphql };
+    const globals = { context, settings, octokit, graphql };
+    context.issue.setup(globals);
+    return globals;
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
@@ -18796,11 +18800,11 @@ const issueExists_query = `
     }
   }
 `;
-function issueMatch(globals, issue, issueNode) {
+function issueMatch(issue, issueNode) {
     const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
     try {
         const json = JSON.parse(jsonContent);
-        const jsonIssue = Issue.fromJson(globals, json);
+        const jsonIssue = Issue.fromJson(json);
         if (issue.version.major === jsonIssue.version.major &&
             issue.version.minor === jsonIssue.version.minor &&
             issue.version.patch === jsonIssue.version.patch) {
@@ -18824,7 +18828,7 @@ async function issueExists(globals) {
         (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
         return false;
     }
-    return repository.issues.nodes.some((issueNode) => issueMatch(globals, issue, issueNode));
+    return repository.issues.nodes.some((issueNode) => issueMatch(issue, issueNode));
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts
