@@ -8306,7 +8306,7 @@ function wrappy (fn, cb) {
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-__webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.Nj = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
+__webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.Nj = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
@@ -8338,6 +8338,7 @@ var VersionBump_1 = __nccwpck_require__(4033);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionBump_1.VersionBump; } });
 var VersionTrack_1 = __nccwpck_require__(5352);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } });
+__webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.orderedTracks; } });
 var Version_1 = __nccwpck_require__(8691);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return Version_1.Version; } });
 //# sourceMappingURL=index.js.map
@@ -9729,13 +9730,18 @@ var VersionBump;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.VersionTrack = void 0;
+exports.orderedTracks = exports.VersionTrack = void 0;
 var VersionTrack;
 (function (VersionTrack) {
     VersionTrack["live"] = "live";
     VersionTrack["beta"] = "beta";
     VersionTrack["alpha"] = "alpha";
 })(VersionTrack = exports.VersionTrack || (exports.VersionTrack = {}));
+exports.orderedTracks = [
+    VersionTrack.alpha,
+    VersionTrack.beta,
+    VersionTrack.live,
+];
 //# sourceMappingURL=VersionTrack.js.map
 
 /***/ }),

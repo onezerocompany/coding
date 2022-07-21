@@ -19,5 +19,5 @@ export { parseMessage } from './lib/message/parseMessage';
 export { validateMessage } from './lib/message/validateMessage';
 
 export { VersionBump } from './lib/versions/VersionBump';
-export { VersionTrack } from './lib/versions/VersionTrack';
+export { VersionTrack, orderedTracks } from './lib/versions/VersionTrack';
 export { Version, VersionJSON } from './lib/versions/Version';
