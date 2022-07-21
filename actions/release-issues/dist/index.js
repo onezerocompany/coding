@@ -18471,11 +18471,11 @@ function getSections(globals) {
                     track,
                 },
             }));
+            sections.push({
+                title: toTitleCase(track),
+                items,
+            });
         }
-        sections.push({
-            title: toTitleCase(track),
-            items,
-        });
     }
     return sections;
 }
