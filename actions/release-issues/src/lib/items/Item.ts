@@ -1,4 +1,4 @@
-import type { Track } from '../settings/Track';
+import type { VersionTrack } from '@onezerocompany/commit';
 import { icons } from './icons';
 import { ItemStatus } from './ItemStatus';
 import { ItemType } from './ItemType';
@@ -12,7 +12,7 @@ export interface ItemJSON {
 }
 
 export interface ItemMetadata {
-  track?: Track;
+  track?: VersionTrack;
 }
 
 export class Item {

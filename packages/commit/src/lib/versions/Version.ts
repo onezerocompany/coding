@@ -33,7 +33,7 @@ export class Version {
     this.major = inputs?.major ?? 0;
     this.minor = inputs?.minor ?? 0;
     this.patch = inputs?.patch ?? 1;
-    this.track = inputs?.track ?? VersionTrack.release;
+    this.track = inputs?.track ?? VersionTrack.live;
     this.template = inputs?.template ?? '{major}.{minor}.{patch}-{track}';
     this.includeTrack = inputs?.includeTrack ?? true;
     this.includeRelease = inputs?.includeRelease ?? false;
@@ -45,7 +45,7 @@ export class Version {
     display = display.replace(/\{minor\}/gu, this.minor.toString());
     display = display.replace(/\{patch\}/gu, this.patch.toString());
     if (
-      (this.track === VersionTrack.release && !this.includeRelease) ||
+      (this.track === VersionTrack.live && !this.includeRelease) ||
       !this.includeTrack
     ) {
       display = display.replace(/\{track\}/gu, '');
@@ -98,13 +98,13 @@ export class Version {
       track: ((): VersionTrack => {
         switch (json.track) {
           case 'release':
-            return VersionTrack.release;
+            return VersionTrack.live;
           case 'alpha':
             return VersionTrack.alpha;
           case 'beta':
             return VersionTrack.beta;
           default:
-            return VersionTrack.release;
+            return VersionTrack.live;
         }
       })(),
       template: json.template,

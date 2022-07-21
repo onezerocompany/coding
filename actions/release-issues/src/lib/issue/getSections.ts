@@ -1,18 +1,18 @@
+import { VersionTrack } from '@onezerocompany/commit';
 import type { Globals } from '../../globals';
 import { toTitleCase } from '../../utils/titlecase';
 import { Item } from '../items/Item';
 import { ItemType } from '../items/ItemType';
-import { Track } from '../settings/Track';
 import { TrackSettings } from '../settings/TrackSettings';
 import type { ItemSection } from './Issue';
 
 export function getSections(globals: Globals): ItemSection[] {
   const { settings } = globals;
   const sections: ItemSection[] = [];
-  for (const track of Object.values(Track)) {
+  for (const track of Object.values(VersionTrack)) {
     const items: Item[] = [];
     const trackSettings = new TrackSettings({
-      track,
+      forTrack: track,
       json: settings[track],
     });
     if (trackSettings.enabled) {

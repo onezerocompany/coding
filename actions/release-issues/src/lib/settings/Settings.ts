@@ -1,30 +1,30 @@
-import { Track } from './Track';
+import { VersionTrack } from '@onezerocompany/commit';
 import type { TrackSettingsJSON } from './TrackSettings';
 import { TrackSettings } from './TrackSettings';
 
 export interface SettingsJSON {
   alpha: TrackSettingsJSON;
   beta: TrackSettingsJSON;
-  release: TrackSettingsJSON;
+  live: TrackSettingsJSON;
 }
 
 export class Settings {
   public alpha: TrackSettings;
   public beta: TrackSettings;
-  public release: TrackSettings;
+  public live: TrackSettings;
 
   public constructor(json: SettingsJSON) {
     this.alpha = new TrackSettings({
-      track: Track.alpha,
+      forTrack: VersionTrack.alpha,
       json: json.alpha,
     });
     this.beta = new TrackSettings({
-      track: Track.beta,
+      forTrack: VersionTrack.beta,
       json: json.beta,
     });
-    this.release = new TrackSettings({
-      track: Track.release,
-      json: json.release,
+    this.live = new TrackSettings({
+      forTrack: VersionTrack.live,
+      json: json.live,
     });
   }
 
@@ -32,7 +32,7 @@ export class Settings {
     return {
       alpha: this.alpha.json,
       beta: this.beta.json,
-      release: this.release.json,
+      live: this.live.json,
     };
   }
 }

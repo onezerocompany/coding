@@ -14,6 +14,11 @@ export function currentAction(): Action {
     return Action.create;
   }
 
+  if (eventName === 'issue_comment') {
+    // only trigger if the comment is clearing a version for release
+    return Action.comment;
+  }
+
   setFailed(new Error('Unsupported event'));
   return Action.stop;
 }

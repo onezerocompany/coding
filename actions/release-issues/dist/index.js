@@ -8306,7 +8306,7 @@ function wrappy (fn, cb) {
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-exports.Gf = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
+exports.Gf = exports.Os = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
@@ -8337,7 +8337,7 @@ __webpack_unused_export__ = ({ enumerable: true, get: function () { return valid
 var VersionBump_1 = __nccwpck_require__(4033);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionBump_1.VersionBump; } });
 var VersionTrack_1 = __nccwpck_require__(5352);
-__webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } });
+Object.defineProperty(exports, "Os", ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } }));
 var Version_1 = __nccwpck_require__(8691);
 Object.defineProperty(exports, "Gf", ({ enumerable: true, get: function () { return Version_1.Version; } }));
 //# sourceMappingURL=index.js.map
@@ -9603,7 +9603,7 @@ class Version {
         this.major = inputs?.major ?? 0;
         this.minor = inputs?.minor ?? 0;
         this.patch = inputs?.patch ?? 1;
-        this.track = inputs?.track ?? VersionTrack_1.VersionTrack.release;
+        this.track = inputs?.track ?? VersionTrack_1.VersionTrack.live;
         this.template = inputs?.template ?? '{major}.{minor}.{patch}-{track}';
         this.includeTrack = inputs?.includeTrack ?? true;
         this.includeRelease = inputs?.includeRelease ?? false;
@@ -9613,7 +9613,7 @@ class Version {
         display = display.replace(/\{major\}/gu, this.major.toString());
         display = display.replace(/\{minor\}/gu, this.minor.toString());
         display = display.replace(/\{patch\}/gu, this.patch.toString());
-        if ((this.track === VersionTrack_1.VersionTrack.release && !this.includeRelease) ||
+        if ((this.track === VersionTrack_1.VersionTrack.live && !this.includeRelease) ||
             !this.includeTrack) {
             display = display.replace(/\{track\}/gu, '');
         }
@@ -9645,13 +9645,13 @@ class Version {
             track: (() => {
                 switch (json.track) {
                     case 'release':
-                        return VersionTrack_1.VersionTrack.release;
+                        return VersionTrack_1.VersionTrack.live;
                     case 'alpha':
                         return VersionTrack_1.VersionTrack.alpha;
                     case 'beta':
                         return VersionTrack_1.VersionTrack.beta;
                     default:
-                        return VersionTrack_1.VersionTrack.release;
+                        return VersionTrack_1.VersionTrack.live;
                 }
             })(),
             template: json.template,
@@ -9732,7 +9732,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.VersionTrack = void 0;
 var VersionTrack;
 (function (VersionTrack) {
-    VersionTrack["release"] = "release";
+    VersionTrack["live"] = "live";
     VersionTrack["beta"] = "beta";
     VersionTrack["alpha"] = "alpha";
 })(VersionTrack = exports.VersionTrack || (exports.VersionTrack = {}));
@@ -18231,7 +18231,7 @@ var core = __nccwpck_require__(7117);
 var Action;
 (function (Action) {
     Action["create"] = "create";
-    Action["update"] = "update";
+    Action["comment"] = "comment";
     Action["stop"] = "stop";
 })(Action || (Action = {}));
 
@@ -18363,14 +18363,6 @@ class Item {
     }
 }
 
-;// CONCATENATED MODULE: ./src/lib/settings/Track.ts
-var Track;
-(function (Track) {
-    Track["alpha"] = "alpha";
-    Track["beta"] = "beta";
-    Track["release"] = "release";
-})(Track || (Track = {}));
-
 ;// CONCATENATED MODULE: ./src/lib/settings/Platform.ts
 var Platform;
 (function (Platform) {
@@ -18395,25 +18387,23 @@ class TrackSettings {
     requirements;
     release;
     constructor(inputs) {
-        const track = inputs?.track ?? Track.release;
+        const track = inputs?.forTrack ?? dist/* VersionTrack.live */.Os.live;
         this.enabled = inputs?.json?.enabled ?? TrackSettings.defaultEnabled(track);
         this.version = {
             template: inputs?.json?.version.template ??
                 TrackSettings.defaultVersionTemplate(track),
         };
-        this.requirements = {
-            tests: inputs?.json?.requirements.tests ?? [],
-        };
+        this.requirements = { tests: inputs?.json?.requirements.tests ?? [] };
         this.release = {
             manual: inputs?.json?.release.manual ?? true,
             // convert array of strings to array of tracks
-            waitForTracks: (inputs?.json?.release.waitForTracks.filter((waitTrack) => Object.keys(Track).includes(waitTrack)) ?? []),
+            waitForTracks: (inputs?.json?.release.waitForTracks.filter((waitTrack) => Object.keys(dist/* VersionTrack */.Os).includes(waitTrack)) ?? []),
             // convert array of strings to array of platforms
             platforms: (inputs?.json?.release.platforms.filter((platform) => Object.keys(Platform).includes(platform)) ?? []),
             allowedUsers: inputs?.json?.release.allowedUsers ?? [],
         };
         // filter out non existent tracks
-        this.release.waitForTracks = this.release.waitForTracks.filter((waitTrack) => Object.keys(Track).includes(waitTrack));
+        this.release.waitForTracks = this.release.waitForTracks.filter((waitTrack) => Object.keys(dist/* VersionTrack */.Os).includes(waitTrack));
         // filter out non existent platforms
         this.release.platforms = this.release.platforms.filter((platform) => Object.keys(Platform).includes(platform));
     }
@@ -18439,9 +18429,9 @@ class TrackSettings {
     }
     static defaultEnabled(track) {
         switch (track) {
-            case Track.alpha:
+            case dist/* VersionTrack.alpha */.Os.alpha:
                 return false;
-            case Track.beta:
+            case dist/* VersionTrack.beta */.Os.beta:
                 return false;
             default:
                 return true;
@@ -18449,9 +18439,9 @@ class TrackSettings {
     }
     static defaultVersionTemplate(track) {
         switch (track) {
-            case Track.alpha:
+            case dist/* VersionTrack.alpha */.Os.alpha:
                 return '{{version}}-alpha';
-            case Track.beta:
+            case dist/* VersionTrack.beta */.Os.beta:
                 return '{{version}}-beta';
             default:
                 return '{{version}}';
@@ -18468,10 +18458,10 @@ class TrackSettings {
 function getSections(globals) {
     const { settings } = globals;
     const sections = [];
-    for (const track of Object.values(Track)) {
+    for (const track of Object.values(dist/* VersionTrack */.Os)) {
         const items = [];
         const trackSettings = new TrackSettings({
-            track,
+            forTrack: track,
             json: settings[track],
         });
         if (trackSettings.enabled) {
@@ -18558,6 +18548,10 @@ function currentAction() {
             return Action.stop;
         }
         return Action.create;
+    }
+    if (eventName === 'issue_comment') {
+        // only trigger if the comment is clearing a version for release
+        return Action.comment;
     }
     (0,core.setFailed)(new Error('Unsupported event'));
     return Action.stop;
@@ -18668,26 +18662,26 @@ var yaml_dist = __nccwpck_require__(8447);
 class Settings {
     alpha;
     beta;
-    release;
+    live;
     constructor(json) {
         this.alpha = new TrackSettings({
-            track: Track.alpha,
+            forTrack: dist/* VersionTrack.alpha */.Os.alpha,
             json: json.alpha,
         });
         this.beta = new TrackSettings({
-            track: Track.beta,
+            forTrack: dist/* VersionTrack.beta */.Os.beta,
             json: json.beta,
         });
-        this.release = new TrackSettings({
-            track: Track.release,
-            json: json.release,
+        this.live = new TrackSettings({
+            forTrack: dist/* VersionTrack.live */.Os.live,
+            json: json.live,
         });
     }
     get json() {
         return {
             alpha: this.alpha.json,
             beta: this.beta.json,
-            release: this.release.json,
+            live: this.live.json,
         };
     }
 }
@@ -18725,50 +18719,6 @@ async function getGlobals() {
     const globals = { context, settings, octokit, graphql };
     context.issue.setup(globals);
     return globals;
-}
-
-;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
-
-
-// eslint-disable-next-line max-lines-per-function
-async function createIssue(globals) {
-    const { graphql, context } = globals;
-    const { issue } = context;
-    (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, jsonIndent)}`);
-    try {
-        await graphql(`
-        mutation createIssue(
-          $repositoryId: ID!
-          $labelId: ID!
-          $title: String!
-          $content: String!
-        ) {
-          createIssue(
-            input: {
-              repositoryId: $repositoryId
-              labelIds: [$labelId]
-              title: $title
-              body: $content
-            }
-          ) {
-            issue {
-              number
-              url
-            }
-          }
-        }
-      `, {
-            repositoryId: context.repo.id,
-            labelId: context.repo.trackerLabelId,
-            title: issue.title,
-            content: issue.content,
-        });
-        return { created: true };
-    }
-    catch (createError) {
-        (0,core.error)(createError);
-        return { created: false };
-    }
 }
 
 ;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
@@ -18831,8 +18781,56 @@ async function issueExists(globals) {
     return repository.issues.nodes.some((issueNode) => issueMatch(issue, issueNode));
 }
 
-;// CONCATENATED MODULE: ./src/index.ts
+;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
 
+
+
+// eslint-disable-next-line max-lines-per-function
+async function createIssue(globals) {
+    if (await issueExists(globals)) {
+        (0,core.info)(`Issue already exists: ${globals.context.issue.title}`);
+        return { created: false };
+    }
+    const { graphql, context } = globals;
+    const { issue } = context;
+    (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, jsonIndent)}`);
+    try {
+        await graphql(`
+        mutation createIssue(
+          $repositoryId: ID!
+          $labelId: ID!
+          $title: String!
+          $content: String!
+        ) {
+          createIssue(
+            input: {
+              repositoryId: $repositoryId
+              labelIds: [$labelId]
+              title: $title
+              body: $content
+            }
+          ) {
+            issue {
+              number
+              url
+            }
+          }
+        }
+      `, {
+            repositoryId: context.repo.id,
+            labelId: context.repo.trackerLabelId,
+            title: issue.title,
+            content: issue.content,
+        });
+        return { created: true };
+    }
+    catch (createError) {
+        (0,core.error)(createError);
+        return { created: false };
+    }
+}
+
+;// CONCATENATED MODULE: ./src/index.ts
 
 
 
@@ -18841,17 +18839,16 @@ async function run() {
     const globals = await getGlobals();
     const { context } = globals;
     switch (context.action) {
-        case Action.create:
-            if (!(await issueExists(globals))) {
-                const { created } = await createIssue(globals);
-                if (created) {
-                    (0,core.info)(`Created issue ${globals.context.issue.title}`);
-                }
-                else {
-                    (0,core.setFailed)('Failed to create issue');
-                }
+        case Action.create: {
+            const { created } = await createIssue(globals);
+            if (created) {
+                (0,core.info)(`Created issue: ${context.issue.title}`);
+            }
+            else {
+                (0,core.setFailed)('Failed to create issue');
             }
             break;
+        }
         default:
             (0,core.setFailed)('Unsupported action');
     }

@@ -1,5 +1,5 @@
 export enum Action {
   create = 'create',
-  update = 'update',
+  comment = 'comment',
   stop = 'stop',
 }

@@ -10,7 +10,7 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(0);
     expect(version.patch).toBe(1);
-    expect(version.track).toBe(VersionTrack.release);
+    expect(version.track).toBe(VersionTrack.live);
     expect(version.displayString).toBe('0.0.1');
   });
   it('should create correct alpha version', () => {
@@ -40,8 +40,8 @@ describe('version', () => {
     expect(version.major).toBe(1);
     expect(version.minor).toBe(0);
     expect(version.patch).toBe(0);
-    expect(version.track).toBe(VersionTrack.release);
-    expect(version.displayString).toBe('1.0.0 release');
+    expect(version.track).toBe(VersionTrack.live);
+    expect(version.displayString).toBe('1.0.0 live');
   });
   it('major bump should work correctly', () => {
     const version = new Version({ major: 0, minor: 2, patch: 6 });
@@ -49,7 +49,7 @@ describe('version', () => {
     expect(version.major).toBe(1);
     expect(version.minor).toBe(0);
     expect(version.patch).toBe(0);
-    expect(version.track).toBe(VersionTrack.release);
+    expect(version.track).toBe(VersionTrack.live);
     expect(version.displayString).toBe('1.0.0');
   });
   it('minor bump should work correctly', () => {
@@ -58,7 +58,7 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(3);
     expect(version.patch).toBe(0);
-    expect(version.track).toBe(VersionTrack.release);
+    expect(version.track).toBe(VersionTrack.live);
     expect(version.displayString).toBe('0.3.0');
   });
   it('patch bump should work correctly', () => {
@@ -67,7 +67,7 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(2);
     expect(version.patch).toBe(7);
-    expect(version.track).toBe(VersionTrack.release);
+    expect(version.track).toBe(VersionTrack.live);
     expect(version.displayString).toBe('0.2.7');
   });
   it('none bump should work correctly', () => {
@@ -76,7 +76,7 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(2);
     expect(version.patch).toBe(6);
-    expect(version.track).toBe(VersionTrack.release);
+    expect(version.track).toBe(VersionTrack.live);
     expect(version.displayString).toBe('0.2.6');
   });
   it('should sort correctly', () => {
@@ -105,11 +105,11 @@ describe('version', () => {
     const version = new Version({ major: 0, minor: 2, patch: 6 });
     version.includeRelease = true;
     expect(version.json).toEqual({
-      display: '0.2.6-release',
+      display: '0.2.6-live',
       major: 0,
       minor: 2,
       patch: 6,
-      track: 'release',
+      track: 'live',
       template: '{major}.{minor}.{patch}-{track}',
       includeTrack: true,
       includeRelease: true,
@@ -129,8 +129,8 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(2);
     expect(version.patch).toBe(6);
-    expect(version.track).toBe(VersionTrack.release);
-    expect(version.displayString).toBe('0.2.6-release');
+    expect(version.track).toBe(VersionTrack.live);
+    expect(version.displayString).toBe('0.2.6-live');
   });
   it('should create alpha version', () => {
     const version = Version.fromJson({
@@ -180,7 +180,7 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(2);
     expect(version.patch).toBe(6);
-    expect(version.track).toBe(VersionTrack.release);
+    expect(version.track).toBe(VersionTrack.live);
     expect(version.displayString).toBe('0.2.6');
   });
 });

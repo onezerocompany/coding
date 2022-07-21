@@ -1,5 +1,5 @@
 export enum VersionTrack {
-  release = 'release',
+  live = 'live',
   beta = 'beta',
   alpha = 'alpha',
 }

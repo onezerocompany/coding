@@ -1,11 +1,17 @@
-import { debug, error as logError } from '@actions/core';
+import { debug, error as logError, info } from '@actions/core';
 import type { Globals } from '../../globals';
 import { jsonIndent } from '../../globals';
+import { issueExists } from './issueExists';
 
 // eslint-disable-next-line max-lines-per-function
 export async function createIssue(
   globals: Globals,
 ): Promise<{ created: boolean }> {
+  if (await issueExists(globals)) {
+    info(`Issue already exists: ${globals.context.issue.title}`);
+    return { created: false };
+  }
+
   const { graphql, context } = globals;
   const { issue } = context;
   debug(

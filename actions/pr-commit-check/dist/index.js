@@ -9603,7 +9603,7 @@ class Version {
         this.major = inputs?.major ?? 0;
         this.minor = inputs?.minor ?? 0;
         this.patch = inputs?.patch ?? 1;
-        this.track = inputs?.track ?? VersionTrack_1.VersionTrack.release;
+        this.track = inputs?.track ?? VersionTrack_1.VersionTrack.live;
         this.template = inputs?.template ?? '{major}.{minor}.{patch}-{track}';
         this.includeTrack = inputs?.includeTrack ?? true;
         this.includeRelease = inputs?.includeRelease ?? false;
@@ -9613,7 +9613,7 @@ class Version {
         display = display.replace(/\{major\}/gu, this.major.toString());
         display = display.replace(/\{minor\}/gu, this.minor.toString());
         display = display.replace(/\{patch\}/gu, this.patch.toString());
-        if ((this.track === VersionTrack_1.VersionTrack.release && !this.includeRelease) ||
+        if ((this.track === VersionTrack_1.VersionTrack.live && !this.includeRelease) ||
             !this.includeTrack) {
             display = display.replace(/\{track\}/gu, '');
         }
@@ -9645,13 +9645,13 @@ class Version {
             track: (() => {
                 switch (json.track) {
                     case 'release':
-                        return VersionTrack_1.VersionTrack.release;
+                        return VersionTrack_1.VersionTrack.live;
                     case 'alpha':
                         return VersionTrack_1.VersionTrack.alpha;
                     case 'beta':
                         return VersionTrack_1.VersionTrack.beta;
                     default:
-                        return VersionTrack_1.VersionTrack.release;
+                        return VersionTrack_1.VersionTrack.live;
                 }
             })(),
             template: json.template,
@@ -9732,7 +9732,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.VersionTrack = void 0;
 var VersionTrack;
 (function (VersionTrack) {
-    VersionTrack["release"] = "release";
+    VersionTrack["live"] = "live";
     VersionTrack["beta"] = "beta";
     VersionTrack["alpha"] = "alpha";
 })(VersionTrack = exports.VersionTrack || (exports.VersionTrack = {}));

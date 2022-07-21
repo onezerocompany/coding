@@ -15,7 +15,7 @@ describe('issues', () => {
         minor: 0,
         patch: 1,
         template: '{major}.{minor}.{patch}-{track}',
-        track: 'release',
+        track: 'live',
       },
     });
   });

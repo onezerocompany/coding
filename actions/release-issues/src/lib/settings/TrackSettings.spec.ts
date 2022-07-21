@@ -1,5 +1,5 @@
+import { VersionTrack } from '@onezerocompany/commit';
 import { Platform } from './Platform';
-import { Track } from './Track';
 import { TrackSettings } from './TrackSettings';
 
 describe('track settings', () => {
@@ -14,7 +14,7 @@ describe('track settings', () => {
     expect(settings.release.allowedUsers).toEqual([]);
   });
   it('should setup correct default alpha settings', () => {
-    const settings = new TrackSettings({ track: Track.alpha });
+    const settings = new TrackSettings({ forTrack: VersionTrack.alpha });
     expect(settings.enabled).toBe(false);
     expect(settings.version.template).toBe('{{version}}-alpha');
     expect(settings.requirements.tests).toEqual([]);
@@ -24,7 +24,7 @@ describe('track settings', () => {
     expect(settings.release.allowedUsers).toEqual([]);
   });
   it('should setup correct default beta settings', () => {
-    const settings = new TrackSettings({ track: Track.beta });
+    const settings = new TrackSettings({ forTrack: VersionTrack.beta });
     expect(settings.enabled).toBe(false);
     expect(settings.version.template).toBe('{{version}}-beta');
     expect(settings.requirements.tests).toEqual([]);
@@ -34,7 +34,7 @@ describe('track settings', () => {
     expect(settings.release.allowedUsers).toEqual([]);
   });
   it('should setup correct default release settings', () => {
-    const settings = new TrackSettings({ track: Track.release });
+    const settings = new TrackSettings({ forTrack: VersionTrack.live });
     expect(settings.enabled).toBe(true);
     expect(settings.version.template).toBe('{{version}}');
     expect(settings.requirements.tests).toEqual([]);
@@ -64,7 +64,7 @@ describe('track settings', () => {
         },
         release: {
           manual: false,
-          waitForTracks: [Track.alpha, Track.beta],
+          waitForTracks: [VersionTrack.alpha, VersionTrack.beta],
           platforms: [Platform.linux, Platform.macos, Platform.windows],
           allowedUsers: ['lucasilverentand'],
         },
