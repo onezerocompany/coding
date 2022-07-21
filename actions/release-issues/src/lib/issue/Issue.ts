@@ -74,4 +74,15 @@ export class Issue {
     // this.sections = await getSections(globals);
     this.sections = getSections(globals);
   }
+
+  public async update(globals: Globals): Promise<void> {
+    // loop over all items
+    const updates = [];
+    for (const section of this.sections) {
+      for (const item of section.items) {
+        updates.push(item.update(globals));
+      }
+    }
+    await Promise.all(updates);
+  }
 }

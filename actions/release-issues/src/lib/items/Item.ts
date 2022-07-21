@@ -1,4 +1,5 @@
 import type { VersionTrack } from '@onezerocompany/commit';
+import type { Globals } from '../../globals';
 import { icons } from './icons';
 import { ItemStatus } from './ItemStatus';
 import { ItemType } from './ItemType';
@@ -45,10 +46,10 @@ export class Item {
     return this.localStatus;
   }
 
-  public async update(): Promise<ItemStatus> {
+  public async update(globals: Globals): Promise<ItemStatus> {
     switch (this.type) {
       case ItemType.release:
-        this.localStatus = await updateRelease();
+        this.localStatus = await updateRelease(globals, this.metadata.track);
         break;
       default:
         throw new Error(`Unknown item type: ${this.type}`);

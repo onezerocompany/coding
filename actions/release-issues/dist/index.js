@@ -18315,9 +18315,26 @@ const labels = {
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateRelease.ts
 
-async function updateRelease() {
+async function updateRelease(globals, track) {
     return new Promise((resolve) => {
-        resolve(ItemStatus.unknown);
+        if (!track) {
+            resolve(ItemStatus.unknown);
+            return;
+        }
+        const trackSettings = globals.settings[track];
+        if (trackSettings.release.manual) {
+            // check if the issue has a comment that releases the track
+            if (globals.context.issue.comments.some((comment) => comment.releasesTrack.releases &&
+                comment.releasesTrack.track === track)) {
+                resolve(ItemStatus.succeeded);
+            }
+            else {
+                resolve(ItemStatus.pending);
+            }
+        }
+        else {
+            resolve(ItemStatus.succeeded);
+        }
     });
 }
 
@@ -18351,10 +18368,10 @@ class Item {
     get status() {
         return this.localStatus;
     }
-    async update() {
+    async update(globals) {
         switch (this.type) {
             case ItemType.release:
-                this.localStatus = await updateRelease();
+                this.localStatus = await updateRelease(globals, this.metadata.track);
                 break;
             default:
                 throw new Error(`Unknown item type: ${this.type}`);
@@ -18532,6 +18549,16 @@ class Issue {
     setup(globals) {
         // this.sections = await getSections(globals);
         this.sections = getSections(globals);
+    }
+    async update(globals) {
+        // loop over all items
+        const updates = [];
+        for (const section of this.sections) {
+            for (const item of section.items) {
+                updates.push(item.update(globals));
+            }
+        }
+        await Promise.all(updates);
     }
 }
 
@@ -18718,6 +18745,7 @@ async function getGlobals() {
     const settings = loadSettings();
     const globals = { context, settings, octokit, graphql };
     context.issue.setup(globals);
+    await context.issue.update(globals);
     return globals;
 }
 

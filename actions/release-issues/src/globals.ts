@@ -21,5 +21,6 @@ export async function getGlobals(): Promise<Globals> {
   const settings = loadSettings();
   const globals = { context, settings, octokit, graphql };
   context.issue.setup(globals);
+  await context.issue.update(globals);
   return globals;
 }
