@@ -18634,10 +18634,14 @@ function getContentBetweenTags(before, after) {
 
 
 function loadIssueFromContext() {
-    if (github.context.eventName !== 'issue_comment') {
-        throw new Error('This action can only be used in an issue comment context');
+    if (github.context.eventName !== 'issues') {
+        throw new Error('This action can only be used in an issue event');
     }
     const event = github.context.payload;
+    if (event.action !== 'edited' ||
+        event.issue.body === event.changes.body?.from) {
+        throw new Error('This action can only be used on an edited issue');
+    }
     const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(event.issue.body);
     const json = JSON.parse(jsonContent);
     return Issue.fromJson({
