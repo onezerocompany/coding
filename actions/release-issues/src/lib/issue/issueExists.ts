@@ -41,7 +41,10 @@ function issueMatch(issue: Issue, issueNode: IssueNode): boolean {
 
   try {
     const json = JSON.parse(jsonContent) as IssueJSON;
-    const jsonIssue = Issue.fromJson(json);
+    const jsonIssue = Issue.fromJson({
+      number: issueNode.number,
+      json,
+    });
 
     if (
       issue.version.major === jsonIssue.version.major &&

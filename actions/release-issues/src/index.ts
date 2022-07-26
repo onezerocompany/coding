@@ -1,7 +1,9 @@
+import { exit } from 'process';
 import { info, setFailed } from '@actions/core';
 import { Action } from './lib/context/Action';
 import { createIssue } from './lib/issue/createIssue';
 import { getGlobals } from './globals';
+import { updateIssue } from './lib/issue/updateIssue';
 
 async function run(): Promise<void> {
   const globals = await getGlobals();
@@ -17,8 +19,17 @@ async function run(): Promise<void> {
       }
       break;
     }
+    case Action.update: {
+      const { updated } = await updateIssue(globals);
+      if (updated) {
+        info(`Updated issue: ${context.issue.title}`);
+      } else {
+        setFailed('Failed to update issue');
+      }
+      break;
+    }
     default:
-      setFailed('Unsupported action');
+      exit(1);
   }
 }
 

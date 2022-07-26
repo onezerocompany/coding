@@ -5,7 +5,7 @@ describe('issues', () => {
     const issue = new Issue();
     expect(issue.json).toEqual({
       // eslint-disable-next-line no-undefined
-      number: undefined,
+      number: -1,
       title: '🚀 Release 0.0.1',
       version: {
         display: '0.0.1',

@@ -18231,13 +18231,15 @@ var __webpack_exports__ = {};
 // ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
 
+;// CONCATENATED MODULE: external "process"
+const external_process_namespaceObject = require("process");
 // EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(7117);
 ;// CONCATENATED MODULE: ./src/lib/context/Action.ts
 var Action;
 (function (Action) {
     Action["create"] = "create";
-    Action["comment"] = "comment";
+    Action["update"] = "update";
     Action["stop"] = "stop";
 })(Action || (Action = {}));
 
@@ -18512,6 +18514,7 @@ class Issue {
     comments;
     sections;
     constructor(inputs) {
+        this.number = inputs?.number ?? -1;
         this.version = inputs?.version ?? new Version.Version();
         this.comments = inputs?.comments ?? [];
         this.sections = [];
@@ -18546,14 +18549,14 @@ class Issue {
             version: this.version.json,
         };
     }
-    static fromJson(json) {
+    static fromJson(inputs) {
         return new Issue({
+            number: inputs.number,
             comments: [],
-            version: Version.Version.fromJson(json.version),
+            version: Version.Version.fromJson(inputs.json.version),
         });
     }
     setup(globals) {
-        // this.sections = await getSections(globals);
         this.sections = getSections(globals);
     }
     async update(globals) {
@@ -18582,9 +18585,12 @@ function currentAction() {
         }
         return Action.create;
     }
-    if (eventName === 'issue_comment') {
-        // only trigger if the comment is clearing a version for release
-        return Action.comment;
+    if (eventName === 'issues') {
+        const issueEvent = github.context.payload;
+        if (issueEvent.action === 'edited') {
+            return Action.update;
+        }
+        return Action.stop;
     }
     (0,core.setFailed)(new Error('Unsupported event'));
     return Action.stop;
@@ -18611,7 +18617,37 @@ function loadCommits() {
     return [];
 }
 
+;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
+function getContentBetweenTags(before, after) {
+    return (content) => {
+        const beforeIndex = content.indexOf(before);
+        const afterIndex = content.indexOf(after);
+        if (beforeIndex === -1 || afterIndex === -1) {
+            return '';
+        }
+        return content.substring(beforeIndex + before.length, afterIndex);
+    };
+}
+
+;// CONCATENATED MODULE: ./src/lib/context/loadIssueFromContext.ts
+
+
+
+function loadIssueFromContext() {
+    if (github.context.eventName !== 'issue_comment') {
+        throw new Error('This action can only be used in an issue comment context');
+    }
+    const event = github.context.payload;
+    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(event.issue.body);
+    const json = JSON.parse(jsonContent);
+    return Issue.fromJson({
+        number: github.context.issue.number,
+        json,
+    });
+}
+
 ;// CONCATENATED MODULE: ./src/lib/context/Context.ts
+
 
 
 
@@ -18634,6 +18670,9 @@ class Context {
                     comments: [],
                     version: new dist/* Version */.Gf(),
                 });
+                break;
+            case Action.update:
+                this.issue = loadIssueFromContext();
                 break;
             default:
                 (0,core.setFailed)('Unsupported action');
@@ -18755,18 +18794,6 @@ async function getGlobals() {
     return globals;
 }
 
-;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
-function getContentBetweenTags(before, after) {
-    return (content) => {
-        const beforeIndex = content.indexOf(before);
-        const afterIndex = content.indexOf(after);
-        if (beforeIndex === -1 || afterIndex === -1) {
-            return '';
-        }
-        return content.substring(beforeIndex + before.length, afterIndex);
-    };
-}
-
 ;// CONCATENATED MODULE: ./src/lib/issue/issueExists.ts
 
 
@@ -18788,7 +18815,10 @@ function issueMatch(issue, issueNode) {
     const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
     try {
         const json = JSON.parse(jsonContent);
-        const jsonIssue = Issue.fromJson(json);
+        const jsonIssue = Issue.fromJson({
+            number: issueNode.number,
+            json,
+        });
         if (issue.version.major === jsonIssue.version.major &&
             issue.version.minor === jsonIssue.version.minor &&
             issue.version.patch === jsonIssue.version.patch) {
@@ -18864,7 +18894,52 @@ async function createIssue(globals) {
     }
 }
 
+;// CONCATENATED MODULE: ./src/lib/issue/issueIdentifier.ts
+const issueIdentifier_query = `
+  query issueIdentifier($owner:String!, $repo:String!, $issue:Int!) {
+    repository(owner:$owner, name:$repo) {
+      issue(number:$issue) {
+        id
+      }
+    }
+  }
+`;
+async function issueIdentifier(globals) {
+    const { graphql } = globals;
+    const { repository } = await graphql(issueIdentifier_query, {
+        owner: globals.context.repo.owner,
+        repo: globals.context.repo.repo,
+        issue: globals.context.issue.number,
+    });
+    return repository?.issue?.id;
+}
+
+;// CONCATENATED MODULE: ./src/lib/issue/updateIssue.ts
+
+const updateIssue_query = `
+mutation updateIssue($issueId: ID!, $body:String!) {
+  updateIssue(input: {id: $issueId, body:$body}) {
+		issue {
+      id
+    }
+  }
+}
+`;
+async function updateIssue(globals) {
+    const { graphql } = globals;
+    await globals.context.issue.update(globals);
+    const id = await issueIdentifier(globals);
+    await graphql(updateIssue_query, {
+        issueId: id ?? '',
+        // eslint-disable-next-line id-denylist
+        body: globals.context.issue.content,
+    });
+    return { updated: true };
+}
+
 ;// CONCATENATED MODULE: ./src/index.ts
+
+
 
 
 
@@ -18883,8 +18958,18 @@ async function run() {
             }
             break;
         }
+        case Action.update: {
+            const { updated } = await updateIssue(globals);
+            if (updated) {
+                (0,core.info)(`Updated issue: ${context.issue.title}`);
+            }
+            else {
+                (0,core.setFailed)('Failed to update issue');
+            }
+            break;
+        }
         default:
-            (0,core.setFailed)('Unsupported action');
+            (0,external_process_namespaceObject.exit)(1);
     }
 }
 // eslint-disable-next-line no-void

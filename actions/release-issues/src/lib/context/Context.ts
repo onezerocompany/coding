@@ -6,6 +6,7 @@ import type { Commit } from './Commit';
 import { currentAction } from './currentAction';
 import { loadCommits } from './loadCommits';
 import type { RepoInfo } from './RepoInfo';
+import { loadIssueFromContext } from './loadIssueFromContext';
 
 export class Context {
   public readonly repo: RepoInfo;
@@ -17,7 +18,6 @@ export class Context {
 
   public constructor(input: { repo: RepoInfo }) {
     this.repo = input.repo;
-
     this.action = currentAction();
 
     switch (this.action) {
@@ -27,6 +27,9 @@ export class Context {
           comments: [],
           version: new Version(),
         });
+        break;
+      case Action.update:
+        this.issue = loadIssueFromContext();
         break;
       default:
         setFailed('Unsupported action');

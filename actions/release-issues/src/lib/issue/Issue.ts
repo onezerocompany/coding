@@ -17,12 +17,17 @@ export interface ItemSection {
 }
 
 export class Issue {
-  public number?: number;
+  public number: number;
   public version: Version;
   public comments: Comment[];
   public sections: ItemSection[];
 
-  public constructor(inputs?: { comments: Comment[]; version: Version }) {
+  public constructor(inputs?: {
+    number?: number;
+    comments: Comment[];
+    version: Version;
+  }) {
+    this.number = inputs?.number ?? -1;
     this.version = inputs?.version ?? new Version();
     this.comments = inputs?.comments ?? [];
     this.sections = [];
@@ -63,15 +68,15 @@ export class Issue {
     };
   }
 
-  public static fromJson(json: IssueJSON): Issue {
+  public static fromJson(inputs: { number: number; json: IssueJSON }): Issue {
     return new Issue({
+      number: inputs.number,
       comments: [],
-      version: Version.fromJson(json.version),
+      version: Version.fromJson(inputs.json.version),
     });
   }
 
   public setup(globals: Globals): void {
-    // this.sections = await getSections(globals);
     this.sections = getSections(globals);
   }
 

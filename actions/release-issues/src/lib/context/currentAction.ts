@@ -1,6 +1,9 @@
 import { context as eventContext } from '@actions/github';
 import { setFailed } from '@actions/core';
-import type { PushEvent } from '@octokit/webhooks-definitions/schema';
+import type {
+  IssuesEvent,
+  PushEvent,
+} from '@octokit/webhooks-definitions/schema';
 import { Action } from './Action';
 
 export function currentAction(): Action {
@@ -14,9 +17,12 @@ export function currentAction(): Action {
     return Action.create;
   }
 
-  if (eventName === 'issue_comment') {
-    // only trigger if the comment is clearing a version for release
-    return Action.comment;
+  if (eventName === 'issues') {
+    const issueEvent = eventContext.payload as IssuesEvent;
+    if (issueEvent.action === 'edited') {
+      return Action.update;
+    }
+    return Action.stop;
   }
 
   setFailed(new Error('Unsupported event'));
