@@ -18380,7 +18380,7 @@ class Item {
         return labels[this.type];
     }
     get statusLine() {
-        return `<!-- item-start:${this.id} -->\n- [ ] :${icons[this.status].code}: ${this.labels[this.status]}\n<!-- item-end:${this.id} -->`;
+        return `- [ ] :${icons[this.status].code}: ${this.labels[this.status]} <!--ID ${this.id} -->`;
     }
     get status() {
         return this.localStatus;
@@ -18533,8 +18533,13 @@ class Issue {
     }
     get content() {
         const lines = [];
-        lines.push(['<!-- JSON BEGIN', JSON.stringify(this.json), 'JSON END -->']);
-        lines.push(['### Details', `\`version: ${this.version.displayString}\``]);
+        lines.push([
+            '<!-- JSON BEGIN',
+            JSON.stringify(this.json),
+            'JSON END -->',
+            '### Details',
+            `\`version: ${this.version.displayString}\``,
+        ]);
         for (const section of this.sections) {
             lines.push([
                 `### ${section.title}`,
@@ -18543,7 +18548,7 @@ class Issue {
         }
         return lines
             .map((line) => line.join('\n'))
-            .join('\n---\n')
+            .join('\n\n---\n\n')
             .trim();
     }
     get json() {

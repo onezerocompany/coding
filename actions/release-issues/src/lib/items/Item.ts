@@ -48,9 +48,9 @@ export class Item {
   }
 
   public get statusLine(): string {
-    return `<!-- item-start:${this.id} -->\n- [ ] :${
-      icons[this.status].code
-    }: ${this.labels[this.status]}\n<!-- item-end:${this.id} -->`;
+    return `- [ ] :${icons[this.status].code}: ${
+      this.labels[this.status]
+    } <!--ID ${this.id} -->`;
   }
 
   public get status(): ItemStatus {
