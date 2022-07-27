@@ -40,23 +40,18 @@ export class Issue {
   public get content(): string {
     const lines: string[][] = [];
     lines.push(['<!-- JSON BEGIN', JSON.stringify(this.json), 'JSON END -->']);
-    lines.push([
-      '### Details',
-      `\`version: ${this.version.displayString}\``,
-      '---',
-    ]);
+    lines.push(['### Details', `\`version: ${this.version.displayString}\``]);
 
     for (const section of this.sections) {
       lines.push([
         `### ${section.title}`,
         ...section.items.map((item) => item.statusLine),
-        '---',
       ]);
     }
 
     return lines
       .map((line) => line.join('\n'))
-      .join('\n\n')
+      .join('\n---\n')
       .trim();
   }
 
