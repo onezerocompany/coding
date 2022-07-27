@@ -18254,6 +18254,8 @@ function toTitleCase(str) {
     return str.replace(/\w\S*/gu, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
 
+;// CONCATENATED MODULE: external "crypto"
+const external_crypto_namespaceObject = require("crypto");
 ;// CONCATENATED MODULE: ./src/lib/items/ItemStatus.ts
 // status of an item in a release
 var ItemStatus;
@@ -18352,6 +18354,7 @@ async function updateRelease(globals, track) {
 
 
 
+
 class Item {
     type;
     metadata;
@@ -18360,8 +18363,14 @@ class Item {
         this.type = inputs.type;
         this.metadata = inputs.metadata;
     }
+    get id() {
+        // hash the type and metadata
+        const hashContent = `${this.type}-${JSON.stringify(this.metadata)}`;
+        return (0,external_crypto_namespaceObject.createHash)('md5').update(hashContent).digest('hex');
+    }
     get json() {
         return {
+            id: this.id,
             type: this.type,
             status: this.status,
             lineStatus: this.statusLine,
@@ -18371,7 +18380,7 @@ class Item {
         return labels[this.type];
     }
     get statusLine() {
-        return `- :${icons[this.status].code}: ${this.labels[this.status]}`;
+        return `<!-- item-start:${this.id} -->\n- [ ] :${icons[this.status].code}: ${this.labels[this.status]}\n<!-- item-end:${this.id} -->`;
     }
     get status() {
         return this.localStatus;

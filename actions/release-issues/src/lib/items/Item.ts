@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import type { VersionTrack } from '@onezerocompany/commit';
 import type { Globals } from '../../globals';
 import { icons } from './icons';
@@ -7,6 +8,7 @@ import { labels } from './labels';
 import { updateRelease } from './update/updateRelease';
 
 export interface ItemJSON {
+  id: string;
   type: ItemType;
   status: ItemStatus;
   lineStatus: string;
@@ -26,8 +28,15 @@ export class Item {
     this.metadata = inputs.metadata;
   }
 
+  public get id(): string {
+    // hash the type and metadata
+    const hashContent = `${this.type}-${JSON.stringify(this.metadata)}`;
+    return createHash('md5').update(hashContent).digest('hex');
+  }
+
   public get json(): ItemJSON {
     return {
+      id: this.id,
       type: this.type,
       status: this.status,
       lineStatus: this.statusLine,
@@ -39,7 +48,9 @@ export class Item {
   }
 
   public get statusLine(): string {
-    return `- :${icons[this.status].code}: ${this.labels[this.status]}`;
+    return `<!-- item-start:${this.id} -->\n- [ ] :${
+      icons[this.status].code
+    }: ${this.labels[this.status]}\n<!-- item-end:${this.id} -->`;
   }
 
   public get status(): ItemStatus {
