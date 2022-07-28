@@ -18323,19 +18323,45 @@ const labels = {
     },
 };
 
+;// CONCATENATED MODULE: ./src/lib/items/itemChecked.ts
+
+
+function itemChecked(globals, item) {
+    if (github.context.eventName === 'issues' &&
+        github.context.action === 'edited') {
+        const issueEvent = github.context.payload;
+        const previousCleared = globals.context.issue.sections
+            .flatMap((section) => section.items)
+            .find((sectionItem) => sectionItem.id === item.id)?.status ===
+            ItemStatus.succeeded;
+        const currentCleared = issueEvent.issue.body
+            .split('\n')
+            .find((line) => line.includes(`<!--ID ${item.id} ID-->`))
+            ?.includes('- [x]') === true;
+        if (!previousCleared && currentCleared) {
+            return true;
+        }
+    }
+    return false;
+}
+
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateRelease.ts
 
-async function updateRelease(globals, track) {
+
+async function updateRelease(globals, item) {
     return new Promise((resolve) => {
+        const { track } = item.metadata;
         if (!track) {
             resolve(ItemStatus.unknown);
             return;
         }
         const trackSettings = globals.settings[track];
         if (trackSettings.release.manual) {
-            // check if the issue has a comment that releases the track
-            if (globals.context.issue.comments.some((comment) => comment.releasesTrack.releases &&
-                comment.releasesTrack.track === track)) {
+            // either the release is already released or the line has a checkmark in it
+            if (item.status === ItemStatus.succeeded) {
+                resolve(ItemStatus.succeeded);
+            }
+            else if (itemChecked(globals, item)) {
                 resolve(ItemStatus.succeeded);
             }
             else {
@@ -18387,7 +18413,7 @@ class Item {
     async update(globals) {
         switch (this.type) {
             case ItemType.release:
-                this.localStatus = await updateRelease(globals, this.metadata.track);
+                this.localStatus = await updateRelease(globals, this);
                 break;
             default:
                 throw new Error(`Unknown item type: ${this.type}`);
@@ -18519,12 +18545,10 @@ function getSections(globals) {
 class Issue {
     number;
     version;
-    comments;
     sections;
     constructor(inputs) {
         this.number = inputs?.number ?? -1;
         this.version = inputs?.version ?? new Version.Version();
-        this.comments = inputs?.comments ?? [];
         this.sections = [];
     }
     get title() {
@@ -18561,7 +18585,6 @@ class Issue {
     static fromJson(inputs) {
         return new Issue({
             number: inputs.number,
-            comments: [],
             version: Version.Version.fromJson(inputs.json.version),
         });
     }
@@ -18680,7 +18703,6 @@ class Context {
             case Action.create:
                 this.commits = loadCommits();
                 this.issue = new Issue({
-                    comments: [],
                     version: new dist/* Version */.Gf(),
                 });
                 break;

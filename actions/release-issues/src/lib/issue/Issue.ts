@@ -2,7 +2,6 @@ import type { VersionJSON } from '@onezerocompany/commit/dist/lib/versions/Versi
 import { Version } from '@onezerocompany/commit/dist/lib/versions/Version';
 import type { Globals } from '../../globals';
 import type { Item, ItemJSON } from '../items/Item';
-import type { Comment } from './Comment';
 import { getSections } from './getSections';
 
 export interface IssueJSON {
@@ -20,17 +19,11 @@ export interface ItemSection {
 export class Issue {
   public number: number;
   public version: Version;
-  public comments: Comment[];
   public sections: ItemSection[];
 
-  public constructor(inputs?: {
-    number?: number;
-    comments: Comment[];
-    version: Version;
-  }) {
+  public constructor(inputs?: { number?: number; version: Version }) {
     this.number = inputs?.number ?? -1;
     this.version = inputs?.version ?? new Version();
-    this.comments = inputs?.comments ?? [];
     this.sections = [];
   }
 
@@ -75,7 +68,6 @@ export class Issue {
   public static fromJson(inputs: { number: number; json: IssueJSON }): Issue {
     return new Issue({
       number: inputs.number,
-      comments: [],
       version: Version.fromJson(inputs.json.version),
     });
   }

@@ -58,7 +58,7 @@ export class Item {
   public async update(globals: Globals): Promise<ItemStatus> {
     switch (this.type) {
       case ItemType.release:
-        this.localStatus = await updateRelease(globals, this.metadata.track);
+        this.localStatus = await updateRelease(globals, this);
         break;
       default:
         throw new Error(`Unknown item type: ${this.type}`);

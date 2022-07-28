@@ -24,7 +24,6 @@ export class Context {
       case Action.create:
         this.commits = loadCommits();
         this.issue = new Issue({
-          comments: [],
           version: new Version(),
         });
         break;
