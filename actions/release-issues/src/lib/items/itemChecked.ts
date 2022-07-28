@@ -1,3 +1,4 @@
+import { debug } from '@actions/core';
 import { context as githubContext } from '@actions/github';
 import type { IssuesEvent } from '@octokit/webhooks-definitions/schema';
 import type { Globals } from '../../globals';
@@ -22,6 +23,9 @@ export function itemChecked(globals: Globals, item: Item): boolean {
         .split('\n')
         .find((line) => line.includes(`<!--ID ${item.id} ID-->`))
         ?.includes('- [x]') === true;
+
+    debug(`Previous cleared: ${previousCleared ? 'true' : 'false'}`);
+    debug(`Current cleared: ${currentCleared ? 'true' : 'false'}`);
 
     if (!previousCleared && currentCleared) {
       return true;

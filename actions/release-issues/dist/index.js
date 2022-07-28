@@ -18326,6 +18326,7 @@ const labels = {
 ;// CONCATENATED MODULE: ./src/lib/items/itemChecked.ts
 
 
+
 function itemChecked(globals, item) {
     if (github.context.eventName === 'issues' &&
         github.context.action === 'edited') {
@@ -18338,6 +18339,8 @@ function itemChecked(globals, item) {
             .split('\n')
             .find((line) => line.includes(`<!--ID ${item.id} ID-->`))
             ?.includes('- [x]') === true;
+        (0,core.debug)(`Previous cleared: ${previousCleared ? 'true' : 'false'}`);
+        (0,core.debug)(`Current cleared: ${currentCleared ? 'true' : 'false'}`);
         if (!previousCleared && currentCleared) {
             return true;
         }
