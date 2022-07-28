@@ -17,6 +17,7 @@ describe('issues', () => {
         template: '{major}.{minor}.{patch}-{track}',
         track: 'live',
       },
+      items: [],
     });
   });
 });

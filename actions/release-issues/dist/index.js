@@ -18380,7 +18380,7 @@ class Item {
         return labels[this.type];
     }
     get statusLine() {
-        return `- [ ] :${icons[this.status].code}: ${this.labels[this.status]} <!--ID ${this.id} -->`;
+        return `- [ ] :${icons[this.status].code}: ${this.labels[this.status]} <!--ID ${this.id} ID-->`;
     }
     get status() {
         return this.localStatus;
@@ -18556,6 +18556,7 @@ class Issue {
             number: this.number,
             title: this.title,
             version: this.version.json,
+            items: this.sections.flatMap((section) => section.items.map((item) => item.json)),
         };
     }
     static fromJson(inputs) {

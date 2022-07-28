@@ -50,7 +50,7 @@ export class Item {
   public get statusLine(): string {
     return `- [ ] :${icons[this.status].code}: ${
       this.labels[this.status]
-    } <!--ID ${this.id} -->`;
+    } <!--ID ${this.id} ID-->`;
   }
 
   public get status(): ItemStatus {

@@ -1,7 +1,7 @@
 import type { VersionJSON } from '@onezerocompany/commit/dist/lib/versions/Version';
 import { Version } from '@onezerocompany/commit/dist/lib/versions/Version';
 import type { Globals } from '../../globals';
-import type { Item } from '../items/Item';
+import type { Item, ItemJSON } from '../items/Item';
 import type { Comment } from './Comment';
 import { getSections } from './getSections';
 
@@ -9,6 +9,7 @@ export interface IssueJSON {
   number: number | undefined;
   title: string;
   version: VersionJSON;
+  items: ItemJSON[];
 }
 
 export interface ItemSection {
@@ -65,6 +66,9 @@ export class Issue {
       number: this.number,
       title: this.title,
       version: this.version.json,
+      items: this.sections.flatMap((section) =>
+        section.items.map((item) => item.json),
+      ),
     };
   }
 
