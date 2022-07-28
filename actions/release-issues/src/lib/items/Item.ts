@@ -11,7 +11,6 @@ export interface ItemJSON {
   id: string;
   type: ItemType;
   status: ItemStatus;
-  lineStatus: string;
 }
 
 export interface ItemMetadata {
@@ -39,7 +38,6 @@ export class Item {
       id: this.id,
       type: this.type,
       status: this.status,
-      lineStatus: this.statusLine,
     };
   }
 

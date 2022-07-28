@@ -18373,7 +18373,6 @@ class Item {
             id: this.id,
             type: this.type,
             status: this.status,
-            lineStatus: this.statusLine,
         };
     }
     get labels() {
