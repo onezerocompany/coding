@@ -18421,7 +18421,7 @@ class Item {
             default:
                 throw new Error(`Unknown item type: ${this.type}`);
         }
-        return this.status;
+        return this.localStatus;
     }
 }
 
@@ -18595,14 +18595,9 @@ class Issue {
         this.sections = getSections(globals);
     }
     async update(globals) {
-        // loop over all items
-        const updates = [];
-        for (const section of this.sections) {
-            for (const item of section.items) {
-                updates.push(item.update(globals));
-            }
-        }
-        await Promise.all(updates);
+        await Promise.all(this.sections.flatMap((section) => section.items.map(async (item) => {
+            await item.update(globals);
+        })));
     }
 }
 

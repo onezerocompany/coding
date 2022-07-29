@@ -77,13 +77,12 @@ export class Issue {
   }
 
   public async update(globals: Globals): Promise<void> {
-    // loop over all items
-    const updates = [];
-    for (const section of this.sections) {
-      for (const item of section.items) {
-        updates.push(item.update(globals));
-      }
-    }
-    await Promise.all(updates);
+    await Promise.all(
+      this.sections.flatMap((section) =>
+        section.items.map(async (item) => {
+          await item.update(globals);
+        }),
+      ),
+    );
   }
 }

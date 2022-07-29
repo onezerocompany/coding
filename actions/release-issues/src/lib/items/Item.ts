@@ -63,6 +63,6 @@ export class Item {
       default:
         throw new Error(`Unknown item type: ${this.type}`);
     }
-    return this.status;
+    return this.localStatus;
   }
 }
