@@ -1,5 +1,6 @@
 import { createHash } from 'crypto';
 import type { VersionTrack } from '@onezerocompany/commit';
+import { debug } from '@actions/core';
 import type { Globals } from '../../globals';
 import { icons } from './icons';
 import { ItemStatus } from './ItemStatus';
@@ -56,6 +57,7 @@ export class Item {
   }
 
   public async update(globals: Globals): Promise<ItemStatus> {
+    debug(`updating item: ${this.id}`);
     switch (this.type) {
       case ItemType.release:
         this.localStatus = await updateRelease(globals, this);

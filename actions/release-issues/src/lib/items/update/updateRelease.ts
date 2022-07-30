@@ -7,24 +7,17 @@ export async function updateRelease(
   globals: Globals,
   item: Item,
 ): Promise<ItemStatus> {
-  return new Promise((resolve) => {
-    const { track } = item.metadata;
-    if (!track) {
-      resolve(ItemStatus.unknown);
-      return;
+  const { track } = item.metadata;
+  if (!track) {
+    return ItemStatus.unknown;
+  }
+  const trackSettings = globals.settings[track];
+  if (trackSettings.release.manual) {
+    // either the release is already released or the line has a checkmark in it
+    if (item.status === ItemStatus.succeeded || itemChecked(globals, item)) {
+      return ItemStatus.succeeded;
     }
-    const trackSettings = globals.settings[track];
-    if (trackSettings.release.manual) {
-      // either the release is already released or the line has a checkmark in it
-      if (item.status === ItemStatus.succeeded) {
-        resolve(ItemStatus.succeeded);
-      } else if (itemChecked(globals, item)) {
-        resolve(ItemStatus.succeeded);
-      } else {
-        resolve(ItemStatus.pending);
-      }
-    } else {
-      resolve(ItemStatus.succeeded);
-    }
-  });
+    return ItemStatus.pending;
+  }
+  return ItemStatus.succeeded;
 }

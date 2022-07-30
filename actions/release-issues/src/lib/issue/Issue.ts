@@ -72,6 +72,15 @@ export class Issue {
     });
   }
 
+  public itemForId(id: string): Item | null {
+    for (const section of this.sections) {
+      for (const item of section.items) {
+        if (item.id === id) return item;
+      }
+    }
+    return null;
+  }
+
   public setup(globals: Globals): void {
     this.sections = getSections(globals);
   }
