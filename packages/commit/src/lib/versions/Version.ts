@@ -5,21 +5,14 @@ export interface VersionJSON {
   major: number;
   minor: number;
   patch: number;
-  track: string;
   template: string;
-  includeTrack: boolean;
-  includeRelease: boolean;
-  display: string;
 }
 
 export class Version {
   public major: number;
   public minor: number;
   public patch: number;
-  public track: VersionTrack;
   public template: string;
-  public includeTrack: boolean;
-  public includeRelease: boolean;
 
   public constructor(inputs?: {
     major?: number;
@@ -33,24 +26,31 @@ export class Version {
     this.major = inputs?.major ?? 0;
     this.minor = inputs?.minor ?? 0;
     this.patch = inputs?.patch ?? 1;
-    this.track = inputs?.track ?? VersionTrack.live;
     this.template = inputs?.template ?? '{major}.{minor}.{patch}-{track}';
-    this.includeTrack = inputs?.includeTrack ?? true;
-    this.includeRelease = inputs?.includeRelease ?? false;
   }
 
-  public get displayString(): string {
+  public displayString(
+    inputs: {
+      includeTrack: boolean;
+      includeRelease: boolean;
+      track: VersionTrack;
+    } = {
+      includeTrack: false,
+      includeRelease: false,
+      track: VersionTrack.live,
+    },
+  ): string {
     let display = this.template;
     display = display.replace(/\{major\}/gu, this.major.toString());
     display = display.replace(/\{minor\}/gu, this.minor.toString());
     display = display.replace(/\{patch\}/gu, this.patch.toString());
     if (
-      (this.track === VersionTrack.live && !this.includeRelease) ||
-      !this.includeTrack
+      (inputs.track === VersionTrack.live && !inputs.includeRelease) ||
+      !inputs.includeTrack
     ) {
       display = display.replace(/\{track\}/gu, '');
     } else {
-      display = display.replace(/\{track\}/gu, this.track.toString());
+      display = display.replace(/\{track\}/gu, inputs.track.toString());
     }
 
     // remove all non-alphanumeric characters leading and trailing
@@ -65,11 +65,7 @@ export class Version {
       major: this.major,
       minor: this.minor,
       patch: this.patch,
-      track: this.track,
       template: this.template,
-      includeTrack: this.includeTrack,
-      includeRelease: this.includeRelease,
-      display: this.displayString,
     };
   }
 
@@ -95,21 +91,7 @@ export class Version {
       major: json.major,
       minor: json.minor,
       patch: json.patch,
-      track: ((): VersionTrack => {
-        switch (json.track) {
-          case 'release':
-            return VersionTrack.live;
-          case 'alpha':
-            return VersionTrack.alpha;
-          case 'beta':
-            return VersionTrack.beta;
-          default:
-            return VersionTrack.live;
-        }
-      })(),
       template: json.template,
-      includeTrack: json.includeTrack,
-      includeRelease: json.includeRelease,
     });
   }
 

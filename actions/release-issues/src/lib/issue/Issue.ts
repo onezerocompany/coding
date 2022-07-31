@@ -9,6 +9,7 @@ export interface IssueJSON {
   title: string;
   version: VersionJSON;
   items: ItemJSON[];
+  commitish: string;
 }
 
 export interface ItemSection {
@@ -20,15 +21,21 @@ export class Issue {
   public number: number;
   public version: Version;
   public sections: ItemSection[];
+  public commitish: string;
 
-  public constructor(inputs?: { number?: number; version: Version }) {
+  public constructor(inputs?: {
+    number?: number;
+    version: Version;
+    commitish: string;
+  }) {
     this.number = inputs?.number ?? -1;
     this.version = inputs?.version ?? new Version();
     this.sections = [];
+    this.commitish = inputs?.commitish ?? '';
   }
 
   public get title(): string {
-    return `🚀 Release ${this.version.displayString}`;
+    return `🚀 Release ${this.version.displayString()}`;
   }
 
   public get content(): string {
@@ -38,7 +45,7 @@ export class Issue {
       JSON.stringify(this.json),
       'JSON END -->',
       '### Details',
-      `\`version: ${this.version.displayString}\``,
+      `\`version: ${this.version.displayString()}\``,
     ]);
 
     for (const section of this.sections) {
@@ -62,6 +69,7 @@ export class Issue {
       items: this.sections.flatMap((section) =>
         section.items.map((item) => item.json),
       ),
+      commitish: this.commitish,
     };
   }
 
@@ -69,6 +77,7 @@ export class Issue {
     return new Issue({
       number: inputs.number,
       version: Version.fromJson(inputs.json.version),
+      commitish: inputs.json.commitish,
     });
   }
 

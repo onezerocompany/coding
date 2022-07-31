@@ -9604,22 +9604,23 @@ class Version {
         this.major = inputs?.major ?? 0;
         this.minor = inputs?.minor ?? 0;
         this.patch = inputs?.patch ?? 1;
-        this.track = inputs?.track ?? VersionTrack_1.VersionTrack.live;
         this.template = inputs?.template ?? '{major}.{minor}.{patch}-{track}';
-        this.includeTrack = inputs?.includeTrack ?? true;
-        this.includeRelease = inputs?.includeRelease ?? false;
     }
-    get displayString() {
+    displayString(inputs = {
+        includeTrack: false,
+        includeRelease: false,
+        track: VersionTrack_1.VersionTrack.live,
+    }) {
         let display = this.template;
         display = display.replace(/\{major\}/gu, this.major.toString());
         display = display.replace(/\{minor\}/gu, this.minor.toString());
         display = display.replace(/\{patch\}/gu, this.patch.toString());
-        if ((this.track === VersionTrack_1.VersionTrack.live && !this.includeRelease) ||
-            !this.includeTrack) {
+        if ((inputs.track === VersionTrack_1.VersionTrack.live && !inputs.includeRelease) ||
+            !inputs.includeTrack) {
             display = display.replace(/\{track\}/gu, '');
         }
         else {
-            display = display.replace(/\{track\}/gu, this.track.toString());
+            display = display.replace(/\{track\}/gu, inputs.track.toString());
         }
         // remove all non-alphanumeric characters leading and trailing
         display = display.replace(/[^a-zA-Z0-9]*$/gu, '');
@@ -9631,11 +9632,7 @@ class Version {
             major: this.major,
             minor: this.minor,
             patch: this.patch,
-            track: this.track,
             template: this.template,
-            includeTrack: this.includeTrack,
-            includeRelease: this.includeRelease,
-            display: this.displayString,
         };
     }
     static fromJson(json) {
@@ -9643,21 +9640,7 @@ class Version {
             major: json.major,
             minor: json.minor,
             patch: json.patch,
-            track: (() => {
-                switch (json.track) {
-                    case 'release':
-                        return VersionTrack_1.VersionTrack.live;
-                    case 'alpha':
-                        return VersionTrack_1.VersionTrack.alpha;
-                    case 'beta':
-                        return VersionTrack_1.VersionTrack.beta;
-                    default:
-                        return VersionTrack_1.VersionTrack.live;
-                }
-            })(),
             template: json.template,
-            includeTrack: json.includeTrack,
-            includeRelease: json.includeRelease,
         });
     }
     bump(bump) {
@@ -18343,15 +18326,36 @@ function itemChecked(globals, item) {
     return false;
 }
 
+;// CONCATENATED MODULE: ./src/lib/items/update/createRelease.ts
+async function createRelease(globals, item) {
+    const { track } = item.metadata;
+    if (!track) {
+        throw new Error(`No track specified for item: ${item.id}`);
+    }
+    const releaseName = globals.context.issue.version.displayString({
+        track,
+        includeRelease: false,
+        includeTrack: true,
+    });
+    const tag = globals.context.issue.version.displayString({
+        track,
+        includeRelease: false,
+        includeTrack: false,
+    });
+    await globals.octokit.rest.repos.createRelease({
+        owner: globals.context.repo.owner,
+        repo: globals.context.repo.repo,
+        tag_name: tag,
+        target_commitish: globals.context.issue.commitish,
+        name: releaseName,
+    });
+}
+
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateRelease.ts
 
 
-async function updateRelease(globals, item) {
-    const { track } = item.metadata;
-    if (!track) {
-        return ItemStatus.unknown;
-    }
-    const trackSettings = globals.settings[track];
+
+function state(trackSettings, item, globals) {
     if (trackSettings.release.manual) {
         // either the release is already released or the line has a checkmark in it
         if (item.status === ItemStatus.succeeded || itemChecked(globals, item)) {
@@ -18360,6 +18364,17 @@ async function updateRelease(globals, item) {
         return ItemStatus.pending;
     }
     return ItemStatus.succeeded;
+}
+async function updateRelease(globals, item) {
+    const { track } = item.metadata;
+    if (!track)
+        return ItemStatus.unknown;
+    const trackSettings = globals.settings[track];
+    const newState = state(trackSettings, item, globals);
+    if (newState === ItemStatus.succeeded && newState !== item.status) {
+        await createRelease(globals, item);
+    }
+    return newState;
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/Item.ts
@@ -18536,13 +18551,15 @@ class Issue {
     number;
     version;
     sections;
+    commitish;
     constructor(inputs) {
         this.number = inputs?.number ?? -1;
         this.version = inputs?.version ?? new Version.Version();
         this.sections = [];
+        this.commitish = inputs?.commitish ?? '';
     }
     get title() {
-        return `🚀 Release ${this.version.displayString}`;
+        return `🚀 Release ${this.version.displayString()}`;
     }
     get content() {
         const lines = [];
@@ -18551,7 +18568,7 @@ class Issue {
             JSON.stringify(this.json),
             'JSON END -->',
             '### Details',
-            `\`version: ${this.version.displayString}\``,
+            `\`version: ${this.version.displayString()}\``,
         ]);
         for (const section of this.sections) {
             lines.push([
@@ -18570,12 +18587,14 @@ class Issue {
             title: this.title,
             version: this.version.json,
             items: this.sections.flatMap((section) => section.items.map((item) => item.json)),
+            commitish: this.commitish,
         };
     }
     static fromJson(inputs) {
         return new Issue({
             number: inputs.number,
             version: Version.Version.fromJson(inputs.json.version),
+            commitish: inputs.json.commitish,
         });
     }
     itemForId(id) {
@@ -18626,6 +18645,14 @@ function currentAction() {
 
 
 
+function lastCommit() {
+    const { eventName } = github.context;
+    if (eventName === 'push') {
+        const event = github.context.payload;
+        return event.after;
+    }
+    return '';
+}
 function loadCommits() {
     const { eventName } = github.context;
     if (eventName === 'push') {
@@ -18698,6 +18725,7 @@ class Context {
                 this.commits = loadCommits();
                 this.issue = new Issue({
                     version: new dist/* Version */.Gf(),
+                    commitish: lastCommit(),
                 });
                 break;
             case Action.update:

@@ -9604,22 +9604,23 @@ class Version {
         this.major = inputs?.major ?? 0;
         this.minor = inputs?.minor ?? 0;
         this.patch = inputs?.patch ?? 1;
-        this.track = inputs?.track ?? VersionTrack_1.VersionTrack.live;
         this.template = inputs?.template ?? '{major}.{minor}.{patch}-{track}';
-        this.includeTrack = inputs?.includeTrack ?? true;
-        this.includeRelease = inputs?.includeRelease ?? false;
     }
-    get displayString() {
+    displayString(inputs = {
+        includeTrack: false,
+        includeRelease: false,
+        track: VersionTrack_1.VersionTrack.live,
+    }) {
         let display = this.template;
         display = display.replace(/\{major\}/gu, this.major.toString());
         display = display.replace(/\{minor\}/gu, this.minor.toString());
         display = display.replace(/\{patch\}/gu, this.patch.toString());
-        if ((this.track === VersionTrack_1.VersionTrack.live && !this.includeRelease) ||
-            !this.includeTrack) {
+        if ((inputs.track === VersionTrack_1.VersionTrack.live && !inputs.includeRelease) ||
+            !inputs.includeTrack) {
             display = display.replace(/\{track\}/gu, '');
         }
         else {
-            display = display.replace(/\{track\}/gu, this.track.toString());
+            display = display.replace(/\{track\}/gu, inputs.track.toString());
         }
         // remove all non-alphanumeric characters leading and trailing
         display = display.replace(/[^a-zA-Z0-9]*$/gu, '');
@@ -9631,11 +9632,7 @@ class Version {
             major: this.major,
             minor: this.minor,
             patch: this.patch,
-            track: this.track,
             template: this.template,
-            includeTrack: this.includeTrack,
-            includeRelease: this.includeRelease,
-            display: this.displayString,
         };
     }
     static fromJson(json) {
@@ -9643,21 +9640,7 @@ class Version {
             major: json.major,
             minor: json.minor,
             patch: json.patch,
-            track: (() => {
-                switch (json.track) {
-                    case 'release':
-                        return VersionTrack_1.VersionTrack.live;
-                    case 'alpha':
-                        return VersionTrack_1.VersionTrack.alpha;
-                    case 'beta':
-                        return VersionTrack_1.VersionTrack.beta;
-                    default:
-                        return VersionTrack_1.VersionTrack.live;
-                }
-            })(),
             template: json.template,
-            includeTrack: json.includeTrack,
-            includeRelease: json.includeRelease,
         });
     }
     bump(bump) {

@@ -4,7 +4,7 @@ import { Issue } from '../issue/Issue';
 import { Action } from './Action';
 import type { Commit } from './Commit';
 import { currentAction } from './currentAction';
-import { loadCommits } from './loadCommits';
+import { lastCommit, loadCommits } from './loadCommits';
 import type { RepoInfo } from './RepoInfo';
 import { loadIssueFromContext } from './loadIssueFromContext';
 
@@ -25,6 +25,7 @@ export class Context {
         this.commits = loadCommits();
         this.issue = new Issue({
           version: new Version(),
+          commitish: lastCommit(),
         });
         break;
       case Action.update:

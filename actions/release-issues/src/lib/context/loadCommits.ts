@@ -4,6 +4,15 @@ import type { PushEvent } from '@octokit/webhooks-definitions/schema';
 import { parseMessage } from '@onezerocompany/commit';
 import type { Commit } from './Commit';
 
+export function lastCommit(): string {
+  const { eventName } = eventContext;
+  if (eventName === 'push') {
+    const event = eventContext.payload as PushEvent;
+    return event.after;
+  }
+  return '';
+}
+
 export function loadCommits(): Commit[] {
   const { eventName } = eventContext;
   if (eventName === 'push') {
