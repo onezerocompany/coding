@@ -1,6 +1,7 @@
 import type { Globals } from '../../../globals';
 import type { Item } from '../Item';
 import { ItemStatus } from '../ItemStatus';
+import { ItemType } from '../ItemType';
 
 const query = `
   query release(
@@ -55,10 +56,18 @@ export async function updateReleaseCreation(
   globals: Globals,
   item: Item,
 ): Promise<ItemStatus> {
-  if (item.status !== ItemStatus.succeeded) {
-    const { track } = item.metadata;
-    if (!track) return ItemStatus.unknown;
+  const { track } = item.metadata;
+  if (!track) return ItemStatus.unknown;
 
+  const clearanceItem = globals.context.issue.itemForType(
+    ItemType.releaseClearance,
+    track,
+  );
+
+  if (
+    item.status !== ItemStatus.succeeded ||
+    clearanceItem?.status !== ItemStatus.succeeded
+  ) {
     const tag = globals.context.issue.version.displayString({
       track,
       includeRelease: false,

@@ -18397,6 +18397,7 @@ async function updateReleaseClearance(globals, item) {
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseCreation.ts
 
+
 const query = `
   query release(
     $owner:String!,
@@ -18434,10 +18435,12 @@ async function releaseExists(globals, tag) {
     }
 }
 async function updateReleaseCreation(globals, item) {
-    if (item.status !== ItemStatus.succeeded) {
-        const { track } = item.metadata;
-        if (!track)
-            return ItemStatus.unknown;
+    const { track } = item.metadata;
+    if (!track)
+        return ItemStatus.unknown;
+    const clearanceItem = globals.context.issue.itemForType(ItemType.releaseClearance, track);
+    if (item.status !== ItemStatus.succeeded ||
+        clearanceItem?.status !== ItemStatus.succeeded) {
         const tag = globals.context.issue.version.displayString({
             track,
             includeRelease: false,
