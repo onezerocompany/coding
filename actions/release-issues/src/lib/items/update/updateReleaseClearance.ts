@@ -3,7 +3,7 @@ import type { TrackSettings } from '../../settings/TrackSettings';
 import type { Item } from '../Item';
 import { itemChecked } from '../itemChecked';
 import { ItemStatus } from '../ItemStatus';
-import { createRelease } from './createRelease';
+import { createRelease } from '../../releases/createRelease';
 
 function state(
   trackSettings: TrackSettings,
@@ -20,7 +20,7 @@ function state(
   return ItemStatus.succeeded;
 }
 
-export async function updateRelease(
+export async function updateReleaseClearance(
   globals: Globals,
   item: Item,
 ): Promise<ItemStatus> {

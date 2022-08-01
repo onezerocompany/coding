@@ -6,7 +6,8 @@ import { icons } from './icons';
 import { ItemStatus } from './ItemStatus';
 import { ItemType } from './ItemType';
 import { labels } from './labels';
-import { updateRelease } from './update/updateRelease';
+import { updateReleaseClearance } from './update/updateReleaseClearance';
+import { updateReleaseCreation } from './update/updateReleaseCreation';
 
 export interface ItemJSON {
   id: string;
@@ -59,8 +60,11 @@ export class Item {
   public async update(globals: Globals): Promise<ItemStatus> {
     debug(`updating item: ${this.id}`);
     switch (this.type) {
-      case ItemType.release:
-        this.localStatus = await updateRelease(globals, this);
+      case ItemType.releaseClearance:
+        this.localStatus = await updateReleaseClearance(globals, this);
+        break;
+      case ItemType.releaseCreation:
+        this.localStatus = await updateReleaseCreation(globals, this);
         break;
       default:
         throw new Error(`Unknown item type: ${this.type}`);

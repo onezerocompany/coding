@@ -1,5 +1,6 @@
 export enum ItemType {
-  release = 'release',
+  releaseClearance = 'releaseClearance',
+  releaseCreation = 'releaseCreation',
   coverage = 'coverage',
   tests = 'tests',
 }

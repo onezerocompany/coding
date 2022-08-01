@@ -1,3 +1,4 @@
+import type { VersionTrack } from '@onezerocompany/commit';
 import { orderedTracks } from '@onezerocompany/commit';
 import type { Globals } from '../../globals';
 import { toTitleCase } from '../../utils/titlecase';
@@ -5,6 +6,23 @@ import { Item } from '../items/Item';
 import { ItemType } from '../items/ItemType';
 import { TrackSettings } from '../settings/TrackSettings';
 import type { ItemSection } from './Issue';
+
+function releasingItems(track: VersionTrack): Item[] {
+  return [
+    new Item({
+      type: ItemType.releaseClearance,
+      metadata: {
+        track,
+      },
+    }),
+    new Item({
+      type: ItemType.releaseCreation,
+      metadata: {
+        track,
+      },
+    }),
+  ];
+}
 
 export function getSections(globals: Globals): ItemSection[] {
   const { settings } = globals;
@@ -16,14 +34,7 @@ export function getSections(globals: Globals): ItemSection[] {
       json: settings[track],
     });
     if (trackSettings.enabled) {
-      items.push(
-        new Item({
-          type: ItemType.release,
-          metadata: {
-            track,
-          },
-        }),
-      );
+      items.push(...releasingItems(track));
       sections.push({
         title: toTitleCase(track),
         items,

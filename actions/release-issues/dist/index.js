@@ -18271,7 +18271,8 @@ const icons = {
 ;// CONCATENATED MODULE: ./src/lib/items/ItemType.ts
 var ItemType;
 (function (ItemType) {
-    ItemType["release"] = "release";
+    ItemType["releaseClearance"] = "releaseClearance";
+    ItemType["releaseCreation"] = "releaseCreation";
     ItemType["coverage"] = "coverage";
     ItemType["tests"] = "tests";
 })(ItemType || (ItemType = {}));
@@ -18280,13 +18281,21 @@ var ItemType;
 
 
 const labels = {
-    [ItemType.release]: {
-        [ItemStatus.succeeded]: 'Release was cleared successfully',
+    [ItemType.releaseClearance]: {
+        [ItemStatus.succeeded]: 'Release was cleared',
         [ItemStatus.failed]: 'Release was declined',
-        [ItemStatus.pending]: 'Waiting for release',
+        [ItemStatus.pending]: 'Waiting for clearance (check the box to release)',
         [ItemStatus.inProgress]: 'Release in progress',
         [ItemStatus.skipped]: 'Release was skipped',
         [ItemStatus.unknown]: 'Release status unknown',
+    },
+    [ItemType.releaseCreation]: {
+        [ItemStatus.succeeded]: 'Release was created successfully',
+        [ItemStatus.failed]: 'Release was not created',
+        [ItemStatus.pending]: 'Waiting for release creation',
+        [ItemStatus.inProgress]: 'Release creation in progress',
+        [ItemStatus.skipped]: 'Release creation was skipped',
+        [ItemStatus.unknown]: 'Release creation status unknown',
     },
     [ItemType.coverage]: {
         [ItemStatus.succeeded]: 'Coverage is sufficient',
@@ -18326,7 +18335,7 @@ function itemChecked(globals, item) {
     return false;
 }
 
-;// CONCATENATED MODULE: ./src/lib/items/update/createRelease.ts
+;// CONCATENATED MODULE: ./src/lib/releases/createRelease.ts
 
 
 async function createRelease(globals, item) {
@@ -18349,7 +18358,7 @@ async function createRelease(globals, item) {
     });
 }
 
-;// CONCATENATED MODULE: ./src/lib/items/update/updateRelease.ts
+;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseClearance.ts
 
 
 
@@ -18363,7 +18372,7 @@ function state(trackSettings, item, globals) {
     }
     return ItemStatus.succeeded;
 }
-async function updateRelease(globals, item) {
+async function updateReleaseClearance(globals, item) {
     const { track } = item.metadata;
     if (!track)
         return ItemStatus.unknown;
@@ -18375,7 +18384,51 @@ async function updateRelease(globals, item) {
     return newState;
 }
 
+;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseCreation.ts
+
+const query = `
+  query release(
+    $owner:String!,
+    $repo:String!,
+    $tag:String!
+  ) {
+    repository(
+      owner:$owner,
+      name:$repo
+    ) {
+      release(tagName:$tag) {
+        name
+        tagName
+        isDraft
+      }
+    }
+  }
+`;
+async function updateReleaseCreation(globals, item) {
+    if (item.status !== ItemStatus.succeeded) {
+        const { track } = item.metadata;
+        if (!track)
+            return ItemStatus.unknown;
+        const tag = globals.context.issue.version.displayString({
+            track,
+            includeRelease: false,
+            includeTrack: true,
+        });
+        const { repository } = await globals.graphql({
+            query,
+        });
+        if (repository?.release?.name === tag &&
+            repository.release.tagName === tag &&
+            !repository.release.isDraft) {
+            return ItemStatus.succeeded;
+        }
+        return ItemStatus.pending;
+    }
+    return item.status;
+}
+
 ;// CONCATENATED MODULE: ./src/lib/items/Item.ts
+
 
 
 
@@ -18415,8 +18468,11 @@ class Item {
     async update(globals) {
         (0,core.debug)(`updating item: ${this.id}`);
         switch (this.type) {
-            case ItemType.release:
-                this.localStatus = await updateRelease(globals, this);
+            case ItemType.releaseClearance:
+                this.localStatus = await updateReleaseClearance(globals, this);
+                break;
+            case ItemType.releaseCreation:
+                this.localStatus = await updateReleaseCreation(globals, this);
                 break;
             default:
                 throw new Error(`Unknown item type: ${this.type}`);
@@ -18517,6 +18573,22 @@ class TrackSettings {
 
 
 
+function releasingItems(track) {
+    return [
+        new Item({
+            type: ItemType.releaseClearance,
+            metadata: {
+                track,
+            },
+        }),
+        new Item({
+            type: ItemType.releaseCreation,
+            metadata: {
+                track,
+            },
+        }),
+    ];
+}
 function getSections(globals) {
     const { settings } = globals;
     const sections = [];
@@ -18527,12 +18599,7 @@ function getSections(globals) {
             json: settings[track],
         });
         if (trackSettings.enabled) {
-            items.push(new Item({
-                type: ItemType.release,
-                metadata: {
-                    track,
-                },
-            }));
+            items.push(...releasingItems(track));
             sections.push({
                 title: toTitleCase(track),
                 items,
@@ -18599,6 +18666,15 @@ class Issue {
         for (const section of this.sections) {
             for (const item of section.items) {
                 if (item.id === id)
+                    return item;
+            }
+        }
+        return null;
+    }
+    itemForType(type, track) {
+        for (const section of this.sections) {
+            for (const item of section.items) {
+                if (item.type === type && item.metadata.track === track)
                     return item;
             }
         }
@@ -18740,7 +18816,7 @@ class Context {
 
 
 
-const query = `
+const loadContext_query = `
   query loadLabel($owner: String!, $repo: String!, $label: String!) {
     repository(owner: $owner, name: $repo) {
       id
@@ -18756,7 +18832,7 @@ const query = `
   }
 `;
 async function loadContext(graphql) {
-    const { repository } = await graphql(query, {
+    const { repository } = await graphql(loadContext_query, {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         label: 'release-tracker',

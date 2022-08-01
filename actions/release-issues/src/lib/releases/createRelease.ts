@@ -1,7 +1,7 @@
 import { debug } from '@actions/core';
 import { VersionTrack } from '@onezerocompany/commit';
-import type { Globals } from '../../../globals';
-import type { Item } from '../Item';
+import type { Globals } from '../../globals';
+import type { Item } from '../items/Item';
 
 export async function createRelease(
   globals: Globals,

@@ -1,7 +1,9 @@
+import type { VersionTrack } from '@onezerocompany/commit';
 import type { VersionJSON } from '@onezerocompany/commit/dist/lib/versions/Version';
 import { Version } from '@onezerocompany/commit/dist/lib/versions/Version';
 import type { Globals } from '../../globals';
 import type { Item, ItemJSON } from '../items/Item';
+import type { ItemType } from '../items/ItemType';
 import { getSections } from './getSections';
 
 export interface IssueJSON {
@@ -85,6 +87,15 @@ export class Issue {
     for (const section of this.sections) {
       for (const item of section.items) {
         if (item.id === id) return item;
+      }
+    }
+    return null;
+  }
+
+  public itemForType(type: ItemType, track: VersionTrack): Item | null {
+    for (const section of this.sections) {
+      for (const item of section.items) {
+        if (item.type === type && item.metadata.track === track) return item;
       }
     }
     return null;

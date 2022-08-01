@@ -2,13 +2,21 @@ import { ItemType } from './ItemType';
 import { ItemStatus } from './ItemStatus';
 
 export const labels: { [t in ItemType]: { [s in ItemStatus]: string } } = {
-  [ItemType.release]: {
-    [ItemStatus.succeeded]: 'Release was cleared successfully',
+  [ItemType.releaseClearance]: {
+    [ItemStatus.succeeded]: 'Release was cleared',
     [ItemStatus.failed]: 'Release was declined',
-    [ItemStatus.pending]: 'Waiting for release',
+    [ItemStatus.pending]: 'Waiting for clearance (check the box to release)',
     [ItemStatus.inProgress]: 'Release in progress',
     [ItemStatus.skipped]: 'Release was skipped',
     [ItemStatus.unknown]: 'Release status unknown',
+  },
+  [ItemType.releaseCreation]: {
+    [ItemStatus.succeeded]: 'Release was created successfully',
+    [ItemStatus.failed]: 'Release was not created',
+    [ItemStatus.pending]: 'Waiting for release creation',
+    [ItemStatus.inProgress]: 'Release creation in progress',
+    [ItemStatus.skipped]: 'Release creation was skipped',
+    [ItemStatus.unknown]: 'Release creation status unknown',
   },
   [ItemType.coverage]: {
     [ItemStatus.succeeded]: 'Coverage is sufficient',
