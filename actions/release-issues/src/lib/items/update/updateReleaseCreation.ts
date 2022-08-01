@@ -31,6 +31,26 @@ interface QueryResponse {
   };
 }
 
+async function releaseExists(globals: Globals, tag: string): Promise<boolean> {
+  try {
+    const { repository }: QueryResponse = await globals.graphql(query, {
+      owner: globals.context.repo.owner,
+      repo: globals.context.repo.repo,
+      tag,
+    });
+    if (
+      repository?.release?.name === tag &&
+      repository.release.tagName === tag &&
+      !repository.release.isDraft
+    ) {
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 export async function updateReleaseCreation(
   globals: Globals,
   item: Item,
@@ -45,16 +65,10 @@ export async function updateReleaseCreation(
       includeTrack: true,
     });
 
-    const { repository }: QueryResponse = await globals.graphql({
-      query,
-    });
-    if (
-      repository?.release?.name === tag &&
-      repository.release.tagName === tag &&
-      !repository.release.isDraft
-    ) {
+    if (await releaseExists(globals, tag)) {
       return ItemStatus.succeeded;
     }
+
     return ItemStatus.pending;
   }
   return item.status;

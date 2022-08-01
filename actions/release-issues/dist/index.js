@@ -18404,6 +18404,24 @@ const query = `
     }
   }
 `;
+async function releaseExists(globals, tag) {
+    try {
+        const { repository } = await globals.graphql(query, {
+            owner: globals.context.repo.owner,
+            repo: globals.context.repo.repo,
+            tag,
+        });
+        if (repository?.release?.name === tag &&
+            repository.release.tagName === tag &&
+            !repository.release.isDraft) {
+            return true;
+        }
+        return false;
+    }
+    catch {
+        return false;
+    }
+}
 async function updateReleaseCreation(globals, item) {
     if (item.status !== ItemStatus.succeeded) {
         const { track } = item.metadata;
@@ -18414,12 +18432,7 @@ async function updateReleaseCreation(globals, item) {
             includeRelease: false,
             includeTrack: true,
         });
-        const { repository } = await globals.graphql({
-            query,
-        });
-        if (repository?.release?.name === tag &&
-            repository.release.tagName === tag &&
-            !repository.release.isDraft) {
+        if (await releaseExists(globals, tag)) {
             return ItemStatus.succeeded;
         }
         return ItemStatus.pending;
