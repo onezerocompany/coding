@@ -22,7 +22,7 @@ export interface ItemMetadata {
 export class Item {
   public readonly type: ItemType;
   public metadata: ItemMetadata;
-  private localStatus = ItemStatus.unknown;
+  public status = ItemStatus.unknown;
 
   public constructor(inputs: { type: ItemType; metadata: ItemMetadata }) {
     this.type = inputs.type;
@@ -53,22 +53,18 @@ export class Item {
     } <!--ID ${this.id} ID-->`;
   }
 
-  public get status(): ItemStatus {
-    return this.localStatus;
-  }
-
   public async update(globals: Globals): Promise<ItemStatus> {
     debug(`updating item: ${this.id}`);
     switch (this.type) {
       case ItemType.releaseClearance:
-        this.localStatus = await updateReleaseClearance(globals, this);
+        this.status = await updateReleaseClearance(globals, this);
         break;
       case ItemType.releaseCreation:
-        this.localStatus = await updateReleaseCreation(globals, this);
+        this.status = await updateReleaseCreation(globals, this);
         break;
       default:
         throw new Error(`Unknown item type: ${this.type}`);
     }
-    return this.localStatus;
+    return this.status;
   }
 }

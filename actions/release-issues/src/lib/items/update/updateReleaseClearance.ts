@@ -4,6 +4,7 @@ import type { Item } from '../Item';
 import { itemChecked } from '../itemChecked';
 import { ItemStatus } from '../ItemStatus';
 import { createRelease } from '../../releases/createRelease';
+import { ItemType } from '../ItemType';
 
 function state(
   trackSettings: TrackSettings,
@@ -29,7 +30,13 @@ export async function updateReleaseClearance(
   const trackSettings = globals.settings[track];
   const newState = state(trackSettings, item, globals);
   if (newState === ItemStatus.succeeded && newState !== item.status) {
-    await createRelease(globals, item);
+    const { created } = await createRelease(globals, item);
+    const createItem = globals.context.issue.itemForType(
+      ItemType.releaseCreation,
+      track,
+    );
+    if (createItem)
+      createItem.status = created ? ItemStatus.succeeded : ItemStatus.failed;
   }
   return newState;
 }

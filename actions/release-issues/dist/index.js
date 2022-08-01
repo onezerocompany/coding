@@ -18348,17 +18348,25 @@ async function createRelease(globals, item) {
         includeTrack: true,
     });
     (0,core.debug)(`creating release with name ${tag} (commitish: ${globals.context.issue.commitish})`);
-    await globals.octokit.rest.repos.createRelease({
-        owner: globals.context.repo.owner,
-        repo: globals.context.repo.repo,
-        prerelease: track !== dist/* VersionTrack.live */.Os.live,
-        tag_name: tag,
-        target_commitish: globals.context.issue.commitish,
-        name: tag,
-    });
+    try {
+        await globals.octokit.rest.repos.createRelease({
+            owner: globals.context.repo.owner,
+            repo: globals.context.repo.repo,
+            prerelease: track !== dist/* VersionTrack.live */.Os.live,
+            tag_name: tag,
+            target_commitish: globals.context.issue.commitish,
+            name: tag,
+        });
+        return { created: true };
+    }
+    catch (createError) {
+        (0,core.setFailed)(`Failed to create release: ${createError}`);
+        return { created: false };
+    }
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseClearance.ts
+
 
 
 
@@ -18379,7 +18387,10 @@ async function updateReleaseClearance(globals, item) {
     const trackSettings = globals.settings[track];
     const newState = state(trackSettings, item, globals);
     if (newState === ItemStatus.succeeded && newState !== item.status) {
-        await createRelease(globals, item);
+        const { created } = await createRelease(globals, item);
+        const createItem = globals.context.issue.itemForType(ItemType.releaseCreation, track);
+        if (createItem)
+            createItem.status = created ? ItemStatus.succeeded : ItemStatus.failed;
     }
     return newState;
 }
@@ -18452,7 +18463,7 @@ async function updateReleaseCreation(globals, item) {
 class Item {
     type;
     metadata;
-    localStatus = ItemStatus.unknown;
+    status = ItemStatus.unknown;
     constructor(inputs) {
         this.type = inputs.type;
         this.metadata = inputs.metadata;
@@ -18475,22 +18486,19 @@ class Item {
     get statusLine() {
         return `- [ ] :${icons[this.status].code}: ${this.labels[this.status]} <!--ID ${this.id} ID-->`;
     }
-    get status() {
-        return this.localStatus;
-    }
     async update(globals) {
         (0,core.debug)(`updating item: ${this.id}`);
         switch (this.type) {
             case ItemType.releaseClearance:
-                this.localStatus = await updateReleaseClearance(globals, this);
+                this.status = await updateReleaseClearance(globals, this);
                 break;
             case ItemType.releaseCreation:
-                this.localStatus = await updateReleaseCreation(globals, this);
+                this.status = await updateReleaseCreation(globals, this);
                 break;
             default:
                 throw new Error(`Unknown item type: ${this.type}`);
         }
-        return this.localStatus;
+        return this.status;
     }
 }
 
