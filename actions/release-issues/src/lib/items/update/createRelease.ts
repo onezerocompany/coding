@@ -10,20 +10,14 @@ export async function createRelease(
   const { track } = item.metadata;
   if (!track) throw new Error(`No track specified for item: ${item.id}`);
 
-  const releaseName = globals.context.issue.version.displayString({
+  const tag = globals.context.issue.version.displayString({
     track,
     includeRelease: false,
     includeTrack: true,
   });
 
-  const tag = globals.context.issue.version.displayString({
-    track,
-    includeRelease: false,
-    includeTrack: false,
-  });
-
   debug(
-    `creating release with name ${releaseName} and tag ${tag} (commitish: ${globals.context.issue.commitish})`,
+    `creating release with name ${tag} (commitish: ${globals.context.issue.commitish})`,
   );
 
   await globals.octokit.rest.repos.createRelease({
@@ -32,6 +26,6 @@ export async function createRelease(
     prerelease: track !== VersionTrack.live,
     tag_name: tag,
     target_commitish: globals.context.issue.commitish,
-    name: releaseName,
+    name: tag,
   });
 }
