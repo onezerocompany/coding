@@ -18327,11 +18327,12 @@ function itemChecked(globals, item) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/createRelease.ts
+
+
 async function createRelease(globals, item) {
     const { track } = item.metadata;
-    if (!track) {
+    if (!track)
         throw new Error(`No track specified for item: ${item.id}`);
-    }
     const releaseName = globals.context.issue.version.displayString({
         track,
         includeRelease: false,
@@ -18342,9 +18343,11 @@ async function createRelease(globals, item) {
         includeRelease: false,
         includeTrack: false,
     });
+    (0,core.debug)(`creating release with name ${releaseName} and tag ${tag} (commitish: ${globals.context.issue.commitish})`);
     await globals.octokit.rest.repos.createRelease({
         owner: globals.context.repo.owner,
         repo: globals.context.repo.repo,
+        prerelease: track !== dist/* VersionTrack.live */.Os.live,
         tag_name: tag,
         target_commitish: globals.context.issue.commitish,
         name: releaseName,
