@@ -38,6 +38,7 @@ export function getSections(globals: Globals): ItemSection[] {
       sections.push({
         title: toTitleCase(track),
         items,
+        track,
       });
     }
   }

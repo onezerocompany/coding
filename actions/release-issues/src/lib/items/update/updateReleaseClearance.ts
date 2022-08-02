@@ -18,7 +18,7 @@ function state(
     }
     return ItemStatus.pending;
   }
-  return ItemStatus.succeeded;
+  return ItemStatus.skipped;
 }
 
 export async function updateReleaseClearance(

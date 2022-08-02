@@ -2,6 +2,18 @@ import type { CommitCategory } from '../categories/categories';
 import { categoryForTag } from '../categories/categories';
 import { emojiForShortcode } from '../categories/emoji/emoji';
 
+interface CommitMessageJSON {
+  files: string[];
+  category: string;
+  scope: string;
+  subject: string;
+  messageBody: string;
+  breaking: boolean;
+  issues: number[];
+  coAuthors: string[];
+  signedOff: string;
+}
+
 export class CommitMessage {
   public files: string[];
   public category: CommitCategory;
@@ -74,5 +86,33 @@ export class CommitMessage {
     ];
 
     return newLines.join('\n');
+  }
+
+  public get json(): CommitMessageJSON {
+    return {
+      files: this.files,
+      category: this.category.tag,
+      scope: this.scope,
+      subject: this.subject,
+      messageBody: this.messageBody,
+      breaking: this.breaking,
+      issues: this.issues,
+      coAuthors: this.coAuthors,
+      signedOff: this.signedOff,
+    };
+  }
+
+  public static fromJson(input: CommitMessageJSON): CommitMessage {
+    return new CommitMessage({
+      files: input.files,
+      category: input.category,
+      scope: input.scope,
+      subject: input.subject,
+      messageBody: input.messageBody,
+      breaking: input.breaking,
+      issues: input.issues,
+      authors: input.coAuthors,
+      signedOff: input.signedOff,
+    });
   }
 }

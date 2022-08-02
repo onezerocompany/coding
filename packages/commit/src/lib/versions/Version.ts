@@ -95,6 +95,20 @@ export class Version {
     });
   }
 
+  public static fromString(string: string): Version {
+    // remove all non numbers and non dots
+    string = string.replace(/[^0-9.]/gu, '');
+    const parts = string.split('.');
+    const major = parseInt(parts[0] ?? '', 10);
+    const minor = parseInt(parts[1] ?? '', 10);
+    const patch = parseInt(parts[2] ?? '', 10);
+    return new Version({
+      major,
+      minor,
+      patch,
+    });
+  }
+
   public bump(bump: VersionBump): Version {
     switch (bump) {
       case VersionBump.major:

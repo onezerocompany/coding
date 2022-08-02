@@ -15,6 +15,12 @@ describe('issues', () => {
         template: '{major}.{minor}.{patch}-{track}',
       },
       items: [],
+      changelogs: {
+        alpha: '',
+        beta: '',
+        live: '',
+      },
+      commits: [],
     });
   });
 });

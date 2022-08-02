@@ -9055,6 +9055,32 @@ class CommitMessage {
         ];
         return newLines.join('\n');
     }
+    get json() {
+        return {
+            files: this.files,
+            category: this.category.tag,
+            scope: this.scope,
+            subject: this.subject,
+            messageBody: this.messageBody,
+            breaking: this.breaking,
+            issues: this.issues,
+            coAuthors: this.coAuthors,
+            signedOff: this.signedOff,
+        };
+    }
+    static fromJson(input) {
+        return new CommitMessage({
+            files: input.files,
+            category: input.category,
+            scope: input.scope,
+            subject: input.subject,
+            messageBody: input.messageBody,
+            breaking: input.breaking,
+            issues: input.issues,
+            authors: input.coAuthors,
+            signedOff: input.signedOff,
+        });
+    }
 }
 exports.CommitMessage = CommitMessage;
 //# sourceMappingURL=CommitMessage.js.map
@@ -9641,6 +9667,19 @@ class Version {
             minor: json.minor,
             patch: json.patch,
             template: json.template,
+        });
+    }
+    static fromString(string) {
+        // remove all non numbers and non dots
+        string = string.replace(/[^0-9.]/gu, '');
+        const parts = string.split('.');
+        const major = parseInt(parts[0] ?? '', 10);
+        const minor = parseInt(parts[1] ?? '', 10);
+        const patch = parseInt(parts[2] ?? '', 10);
+        return new Version({
+            major,
+            minor,
+            patch,
         });
     }
     bump(bump) {

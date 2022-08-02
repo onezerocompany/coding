@@ -8306,11 +8306,11 @@ function wrappy (fn, cb) {
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-exports.Gf = exports.GL = exports.Os = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
+exports.Gf = exports.GL = exports.Os = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.ac = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
-__webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.ChangeLogType; } });
+Object.defineProperty(exports, "ac", ({ enumerable: true, get: function () { return categories_1.ChangeLogType; } }));
 var emoji_1 = __nccwpck_require__(7263);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return emoji_1.emojiForShortcode; } });
 var AuthorsValidator_1 = __nccwpck_require__(6366);
@@ -9055,6 +9055,32 @@ class CommitMessage {
         ];
         return newLines.join('\n');
     }
+    get json() {
+        return {
+            files: this.files,
+            category: this.category.tag,
+            scope: this.scope,
+            subject: this.subject,
+            messageBody: this.messageBody,
+            breaking: this.breaking,
+            issues: this.issues,
+            coAuthors: this.coAuthors,
+            signedOff: this.signedOff,
+        };
+    }
+    static fromJson(input) {
+        return new CommitMessage({
+            files: input.files,
+            category: input.category,
+            scope: input.scope,
+            subject: input.subject,
+            messageBody: input.messageBody,
+            breaking: input.breaking,
+            issues: input.issues,
+            authors: input.coAuthors,
+            signedOff: input.signedOff,
+        });
+    }
 }
 exports.CommitMessage = CommitMessage;
 //# sourceMappingURL=CommitMessage.js.map
@@ -9641,6 +9667,19 @@ class Version {
             minor: json.minor,
             patch: json.patch,
             template: json.template,
+        });
+    }
+    static fromString(string) {
+        // remove all non numbers and non dots
+        string = string.replace(/[^0-9.]/gu, '');
+        const parts = string.split('.');
+        const major = parseInt(parts[0] ?? '', 10);
+        const minor = parseInt(parts[1] ?? '', 10);
+        const patch = parseInt(parts[2] ?? '', 10);
+        return new Version({
+            major,
+            minor,
+            patch,
         });
     }
     bump(bump) {
@@ -18245,6 +18284,8 @@ var ItemStatus;
 (function (ItemStatus) {
     // the item is successfully completed
     ItemStatus["succeeded"] = "succeeded";
+    // the item is waiting for user action
+    ItemStatus["awaitingItem"] = "awaiting-item";
     // the item has failed
     ItemStatus["failed"] = "failed";
     // the item is waiting on another item to complete
@@ -18263,6 +18304,7 @@ const icons = {
     [ItemStatus.succeeded]: { icon: '✅', code: 'white_check_mark' },
     [ItemStatus.failed]: { icon: '❌', code: 'x' },
     [ItemStatus.inProgress]: { icon: '🔄', code: 'arrows_counterclockwise' },
+    [ItemStatus.awaitingItem]: { icon: '🚦', code: 'vertical_traffic_light' },
     [ItemStatus.pending]: { icon: '⏳', code: 'hourglass_flowing_sand' },
     [ItemStatus.skipped]: { icon: '⏭️', code: 'next_track_button' },
     [ItemStatus.unknown]: { icon: '❓', code: 'question' },
@@ -18285,6 +18327,7 @@ const labels = {
         [ItemStatus.succeeded]: 'Release was cleared',
         [ItemStatus.failed]: 'Release was declined',
         [ItemStatus.pending]: 'Waiting for clearance (check the box to release)',
+        [ItemStatus.awaitingItem]: 'Waiting for coverage and tests to pass',
         [ItemStatus.inProgress]: 'Release in progress',
         [ItemStatus.skipped]: 'Release was skipped',
         [ItemStatus.unknown]: 'Release status unknown',
@@ -18293,6 +18336,7 @@ const labels = {
         [ItemStatus.succeeded]: 'Release was created successfully',
         [ItemStatus.failed]: 'Release was not created',
         [ItemStatus.pending]: 'Waiting for release creation',
+        [ItemStatus.awaitingItem]: 'Waiting for release clearance',
         [ItemStatus.inProgress]: 'Release creation in progress',
         [ItemStatus.skipped]: 'Release creation was skipped',
         [ItemStatus.unknown]: 'Release creation status unknown',
@@ -18301,6 +18345,7 @@ const labels = {
         [ItemStatus.succeeded]: 'Coverage is sufficient',
         [ItemStatus.failed]: 'Coverage is insufficient',
         [ItemStatus.pending]: 'Waiting for coverage',
+        [ItemStatus.awaitingItem]: 'Waiting for tests to pass',
         [ItemStatus.inProgress]: 'Coverage in progress',
         [ItemStatus.skipped]: 'Coverage was skipped',
         [ItemStatus.unknown]: 'Coverage status unknown',
@@ -18309,6 +18354,7 @@ const labels = {
         [ItemStatus.succeeded]: 'Tests have all passed',
         [ItemStatus.failed]: 'Tests have failed',
         [ItemStatus.pending]: 'Waiting for tests',
+        [ItemStatus.awaitingItem]: 'Waiting for another checklist item to complete',
         [ItemStatus.inProgress]: 'Tests in progress',
         [ItemStatus.skipped]: 'Tests were skipped',
         [ItemStatus.unknown]: 'Tests status unknown',
@@ -18378,7 +18424,7 @@ function state(trackSettings, item, globals) {
         }
         return ItemStatus.pending;
     }
-    return ItemStatus.succeeded;
+    return ItemStatus.skipped;
 }
 async function updateReleaseClearance(globals, item) {
     const { track } = item.metadata;
@@ -18627,6 +18673,7 @@ function getSections(globals) {
             sections.push({
                 title: toTitleCase(track),
                 items,
+                track,
             });
         }
     }
@@ -18636,16 +18683,28 @@ function getSections(globals) {
 ;// CONCATENATED MODULE: ./src/lib/issue/Issue.ts
 
 
+
 class Issue {
     number;
     version;
     sections;
+    // sha of the commit that this issue is for
     commitish;
+    // dict of strings with VersionTrack as key
+    changelogs;
+    // list of commits for this issue
+    commits;
     constructor(inputs) {
         this.number = inputs?.number ?? -1;
         this.version = inputs?.version ?? new Version.Version();
         this.sections = [];
         this.commitish = inputs?.commitish ?? '';
+        this.changelogs = {
+            [dist/* VersionTrack.alpha */.Os.alpha]: inputs?.changelogs[dist/* VersionTrack.alpha */.Os.alpha] ?? '',
+            [dist/* VersionTrack.beta */.Os.beta]: inputs?.changelogs[dist/* VersionTrack.beta */.Os.beta] ?? '',
+            [dist/* VersionTrack.live */.Os.live]: inputs?.changelogs[dist/* VersionTrack.live */.Os.live] ?? '',
+        };
+        this.commits = inputs?.commits ?? [];
     }
     get title() {
         return `🚀 Release ${this.version.displayString()}`;
@@ -18662,6 +18721,9 @@ class Issue {
         for (const section of this.sections) {
             lines.push([
                 `### ${section.title}`,
+                `<!-- changelog-start:${section.track} -->\`\`\` `,
+                this.changelogs[section.track],
+                `\`\`\`<!-- changelog-end:${section.track} -->`,
                 ...section.items.map((item) => item.statusLine),
             ]);
         }
@@ -18677,6 +18739,11 @@ class Issue {
             version: this.version.json,
             items: this.sections.flatMap((section) => section.items.map((item) => item.json)),
             commitish: this.commitish,
+            changelogs: this.changelogs,
+            commits: this.commits.map((commit) => ({
+                sha: commit.sha,
+                message: commit.message.messageBody,
+            })),
         };
     }
     static fromJson(inputs) {
@@ -18684,6 +18751,11 @@ class Issue {
             number: inputs.number,
             version: Version.Version.fromJson(inputs.json.version),
             commitish: inputs.json.commitish,
+            changelogs: inputs.json.changelogs,
+            commits: inputs.json.commits.map((commit) => ({
+                sha: commit.sha,
+                message: (0,dist/* parseMessage */.kW)(commit.message),
+            })),
         });
     }
     itemForId(id) {
@@ -18801,7 +18873,56 @@ function loadIssueFromContext() {
     });
 }
 
+;// CONCATENATED MODULE: ./src/lib/context/loadChangelogs.ts
+
+const trackChangelogTypes = {
+    [dist/* VersionTrack.alpha */.Os.alpha]: [dist/* ChangeLogType.external */.ac.external, dist/* ChangeLogType.internal */.ac.internal],
+    [dist/* VersionTrack.beta */.Os.beta]: [dist/* ChangeLogType.external */.ac.external],
+    [dist/* VersionTrack.live */.Os.live]: [dist/* ChangeLogType.external */.ac.external],
+};
+function addCommitToSection(track, sections, commit) {
+    if (trackChangelogTypes[track].includes(commit.message.category.changelog.type)) {
+        // check if sections has a section for this category
+        const section = sections.find((item) => item.category === commit.message.category);
+        if (section) {
+            // add commit to section
+            section.commits.push(commit);
+        }
+        else {
+            // create new section
+            sections.push({
+                category: commit.message.category,
+                commits: [commit],
+            });
+        }
+    }
+}
+function changelogForTrack(track, commits) {
+    const sections = [];
+    // loop over all commit categories and find commits that match the category
+    for (const commit of commits) {
+        addCommitToSection(track, sections, commit);
+    }
+    // convert sections to regular text
+    let changelog = '';
+    for (const section of sections) {
+        changelog += `\n\n${section.category.changelog.title}`;
+        for (const commit of section.commits) {
+            changelog += `\n- ${commit.message.messageBody}`;
+        }
+    }
+    return changelog.trim();
+}
+function loadChangelogs(commits) {
+    return {
+        [dist/* VersionTrack.alpha */.Os.alpha]: changelogForTrack(dist/* VersionTrack.alpha */.Os.alpha, commits),
+        [dist/* VersionTrack.beta */.Os.beta]: changelogForTrack(dist/* VersionTrack.beta */.Os.beta, commits),
+        [dist/* VersionTrack.live */.Os.live]: changelogForTrack(dist/* VersionTrack.live */.Os.live, commits),
+    };
+}
+
 ;// CONCATENATED MODULE: ./src/lib/context/Context.ts
+
 
 
 
@@ -18813,30 +18934,64 @@ class Context {
     repo;
     // specific to this run of the action
     action;
-    commits;
     issue;
+    previousVersion;
+    commits;
     constructor(input) {
         this.repo = input.repo;
         this.action = currentAction();
+        this.previousVersion = input.previousVersion;
         switch (this.action) {
             case Action.create:
                 this.commits = loadCommits();
                 this.issue = new Issue({
                     version: new dist/* Version */.Gf(),
                     commitish: lastCommit(),
+                    changelogs: loadChangelogs(this.commits),
+                    commits: this.commits,
                 });
                 break;
             case Action.update:
+                this.commits = [];
                 this.issue = loadIssueFromContext();
                 break;
             default:
                 (0,core.setFailed)('Unsupported action');
+                this.commits = [];
                 this.issue = new Issue();
         }
     }
 }
 
+;// CONCATENATED MODULE: ./src/lib/context/previousVersion.ts
+
+
+const previousVersion_query = `
+  query latestReleases($owner:String!, $repo:String!) {
+    repository(owner:$owner, name:$repo) {
+      releases(last:10) {
+        nodes {
+          name,
+        }
+      }
+    }
+  }
+`;
+async function previousVersion(graphql) {
+    const { repository } = await graphql(previousVersion_query, {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+    });
+    if (!repository)
+        return null;
+    return (repository.releases.nodes
+        .map((node) => dist/* Version.fromString */.Gf.fromString(node.name))
+        .sort(dist/* Version.sort */.Gf.sort)
+        .reverse()[0] ?? null);
+}
+
 ;// CONCATENATED MODULE: ./src/lib/context/loadContext.ts
+
 
 
 
@@ -18867,7 +19022,9 @@ async function loadContext(graphql) {
     (0,core.debug)(`releaseTrackerLabelId: ${releaseTrackerLabelId}`);
     (0,core.debug)(`owner: ${github.context.repo.owner}`);
     (0,core.debug)(`repository: ${github.context.repo.repo}`);
+    const lastRelease = await previousVersion(graphql);
     return new Context({
+        previousVersion: lastRelease,
         repo: {
             id: repositoryId,
             trackerLabelId: releaseTrackerLabelId,

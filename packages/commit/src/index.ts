@@ -1,5 +1,9 @@
 /* eslint-disable import/max-dependencies */
-export { categories, ChangeLogType } from './lib/categories/categories';
+export {
+  categories,
+  ChangeLogType,
+  CommitCategory,
+} from './lib/categories/categories';
 
 export { emojiForShortcode } from './lib/categories/emoji/emoji';
 

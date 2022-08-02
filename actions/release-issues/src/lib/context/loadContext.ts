@@ -2,6 +2,7 @@ import { debug } from '@actions/core';
 import type { getOctokit } from '@actions/github';
 import { context as githubContext } from '@actions/github';
 import { Context } from './Context';
+import { previousVersion } from './previousVersion';
 
 const query = `
   query loadLabel($owner: String!, $repo: String!, $label: String!) {
@@ -48,7 +49,10 @@ export async function loadContext(
   debug(`owner: ${githubContext.repo.owner}`);
   debug(`repository: ${githubContext.repo.repo}`);
 
+  const lastRelease = await previousVersion(graphql);
+
   return new Context({
+    previousVersion: lastRelease,
     repo: {
       id: repositoryId,
       trackerLabelId: releaseTrackerLabelId,
