@@ -18744,7 +18744,7 @@ class Issue {
             changelogs: this.changelogs,
             commits: this.commits.map((commit) => ({
                 sha: commit.sha,
-                message: commit.message.messageBody,
+                message: commit.message.message,
             })),
         };
     }
