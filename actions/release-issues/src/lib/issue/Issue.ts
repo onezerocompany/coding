@@ -2,7 +2,7 @@ import { parseMessage, VersionTrack } from '@onezerocompany/commit';
 import type { VersionJSON } from '@onezerocompany/commit/dist/lib/versions/Version';
 import { Version } from '@onezerocompany/commit/dist/lib/versions/Version';
 import type { Globals } from '../../globals';
-import type { Commit } from '../context/Commit';
+import type { Commit } from '../definitions/Commit';
 import type { Item, ItemJSON } from '../items/Item';
 import type { ItemType } from '../items/ItemType';
 import { getSections } from './getSections';

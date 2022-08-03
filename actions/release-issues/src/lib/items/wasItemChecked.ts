@@ -5,7 +5,7 @@ import type { Globals } from '../../globals';
 import type { Item } from './Item';
 import { ItemStatus } from './ItemStatus';
 
-export function itemChecked(globals: Globals, item: Item): boolean {
+export function wasItemChecked(globals: Globals, item: Item): boolean {
   if (githubContext.eventName === 'issues') {
     const issueEvent = githubContext.payload as IssuesEvent;
 

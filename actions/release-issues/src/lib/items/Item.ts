@@ -6,8 +6,11 @@ import { icons } from './icons';
 import { ItemStatus } from './ItemStatus';
 import { ItemType } from './ItemType';
 import { labels } from './labels';
-import { updateReleaseClearance } from './update/updateReleaseClearance';
-import { updateReleaseCreation } from './update/updateReleaseCreation';
+import {
+  updateChangelogApproval,
+  updateReleaseClearance,
+  updateReleaseCreation,
+} from './update';
 
 export interface ItemJSON {
   id: string;
@@ -56,6 +59,9 @@ export class Item {
   public async update(globals: Globals): Promise<ItemStatus> {
     debug(`updating item: ${this.id}`);
     switch (this.type) {
+      case ItemType.changelogApproved:
+        this.status = await updateChangelogApproval(globals, this);
+        break;
       case ItemType.releaseClearance:
         this.status = await updateReleaseClearance(globals, this);
         break;

@@ -1,6 +1,7 @@
 import type { CommitCategory } from '@onezerocompany/commit';
 import { ChangeLogType, VersionTrack } from '@onezerocompany/commit';
-import type { Commit } from './Commit';
+import type { Commit } from '../definitions/Commit';
+import type { Settings } from '../settings/Settings';
 
 const trackChangelogTypes: { [key in VersionTrack]: ChangeLogType[] } = {
   [VersionTrack.alpha]: [ChangeLogType.external, ChangeLogType.internal],
@@ -33,7 +34,13 @@ function addCommitToSection(
   }
 }
 
-function changelogForTrack(track: VersionTrack, commits: Commit[]): string {
+function changelogForTrack(
+  settings: Settings,
+  track: VersionTrack,
+  commits: Commit[],
+): string {
+  const trackSettings = settings[track];
+
   const sections: Array<{
     category: CommitCategory;
     commits: Commit[];
@@ -53,15 +60,31 @@ function changelogForTrack(track: VersionTrack, commits: Commit[]): string {
     }
   }
 
-  return changelog.trim();
+  if (changelog.trim() === '') changelog = trackSettings.changelog.fallback;
+  return `${trackSettings.changelog.header}\n\n${changelog}\n\n${trackSettings.changelog.footer}`.trim();
 }
 
-export function loadChangelogs(commits: Commit[]): {
+export function generateChangelogs(
+  settings: Settings,
+  commits: Commit[],
+): {
   [key in VersionTrack]: string;
 } {
   return {
-    [VersionTrack.alpha]: changelogForTrack(VersionTrack.alpha, commits),
-    [VersionTrack.beta]: changelogForTrack(VersionTrack.beta, commits),
-    [VersionTrack.live]: changelogForTrack(VersionTrack.live, commits),
+    [VersionTrack.alpha]: changelogForTrack(
+      settings,
+      VersionTrack.alpha,
+      commits,
+    ),
+    [VersionTrack.beta]: changelogForTrack(
+      settings,
+      VersionTrack.beta,
+      commits,
+    ),
+    [VersionTrack.live]: changelogForTrack(
+      settings,
+      VersionTrack.live,
+      commits,
+    ),
   };
 }

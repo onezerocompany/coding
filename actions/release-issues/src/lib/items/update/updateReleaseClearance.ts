@@ -1,10 +1,10 @@
 import type { Globals } from '../../../globals';
 import type { TrackSettings } from '../../settings/TrackSettings';
 import type { Item } from '../Item';
-import { itemChecked } from '../itemChecked';
 import { ItemStatus } from '../ItemStatus';
-import { createRelease } from '../../releases/createRelease';
+import { createRelease } from '../../queries/createRelease';
 import { ItemType } from '../ItemType';
+import { wasItemChecked } from '../wasItemChecked';
 
 function state(
   trackSettings: TrackSettings,
@@ -13,7 +13,7 @@ function state(
 ): ItemStatus {
   if (trackSettings.release.manual) {
     // either the release is already released or the line has a checkmark in it
-    if (item.status === ItemStatus.succeeded || itemChecked(globals, item)) {
+    if (item.status === ItemStatus.succeeded || wasItemChecked(globals, item)) {
       return ItemStatus.succeeded;
     }
     return ItemStatus.pending;

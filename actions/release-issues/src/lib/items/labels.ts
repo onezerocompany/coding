@@ -1,14 +1,23 @@
-import { ItemType } from './ItemType';
 import { ItemStatus } from './ItemStatus';
+import { ItemType } from './ItemType';
 
 export const labels: { [t in ItemType]: { [s in ItemStatus]: string } } = {
+  [ItemType.changelogApproved]: {
+    [ItemStatus.succeeded]: 'Changelog approved',
+    [ItemStatus.failed]: 'Failed changelog approval',
+    [ItemStatus.pending]: 'Changelog waiting for approval',
+    [ItemStatus.awaitingItem]: 'Changelog approval waiting on other item',
+    [ItemStatus.inProgress]: 'Changelog approval in progress',
+    [ItemStatus.skipped]: 'Skipped changelog approval',
+    [ItemStatus.unknown]: 'Changelog approval unknown',
+  },
   [ItemType.releaseClearance]: {
     [ItemStatus.succeeded]: 'Release was cleared',
     [ItemStatus.failed]: 'Release was declined',
     [ItemStatus.pending]: 'Waiting for clearance (check the box to release)',
-    [ItemStatus.awaitingItem]: 'Waiting for coverage and tests to pass',
+    [ItemStatus.awaitingItem]: 'Waiting for changelog to be approved',
     [ItemStatus.inProgress]: 'Release in progress',
-    [ItemStatus.skipped]: 'Release was skipped',
+    [ItemStatus.skipped]: 'Release clearance was skipped',
     [ItemStatus.unknown]: 'Release status unknown',
   },
   [ItemType.releaseCreation]: {

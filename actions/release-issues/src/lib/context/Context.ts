@@ -1,13 +1,13 @@
 import { setFailed } from '@actions/core';
 import { Version } from '@onezerocompany/commit';
 import { Issue } from '../issue/Issue';
-import { Action } from './Action';
-import { currentAction } from './currentAction';
-import { lastCommit, loadCommits } from './loadCommits';
-import type { RepoInfo } from './RepoInfo';
+import type { Commit, RepoInfo } from '../definitions';
+import { Action } from '../definitions';
+import type { Settings } from '../settings/Settings';
 import { loadIssueFromContext } from './loadIssueFromContext';
-import type { Commit } from './Commit';
-import { loadChangelogs } from './loadChangelogs';
+import { lastCommit, loadCommits } from './loadCommits';
+import { determineAction } from './determineAction';
+import { generateChangelogs } from './generateChangelogs';
 
 export class Context {
   public readonly repo: RepoInfo;
@@ -19,11 +19,12 @@ export class Context {
   public readonly commits: Commit[];
 
   public constructor(input: {
+    settings: Settings;
     repo: RepoInfo;
     previousVersion: Version | null;
   }) {
     this.repo = input.repo;
-    this.action = currentAction();
+    this.action = determineAction();
     this.previousVersion = input.previousVersion;
 
     switch (this.action) {
@@ -32,7 +33,7 @@ export class Context {
         this.issue = new Issue({
           version: new Version(),
           commitish: lastCommit(),
-          changelogs: loadChangelogs(this.commits),
+          changelogs: generateChangelogs(input.settings, this.commits),
           commits: this.commits,
         });
         break;

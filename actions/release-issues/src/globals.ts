@@ -17,8 +17,8 @@ export interface Globals {
 export async function getGlobals(): Promise<Globals> {
   const octokit = getOctokit(getInput('token'));
   const { graphql } = octokit;
-  const context = await loadContext(graphql);
   const settings = loadSettings();
+  const context = await loadContext(settings, graphql);
   const globals = { context, settings, octokit, graphql };
   context.issue.setup(globals);
   await context.issue.update(globals);

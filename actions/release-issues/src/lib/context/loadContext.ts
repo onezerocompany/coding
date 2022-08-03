@@ -1,6 +1,7 @@
 import { debug } from '@actions/core';
 import type { getOctokit } from '@actions/github';
 import { context as githubContext } from '@actions/github';
+import type { Settings } from '../settings/Settings';
 import { Context } from './Context';
 import { previousVersion } from './previousVersion';
 
@@ -33,6 +34,7 @@ interface QueryOutput {
 }
 
 export async function loadContext(
+  settings: Settings,
   graphql: ReturnType<typeof getOctokit>['graphql'],
 ): Promise<Context> {
   const { repository }: QueryOutput = await graphql(query, {
@@ -52,6 +54,7 @@ export async function loadContext(
   const lastRelease = await previousVersion(graphql);
 
   return new Context({
+    settings,
     previousVersion: lastRelease,
     repo: {
       id: repositoryId,

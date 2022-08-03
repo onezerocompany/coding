@@ -1,23 +1,49 @@
 import { VersionTrack } from '@onezerocompany/commit';
-import { Platform } from './Platform';
+import { Platform } from '../definitions/Platform';
+
+interface ChangelogSettings {
+  footer: string;
+  header: string;
+  fallback: string;
+}
+
+function loadChangelogSettings(json?: TrackSettingsJSON): ChangelogSettings {
+  return {
+    footer: json?.changelog.footer ?? '',
+    header: json?.changelog.header ?? '',
+    fallback: json?.changelog.fallback ?? '- minor bug fixes and improvements',
+  };
+}
+
+interface ReleaseSettings {
+  manual: boolean;
+  waitForTracks: string[];
+  platforms: string[];
+  allowedUsers: string[];
+}
+
+function loadReleaseSettings(json?: TrackSettingsJSON): ReleaseSettings {
+  return {
+    manual: json?.release.manual ?? true,
+    // convert array of strings to array of tracks
+    waitForTracks: (json?.release.waitForTracks.filter((waitTrack) =>
+      Object.keys(VersionTrack).includes(waitTrack),
+    ) ?? []) as VersionTrack[],
+    // convert array of strings to array of platforms
+    platforms: (json?.release.platforms.filter((platform) =>
+      Object.keys(Platform).includes(platform),
+    ) ?? []) as Platform[],
+    allowedUsers: json?.release.allowedUsers ?? [],
+  };
+}
 
 export interface TrackSettingsJSON {
   enabled: boolean;
   version: {
     template: string;
   };
-  requirements: {
-    tests: Array<{
-      action: string;
-      coverage: number;
-    }>;
-  };
-  release: {
-    manual: boolean;
-    waitForTracks: string[];
-    platforms: string[];
-    allowedUsers: string[];
-  };
+  release: ReleaseSettings;
+  changelog: ChangelogSettings;
 }
 
 export class TrackSettings {
@@ -26,19 +52,8 @@ export class TrackSettings {
     template: string;
   };
 
-  public requirements: {
-    tests: Array<{
-      action: string;
-      coverage: number;
-    }>;
-  };
-
-  public release: {
-    manual: boolean;
-    waitForTracks: VersionTrack[];
-    platforms: Platform[];
-    allowedUsers: string[];
-  };
+  public release: ReleaseSettings;
+  public changelog: ChangelogSettings;
 
   public constructor(inputs?: {
     forTrack?: VersionTrack;
@@ -51,19 +66,7 @@ export class TrackSettings {
         inputs?.json?.version.template ??
         TrackSettings.defaultVersionTemplate(track),
     };
-    this.requirements = { tests: inputs?.json?.requirements.tests ?? [] };
-    this.release = {
-      manual: inputs?.json?.release.manual ?? true,
-      // convert array of strings to array of tracks
-      waitForTracks: (inputs?.json?.release.waitForTracks.filter((waitTrack) =>
-        Object.keys(VersionTrack).includes(waitTrack),
-      ) ?? []) as VersionTrack[],
-      // convert array of strings to array of platforms
-      platforms: (inputs?.json?.release.platforms.filter((platform) =>
-        Object.keys(Platform).includes(platform),
-      ) ?? []) as Platform[],
-      allowedUsers: inputs?.json?.release.allowedUsers ?? [],
-    };
+    this.release = loadReleaseSettings(inputs?.json);
     // filter out non existent tracks
     this.release.waitForTracks = this.release.waitForTracks.filter(
       (waitTrack) => Object.keys(VersionTrack).includes(waitTrack),
@@ -72,6 +75,7 @@ export class TrackSettings {
     this.release.platforms = this.release.platforms.filter((platform) =>
       Object.keys(Platform).includes(platform),
     );
+    this.changelog = loadChangelogSettings(inputs?.json);
   }
 
   public get json(): TrackSettingsJSON {
@@ -80,14 +84,16 @@ export class TrackSettings {
       version: {
         template: this.version.template,
       },
-      requirements: {
-        tests: this.requirements.tests,
-      },
       release: {
         manual: this.release.manual,
         waitForTracks: this.release.waitForTracks,
         platforms: this.release.platforms,
         allowedUsers: this.release.allowedUsers,
+      },
+      changelog: {
+        footer: this.changelog.footer,
+        header: this.changelog.header,
+        fallback: this.changelog.fallback,
       },
     };
   }

@@ -1,6 +1,6 @@
 import { debug } from '@actions/core';
-import type { Globals } from './globals';
-import { jsonIndent } from './globals';
+import type { Globals } from '../../globals';
+import { jsonIndent } from '../../globals';
 
 const query = `
   query releases($owner: String!, $repo: String!) {

@@ -10,6 +10,12 @@ import type { ItemSection } from './Issue';
 function releasingItems(track: VersionTrack): Item[] {
   return [
     new Item({
+      type: ItemType.changelogApproved,
+      metadata: {
+        track,
+      },
+    }),
+    new Item({
       type: ItemType.releaseClearance,
       metadata: {
         track,

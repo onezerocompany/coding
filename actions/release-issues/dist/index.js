@@ -18257,7 +18257,7 @@ __nccwpck_require__.r(__webpack_exports__);
 const external_process_namespaceObject = require("process");
 // EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(7117);
-;// CONCATENATED MODULE: ./src/lib/context/Action.ts
+;// CONCATENATED MODULE: ./src/lib/definitions/Action.ts
 var Action;
 (function (Action) {
     Action["create"] = "create";
@@ -18313,6 +18313,7 @@ const icons = {
 ;// CONCATENATED MODULE: ./src/lib/items/ItemType.ts
 var ItemType;
 (function (ItemType) {
+    ItemType["changelogApproved"] = "changelogApproved";
     ItemType["releaseClearance"] = "releaseClearance";
     ItemType["releaseCreation"] = "releaseCreation";
     ItemType["coverage"] = "coverage";
@@ -18323,13 +18324,22 @@ var ItemType;
 
 
 const labels = {
+    [ItemType.changelogApproved]: {
+        [ItemStatus.succeeded]: 'Changelog approved',
+        [ItemStatus.failed]: 'Failed changelog approval',
+        [ItemStatus.pending]: 'Changelog waiting for approval',
+        [ItemStatus.awaitingItem]: 'Changelog approval waiting on other item',
+        [ItemStatus.inProgress]: 'Changelog approval in progress',
+        [ItemStatus.skipped]: 'Skipped changelog approval',
+        [ItemStatus.unknown]: 'Changelog approval unknown',
+    },
     [ItemType.releaseClearance]: {
         [ItemStatus.succeeded]: 'Release was cleared',
         [ItemStatus.failed]: 'Release was declined',
         [ItemStatus.pending]: 'Waiting for clearance (check the box to release)',
-        [ItemStatus.awaitingItem]: 'Waiting for coverage and tests to pass',
+        [ItemStatus.awaitingItem]: 'Waiting for changelog to be approved',
         [ItemStatus.inProgress]: 'Release in progress',
-        [ItemStatus.skipped]: 'Release was skipped',
+        [ItemStatus.skipped]: 'Release clearance was skipped',
         [ItemStatus.unknown]: 'Release status unknown',
     },
     [ItemType.releaseCreation]: {
@@ -18361,11 +18371,11 @@ const labels = {
     },
 };
 
-;// CONCATENATED MODULE: ./src/lib/items/itemChecked.ts
+;// CONCATENATED MODULE: ./src/lib/items/wasItemChecked.ts
 
 
 
-function itemChecked(globals, item) {
+function wasItemChecked(globals, item) {
     if (github.context.eventName === 'issues') {
         const issueEvent = github.context.payload;
         const previousCleared = globals.context.issue.itemForId(item.id)?.status === ItemStatus.succeeded;
@@ -18381,32 +18391,57 @@ function itemChecked(globals, item) {
     return false;
 }
 
-;// CONCATENATED MODULE: ./src/lib/releases/createRelease.ts
+;// CONCATENATED MODULE: ./src/lib/items/update/updateChangelogApproval.ts
 
 
+async function updateChangelogApproval(globals, item) {
+    const { track } = item.metadata;
+    if (track) {
+        const trackSettings = globals.settings[track];
+        if (!trackSettings.release.manual)
+            return ItemStatus.skipped;
+        // either changelog was already approved or the line has a checkmark in it
+        if (item.status === ItemStatus.succeeded || wasItemChecked(globals, item)) {
+            return ItemStatus.succeeded;
+        }
+        return ItemStatus.pending;
+    }
+    return ItemStatus.unknown;
+}
+
+;// CONCATENATED MODULE: ./src/lib/queries/createRelease.ts
+
+
+async function apiCall(globals, track, tag) {
+    await globals.octokit.rest.repos.createRelease({
+        owner: globals.context.repo.owner,
+        repo: globals.context.repo.repo,
+        prerelease: track !== dist/* VersionTrack.live */.Os.live,
+        tag_name: tag,
+        target_commitish: globals.context.issue.commitish,
+        name: tag,
+    });
+}
 async function createRelease(globals, item) {
     const { track } = item.metadata;
-    if (!track)
-        throw new Error(`No track specified for item: ${item.id}`);
-    const tag = globals.context.issue.version.displayString({
-        track,
-        includeRelease: false,
-        includeTrack: true,
-    });
-    (0,core.debug)(`creating release with name ${tag} (commitish: ${globals.context.issue.commitish})`);
-    try {
-        await globals.octokit.rest.repos.createRelease({
-            owner: globals.context.repo.owner,
-            repo: globals.context.repo.repo,
-            prerelease: track !== dist/* VersionTrack.live */.Os.live,
-            tag_name: tag,
-            target_commitish: globals.context.issue.commitish,
-            name: tag,
+    if (track) {
+        const tag = globals.context.issue.version.displayString({
+            track,
+            includeRelease: false,
+            includeTrack: true,
         });
-        return { created: true };
+        (0,core.debug)(`creating release with name ${tag} (commitish: ${globals.context.issue.commitish})`);
+        try {
+            await apiCall(globals, track, tag);
+            return { created: true };
+        }
+        catch (createError) {
+            (0,core.setFailed)(`Failed to create release: ${createError}`);
+            return { created: false };
+        }
     }
-    catch (createError) {
-        (0,core.setFailed)(`Failed to create release: ${createError}`);
+    else {
+        (0,core.setFailed)('No track specified for release creation');
         return { created: false };
     }
 }
@@ -18419,7 +18454,7 @@ async function createRelease(globals, item) {
 function state(trackSettings, item, globals) {
     if (trackSettings.release.manual) {
         // either the release is already released or the line has a checkmark in it
-        if (item.status === ItemStatus.succeeded || itemChecked(globals, item)) {
+        if (item.status === ItemStatus.succeeded || wasItemChecked(globals, item)) {
             return ItemStatus.succeeded;
         }
         return ItemStatus.pending;
@@ -18500,8 +18535,12 @@ async function updateReleaseCreation(globals, item) {
     return item.status;
 }
 
-;// CONCATENATED MODULE: ./src/lib/items/Item.ts
+;// CONCATENATED MODULE: ./src/lib/items/update/index.ts
 
+
+
+
+;// CONCATENATED MODULE: ./src/lib/items/Item.ts
 
 
 
@@ -18538,6 +18577,9 @@ class Item {
     async update(globals) {
         (0,core.debug)(`updating item: ${this.id}`);
         switch (this.type) {
+            case ItemType.changelogApproved:
+                this.status = await updateChangelogApproval(globals, this);
+                break;
             case ItemType.releaseClearance:
                 this.status = await updateReleaseClearance(globals, this);
                 break;
@@ -18551,7 +18593,7 @@ class Item {
     }
 }
 
-;// CONCATENATED MODULE: ./src/lib/settings/Platform.ts
+;// CONCATENATED MODULE: ./src/lib/definitions/Platform.ts
 var Platform;
 (function (Platform) {
     Platform["ios"] = "ios";
@@ -18569,11 +18611,28 @@ var Platform;
 ;// CONCATENATED MODULE: ./src/lib/settings/TrackSettings.ts
 
 
+function loadChangelogSettings(json) {
+    return {
+        footer: json?.changelog.footer ?? '',
+        header: json?.changelog.header ?? '',
+        fallback: json?.changelog.fallback ?? '- minor bug fixes and improvements',
+    };
+}
+function loadReleaseSettings(json) {
+    return {
+        manual: json?.release.manual ?? true,
+        // convert array of strings to array of tracks
+        waitForTracks: (json?.release.waitForTracks.filter((waitTrack) => Object.keys(dist/* VersionTrack */.Os).includes(waitTrack)) ?? []),
+        // convert array of strings to array of platforms
+        platforms: (json?.release.platforms.filter((platform) => Object.keys(Platform).includes(platform)) ?? []),
+        allowedUsers: json?.release.allowedUsers ?? [],
+    };
+}
 class TrackSettings {
     enabled;
     version;
-    requirements;
     release;
+    changelog;
     constructor(inputs) {
         const track = inputs?.forTrack ?? dist/* VersionTrack.live */.Os.live;
         this.enabled = inputs?.json?.enabled ?? TrackSettings.defaultEnabled(track);
@@ -18581,19 +18640,12 @@ class TrackSettings {
             template: inputs?.json?.version.template ??
                 TrackSettings.defaultVersionTemplate(track),
         };
-        this.requirements = { tests: inputs?.json?.requirements.tests ?? [] };
-        this.release = {
-            manual: inputs?.json?.release.manual ?? true,
-            // convert array of strings to array of tracks
-            waitForTracks: (inputs?.json?.release.waitForTracks.filter((waitTrack) => Object.keys(dist/* VersionTrack */.Os).includes(waitTrack)) ?? []),
-            // convert array of strings to array of platforms
-            platforms: (inputs?.json?.release.platforms.filter((platform) => Object.keys(Platform).includes(platform)) ?? []),
-            allowedUsers: inputs?.json?.release.allowedUsers ?? [],
-        };
+        this.release = loadReleaseSettings(inputs?.json);
         // filter out non existent tracks
         this.release.waitForTracks = this.release.waitForTracks.filter((waitTrack) => Object.keys(dist/* VersionTrack */.Os).includes(waitTrack));
         // filter out non existent platforms
         this.release.platforms = this.release.platforms.filter((platform) => Object.keys(Platform).includes(platform));
+        this.changelog = loadChangelogSettings(inputs?.json);
     }
     get json() {
         return {
@@ -18601,14 +18653,16 @@ class TrackSettings {
             version: {
                 template: this.version.template,
             },
-            requirements: {
-                tests: this.requirements.tests,
-            },
             release: {
                 manual: this.release.manual,
                 waitForTracks: this.release.waitForTracks,
                 platforms: this.release.platforms,
                 allowedUsers: this.release.allowedUsers,
+            },
+            changelog: {
+                footer: this.changelog.footer,
+                header: this.changelog.header,
+                fallback: this.changelog.fallback,
             },
         };
     }
@@ -18645,6 +18699,12 @@ class TrackSettings {
 
 function releasingItems(track) {
     return [
+        new Item({
+            type: ItemType.changelogApproved,
+            metadata: {
+                track,
+            },
+        }),
         new Item({
             type: ItemType.releaseClearance,
             metadata: {
@@ -18788,59 +18848,11 @@ class Issue {
     }
 }
 
-;// CONCATENATED MODULE: ./src/lib/context/currentAction.ts
+;// CONCATENATED MODULE: ./src/lib/definitions/index.ts
 
 
 
-function currentAction() {
-    const { eventName } = github.context;
-    if (eventName === 'push') {
-        const pushEvent = github.context.payload;
-        if (pushEvent.ref !== 'refs/heads/main') {
-            (0,core.setFailed)('Only pushes to the main branch are supported');
-            return Action.stop;
-        }
-        return Action.create;
-    }
-    if (eventName === 'issues') {
-        const issueEvent = github.context.payload;
-        if (issueEvent.action === 'edited') {
-            return Action.update;
-        }
-        return Action.stop;
-    }
-    (0,core.setFailed)(new Error('Unsupported event'));
-    return Action.stop;
-}
 
-;// CONCATENATED MODULE: ./src/lib/context/loadCommits.ts
-
-
-
-function lastCommit() {
-    const { eventName } = github.context;
-    if (eventName === 'push') {
-        const event = github.context.payload;
-        return event.after;
-    }
-    return '';
-}
-function loadCommits() {
-    const { eventName } = github.context;
-    if (eventName === 'push') {
-        const pushEvent = github.context.payload;
-        if (pushEvent.ref !== 'refs/heads/main') {
-            (0,core.setFailed)('Only pushes to the main branch are supported');
-            return [];
-        }
-        return pushEvent.commits.map((commit) => ({
-            sha: commit.id,
-            message: (0,dist/* parseMessage */.kW)(commit.message),
-        }));
-    }
-    (0,core.setFailed)('Unsupported event');
-    return [];
-}
 
 ;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
 function getContentBetweenTags(before, after) {
@@ -18875,7 +18887,61 @@ function loadIssueFromContext() {
     });
 }
 
-;// CONCATENATED MODULE: ./src/lib/context/loadChangelogs.ts
+;// CONCATENATED MODULE: ./src/lib/context/loadCommits.ts
+
+
+
+function lastCommit() {
+    const { eventName } = github.context;
+    if (eventName === 'push') {
+        const event = github.context.payload;
+        return event.after;
+    }
+    return '';
+}
+function loadCommits() {
+    const { eventName } = github.context;
+    if (eventName === 'push') {
+        const pushEvent = github.context.payload;
+        if (pushEvent.ref !== 'refs/heads/main') {
+            (0,core.setFailed)('Only pushes to the main branch are supported');
+            return [];
+        }
+        return pushEvent.commits.map((commit) => ({
+            sha: commit.id,
+            message: (0,dist/* parseMessage */.kW)(commit.message),
+        }));
+    }
+    (0,core.setFailed)('Unsupported event');
+    return [];
+}
+
+;// CONCATENATED MODULE: ./src/lib/context/determineAction.ts
+
+
+
+function determineAction() {
+    const { eventName } = github.context;
+    if (eventName === 'push') {
+        const pushEvent = github.context.payload;
+        if (pushEvent.ref !== 'refs/heads/main') {
+            (0,core.setFailed)('Only pushes to the main branch are supported');
+            return Action.stop;
+        }
+        return Action.create;
+    }
+    if (eventName === 'issues') {
+        const issueEvent = github.context.payload;
+        if (issueEvent.action === 'edited') {
+            return Action.update;
+        }
+        return Action.stop;
+    }
+    (0,core.setFailed)(new Error('Unsupported event'));
+    return Action.stop;
+}
+
+;// CONCATENATED MODULE: ./src/lib/context/generateChangelogs.ts
 
 const trackChangelogTypes = {
     [dist/* VersionTrack.alpha */.Os.alpha]: [dist/* ChangeLogType.external */.ac.external, dist/* ChangeLogType.internal */.ac.internal],
@@ -18899,7 +18965,8 @@ function addCommitToSection(track, sections, commit) {
         }
     }
 }
-function changelogForTrack(track, commits) {
+function changelogForTrack(settings, track, commits) {
+    const trackSettings = settings[track];
     const sections = [];
     // loop over all commit categories and find commits that match the category
     for (const commit of commits) {
@@ -18913,13 +18980,15 @@ function changelogForTrack(track, commits) {
             changelog += `\n- ${commit.message.subject}`;
         }
     }
-    return changelog.trim();
+    if (changelog.trim() === '')
+        changelog = trackSettings.changelog.fallback;
+    return `${trackSettings.changelog.header}\n\n${changelog}\n\n${trackSettings.changelog.footer}`.trim();
 }
-function loadChangelogs(commits) {
+function generateChangelogs(settings, commits) {
     return {
-        [dist/* VersionTrack.alpha */.Os.alpha]: changelogForTrack(dist/* VersionTrack.alpha */.Os.alpha, commits),
-        [dist/* VersionTrack.beta */.Os.beta]: changelogForTrack(dist/* VersionTrack.beta */.Os.beta, commits),
-        [dist/* VersionTrack.live */.Os.live]: changelogForTrack(dist/* VersionTrack.live */.Os.live, commits),
+        [dist/* VersionTrack.alpha */.Os.alpha]: changelogForTrack(settings, dist/* VersionTrack.alpha */.Os.alpha, commits),
+        [dist/* VersionTrack.beta */.Os.beta]: changelogForTrack(settings, dist/* VersionTrack.beta */.Os.beta, commits),
+        [dist/* VersionTrack.live */.Os.live]: changelogForTrack(settings, dist/* VersionTrack.live */.Os.live, commits),
     };
 }
 
@@ -18941,7 +19010,7 @@ class Context {
     commits;
     constructor(input) {
         this.repo = input.repo;
-        this.action = currentAction();
+        this.action = determineAction();
         this.previousVersion = input.previousVersion;
         switch (this.action) {
             case Action.create:
@@ -18949,7 +19018,7 @@ class Context {
                 this.issue = new Issue({
                     version: new dist/* Version */.Gf(),
                     commitish: lastCommit(),
-                    changelogs: loadChangelogs(this.commits),
+                    changelogs: generateChangelogs(input.settings, this.commits),
                     commits: this.commits,
                 });
                 break;
@@ -19012,7 +19081,7 @@ const loadContext_query = `
     }
   }
 `;
-async function loadContext(graphql) {
+async function loadContext(settings, graphql) {
     const { repository } = await graphql(loadContext_query, {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
@@ -19026,6 +19095,7 @@ async function loadContext(graphql) {
     (0,core.debug)(`repository: ${github.context.repo.repo}`);
     const lastRelease = await previousVersion(graphql);
     return new Context({
+        settings,
         previousVersion: lastRelease,
         repo: {
             id: repositoryId,
@@ -19100,8 +19170,8 @@ const jsonIndent = 2;
 async function getGlobals() {
     const octokit = (0,github.getOctokit)((0,core.getInput)('token'));
     const { graphql } = octokit;
-    const context = await loadContext(graphql);
     const settings = loadSettings();
+    const context = await loadContext(settings, graphql);
     const globals = { context, settings, octokit, graphql };
     context.issue.setup(globals);
     await context.issue.update(globals);

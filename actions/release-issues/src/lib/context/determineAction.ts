@@ -4,9 +4,9 @@ import type {
   IssuesEvent,
   PushEvent,
 } from '@octokit/webhooks-definitions/schema';
-import { Action } from './Action';
+import { Action } from '../definitions/Action';
 
-export function currentAction(): Action {
+export function determineAction(): Action {
   const { eventName } = eventContext;
   if (eventName === 'push') {
     const pushEvent = eventContext.payload as PushEvent;

@@ -1,6 +1,6 @@
 import { exit } from 'process';
 import { info, setFailed } from '@actions/core';
-import { Action } from './lib/context/Action';
+import { Action } from './lib/definitions/Action';
 import { createIssue } from './lib/issue/createIssue';
 import { getGlobals } from './globals';
 import { updateIssue } from './lib/issue/updateIssue';

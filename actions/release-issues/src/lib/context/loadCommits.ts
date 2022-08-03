@@ -2,7 +2,7 @@ import { context as eventContext } from '@actions/github';
 import { setFailed } from '@actions/core';
 import type { PushEvent } from '@octokit/webhooks-definitions/schema';
 import { parseMessage } from '@onezerocompany/commit';
-import type { Commit } from './Commit';
+import type { Commit } from '../definitions/Commit';
 
 export function lastCommit(): string {
   const { eventName } = eventContext;
