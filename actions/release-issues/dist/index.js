@@ -18613,19 +18613,19 @@ var Platform;
 
 function loadChangelogSettings(json) {
     return {
-        footer: json?.changelog.footer ?? '',
-        header: json?.changelog.header ?? '',
-        fallback: json?.changelog.fallback ?? '- minor bug fixes and improvements',
+        footer: json?.changelog?.footer ?? '',
+        header: json?.changelog?.header ?? '',
+        fallback: json?.changelog?.fallback ?? '- minor bug fixes and improvements',
     };
 }
 function loadReleaseSettings(json) {
     return {
-        manual: json?.release.manual ?? true,
+        manual: json?.release?.manual ?? true,
         // convert array of strings to array of tracks
-        waitForTracks: (json?.release.waitForTracks.filter((waitTrack) => Object.keys(dist/* VersionTrack */.Os).includes(waitTrack)) ?? []),
+        waitForTracks: (json?.release?.waitForTracks.filter((waitTrack) => Object.keys(dist/* VersionTrack */.Os).includes(waitTrack)) ?? []),
         // convert array of strings to array of platforms
-        platforms: (json?.release.platforms.filter((platform) => Object.keys(Platform).includes(platform)) ?? []),
-        allowedUsers: json?.release.allowedUsers ?? [],
+        platforms: (json?.release?.platforms.filter((platform) => Object.keys(Platform).includes(platform)) ?? []),
+        allowedUsers: json?.release?.allowedUsers ?? [],
     };
 }
 class TrackSettings {
@@ -18637,7 +18637,7 @@ class TrackSettings {
         const track = inputs?.forTrack ?? dist/* VersionTrack.live */.Os.live;
         this.enabled = inputs?.json?.enabled ?? TrackSettings.defaultEnabled(track);
         this.version = {
-            template: inputs?.json?.version.template ??
+            template: inputs?.json?.version?.template ??
                 TrackSettings.defaultVersionTemplate(track),
         };
         this.release = loadReleaseSettings(inputs?.json);

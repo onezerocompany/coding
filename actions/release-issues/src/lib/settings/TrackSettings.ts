@@ -9,9 +9,9 @@ interface ChangelogSettings {
 
 function loadChangelogSettings(json?: TrackSettingsJSON): ChangelogSettings {
   return {
-    footer: json?.changelog.footer ?? '',
-    header: json?.changelog.header ?? '',
-    fallback: json?.changelog.fallback ?? '- minor bug fixes and improvements',
+    footer: json?.changelog?.footer ?? '',
+    header: json?.changelog?.header ?? '',
+    fallback: json?.changelog?.fallback ?? '- minor bug fixes and improvements',
   };
 }
 
@@ -24,26 +24,26 @@ interface ReleaseSettings {
 
 function loadReleaseSettings(json?: TrackSettingsJSON): ReleaseSettings {
   return {
-    manual: json?.release.manual ?? true,
+    manual: json?.release?.manual ?? true,
     // convert array of strings to array of tracks
-    waitForTracks: (json?.release.waitForTracks.filter((waitTrack) =>
+    waitForTracks: (json?.release?.waitForTracks.filter((waitTrack) =>
       Object.keys(VersionTrack).includes(waitTrack),
     ) ?? []) as VersionTrack[],
     // convert array of strings to array of platforms
-    platforms: (json?.release.platforms.filter((platform) =>
+    platforms: (json?.release?.platforms.filter((platform) =>
       Object.keys(Platform).includes(platform),
     ) ?? []) as Platform[],
-    allowedUsers: json?.release.allowedUsers ?? [],
+    allowedUsers: json?.release?.allowedUsers ?? [],
   };
 }
 
 export interface TrackSettingsJSON {
-  enabled: boolean;
-  version: {
+  enabled?: boolean;
+  version?: {
     template: string;
   };
-  release: ReleaseSettings;
-  changelog: ChangelogSettings;
+  release?: ReleaseSettings;
+  changelog?: ChangelogSettings;
 }
 
 export class TrackSettings {
@@ -63,7 +63,7 @@ export class TrackSettings {
     this.enabled = inputs?.json?.enabled ?? TrackSettings.defaultEnabled(track);
     this.version = {
       template:
-        inputs?.json?.version.template ??
+        inputs?.json?.version?.template ??
         TrackSettings.defaultVersionTemplate(track),
     };
     this.release = loadReleaseSettings(inputs?.json);
