@@ -49,7 +49,7 @@ function changelogForTrack(track: VersionTrack, commits: Commit[]): string {
   for (const section of sections) {
     changelog += `\n\n${section.category.changelog.title}`;
     for (const commit of section.commits) {
-      changelog += `\n- ${commit.message.messageBody}`;
+      changelog += `\n- ${commit.message.subject}`;
     }
   }
 

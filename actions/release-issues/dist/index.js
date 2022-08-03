@@ -18721,9 +18721,11 @@ class Issue {
         for (const section of this.sections) {
             lines.push([
                 `### ${section.title}`,
-                `<!-- changelog-start:${section.track} -->\`\`\` `,
+                `<!-- changelog-start:${section.track} --> `,
+                '```',
                 this.changelogs[section.track],
-                `\`\`\`<!-- changelog-end:${section.track} -->`,
+                '```',
+                `<!-- changelog-end:${section.track} -->`,
                 ...section.items.map((item) => item.statusLine),
             ]);
         }
@@ -18908,7 +18910,7 @@ function changelogForTrack(track, commits) {
     for (const section of sections) {
         changelog += `\n\n${section.category.changelog.title}`;
         for (const commit of section.commits) {
-            changelog += `\n- ${commit.message.messageBody}`;
+            changelog += `\n- ${commit.message.subject}`;
         }
     }
     return changelog.trim();

@@ -70,9 +70,11 @@ export class Issue {
     for (const section of this.sections) {
       lines.push([
         `### ${section.title}`,
-        `<!-- changelog-start:${section.track} -->\`\`\` `,
+        `<!-- changelog-start:${section.track} --> `,
+        '```',
         this.changelogs[section.track],
-        `\`\`\`<!-- changelog-end:${section.track} -->`,
+        '```',
+        `<!-- changelog-end:${section.track} -->`,
         ...section.items.map((item) => item.statusLine),
       ]);
     }
