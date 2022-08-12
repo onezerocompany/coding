@@ -35,6 +35,7 @@ export class Context {
           commitish: lastCommit(),
           changelogs: generateChangelogs(input.settings, this.commits),
           commits: this.commits,
+          items: [],
         });
         break;
       case Action.update:

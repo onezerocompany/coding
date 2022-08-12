@@ -34,12 +34,15 @@ export class Issue {
   // list of commits for this issue
   public commits: Commit[];
 
+  private readonly preloadedItems: ItemJSON[] = [];
+
   public constructor(inputs?: {
     number?: number;
     version: Version;
     commitish: string;
     changelogs: { [key in VersionTrack]: string };
     commits: Commit[];
+    items: ItemJSON[];
   }) {
     this.number = inputs?.number ?? -1;
     this.version = inputs?.version ?? new Version();
@@ -51,6 +54,7 @@ export class Issue {
       [VersionTrack.live]: inputs?.changelogs[VersionTrack.live] ?? '',
     };
     this.commits = inputs?.commits ?? [];
+    this.preloadedItems = inputs?.items ?? [];
   }
 
   public get title(): string {
@@ -112,6 +116,7 @@ export class Issue {
         sha: commit.sha,
         message: parseMessage(commit.message),
       })),
+      items: inputs.json.items,
     });
   }
 
@@ -135,6 +140,11 @@ export class Issue {
 
   public setup(globals: Globals): void {
     this.sections = getSections(globals);
+    // preload items
+    for (const preloadItem of this.preloadedItems) {
+      const item = this.itemForId(preloadItem.id);
+      if (item) item.status = preloadItem.status;
+    }
   }
 
   public async update(globals: Globals): Promise<void> {

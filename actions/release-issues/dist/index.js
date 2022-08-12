@@ -18671,6 +18671,7 @@ class Issue {
     changelogs;
     // list of commits for this issue
     commits;
+    preloadedItems = [];
     constructor(inputs) {
         this.number = inputs?.number ?? -1;
         this.version = inputs?.version ?? new Version.Version();
@@ -18682,6 +18683,7 @@ class Issue {
             [dist/* VersionTrack.live */.Os.live]: inputs?.changelogs[dist/* VersionTrack.live */.Os.live] ?? '',
         };
         this.commits = inputs?.commits ?? [];
+        this.preloadedItems = inputs?.items ?? [];
     }
     get title() {
         return `🚀 Release ${this.version.displayString()}`;
@@ -18735,6 +18737,7 @@ class Issue {
                 sha: commit.sha,
                 message: (0,dist/* parseMessage */.kW)(commit.message),
             })),
+            items: inputs.json.items,
         });
     }
     itemForId(id) {
@@ -18757,6 +18760,12 @@ class Issue {
     }
     setup(globals) {
         this.sections = getSections(globals);
+        // preload items
+        for (const preloadItem of this.preloadedItems) {
+            const item = this.itemForId(preloadItem.id);
+            if (item)
+                item.status = preloadItem.status;
+        }
     }
     async update(globals) {
         await Promise.all(this.sections.flatMap((section) => section.items.map(async (item) => {
@@ -18937,6 +18946,7 @@ class Context {
                     commitish: lastCommit(),
                     changelogs: generateChangelogs(input.settings, this.commits),
                     commits: this.commits,
+                    items: [],
                 });
                 break;
             case Action.update:
