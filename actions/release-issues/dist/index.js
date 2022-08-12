@@ -18409,134 +18409,37 @@ async function updateChangelogApproval(globals, item) {
     return ItemStatus.unknown;
 }
 
-;// CONCATENATED MODULE: ./src/lib/queries/createRelease.ts
-
-
-async function apiCall(globals, track, tag) {
-    await globals.octokit.rest.repos.createRelease({
-        owner: globals.context.repo.owner,
-        repo: globals.context.repo.repo,
-        prerelease: track !== dist/* VersionTrack.live */.Os.live,
-        tag_name: tag,
-        target_commitish: globals.context.issue.commitish,
-        name: tag,
-    });
-}
-async function createRelease(globals, item) {
-    const { track } = item.metadata;
-    if (track) {
-        const tag = globals.context.issue.version.displayString({
-            track,
-            includeRelease: false,
-            includeTrack: true,
-        });
-        (0,core.debug)(`creating release with name ${tag} (commitish: ${globals.context.issue.commitish})`);
-        try {
-            await apiCall(globals, track, tag);
-            return { created: true };
-        }
-        catch (createError) {
-            (0,core.setFailed)(`Failed to create release: ${createError}`);
-            return { created: false };
-        }
-    }
-    else {
-        (0,core.setFailed)('No track specified for release creation');
-        return { created: false };
-    }
-}
-
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseClearance.ts
 
 
-
-
-function state(trackSettings, item, globals) {
-    if (trackSettings.release.manual) {
-        // either the release is already released or the line has a checkmark in it
-        if (item.status === ItemStatus.succeeded || wasItemChecked(globals, item)) {
-            return ItemStatus.succeeded;
-        }
-        return ItemStatus.pending;
-    }
-    return ItemStatus.skipped;
-}
 async function updateReleaseClearance(globals, item) {
     const { track } = item.metadata;
-    if (!track)
-        return ItemStatus.unknown;
-    const trackSettings = globals.settings[track];
-    const newState = state(trackSettings, item, globals);
-    if (newState === ItemStatus.succeeded && newState !== item.status) {
-        const { created } = await createRelease(globals, item);
-        const createItem = globals.context.issue.itemForType(ItemType.releaseCreation, track);
-        if (createItem)
-            createItem.status = created ? ItemStatus.succeeded : ItemStatus.failed;
-    }
-    return newState;
-}
-
-;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseCreation.ts
-
-
-const query = `
-  query release(
-    $owner:String!,
-    $repo:String!,
-    $tag:String!
-  ) {
-    repository(
-      owner:$owner,
-      name:$repo
-    ) {
-      release(tagName:$tag) {
-        name
-        tagName
-        isDraft
-      }
-    }
-  }
-`;
-async function releaseExists(globals, tag) {
-    try {
-        const { repository } = await globals.graphql(query, {
-            owner: globals.context.repo.owner,
-            repo: globals.context.repo.repo,
-            tag,
-        });
-        if (repository?.release?.name === tag &&
-            repository.release.tagName === tag &&
-            !repository.release.isDraft) {
-            return true;
+    if (track) {
+        // only continue if the track is specified in the item metadata
+        const dependedItems = item.metadata.dependsOn.map((dependsOn) => globals.context.issue.itemForType(dependsOn, track));
+        // depending on other items, they should either be succeeded or skipped
+        const depenciesSucceeded = dependedItems.every((dependedItem) => dependedItem?.status === ItemStatus.succeeded ||
+            dependedItem?.status === ItemStatus.skipped);
+        if (depenciesSucceeded) {
+            const trackSettings = globals.settings[track];
+            // in case the release is not manual, we don't need to do anything
+            if (!trackSettings.release.manual)
+                return ItemStatus.skipped;
+            if (item.status === ItemStatus.succeeded ||
+                wasItemChecked(globals, item)) {
+                // if the item was checked or was previously succeeded, we mark the item as succeeded
+                return ItemStatus.succeeded;
+            }
+            // in all other cases, we mark the item as pending
+            return ItemStatus.pending;
         }
-        return false;
+        // the items we depend on are still pending or failed
+        return ItemStatus.awaitingItem;
     }
-    catch {
-        return false;
-    }
-}
-async function updateReleaseCreation(globals, item) {
-    const { track } = item.metadata;
-    if (!track)
-        return ItemStatus.unknown;
-    const clearanceItem = globals.context.issue.itemForType(ItemType.releaseClearance, track);
-    if (item.status !== ItemStatus.succeeded ||
-        clearanceItem?.status !== ItemStatus.succeeded) {
-        const tag = globals.context.issue.version.displayString({
-            track,
-            includeRelease: false,
-            includeTrack: true,
-        });
-        if (await releaseExists(globals, tag)) {
-            return ItemStatus.succeeded;
-        }
-        return ItemStatus.pending;
-    }
-    return item.status;
+    return ItemStatus.unknown;
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/index.ts
-
 
 
 
@@ -18584,7 +18487,8 @@ class Item {
                 this.status = await updateReleaseClearance(globals, this);
                 break;
             case ItemType.releaseCreation:
-                this.status = await updateReleaseCreation(globals, this);
+                this.status = ItemStatus.unknown;
+                // this.status = await updateReleaseCreation(globals, this);
                 break;
             default:
                 throw new Error(`Unknown item type: ${this.type}`);
@@ -18703,18 +18607,21 @@ function releasingItems(track) {
             type: ItemType.changelogApproved,
             metadata: {
                 track,
+                dependsOn: [],
             },
         }),
         new Item({
             type: ItemType.releaseClearance,
             metadata: {
                 track,
+                dependsOn: [ItemType.changelogApproved],
             },
         }),
         new Item({
             type: ItemType.releaseCreation,
             metadata: {
                 track,
+                dependsOn: [ItemType.releaseClearance],
             },
         }),
     ];
@@ -19037,7 +18944,7 @@ class Context {
 ;// CONCATENATED MODULE: ./src/lib/context/previousVersion.ts
 
 
-const previousVersion_query = `
+const query = `
   query latestReleases($owner:String!, $repo:String!) {
     repository(owner:$owner, name:$repo) {
       releases(last:10) {
@@ -19049,7 +18956,7 @@ const previousVersion_query = `
   }
 `;
 async function previousVersion(graphql) {
-    const { repository } = await graphql(previousVersion_query, {
+    const { repository } = await graphql(query, {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
     });

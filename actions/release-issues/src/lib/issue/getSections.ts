@@ -13,18 +13,21 @@ function releasingItems(track: VersionTrack): Item[] {
       type: ItemType.changelogApproved,
       metadata: {
         track,
+        dependsOn: [],
       },
     }),
     new Item({
       type: ItemType.releaseClearance,
       metadata: {
         track,
+        dependsOn: [ItemType.changelogApproved],
       },
     }),
     new Item({
       type: ItemType.releaseCreation,
       metadata: {
         track,
+        dependsOn: [ItemType.releaseClearance],
       },
     }),
   ];

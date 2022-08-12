@@ -1,42 +1,43 @@
 import type { Globals } from '../../../globals';
-import type { TrackSettings } from '../../settings/TrackSettings';
 import type { Item } from '../Item';
 import { ItemStatus } from '../ItemStatus';
-import { createRelease } from '../../queries/createRelease';
-import { ItemType } from '../ItemType';
 import { wasItemChecked } from '../wasItemChecked';
-
-function state(
-  trackSettings: TrackSettings,
-  item: Item,
-  globals: Globals,
-): ItemStatus {
-  if (trackSettings.release.manual) {
-    // either the release is already released or the line has a checkmark in it
-    if (item.status === ItemStatus.succeeded || wasItemChecked(globals, item)) {
-      return ItemStatus.succeeded;
-    }
-    return ItemStatus.pending;
-  }
-  return ItemStatus.skipped;
-}
 
 export async function updateReleaseClearance(
   globals: Globals,
   item: Item,
 ): Promise<ItemStatus> {
   const { track } = item.metadata;
-  if (!track) return ItemStatus.unknown;
-  const trackSettings = globals.settings[track];
-  const newState = state(trackSettings, item, globals);
-  if (newState === ItemStatus.succeeded && newState !== item.status) {
-    const { created } = await createRelease(globals, item);
-    const createItem = globals.context.issue.itemForType(
-      ItemType.releaseCreation,
-      track,
+  if (track) {
+    // only continue if the track is specified in the item metadata
+    const dependedItems = item.metadata.dependsOn.map((dependsOn) =>
+      globals.context.issue.itemForType(dependsOn, track),
     );
-    if (createItem)
-      createItem.status = created ? ItemStatus.succeeded : ItemStatus.failed;
+
+    // depending on other items, they should either be succeeded or skipped
+    const depenciesSucceeded = dependedItems.every(
+      (dependedItem) =>
+        dependedItem?.status === ItemStatus.succeeded ||
+        dependedItem?.status === ItemStatus.skipped,
+    );
+
+    if (depenciesSucceeded) {
+      const trackSettings = globals.settings[track];
+      // in case the release is not manual, we don't need to do anything
+      if (!trackSettings.release.manual) return ItemStatus.skipped;
+
+      if (
+        item.status === ItemStatus.succeeded ||
+        wasItemChecked(globals, item)
+      ) {
+        // if the item was checked or was previously succeeded, we mark the item as succeeded
+        return ItemStatus.succeeded;
+      }
+      // in all other cases, we mark the item as pending
+      return ItemStatus.pending;
+    }
+    // the items we depend on are still pending or failed
+    return ItemStatus.awaitingItem;
   }
-  return newState;
+  return ItemStatus.unknown;
 }
