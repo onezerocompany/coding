@@ -4,10 +4,10 @@ import { Issue } from '../issue/Issue';
 import type { Commit, RepoInfo } from '../definitions';
 import { Action } from '../definitions';
 import type { Settings } from '../settings/Settings';
-import { loadIssueFromContext } from './loadIssueFromContext';
 import { lastCommit, loadCommits } from './loadCommits';
 import { determineAction } from './determineAction';
 import { generateChangelogs } from './generateChangelogs';
+import { loadIssueFromContext } from './loadIssueFromContext';
 
 export class Context {
   public readonly repo: RepoInfo;

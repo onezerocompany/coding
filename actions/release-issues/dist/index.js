@@ -18409,9 +18409,57 @@ async function updateChangelogApproval(globals, item) {
     return ItemStatus.unknown;
 }
 
+;// CONCATENATED MODULE: ./src/lib/queries/createRelease.ts
+
+
+async function apiCall(globals, track, tag) {
+    await globals.octokit.rest.repos.createRelease({
+        owner: globals.context.repo.owner,
+        repo: globals.context.repo.repo,
+        prerelease: track !== dist/* VersionTrack.live */.Os.live,
+        tag_name: tag,
+        target_commitish: globals.context.issue.commitish,
+        name: tag,
+    });
+}
+async function createRelease(globals, item) {
+    const { track } = item.metadata;
+    if (track) {
+        const tag = globals.context.issue.version.displayString({
+            track,
+            includeRelease: false,
+            includeTrack: true,
+        });
+        (0,core.debug)(`creating release with name ${tag} (commitish: ${globals.context.issue.commitish})`);
+        try {
+            await apiCall(globals, track, tag);
+            return { created: true };
+        }
+        catch (createError) {
+            (0,core.setFailed)(`Failed to create release: ${createError}`);
+            return { created: false };
+        }
+    }
+    else {
+        (0,core.setFailed)('No track specified for release creation');
+        return { created: false };
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseClearance.ts
 
 
+
+
+async function createReleaseForItem(globals, item, track) {
+    const { created } = await createRelease(globals, item);
+    if (created) {
+        const creationItem = globals.context.issue.itemForType(ItemType.releaseCreation, track);
+        if (creationItem) {
+            creationItem.status = ItemStatus.succeeded;
+        }
+    }
+}
 async function dependenciesDone(globals, item, track) {
     // only continue if the track is specified in the item metadata
     const dependedItems = item.metadata.dependsOn
@@ -18421,8 +18469,8 @@ async function dependenciesDone(globals, item, track) {
     const updates = dependedItems.map(async (dependedItem) => dependedItem.update(globals));
     await Promise.all(updates);
     // depending on other items, they should either be succeeded or skipped
-    const depenciesSucceeded = dependedItems.every((dependedItem) => dependedItem?.status === ItemStatus.succeeded ||
-        dependedItem?.status === ItemStatus.skipped);
+    const depenciesSucceeded = dependedItems.every((dependedItem) => dependedItem.status === ItemStatus.succeeded ||
+        dependedItem.status === ItemStatus.skipped);
     return depenciesSucceeded;
 }
 async function updateReleaseClearance(globals, item) {
@@ -18437,6 +18485,8 @@ async function updateReleaseClearance(globals, item) {
             if (!trackSettings.release.manual)
                 return ItemStatus.skipped;
             if (wasItemChecked(globals, item)) {
+                // create the release
+                await createReleaseForItem(globals, item, track);
                 // if the item was checked or was previously succeeded, we mark the item as succeeded
                 return ItemStatus.succeeded;
             }
@@ -18449,7 +18499,19 @@ async function updateReleaseClearance(globals, item) {
     return ItemStatus.unknown;
 }
 
+;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseCreation.ts
+
+async function updateReleaseCreation(
+// globals: Globals,
+item) {
+    if (item.status === ItemStatus.succeeded) {
+        return item.status;
+    }
+    return ItemStatus.unknown;
+}
+
 ;// CONCATENATED MODULE: ./src/lib/items/update/index.ts
+
 
 
 
@@ -18498,7 +18560,7 @@ class Item {
                 break;
             case ItemType.releaseCreation:
                 this.status = ItemStatus.unknown;
-                // this.status = await updateReleaseCreation(globals, this);
+                this.status = await updateReleaseCreation(this);
                 break;
             default:
                 throw new Error(`Unknown item type: ${this.type}`);
@@ -18690,13 +18752,6 @@ class Issue {
     }
     get content() {
         const lines = [];
-        lines.push([
-            '<!-- JSON BEGIN',
-            JSON.stringify(this.json),
-            'JSON END -->',
-            '### Details',
-            `\`version: ${this.version.displayString()}\``,
-        ]);
         for (const section of this.sections) {
             lines.push([
                 `### ${section.title}`,
@@ -18708,6 +18763,14 @@ class Issue {
                 ...section.items.map((item) => item.statusLine),
             ]);
         }
+        lines.push([
+            '<!-- DO NOT EDIT BELOW THIS LINE -->',
+            '<!-- JSON BEGIN',
+            JSON.stringify(this.json),
+            'JSON END -->',
+            '### Details',
+            `\`version: ${this.version.displayString()}\``,
+        ]);
         return lines
             .map((line) => line.join('\n'))
             .join('\n\n---\n\n')
@@ -18779,39 +18842,6 @@ class Issue {
 
 
 
-
-;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
-function getContentBetweenTags(before, after) {
-    return (content) => {
-        const beforeIndex = content.indexOf(before);
-        const afterIndex = content.indexOf(after);
-        if (beforeIndex === -1 || afterIndex === -1) {
-            return '';
-        }
-        return content.substring(beforeIndex + before.length, afterIndex);
-    };
-}
-
-;// CONCATENATED MODULE: ./src/lib/context/loadIssueFromContext.ts
-
-
-
-function loadIssueFromContext() {
-    if (github.context.eventName !== 'issues') {
-        throw new Error('This action can only be used in an issue event');
-    }
-    const event = github.context.payload;
-    if (event.action !== 'edited' ||
-        event.issue.body === event.changes.body?.from) {
-        throw new Error('This action can only be used on an edited issue');
-    }
-    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(event.issue.body);
-    const json = JSON.parse(jsonContent);
-    return Issue.fromJson({
-        number: github.context.issue.number,
-        json,
-    });
-}
 
 ;// CONCATENATED MODULE: ./src/lib/context/loadCommits.ts
 
@@ -18916,6 +18946,39 @@ function generateChangelogs(settings, commits) {
         [dist/* VersionTrack.beta */.Os.beta]: changelogForTrack(settings, dist/* VersionTrack.beta */.Os.beta, commits),
         [dist/* VersionTrack.live */.Os.live]: changelogForTrack(settings, dist/* VersionTrack.live */.Os.live, commits),
     };
+}
+
+;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
+function getContentBetweenTags(before, after) {
+    return (content) => {
+        const beforeIndex = content.indexOf(before);
+        const afterIndex = content.indexOf(after);
+        if (beforeIndex === -1 || afterIndex === -1) {
+            return '';
+        }
+        return content.substring(beforeIndex + before.length, afterIndex);
+    };
+}
+
+;// CONCATENATED MODULE: ./src/lib/context/loadIssueFromContext.ts
+
+
+
+function loadIssueFromContext() {
+    if (github.context.eventName !== 'issues') {
+        throw new Error('This action can only be used in an issue event');
+    }
+    const event = github.context.payload;
+    if (event.action !== 'edited' ||
+        event.issue.body === event.changes.body?.from) {
+        throw new Error('This action can only be used on an edited issue');
+    }
+    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(event.issue.body);
+    const json = JSON.parse(jsonContent);
+    return Issue.fromJson({
+        number: github.context.issue.number,
+        json,
+    });
 }
 
 ;// CONCATENATED MODULE: ./src/lib/context/Context.ts

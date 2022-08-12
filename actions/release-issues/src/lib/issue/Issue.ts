@@ -63,13 +63,6 @@ export class Issue {
 
   public get content(): string {
     const lines: string[][] = [];
-    lines.push([
-      '<!-- JSON BEGIN',
-      JSON.stringify(this.json),
-      'JSON END -->',
-      '### Details',
-      `\`version: ${this.version.displayString()}\``,
-    ]);
 
     for (const section of this.sections) {
       lines.push([
@@ -82,6 +75,15 @@ export class Issue {
         ...section.items.map((item) => item.statusLine),
       ]);
     }
+
+    lines.push([
+      '<!-- DO NOT EDIT BELOW THIS LINE -->',
+      '<!-- JSON BEGIN',
+      JSON.stringify(this.json),
+      'JSON END -->',
+      '### Details',
+      `\`version: ${this.version.displayString()}\``,
+    ]);
 
     return lines
       .map((line) => line.join('\n'))

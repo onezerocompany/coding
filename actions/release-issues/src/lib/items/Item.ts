@@ -6,7 +6,11 @@ import { icons } from './icons';
 import { ItemStatus } from './ItemStatus';
 import { ItemType } from './ItemType';
 import { labels } from './labels';
-import { updateChangelogApproval, updateReleaseClearance } from './update';
+import {
+  updateChangelogApproval,
+  updateReleaseClearance,
+  updateReleaseCreation,
+} from './update';
 
 export interface ItemJSON {
   id: string;
@@ -64,7 +68,7 @@ export class Item {
         break;
       case ItemType.releaseCreation:
         this.status = ItemStatus.unknown;
-        // this.status = await updateReleaseCreation(globals, this);
+        this.status = await updateReleaseCreation(this);
         break;
       default:
         throw new Error(`Unknown item type: ${this.type}`);
