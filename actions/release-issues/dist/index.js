@@ -18768,8 +18768,6 @@ class Issue {
             '<!-- JSON BEGIN',
             JSON.stringify(this.json),
             'JSON END -->',
-            '### Details',
-            `\`version: ${this.version.displayString()}\``,
         ]);
         return lines
             .map((line) => line.join('\n'))
