@@ -18763,16 +18763,13 @@ class Issue {
                 ...section.items.map((item) => item.statusLine),
             ]);
         }
-        lines.push([
+        let sections = lines.map((line) => line.join('\n')).join('\n\n---\n\n');
+        return (sections += [
             '<!-- DO NOT EDIT BELOW THIS LINE -->',
             '<!-- JSON BEGIN',
             JSON.stringify(this.json),
             'JSON END -->',
-        ]);
-        return lines
-            .map((line) => line.join('\n'))
-            .join('\n\n---\n\n')
-            .trim();
+        ].join('\n'));
     }
     get json() {
         return {

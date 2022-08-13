@@ -76,17 +76,14 @@ export class Issue {
       ]);
     }
 
-    lines.push([
+    let sections = lines.map((line) => line.join('\n')).join('\n\n---\n\n');
+
+    return (sections += [
       '<!-- DO NOT EDIT BELOW THIS LINE -->',
       '<!-- JSON BEGIN',
       JSON.stringify(this.json),
       'JSON END -->',
-    ]);
-
-    return lines
-      .map((line) => line.join('\n'))
-      .join('\n\n---\n\n')
-      .trim();
+    ].join('\n'));
   }
 
   public get json(): IssueJSON {
