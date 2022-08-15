@@ -9,6 +9,7 @@ const query = `
       release(tagName:$tag) {
         id
         name
+        tagName
       }
     }
   }
@@ -19,6 +20,7 @@ interface QueryOutput {
     release?: {
       id: string;
       name: string;
+      tagName: string;
     };
   };
 }
@@ -42,6 +44,15 @@ export async function releaseExists(
       tag,
     });
     debug(JSON.stringify(result, null, jsonIndent));
+
+    const release = result.repository?.release;
+
+    if (release) {
+      const nameMatch = release.name === tag;
+      const tagMatch = release.tagName === tag;
+      const idCheck = release.id.length > 0;
+      return nameMatch && tagMatch && idCheck;
+    }
   }
 
   return false;

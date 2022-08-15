@@ -18550,6 +18550,7 @@ const releaseExists_query = `
       release(tagName:$tag) {
         id
         name
+        tagName
       }
     }
   }
@@ -18569,6 +18570,13 @@ async function releaseExists(globals, item) {
             tag,
         });
         (0,core.debug)(JSON.stringify(result, null, defaults_jsonIndent));
+        const release = result.repository?.release;
+        if (release) {
+            const nameMatch = release.name === tag;
+            const tagMatch = release.tagName === tag;
+            const idCheck = release.id.length > 0;
+            return nameMatch && tagMatch && idCheck;
+        }
     }
     return false;
 }
