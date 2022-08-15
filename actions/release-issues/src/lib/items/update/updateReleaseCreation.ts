@@ -9,8 +9,14 @@ export async function updateReleaseCreation(
 ): Promise<ItemStatus> {
   if (item.status === ItemStatus.succeeded) return item.status;
 
+  const { track } = item.metadata;
+  if (!track) return item.status;
+
   for (const dependedItem of item.metadata.dependsOn) {
-    const status = globals.context.issue.itemForId(dependedItem)?.status;
+    const status = globals.context.issue.itemForType(
+      dependedItem,
+      track,
+    )?.status;
     if (status !== ItemStatus.succeeded && status !== ItemStatus.skipped) {
       return ItemStatus.awaitingItem;
     }
