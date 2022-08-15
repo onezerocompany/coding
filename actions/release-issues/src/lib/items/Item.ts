@@ -68,7 +68,7 @@ export class Item {
         break;
       case ItemType.releaseCreation:
         this.status = ItemStatus.unknown;
-        this.status = await updateReleaseCreation(this);
+        this.status = await updateReleaseCreation(globals, this);
         break;
       default:
         throw new Error(`Unknown item type: ${this.type}`);

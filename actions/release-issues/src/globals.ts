@@ -5,8 +5,6 @@ import { loadContext } from './lib/context/loadContext';
 import { loadSettings } from './lib/settings/loadSettings';
 import type { Settings } from './lib/settings/Settings';
 
-export const jsonIndent = 2;
-
 export interface Globals {
   context: Context;
   settings: Settings;

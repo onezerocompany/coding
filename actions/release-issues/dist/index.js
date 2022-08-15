@@ -18265,8 +18265,21 @@ var Action;
     Action["stop"] = "stop";
 })(Action || (Action = {}));
 
-// EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(4005);
+;// CONCATENATED MODULE: ./src/defaults.ts
+const defaults_jsonIndent = 2;
+
+;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
+function getContentBetweenTags(before, after) {
+    return (content) => {
+        const beforeIndex = content.indexOf(before);
+        const afterIndex = content.indexOf(after);
+        if (beforeIndex === -1 || afterIndex === -1) {
+            return '';
+        }
+        return content.substring(beforeIndex + before.length, afterIndex);
+    };
+}
+
 // EXTERNAL MODULE: ../../packages/commit/dist/index.js
 var dist = __nccwpck_require__(4670);
 // EXTERNAL MODULE: ../../packages/commit/dist/lib/versions/Version.js
@@ -18371,6 +18384,8 @@ const labels = {
     },
 };
 
+// EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(4005);
 ;// CONCATENATED MODULE: ./src/lib/items/wasItemChecked.ts
 
 
@@ -18499,15 +18514,86 @@ async function updateReleaseClearance(globals, item) {
     return ItemStatus.unknown;
 }
 
+;// CONCATENATED MODULE: ./src/lib/queries/fetchReleases.ts
+
+
+const query = (/* unused pure expression or super */ null && (`
+  query releases($owner: String!, $repo: String!) {
+    repository(owner: $owner, name: $repo) {
+      releases(last: 10, orderBy: { field: CREATED_AT, direction: DESC }) {
+        edges {
+          node {
+            name
+            tagName
+          }
+        }
+      }
+    }
+  }
+`));
+async function fetchReleases(globals) {
+    const { graphql, context } = globals;
+    const result = await graphql(query, {
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+    });
+    debug(JSON.stringify(result, null, jsonIndent));
+    return result.repository?.releases?.edges.node ?? [];
+}
+
+;// CONCATENATED MODULE: ./src/lib/queries/releaseExists.ts
+
+
+const releaseExists_query = `
+  query fetchVersion($owner:String!, $repo:String!, $tag:String!) {
+    repository(owner: $owner, name:$repo) {
+      release(tagName:$tag) {
+        id
+        name
+      }
+    }
+  }
+`;
+async function releaseExists(globals, item) {
+    const { track } = item.metadata;
+    if (track) {
+        const tag = globals.context.issue.version.displayString({
+            track,
+            includeRelease: false,
+            includeTrack: true,
+        });
+        const { graphql, context } = globals;
+        const result = await graphql(releaseExists_query, {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag,
+        });
+        (0,core.debug)(JSON.stringify(result, null, defaults_jsonIndent));
+    }
+    return false;
+}
+
+;// CONCATENATED MODULE: ./src/lib/queries/index.ts
+
+
+
+
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseCreation.ts
 
-async function updateReleaseCreation(
-// globals: Globals,
-item) {
-    if (item.status === ItemStatus.succeeded) {
+
+async function updateReleaseCreation(globals, item) {
+    if (item.status === ItemStatus.succeeded)
         return item.status;
+    for (const dependedItem of item.metadata.dependsOn) {
+        const status = globals.context.issue.itemForId(dependedItem)?.status;
+        if (status !== ItemStatus.succeeded && status !== ItemStatus.skipped) {
+            return ItemStatus.awaitingItem;
+        }
     }
-    return ItemStatus.unknown;
+    // check if the version exists with an api request
+    if (await releaseExists(globals, item))
+        return ItemStatus.succeeded;
+    return ItemStatus.pending;
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/index.ts
@@ -18560,7 +18646,7 @@ class Item {
                 break;
             case ItemType.releaseCreation:
                 this.status = ItemStatus.unknown;
-                this.status = await updateReleaseCreation(this);
+                this.status = await updateReleaseCreation(globals, this);
                 break;
             default:
                 throw new Error(`Unknown item type: ${this.type}`);
@@ -18832,6 +18918,106 @@ class Issue {
     }
 }
 
+;// CONCATENATED MODULE: ./src/lib/issue/issueExists.ts
+
+
+
+const issueExists_query = `
+  query issues($owner: String!, $repo: String!) {
+    repository(owner: $owner, name: $repo) {
+      issues(last: 10, labels: ["release-tracker"], states: [OPEN]) {
+        nodes {
+          number
+          body
+          title
+        }
+      }
+    }
+  }
+`;
+function issueMatch(issue, issueNode) {
+    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
+    try {
+        const json = JSON.parse(jsonContent);
+        const jsonIssue = Issue.fromJson({
+            number: issueNode.number,
+            json,
+        });
+        if (issue.version.major === jsonIssue.version.major &&
+            issue.version.minor === jsonIssue.version.minor &&
+            issue.version.patch === jsonIssue.version.patch) {
+            return true;
+        }
+        return jsonIssue.title === issue.title;
+    }
+    catch {
+        return false;
+    }
+}
+async function issueExists(globals) {
+    const { graphql, context } = globals;
+    const { issue } = context;
+    // check if issue exists using the graphql api
+    const { repository } = await graphql(issueExists_query, {
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+    });
+    if (!repository?.issues || repository.issues.nodes.length === 0) {
+        (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
+        return false;
+    }
+    return repository.issues.nodes.some((issueNode) => issueMatch(issue, issueNode));
+}
+
+;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
+
+
+
+// eslint-disable-next-line max-lines-per-function
+async function createIssue(globals) {
+    if (await issueExists(globals)) {
+        (0,core.info)(`Issue already exists: ${globals.context.issue.title}`);
+        return { created: false };
+    }
+    const { graphql, context } = globals;
+    const { issue } = context;
+    (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, defaults_jsonIndent)}`);
+    try {
+        await graphql(`
+        mutation createIssue(
+          $repositoryId: ID!
+          $labelId: ID!
+          $title: String!
+          $content: String!
+        ) {
+          createIssue(
+            input: {
+              repositoryId: $repositoryId
+              labelIds: [$labelId]
+              title: $title
+              body: $content
+            }
+          ) {
+            issue {
+              number
+              url
+            }
+          }
+        }
+      `, {
+            repositoryId: context.repo.id,
+            labelId: context.repo.trackerLabelId,
+            title: issue.title,
+            content: issue.content,
+        });
+        return { created: true };
+    }
+    catch (createError) {
+        (0,core.error)(createError);
+        return { created: false };
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/lib/definitions/index.ts
 
 
@@ -18943,18 +19129,6 @@ function generateChangelogs(settings, commits) {
     };
 }
 
-;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
-function getContentBetweenTags(before, after) {
-    return (content) => {
-        const beforeIndex = content.indexOf(before);
-        const afterIndex = content.indexOf(after);
-        if (beforeIndex === -1 || afterIndex === -1) {
-            return '';
-        }
-        return content.substring(beforeIndex + before.length, afterIndex);
-    };
-}
-
 ;// CONCATENATED MODULE: ./src/lib/context/loadIssueFromContext.ts
 
 
@@ -19022,7 +19196,7 @@ class Context {
 ;// CONCATENATED MODULE: ./src/lib/context/previousVersion.ts
 
 
-const query = `
+const previousVersion_query = `
   query latestReleases($owner:String!, $repo:String!) {
     repository(owner:$owner, name:$repo) {
       releases(last:10) {
@@ -19034,7 +19208,7 @@ const query = `
   }
 `;
 async function previousVersion(graphql) {
-    const { repository } = await graphql(query, {
+    const { repository } = await graphql(previousVersion_query, {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
     });
@@ -19151,7 +19325,6 @@ function loadSettings() {
 
 
 
-const jsonIndent = 2;
 async function getGlobals() {
     const octokit = (0,github.getOctokit)((0,core.getInput)('token'));
     const { graphql } = octokit;
@@ -19161,106 +19334,6 @@ async function getGlobals() {
     context.issue.setup(globals);
     await context.issue.update(globals);
     return globals;
-}
-
-;// CONCATENATED MODULE: ./src/lib/issue/issueExists.ts
-
-
-
-const issueExists_query = `
-  query issues($owner: String!, $repo: String!) {
-    repository(owner: $owner, name: $repo) {
-      issues(last: 10, labels: ["release-tracker"], states: [OPEN]) {
-        nodes {
-          number
-          body
-          title
-        }
-      }
-    }
-  }
-`;
-function issueMatch(issue, issueNode) {
-    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
-    try {
-        const json = JSON.parse(jsonContent);
-        const jsonIssue = Issue.fromJson({
-            number: issueNode.number,
-            json,
-        });
-        if (issue.version.major === jsonIssue.version.major &&
-            issue.version.minor === jsonIssue.version.minor &&
-            issue.version.patch === jsonIssue.version.patch) {
-            return true;
-        }
-        return jsonIssue.title === issue.title;
-    }
-    catch {
-        return false;
-    }
-}
-async function issueExists(globals) {
-    const { graphql, context } = globals;
-    const { issue } = context;
-    // check if issue exists using the graphql api
-    const { repository } = await graphql(issueExists_query, {
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-    });
-    if (!repository?.issues || repository.issues.nodes.length === 0) {
-        (0,core.debug)(`No issues found in: ${JSON.stringify(repository)}`);
-        return false;
-    }
-    return repository.issues.nodes.some((issueNode) => issueMatch(issue, issueNode));
-}
-
-;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
-
-
-
-// eslint-disable-next-line max-lines-per-function
-async function createIssue(globals) {
-    if (await issueExists(globals)) {
-        (0,core.info)(`Issue already exists: ${globals.context.issue.title}`);
-        return { created: false };
-    }
-    const { graphql, context } = globals;
-    const { issue } = context;
-    (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, jsonIndent)}`);
-    try {
-        await graphql(`
-        mutation createIssue(
-          $repositoryId: ID!
-          $labelId: ID!
-          $title: String!
-          $content: String!
-        ) {
-          createIssue(
-            input: {
-              repositoryId: $repositoryId
-              labelIds: [$labelId]
-              title: $title
-              body: $content
-            }
-          ) {
-            issue {
-              number
-              url
-            }
-          }
-        }
-      `, {
-            repositoryId: context.repo.id,
-            labelId: context.repo.trackerLabelId,
-            title: issue.title,
-            content: issue.content,
-        });
-        return { created: true };
-    }
-    catch (createError) {
-        (0,core.error)(createError);
-        return { created: false };
-    }
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/issueIdentifier.ts

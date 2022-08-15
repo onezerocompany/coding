@@ -1,6 +1,6 @@
 import { debug, error as logError, info } from '@actions/core';
 import type { Globals } from '../../globals';
-import { jsonIndent } from '../../globals';
+import { jsonIndent } from '../../defaults';
 import { issueExists } from './issueExists';
 
 // eslint-disable-next-line max-lines-per-function

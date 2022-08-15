@@ -1,11 +1,11 @@
 import { debug } from '@actions/core';
 import type { Globals } from '../../globals';
-import { jsonIndent } from '../../globals';
+import { jsonIndent } from '../../defaults';
 
 const query = `
   query releases($owner: String!, $repo: String!) {
     repository(owner: $owner, name: $repo) {
-      releases(last: 100, orderBy: { field: CREATED_AT, direction: DESC }) {
+      releases(last: 10, orderBy: { field: CREATED_AT, direction: DESC }) {
         edges {
           node {
             name
