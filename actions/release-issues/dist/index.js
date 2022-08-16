@@ -18424,6 +18424,46 @@ async function updateChangelogApproval(globals, item) {
     return ItemStatus.unknown;
 }
 
+;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseClearance.ts
+
+
+async function dependenciesDone(globals, item, track) {
+    // only continue if the track is specified in the item metadata
+    const dependedItems = item.metadata.dependsOn
+        .map((dependsOn) => globals.context.issue.itemForType(dependsOn, track))
+        .filter((dependedItem) => dependedItem !== null);
+    // make sure the depended items are updated
+    const updates = dependedItems.map(async (dependedItem) => dependedItem.update(globals));
+    await Promise.all(updates);
+    // depending on other items, they should either be succeeded or skipped
+    const depenciesSucceeded = dependedItems.every((dependedItem) => dependedItem.status === ItemStatus.succeeded ||
+        dependedItem.status === ItemStatus.skipped);
+    return depenciesSucceeded;
+}
+async function updateReleaseClearance(globals, item) {
+    // return status if status type is definitive result
+    if (item.status === ItemStatus.succeeded || item.status === ItemStatus.failed)
+        return item.status;
+    const { track } = item.metadata;
+    if (track) {
+        if (await dependenciesDone(globals, item, track)) {
+            const trackSettings = globals.settings[track];
+            // in case the release is not manual, we don't need to do anything
+            if (!trackSettings.release.manual)
+                return ItemStatus.skipped;
+            if (wasItemChecked(globals, item)) {
+                // if the item was checked or was previously succeeded, we mark the item as succeeded
+                return ItemStatus.succeeded;
+            }
+            // in all other cases, we mark the item as pending
+            return ItemStatus.pending;
+        }
+        // the items we depend on are still pending or failed
+        return ItemStatus.awaitingItem;
+    }
+    return ItemStatus.unknown;
+}
+
 ;// CONCATENATED MODULE: ./src/lib/queries/createRelease.ts
 
 
@@ -18459,59 +18499,6 @@ async function createRelease(globals, item) {
         (0,core.setFailed)('No track specified for release creation');
         return { created: false };
     }
-}
-
-;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseClearance.ts
-
-
-
-
-async function createReleaseForItem(globals, item, track) {
-    const { created } = await createRelease(globals, item);
-    if (created) {
-        const creationItem = globals.context.issue.itemForType(ItemType.releaseCreation, track);
-        if (creationItem) {
-            creationItem.status = ItemStatus.succeeded;
-        }
-    }
-}
-async function dependenciesDone(globals, item, track) {
-    // only continue if the track is specified in the item metadata
-    const dependedItems = item.metadata.dependsOn
-        .map((dependsOn) => globals.context.issue.itemForType(dependsOn, track))
-        .filter((dependedItem) => dependedItem !== null);
-    // make sure the depended items are updated
-    const updates = dependedItems.map(async (dependedItem) => dependedItem.update(globals));
-    await Promise.all(updates);
-    // depending on other items, they should either be succeeded or skipped
-    const depenciesSucceeded = dependedItems.every((dependedItem) => dependedItem.status === ItemStatus.succeeded ||
-        dependedItem.status === ItemStatus.skipped);
-    return depenciesSucceeded;
-}
-async function updateReleaseClearance(globals, item) {
-    // return status if status type is definitive result
-    if (item.status === ItemStatus.succeeded || item.status === ItemStatus.failed)
-        return item.status;
-    const { track } = item.metadata;
-    if (track) {
-        if (await dependenciesDone(globals, item, track)) {
-            const trackSettings = globals.settings[track];
-            // in case the release is not manual, we don't need to do anything
-            if (!trackSettings.release.manual)
-                return ItemStatus.skipped;
-            if (wasItemChecked(globals, item)) {
-                // create the release
-                await createReleaseForItem(globals, item, track);
-                // if the item was checked or was previously succeeded, we mark the item as succeeded
-                return ItemStatus.succeeded;
-            }
-            // in all other cases, we mark the item as pending
-            return ItemStatus.pending;
-        }
-        // the items we depend on are still pending or failed
-        return ItemStatus.awaitingItem;
-    }
-    return ItemStatus.unknown;
 }
 
 ;// CONCATENATED MODULE: ./src/lib/queries/fetchReleases.ts
@@ -18603,6 +18590,10 @@ async function updateReleaseCreation(globals, item) {
     }
     // check if the version exists with an api request
     if (await releaseExists(globals, item))
+        return ItemStatus.succeeded;
+    // create the release
+    const { created } = await createRelease(globals, item);
+    if (created)
         return ItemStatus.succeeded;
     return ItemStatus.pending;
 }

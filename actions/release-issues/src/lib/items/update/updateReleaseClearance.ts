@@ -1,28 +1,8 @@
 import type { VersionTrack } from '@onezerocompany/commit';
 import type { Globals } from '../../../globals';
-import { createRelease } from '../../queries/createRelease';
 import type { Item } from '../Item';
 import { ItemStatus } from '../ItemStatus';
-import { ItemType } from '../ItemType';
 import { wasItemChecked } from '../wasItemChecked';
-
-async function createReleaseForItem(
-  globals: Globals,
-  item: Item,
-  track: VersionTrack,
-): Promise<void> {
-  const { created } = await createRelease(globals, item);
-
-  if (created) {
-    const creationItem = globals.context.issue.itemForType(
-      ItemType.releaseCreation,
-      track,
-    );
-    if (creationItem) {
-      creationItem.status = ItemStatus.succeeded;
-    }
-  }
-}
 
 export async function dependenciesDone(
   globals: Globals,
@@ -66,9 +46,6 @@ export async function updateReleaseClearance(
       if (!trackSettings.release.manual) return ItemStatus.skipped;
 
       if (wasItemChecked(globals, item)) {
-        // create the release
-        await createReleaseForItem(globals, item, track);
-
         // if the item was checked or was previously succeeded, we mark the item as succeeded
         return ItemStatus.succeeded;
       }

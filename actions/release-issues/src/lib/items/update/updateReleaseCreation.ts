@@ -1,5 +1,5 @@
 import type { Globals } from '../../../globals';
-import { releaseExists } from '../../queries';
+import { createRelease, releaseExists } from '../../queries';
 import type { Item } from '../Item';
 import { ItemStatus } from '../ItemStatus';
 
@@ -24,6 +24,10 @@ export async function updateReleaseCreation(
 
   // check if the version exists with an api request
   if (await releaseExists(globals, item)) return ItemStatus.succeeded;
+
+  // create the release
+  const { created } = await createRelease(globals, item);
+  if (created) return ItemStatus.succeeded;
 
   return ItemStatus.pending;
 }
