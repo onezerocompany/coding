@@ -18999,6 +18999,7 @@ async function createIssue(globals) {
         return { created: false };
     }
     const { graphql, context } = globals;
+    await globals.context.issue.update(globals);
     const { issue } = context;
     (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, defaults_jsonIndent)}`);
     try {

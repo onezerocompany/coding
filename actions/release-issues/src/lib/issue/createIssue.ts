@@ -13,6 +13,7 @@ export async function createIssue(
   }
 
   const { graphql, context } = globals;
+  await globals.context.issue.update(globals);
   const { issue } = context;
   debug(
     `Creating issue ${issue.title}: ${JSON.stringify(
