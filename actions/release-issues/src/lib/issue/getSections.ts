@@ -1,5 +1,5 @@
 import type { VersionTrack } from '@onezerocompany/commit';
-import { orderedTracks } from '@onezerocompany/commit';
+import { versionTrackOrder } from '@onezerocompany/commit';
 import type { Globals } from '../../globals';
 import { toTitleCase } from '../../utils/titlecase';
 import { Item } from '../items/Item';
@@ -36,7 +36,7 @@ function releasingItems(track: VersionTrack): Item[] {
 export function getSections(globals: Globals): ItemSection[] {
   const { settings } = globals;
   const sections: ItemSection[] = [];
-  for (const track of orderedTracks) {
+  for (const track of versionTrackOrder) {
     const items: Item[] = [];
     const trackSettings = new TrackSettings({
       forTrack: track,

@@ -96,7 +96,7 @@ module.exports = {
     // https://eslint.org/docs/rules/function-paren-newline
     'function-paren-newline': ['warn', 'multiline'],
 
-    // https://eslint.org/docs/rules/id-denylist
+    // https://eslidint.org/docs/rules/id-denylist
     'id-denylist': [
       'warn',
       'cb',

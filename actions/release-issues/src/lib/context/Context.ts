@@ -1,5 +1,5 @@
 import { setFailed } from '@actions/core';
-import { Version } from '@onezerocompany/commit';
+import { VersionBump, Version } from '@onezerocompany/commit';
 import { Issue } from '../issue/Issue';
 import type { Commit, RepoInfo } from '../definitions';
 import { Action } from '../definitions';
@@ -8,6 +8,7 @@ import { lastCommit, loadCommits } from './loadCommits';
 import { determineAction } from './determineAction';
 import { generateChangelogs } from './generateChangelogs';
 import { loadIssueFromContext } from './loadIssueFromContext';
+import { determineBump } from './determineBump';
 
 export class Context {
   public readonly repo: RepoInfo;
@@ -17,6 +18,7 @@ export class Context {
   public readonly issue: Issue;
   public readonly previousVersion: Version | null;
   public readonly commits: Commit[];
+  public readonly bump: VersionBump = VersionBump.none;
 
   public constructor(input: {
     settings: Settings;
@@ -30,8 +32,9 @@ export class Context {
     switch (this.action) {
       case Action.create:
         this.commits = loadCommits();
+        this.bump = determineBump(this.commits);
         this.issue = new Issue({
-          version: new Version(),
+          version: this.previousVersion?.bump(this.bump) ?? new Version(),
           commitish: lastCommit(),
           changelogs: generateChangelogs(input.settings, this.commits),
           commits: this.commits,

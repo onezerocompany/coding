@@ -8306,7 +8306,7 @@ function wrappy (fn, cb) {
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-__webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.Nj = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
+__webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.Nj = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
@@ -8336,9 +8336,10 @@ var validateMessage_1 = __nccwpck_require__(5429);
 Object.defineProperty(exports, "Nj", ({ enumerable: true, get: function () { return validateMessage_1.validateMessage; } }));
 var VersionBump_1 = __nccwpck_require__(4033);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionBump_1.VersionBump; } });
+__webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionBump_1.versionBumpOrder; } });
 var VersionTrack_1 = __nccwpck_require__(5352);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } });
-__webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.orderedTracks; } });
+__webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.versionTrackOrder; } });
 var Version_1 = __nccwpck_require__(8691);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return Version_1.Version; } });
 //# sourceMappingURL=index.js.map
@@ -9734,7 +9735,7 @@ Version.sort = (lhs, rhs) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.VersionBump = void 0;
+exports.versionBumpOrder = exports.VersionBump = void 0;
 var VersionBump;
 (function (VersionBump) {
     VersionBump["none"] = "none";
@@ -9742,6 +9743,12 @@ var VersionBump;
     VersionBump["minor"] = "minor";
     VersionBump["major"] = "major";
 })(VersionBump = exports.VersionBump || (exports.VersionBump = {}));
+exports.versionBumpOrder = [
+    VersionBump.none,
+    VersionBump.patch,
+    VersionBump.minor,
+    VersionBump.major,
+];
 //# sourceMappingURL=VersionBump.js.map
 
 /***/ }),
@@ -9752,14 +9759,14 @@ var VersionBump;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.orderedTracks = exports.VersionTrack = void 0;
+exports.versionTrackOrder = exports.VersionTrack = void 0;
 var VersionTrack;
 (function (VersionTrack) {
     VersionTrack["live"] = "live";
     VersionTrack["beta"] = "beta";
     VersionTrack["alpha"] = "alpha";
 })(VersionTrack = exports.VersionTrack || (exports.VersionTrack = {}));
-exports.orderedTracks = [
+exports.versionTrackOrder = [
     VersionTrack.alpha,
     VersionTrack.beta,
     VersionTrack.live,

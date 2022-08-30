@@ -4,3 +4,10 @@ export enum VersionBump {
   minor = 'minor',
   major = 'major',
 }
+
+export const versionBumpOrder = [
+  VersionBump.none,
+  VersionBump.patch,
+  VersionBump.minor,
+  VersionBump.major,
+];

@@ -22,6 +22,6 @@ export { CommitMessage } from './lib/message/CommitMessage';
 export { parseMessage } from './lib/message/parseMessage';
 export { validateMessage } from './lib/message/validateMessage';
 
-export { VersionBump } from './lib/versions/VersionBump';
-export { VersionTrack, orderedTracks } from './lib/versions/VersionTrack';
+export { VersionBump, versionBumpOrder } from './lib/versions/VersionBump';
+export { VersionTrack, versionTrackOrder } from './lib/versions/VersionTrack';
 export { Version, VersionJSON } from './lib/versions/Version';

@@ -8306,7 +8306,7 @@ function wrappy (fn, cb) {
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-exports.Gf = exports.GL = exports.Os = __webpack_unused_export__ = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.ac = __webpack_unused_export__ = void 0;
+exports.Gf = exports.Hr = exports.Os = exports.V9 = exports.ib = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.ac = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
@@ -8335,10 +8335,11 @@ Object.defineProperty(exports, "kW", ({ enumerable: true, get: function () { ret
 var validateMessage_1 = __nccwpck_require__(5429);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return validateMessage_1.validateMessage; } });
 var VersionBump_1 = __nccwpck_require__(4033);
-__webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionBump_1.VersionBump; } });
+Object.defineProperty(exports, "ib", ({ enumerable: true, get: function () { return VersionBump_1.VersionBump; } }));
+Object.defineProperty(exports, "V9", ({ enumerable: true, get: function () { return VersionBump_1.versionBumpOrder; } }));
 var VersionTrack_1 = __nccwpck_require__(5352);
 Object.defineProperty(exports, "Os", ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } }));
-Object.defineProperty(exports, "GL", ({ enumerable: true, get: function () { return VersionTrack_1.orderedTracks; } }));
+Object.defineProperty(exports, "Hr", ({ enumerable: true, get: function () { return VersionTrack_1.versionTrackOrder; } }));
 var Version_1 = __nccwpck_require__(8691);
 Object.defineProperty(exports, "Gf", ({ enumerable: true, get: function () { return Version_1.Version; } }));
 //# sourceMappingURL=index.js.map
@@ -9734,7 +9735,7 @@ Version.sort = (lhs, rhs) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.VersionBump = void 0;
+exports.versionBumpOrder = exports.VersionBump = void 0;
 var VersionBump;
 (function (VersionBump) {
     VersionBump["none"] = "none";
@@ -9742,6 +9743,12 @@ var VersionBump;
     VersionBump["minor"] = "minor";
     VersionBump["major"] = "major";
 })(VersionBump = exports.VersionBump || (exports.VersionBump = {}));
+exports.versionBumpOrder = [
+    VersionBump.none,
+    VersionBump.patch,
+    VersionBump.minor,
+    VersionBump.major,
+];
 //# sourceMappingURL=VersionBump.js.map
 
 /***/ }),
@@ -9752,14 +9759,14 @@ var VersionBump;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.orderedTracks = exports.VersionTrack = void 0;
+exports.versionTrackOrder = exports.VersionTrack = void 0;
 var VersionTrack;
 (function (VersionTrack) {
     VersionTrack["live"] = "live";
     VersionTrack["beta"] = "beta";
     VersionTrack["alpha"] = "alpha";
 })(VersionTrack = exports.VersionTrack || (exports.VersionTrack = {}));
-exports.orderedTracks = [
+exports.versionTrackOrder = [
     VersionTrack.alpha,
     VersionTrack.beta,
     VersionTrack.live,
@@ -18468,13 +18475,23 @@ async function updateReleaseClearance(globals, item) {
 
 
 async function apiCall(globals, track, tag) {
-    await globals.octokit.rest.repos.createRelease({
+    const { data: releaseData } = await globals.octokit.rest.repos.createRelease({
         owner: globals.context.repo.owner,
         repo: globals.context.repo.repo,
         prerelease: track !== dist/* VersionTrack.live */.Os.live,
         tag_name: tag,
         target_commitish: globals.context.issue.commitish,
         name: tag,
+        generate_release_notes: false,
+    });
+    // create an asset with the release json
+    await globals.octokit.rest.repos.uploadReleaseAsset({
+        owner: globals.context.repo.owner,
+        repo: globals.context.repo.repo,
+        release_id: releaseData.id,
+        name: 'release.json',
+        // eslint-disable-next-line id-denylist
+        data: JSON.stringify(globals.context.issue.json, null, 0),
     });
 }
 async function createRelease(globals, item) {
@@ -18789,7 +18806,7 @@ function releasingItems(track) {
 function getSections(globals) {
     const { settings } = globals;
     const sections = [];
-    for (const track of dist/* orderedTracks */.GL) {
+    for (const track of dist/* versionTrackOrder */.Hr) {
         const items = [];
         const trackSettings = new TrackSettings({
             forTrack: track,
@@ -19152,7 +19169,21 @@ function loadIssueFromContext() {
     });
 }
 
+;// CONCATENATED MODULE: ./src/lib/context/determineBump.ts
+
+function determineBump(commits) {
+    let bump = dist/* VersionBump.none */.ib.none;
+    for (const commit of commits) {
+        const commitBump = commit.message.category.versioning.bump;
+        if (dist/* versionBumpOrder.indexOf */.V9.indexOf(commitBump) > dist/* versionBumpOrder.indexOf */.V9.indexOf(bump)) {
+            bump = commitBump;
+        }
+    }
+    return bump;
+}
+
 ;// CONCATENATED MODULE: ./src/lib/context/Context.ts
+
 
 
 
@@ -19168,6 +19199,7 @@ class Context {
     issue;
     previousVersion;
     commits;
+    bump = dist/* VersionBump.none */.ib.none;
     constructor(input) {
         this.repo = input.repo;
         this.action = determineAction();
@@ -19175,8 +19207,9 @@ class Context {
         switch (this.action) {
             case Action.create:
                 this.commits = loadCommits();
+                this.bump = determineBump(this.commits);
                 this.issue = new Issue({
-                    version: new dist/* Version */.Gf(),
+                    version: this.previousVersion?.bump(this.bump) ?? new dist/* Version */.Gf(),
                     commitish: lastCommit(),
                     changelogs: generateChangelogs(input.settings, this.commits),
                     commits: this.commits,

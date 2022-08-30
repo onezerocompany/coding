@@ -4,7 +4,7 @@ export enum VersionTrack {
   alpha = 'alpha',
 }
 
-export const orderedTracks: VersionTrack[] = [
+export const versionTrackOrder: VersionTrack[] = [
   VersionTrack.alpha,
   VersionTrack.beta,
   VersionTrack.live,

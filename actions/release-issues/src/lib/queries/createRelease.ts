@@ -8,13 +8,24 @@ async function apiCall(
   track: VersionTrack,
   tag: string,
 ): Promise<void> {
-  await globals.octokit.rest.repos.createRelease({
+  const { data: releaseData } = await globals.octokit.rest.repos.createRelease({
     owner: globals.context.repo.owner,
     repo: globals.context.repo.repo,
     prerelease: track !== VersionTrack.live,
     tag_name: tag,
     target_commitish: globals.context.issue.commitish,
     name: tag,
+    generate_release_notes: false,
+  });
+
+  // create an asset with the release json
+  await globals.octokit.rest.repos.uploadReleaseAsset({
+    owner: globals.context.repo.owner,
+    repo: globals.context.repo.repo,
+    release_id: releaseData.id,
+    name: 'release.json',
+    // eslint-disable-next-line id-denylist
+    data: JSON.stringify(globals.context.issue.json, null, 0),
   });
 }
 
