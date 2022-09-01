@@ -3,6 +3,27 @@ import { VersionTrack } from '@onezerocompany/commit';
 import type { Globals } from '../../globals';
 import type { Item } from '../items/Item';
 
+function releaseJson(
+  globals: Globals,
+  track: VersionTrack,
+  tag: string,
+): string {
+  return JSON.stringify(
+    {
+      tag,
+      track,
+      changelog: globals.context.issue.changelogs[track],
+      commits: globals.context.issue.commits.map((commit) => ({
+        sha: commit.sha,
+        message: commit.message.message,
+      })),
+      publish: false,
+    },
+    null,
+    0,
+  );
+}
+
 async function apiCall(
   globals: Globals,
   track: VersionTrack,
@@ -23,9 +44,9 @@ async function apiCall(
     owner: globals.context.repo.owner,
     repo: globals.context.repo.repo,
     release_id: releaseData.id,
-    name: 'release.json',
+    name: 'release-manifest.json',
     // eslint-disable-next-line id-denylist
-    data: JSON.stringify(globals.context.issue.json, null, 0),
+    data: releaseJson(globals, track, tag),
   });
 }
 

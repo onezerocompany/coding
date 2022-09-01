@@ -18474,6 +18474,18 @@ async function updateReleaseClearance(globals, item) {
 ;// CONCATENATED MODULE: ./src/lib/queries/createRelease.ts
 
 
+function releaseJson(globals, track, tag) {
+    return JSON.stringify({
+        tag,
+        track,
+        changelog: globals.context.issue.changelogs[track],
+        commits: globals.context.issue.commits.map((commit) => ({
+            sha: commit.sha,
+            message: commit.message.message,
+        })),
+        publish: false,
+    }, null, 0);
+}
 async function apiCall(globals, track, tag) {
     const { data: releaseData } = await globals.octokit.rest.repos.createRelease({
         owner: globals.context.repo.owner,
@@ -18489,9 +18501,9 @@ async function apiCall(globals, track, tag) {
         owner: globals.context.repo.owner,
         repo: globals.context.repo.repo,
         release_id: releaseData.id,
-        name: 'release.json',
+        name: 'release-manifest.json',
         // eslint-disable-next-line id-denylist
-        data: JSON.stringify(globals.context.issue.json, null, 0),
+        data: releaseJson(globals, track, tag),
     });
 }
 async function createRelease(globals, item) {
