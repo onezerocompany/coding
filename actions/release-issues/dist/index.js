@@ -19047,7 +19047,7 @@ async function createIssue(globals) {
     (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, defaults_jsonIndent)}`);
     try {
         const users = await loadAssignees(globals);
-        const { issue: createdIssue, } = await graphql(`
+        await graphql(`
         mutation createIssue(
           $repositoryId: ID!
           $labelId: ID!
@@ -19078,7 +19078,7 @@ async function createIssue(globals) {
             content: issue.content,
             assignees: users,
         });
-        return { created: true, number: createdIssue.number };
+        return { created: true };
     }
     catch (createError) {
         (0,core.error)(createError);

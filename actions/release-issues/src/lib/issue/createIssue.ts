@@ -7,7 +7,7 @@ import { loadAssignees } from './loadAssignees';
 // eslint-disable-next-line max-lines-per-function
 export async function createIssue(
   globals: Globals,
-): Promise<{ created: boolean; number?: number }> {
+): Promise<{ created: boolean }> {
   if (await issueExists(globals)) {
     info(`Issue already exists: ${globals.context.issue.title}`);
     return { created: false };
@@ -25,13 +25,7 @@ export async function createIssue(
   );
   try {
     const users = await loadAssignees(globals);
-    const {
-      issue: createdIssue,
-    }: {
-      issue: {
-        number: number;
-      };
-    } = await graphql(
+    await graphql(
       `
         mutation createIssue(
           $repositoryId: ID!
@@ -66,7 +60,7 @@ export async function createIssue(
       },
     );
 
-    return { created: true, number: createdIssue.number };
+    return { created: true };
   } catch (createError: unknown) {
     logError(createError as Error);
     return { created: false };
