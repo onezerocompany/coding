@@ -2,6 +2,7 @@ import { debug, error as logError, info } from '@actions/core';
 import type { Globals } from '../../globals';
 import { jsonIndent } from '../../defaults';
 import { issueExists } from './issueExists';
+import { loadAssignees } from './loadAssignees';
 
 // eslint-disable-next-line max-lines-per-function
 export async function createIssue(
@@ -23,13 +24,22 @@ export async function createIssue(
     )}`,
   );
   try {
-    await graphql(
+    const {
+      issue: createdIssue,
+    }: {
+      issue: {
+        id: string;
+        number: number;
+        url: string;
+      };
+    } = await graphql(
       `
         mutation createIssue(
           $repositoryId: ID!
           $labelId: ID!
           $title: String!
           $content: String!
+          $assignees: [ID!]
         ) {
           createIssue(
             input: {
@@ -37,9 +47,11 @@ export async function createIssue(
               labelIds: [$labelId]
               title: $title
               body: $content
+              assigneeIds: $assignees
             }
           ) {
             issue {
+              id
               number
               url
             }
@@ -53,6 +65,27 @@ export async function createIssue(
         content: issue.content,
       },
     );
+
+    const users = await loadAssignees(globals);
+    if (users.length > 0) {
+      await graphql(
+        `
+          mutation assignIssue($issueId: ID!, $assignees: [ID!]) {
+            addAssigneesToAssignable(
+              input: { assignableId: $issueId, assigneeIds: $assignees }
+            ) {
+              assignable {
+                id
+              }
+            }
+          }
+        `,
+        {
+          issueId: createdIssue.id,
+          assignees: users,
+        },
+      );
+    }
 
     return { created: true };
   } catch (createError: unknown) {

@@ -1,14 +1,16 @@
 import { setFailed } from '@actions/core';
 import { VersionBump, Version } from '@onezerocompany/commit';
-import { Issue } from '../issue/Issue';
-import type { Commit, RepoInfo } from '../definitions';
-import { Action } from '../definitions';
-import type { Settings } from '../settings/Settings';
-import { lastCommit, loadCommits } from './loadCommits';
-import { determineAction } from './determineAction';
-import { generateChangelogs } from './generateChangelogs';
-import { loadIssueFromContext } from './loadIssueFromContext';
-import { determineBump } from './determineBump';
+import type { Commit, RepoInfo, Settings } from './contextDeps';
+import {
+  Action,
+  determineAction,
+  determineBump,
+  generateChangelogs,
+  Issue,
+  lastCommit,
+  loadCommits,
+  loadIssueFromContext,
+} from './contextDeps';
 
 export class Context {
   public readonly repo: RepoInfo;
@@ -33,13 +35,7 @@ export class Context {
       case Action.create:
         this.commits = loadCommits();
         this.bump = determineBump(this.commits);
-        this.issue = new Issue({
-          version: this.previousVersion?.bump(this.bump) ?? new Version(),
-          commitish: lastCommit(),
-          changelogs: generateChangelogs(input.settings, this.commits),
-          commits: this.commits,
-          items: [],
-        });
+        this.issue = this.createIssue(input.settings);
         break;
       case Action.update:
         this.commits = [];
@@ -50,5 +46,15 @@ export class Context {
         this.commits = [];
         this.issue = new Issue();
     }
+  }
+
+  private createIssue(settings: Settings): Issue {
+    return new Issue({
+      version: this.previousVersion?.bump(this.bump) ?? new Version(),
+      commitish: lastCommit(),
+      changelogs: generateChangelogs(settings, this.commits),
+      commits: this.commits,
+      items: [],
+    });
   }
 }

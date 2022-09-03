@@ -37,6 +37,8 @@ async function apiCall(
     target_commitish: globals.context.issue.commitish,
     name: tag,
     generate_release_notes: false,
+    // eslint-disable-next-line id-denylist
+    body: globals.context.issue.changelogs[track],
   });
 
   // create an asset with the release json

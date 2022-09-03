@@ -18495,6 +18495,8 @@ async function apiCall(globals, track, tag) {
         target_commitish: globals.context.issue.commitish,
         name: tag,
         generate_release_notes: false,
+        // eslint-disable-next-line id-denylist
+        body: globals.context.issue.changelogs[track],
     });
     // create an asset with the release json
     await globals.octokit.rest.repos.uploadReleaseAsset({
@@ -19000,7 +19002,27 @@ async function issueExists(globals) {
     return repository.issues.nodes.some((issueNode) => issueMatch(issue, issueNode));
 }
 
+;// CONCATENATED MODULE: ./src/lib/issue/loadAssignees.ts
+const loadAssignees_query = `
+query loadUser($user:String!) {
+  user(login:$user) {
+    id
+  }
+}
+`;
+async function loadAssignees(globals) {
+    const { graphql, settings } = globals;
+    const ids = await Promise.all(settings.assignees.map(async (assignee) => {
+        const { user } = await graphql(loadAssignees_query, {
+            user: assignee,
+        });
+        return user?.id;
+    }));
+    return ids.filter((id) => id);
+}
+
 ;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
+
 
 
 
@@ -19015,12 +19037,13 @@ async function createIssue(globals) {
     const { issue } = context;
     (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, defaults_jsonIndent)}`);
     try {
-        await graphql(`
+        const { issue: createdIssue, } = await graphql(`
         mutation createIssue(
           $repositoryId: ID!
           $labelId: ID!
           $title: String!
           $content: String!
+          $assignees: [ID!]
         ) {
           createIssue(
             input: {
@@ -19028,9 +19051,11 @@ async function createIssue(globals) {
               labelIds: [$labelId]
               title: $title
               body: $content
+              assigneeIds: $assignees
             }
           ) {
             issue {
+              id
               number
               url
             }
@@ -19042,6 +19067,23 @@ async function createIssue(globals) {
             title: issue.title,
             content: issue.content,
         });
+        const users = await loadAssignees(globals);
+        if (users.length > 0) {
+            await graphql(`
+          mutation assignIssue($issueId: ID!, $assignees: [ID!]) {
+            addAssigneesToAssignable(
+              input: { assignableId: $issueId, assigneeIds: $assignees }
+            ) {
+              assignable {
+                id
+              }
+            }
+          }
+        `, {
+                issueId: createdIssue.id,
+                assignees: users,
+            });
+        }
         return { created: true };
     }
     catch (createError) {
@@ -19195,13 +19237,17 @@ function determineBump(commits) {
     return bump;
 }
 
+;// CONCATENATED MODULE: ./src/lib/context/contextDeps.ts
+
+
+
+
+
+
+
+
+
 ;// CONCATENATED MODULE: ./src/lib/context/Context.ts
-
-
-
-
-
-
 
 
 
@@ -19221,13 +19267,7 @@ class Context {
             case Action.create:
                 this.commits = loadCommits();
                 this.bump = determineBump(this.commits);
-                this.issue = new Issue({
-                    version: this.previousVersion?.bump(this.bump) ?? new dist/* Version */.Gf(),
-                    commitish: lastCommit(),
-                    changelogs: generateChangelogs(input.settings, this.commits),
-                    commits: this.commits,
-                    items: [],
-                });
+                this.issue = this.createIssue(input.settings);
                 break;
             case Action.update:
                 this.commits = [];
@@ -19238,6 +19278,15 @@ class Context {
                 this.commits = [];
                 this.issue = new Issue();
         }
+    }
+    createIssue(settings) {
+        return new Issue({
+            version: this.previousVersion?.bump(this.bump) ?? new dist/* Version */.Gf(),
+            commitish: lastCommit(),
+            changelogs: generateChangelogs(settings, this.commits),
+            commits: this.commits,
+            items: [],
+        });
     }
 }
 
@@ -19323,10 +19372,12 @@ var yaml_dist = __nccwpck_require__(8447);
 
 
 class Settings {
+    assignees;
     alpha;
     beta;
     live;
     constructor(json) {
+        this.assignees = json.assignees;
         this.alpha = new TrackSettings({
             forTrack: dist/* VersionTrack.alpha */.Os.alpha,
             json: json.alpha,
@@ -19342,6 +19393,7 @@ class Settings {
     }
     get json() {
         return {
+            assignees: this.assignees,
             alpha: this.alpha.json,
             beta: this.beta.json,
             live: this.live.json,
