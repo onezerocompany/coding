@@ -1,3 +1,4 @@
+import { error, info } from '@actions/core';
 import type { Globals } from '../../globals';
 
 const query = `
@@ -23,8 +24,10 @@ export async function closeIssue(
       issueId,
       reason: 'COMPLETED',
     });
+    info(`Closed issue #${globals.context.issue.number}`);
     return { closed: true };
   } catch {
+    error(`Failed to close issue #${globals.context.issue.number}`);
     return { closed: false };
   }
 }

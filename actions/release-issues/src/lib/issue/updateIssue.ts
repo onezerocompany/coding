@@ -30,7 +30,9 @@ export async function updateIssue(
   });
 
   // if all items are done, close the issue
-  await closeIssue(globals, id);
+  if (globals.context.issue.allItemsDone) {
+    await closeIssue(globals, id);
+  }
 
   return { updated: true };
 }

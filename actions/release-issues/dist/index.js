@@ -19436,6 +19436,7 @@ async function getGlobals() {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/closeIssue.ts
+
 const closeIssue_query = `
   mutation closeIssue($issueId: ID!, $reason: IssueClosedStateReason) {
     closeIssue(input: {
@@ -19455,9 +19456,11 @@ async function closeIssue(globals, issueId) {
             issueId,
             reason: 'COMPLETED',
         });
+        (0,core.info)(`Closed issue #${globals.context.issue.number}`);
         return { closed: true };
     }
     catch {
+        (0,core.error)(`Failed to close issue #${globals.context.issue.number}`);
         return { closed: false };
     }
 }
@@ -19508,7 +19511,9 @@ async function updateIssue(globals) {
         body: globals.context.issue.content,
     });
     // if all items are done, close the issue
-    await closeIssue(globals, id);
+    if (globals.context.issue.allItemsDone) {
+        await closeIssue(globals, id);
+    }
     return { updated: true };
 }
 
