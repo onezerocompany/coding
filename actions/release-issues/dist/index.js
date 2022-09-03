@@ -18291,13 +18291,6 @@ function getContentBetweenTags(before, after) {
 var dist = __nccwpck_require__(4670);
 // EXTERNAL MODULE: ../../packages/commit/dist/lib/versions/Version.js
 var Version = __nccwpck_require__(8691);
-;// CONCATENATED MODULE: ./src/utils/titlecase.ts
-function toTitleCase(str) {
-    return str.replace(/\w\S*/gu, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-}
-
-;// CONCATENATED MODULE: external "crypto"
-const external_crypto_namespaceObject = require("crypto");
 ;// CONCATENATED MODULE: ./src/lib/items/ItemStatus.ts
 // status of an item in a release
 var ItemStatus;
@@ -18318,6 +18311,13 @@ var ItemStatus;
     ItemStatus["unknown"] = "unknown";
 })(ItemStatus || (ItemStatus = {}));
 
+;// CONCATENATED MODULE: ./src/utils/titlecase.ts
+function toTitleCase(str) {
+    return str.replace(/\w\S*/gu, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+}
+
+;// CONCATENATED MODULE: external "crypto"
+const external_crypto_namespaceObject = require("crypto");
 ;// CONCATENATED MODULE: ./src/lib/items/icons.ts
 
 const icons = {
@@ -18851,6 +18851,7 @@ function getSections(globals) {
 
 
 
+
 class Issue {
     number;
     version;
@@ -18912,6 +18913,10 @@ class Issue {
                 message: commit.message.message,
             })),
         };
+    }
+    get allItemsDone() {
+        return this.sections.every((section) => section.items.every((item) => item.status === ItemStatus.succeeded ||
+            item.status === ItemStatus.skipped));
     }
     static fromJson(inputs) {
         return new Issue({
@@ -19430,6 +19435,33 @@ async function getGlobals() {
     return globals;
 }
 
+;// CONCATENATED MODULE: ./src/lib/issue/closeIssue.ts
+const closeIssue_query = `
+  mutation closeIssue($issueId: ID!, $reason: IssueClosedStateReason) {
+    closeIssue(input: {
+      issueId: $issueId, 
+      reason: $reason
+    }) {
+      issue {
+        id
+      }
+    }
+  }
+`;
+async function closeIssue(globals, issueId) {
+    const { graphql } = globals;
+    try {
+        await graphql(closeIssue_query, {
+            issueId,
+            reason: 'COMPLETED',
+        });
+        return { closed: true };
+    }
+    catch {
+        return { closed: false };
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/lib/issue/issueIdentifier.ts
 const issueIdentifier_query = `
   query issueIdentifier($owner:String!, $repo:String!, $issue:Int!) {
@@ -19452,6 +19484,7 @@ async function issueIdentifier(globals) {
 
 ;// CONCATENATED MODULE: ./src/lib/issue/updateIssue.ts
 
+
 const updateIssue_query = `
 mutation updateIssue($issueId: ID!, $body:String!) {
   updateIssue(input: {id: $issueId, body:$body}) {
@@ -19463,13 +19496,19 @@ mutation updateIssue($issueId: ID!, $body:String!) {
 `;
 async function updateIssue(globals) {
     const { graphql } = globals;
+    const id = (await issueIdentifier(globals)) ?? null;
+    if (id === null)
+        return { updated: false };
+    // refresh all item states
     await globals.context.issue.update(globals);
-    const id = await issueIdentifier(globals);
+    // update the content of the issue
     await graphql(updateIssue_query, {
-        issueId: id ?? '',
+        issueId: id,
         // eslint-disable-next-line id-denylist
         body: globals.context.issue.content,
     });
+    // if all items are done, close the issue
+    await closeIssue(globals, id);
     return { updated: true };
 }
 

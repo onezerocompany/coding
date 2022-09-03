@@ -4,6 +4,7 @@ import { Version } from '@onezerocompany/commit/dist/lib/versions/Version';
 import type { Globals } from '../../globals';
 import type { Commit } from '../definitions/Commit';
 import type { Item, ItemJSON } from '../items/Item';
+import { ItemStatus } from '../items/ItemStatus';
 import type { ItemType } from '../items/ItemType';
 import { getSections } from './getSections';
 
@@ -101,6 +102,16 @@ export class Issue {
         message: commit.message.message,
       })),
     };
+  }
+
+  public get allItemsDone(): boolean {
+    return this.sections.every((section) =>
+      section.items.every(
+        (item) =>
+          item.status === ItemStatus.succeeded ||
+          item.status === ItemStatus.skipped,
+      ),
+    );
   }
 
   public static fromJson(inputs: { number: number; json: IssueJSON }): Issue {
