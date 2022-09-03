@@ -19441,7 +19441,7 @@ const closeIssue_query = `
   mutation closeIssue($issueId: ID!, $reason: IssueClosedStateReason) {
     closeIssue(input: {
       issueId: $issueId, 
-      reason: $reason
+      stateReason: $reason
     }) {
       issue {
         id
