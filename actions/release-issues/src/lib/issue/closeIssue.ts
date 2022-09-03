@@ -1,4 +1,4 @@
-import { error, info } from '@actions/core';
+import { error as logError, info as logInfo } from '@actions/core';
 import type { Globals } from '../../globals';
 
 const query = `
@@ -24,10 +24,14 @@ export async function closeIssue(
       issueId,
       reason: 'COMPLETED',
     });
-    info(`Closed issue #${globals.context.issue.number}`);
+    logInfo(`Closed issue #${globals.context.issue.number}`);
     return { closed: true };
-  } catch {
-    error(`Failed to close issue #${globals.context.issue.number}`);
+  } catch (closeError: unknown) {
+    logError(
+      `Failed to close issue #${globals.context.issue.number}: ${
+        closeError as string
+      }`,
+    );
     return { closed: false };
   }
 }

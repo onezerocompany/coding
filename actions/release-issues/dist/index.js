@@ -19459,8 +19459,8 @@ async function closeIssue(globals, issueId) {
         (0,core.info)(`Closed issue #${globals.context.issue.number}`);
         return { closed: true };
     }
-    catch {
-        (0,core.error)(`Failed to close issue #${globals.context.issue.number}`);
+    catch (closeError) {
+        (0,core.error)(`Failed to close issue #${globals.context.issue.number}: ${closeError}`);
         return { closed: false };
     }
 }
