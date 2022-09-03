@@ -7,7 +7,7 @@ import { loadAssignees } from './loadAssignees';
 // eslint-disable-next-line max-lines-per-function
 export async function createIssue(
   globals: Globals,
-): Promise<{ created: boolean }> {
+): Promise<{ created: boolean; number?: number }> {
   if (await issueExists(globals)) {
     info(`Issue already exists: ${globals.context.issue.title}`);
     return { created: false };
@@ -24,13 +24,12 @@ export async function createIssue(
     )}`,
   );
   try {
+    const users = await loadAssignees(globals);
     const {
       issue: createdIssue,
     }: {
       issue: {
-        id: string;
         number: number;
-        url: string;
       };
     } = await graphql(
       `
@@ -63,31 +62,11 @@ export async function createIssue(
         labelId: context.repo.trackerLabelId,
         title: issue.title,
         content: issue.content,
+        assignees: users,
       },
     );
 
-    const users = await loadAssignees(globals);
-    if (users.length > 0) {
-      await graphql(
-        `
-          mutation assignIssue($issueId: ID!, $assignees: [ID!]) {
-            addAssigneesToAssignable(
-              input: { assignableId: $issueId, assigneeIds: $assignees }
-            ) {
-              assignable {
-                id
-              }
-            }
-          }
-        `,
-        {
-          issueId: createdIssue.id,
-          assignees: users,
-        },
-      );
-    }
-
-    return { created: true };
+    return { created: true, number: createdIssue.number };
   } catch (createError: unknown) {
     logError(createError as Error);
     return { created: false };

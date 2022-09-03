@@ -18507,6 +18507,15 @@ async function apiCall(globals, track, tag) {
         // eslint-disable-next-line id-denylist
         data: releaseJson(globals, track, tag),
     });
+    // create an asset with the changelog
+    await globals.octokit.rest.repos.uploadReleaseAsset({
+        owner: globals.context.repo.owner,
+        repo: globals.context.repo.repo,
+        release_id: releaseData.id,
+        name: 'CHANGELOG.md',
+        // eslint-disable-next-line id-denylist
+        data: globals.context.issue.changelogs[track],
+    });
 }
 async function createRelease(globals, item) {
     const { track } = item.metadata;
@@ -19037,6 +19046,7 @@ async function createIssue(globals) {
     const { issue } = context;
     (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, defaults_jsonIndent)}`);
     try {
+        const users = await loadAssignees(globals);
         const { issue: createdIssue, } = await graphql(`
         mutation createIssue(
           $repositoryId: ID!
@@ -19066,25 +19076,9 @@ async function createIssue(globals) {
             labelId: context.repo.trackerLabelId,
             title: issue.title,
             content: issue.content,
+            assignees: users,
         });
-        const users = await loadAssignees(globals);
-        if (users.length > 0) {
-            await graphql(`
-          mutation assignIssue($issueId: ID!, $assignees: [ID!]) {
-            addAssigneesToAssignable(
-              input: { assignableId: $issueId, assigneeIds: $assignees }
-            ) {
-              assignable {
-                id
-              }
-            }
-          }
-        `, {
-                issueId: createdIssue.id,
-                assignees: users,
-            });
-        }
-        return { created: true };
+        return { created: true, number: createdIssue.number };
     }
     catch (createError) {
         (0,core.error)(createError);

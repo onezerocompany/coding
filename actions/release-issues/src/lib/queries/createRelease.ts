@@ -50,6 +50,16 @@ async function apiCall(
     // eslint-disable-next-line id-denylist
     data: releaseJson(globals, track, tag),
   });
+
+  // create an asset with the changelog
+  await globals.octokit.rest.repos.uploadReleaseAsset({
+    owner: globals.context.repo.owner,
+    repo: globals.context.repo.repo,
+    release_id: releaseData.id,
+    name: 'CHANGELOG.md',
+    // eslint-disable-next-line id-denylist
+    data: globals.context.issue.changelogs[track],
+  });
 }
 
 export async function createRelease(
