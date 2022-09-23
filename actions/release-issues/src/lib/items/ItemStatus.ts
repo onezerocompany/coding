@@ -1,17 +1,24 @@
-// status of an item in a release
+/**
+ * @file Contains the definition of the item status.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
+/** Status of an item in a release issue. */
 export enum ItemStatus {
-  // the item is successfully completed
+  /** The item is successfully completed. */
   succeeded = 'succeeded',
-  // the item is waiting for user action
+  /** The item is waiting for user action. */
   awaitingItem = 'awaiting-item',
-  // the item has failed
+  /** The item has failed. */
   failed = 'failed',
-  // the item is waiting on another item to complete
+  /** The item is waiting on another item to complete. */
   pending = 'pending',
-  // the item is in progress
+  /** The item is in progress. */
   inProgress = 'in-progress',
-  // the item was skipped
+  /** The item was skipped. */
   skipped = 'skipped',
-  // the status of the item is unknown
+  /** The status of the item is unknown. */
   unknown = 'unknown',
 }

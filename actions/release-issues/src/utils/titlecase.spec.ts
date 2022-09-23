@@ -1,3 +1,10 @@
+/**
+ * @file Validate the toTitleCase function.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand
+ */
+
 import { toTitleCase } from './titlecase';
 
 describe('title case', () => {

@@ -1,3 +1,10 @@
+/**
+ * @file Index of the package, exports all of the public API.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 /* eslint-disable import/max-dependencies */
 export {
   categories,
@@ -23,5 +30,5 @@ export { parseMessage } from './lib/message/parseMessage';
 export { validateMessage } from './lib/message/validateMessage';
 
 export { VersionBump, versionBumpOrder } from './lib/versions/VersionBump';
-export { VersionTrack, versionTrackOrder } from './lib/versions/VersionTrack';
+export { ReleaseTrack, releaseTrackOrder } from './lib/versions/ReleaseTrack';
 export { Version, VersionJSON } from './lib/versions/Version';

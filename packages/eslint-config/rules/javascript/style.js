@@ -1,6 +1,12 @@
-// @ts-nocheck
-
 /* eslint-disable max-lines */
+/**
+ * @file ESLint rules for enforcing code style.
+ * @copyright Luca Silverentand
+ * @license MIT
+ * @author 2022 OneZero Company
+ */
+
+/** The indentation level that should be used when writing programs. */
 const indentLevel = 2;
 
 module.exports = {
@@ -52,9 +58,8 @@ module.exports = {
     // https://eslint.org/docs/rules/capitalized-comments
     'capitalized-comments': [
       'warn',
-      'never',
+      'always',
       {
-        ignorePattern: 'TODO|FIXME',
         ignoreConsecutiveComments: false,
         ignoreInlineComments: false,
       },
@@ -199,7 +204,10 @@ module.exports = {
     ],
 
     // https://eslint.org/docs/rules/max-lines
-    'max-lines': ['warn', { max: 160 }],
+    'max-lines': [
+      'warn',
+      { max: 250, skipBlankLines: true, skipComments: true },
+    ],
 
     // https://eslint.org/docs/rules/max-lines-per-function
     'max-lines-per-function': [
@@ -296,7 +304,13 @@ module.exports = {
     'no-ternary': ['off'],
 
     // https://eslint.org/docs/rules/no-trailing-spaces
-    'no-trailing-spaces': ['warn'],
+    'no-trailing-spaces': [
+      'warn',
+      {
+        skipBlankLines: false,
+        ignoreComments: false,
+      },
+    ],
 
     // https://eslint.org/docs/rules/no-underscore-dangle
     'no-underscore-dangle': [
@@ -374,7 +388,7 @@ module.exports = {
     // https://eslint.org/docs/rules/padding-line-between-statements
     'padding-line-between-statements': [
       'warn',
-      // single-line variable declarations should never have a blank line between them
+      // Single-line variable declarations should never have a blank line between them
       {
         blankLine: 'never',
         prev: ['singleline-const', 'singleline-let', 'singleline-var'],
@@ -390,7 +404,7 @@ module.exports = {
         prev: ['import', 'cjs-import'],
         next: ['import', 'cjs-import'],
       },
-      // multi-line variable declarations should have a blank line between them
+      // Multi-line variable declarations should have a blank line between them
       {
         blankLine: 'always',
         prev: ['import', 'multiline-const', 'multiline-let', 'multiline-var'],

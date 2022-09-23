@@ -1,3 +1,10 @@
+/**
+ * @file Contains the tool for parsing the commit message.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -6,6 +13,18 @@ import { findGitRoot } from '../../lib/utils/git';
 import { parseMessage } from '../../lib/message/parseMessage';
 import { CommitMessage } from '../../lib/message/CommitMessage';
 
+/**
+ * Tool for parsing commit messages.
+ *
+ * @param options - The options for the tool.
+ * @param options.message - The commit message to parse.
+ * @param options.file - The file to read the commit message from.
+ * @param options.commit - The commit to parse.
+ * @param options.json - Whether to output the result as JSON.
+ * @param options.yaml - Whether to output the result as YAML.
+ * @example
+ *   parse({ message: 'feat: add a new feature' });
+ */
 export function tool(options: {
   message: string;
   file: string;

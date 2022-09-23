@@ -88,16 +88,16 @@ describe('scope validator', () => {
     expect(scopeValidator.normalized).toBe('incorrect/scope');
     expect(scopeValidator.parsed).toBe(scopeValidator.normalized);
     expect(scopeValidator.valid).toBe(
-      '❗️ fatal - scope must be all lowercase, ❗️ fatal - scope cannot contain whitespace',
+      '❗️ fatal - scope cannot contain whitespace, ❗️ fatal - scope must be all lowercase',
     );
     expect(scopeValidator.errors).toEqual([
       {
         level: ValidationErrorLevel.fatal,
-        message: 'scope must be all lowercase',
+        message: 'scope cannot contain whitespace',
       },
       {
         level: ValidationErrorLevel.fatal,
-        message: 'scope cannot contain whitespace',
+        message: 'scope must be all lowercase',
       },
     ]);
   });

@@ -1,3 +1,10 @@
+/**
+ * @file ESLint rules for Next.js projects.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 module.exports = {
   rules: {
     '@next/next/no-css-tags': ['warn'],

@@ -1,3 +1,10 @@
+/**
+ * @file Contains functions to validate commit messages.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { categoryForTag } from '../categories/categories';
 import { ScopeValidator } from './validators/ScopeValidator';
 import { SubjectValidator } from './validators/SubjectValidator';
@@ -9,6 +16,14 @@ import {
 import { BodyValidator } from './validators/BodyValidator';
 import { AuthorsValidator } from './validators/AuthorsValidator';
 
+/**
+ * Validates an emoji in the first line of a commit message.
+ *
+ * @param message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateEmoji(':beetle: bug/fix(login) fix login');
+ */
 function validateEmoji(message: string): ValidationError[] {
   const [firstLine] = message.split('\n');
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -25,6 +40,14 @@ function validateEmoji(message: string): ValidationError[] {
   ];
 }
 
+/**
+ * Validates the category part of the first line in a commit message.
+ *
+ * @param message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateCategory(':beetle: bug/fix(login) fix login');
+ */
 function validateCategory(message: string): ValidationError[] {
   const [firstLine] = message.split('\n');
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -40,11 +63,21 @@ function validateCategory(message: string): ValidationError[] {
 }
 
 const allowedFooterPrefixes = ['co-authored-by:', 'closes', 'signed-off-by:'];
+/**
+ * Validates the footer of a commit message.
+ *
+ * @param message - The message to validate.
+ * @param bodyContent - The content of the body.
+ * @returns The validation errors.
+ * @example
+ *   validateFooter(':beetle: bug/fix(login) fix login', 'fix login');
+ */
 function validateFooter(
   message: string,
   bodyContent: string,
 ): ValidationError[] {
-  // remove first line and remove bodyContent
+  // Remove first line and remove bodyContent
+
   const footer = message
     .substring(message.indexOf('\n') + 1)
     .replace(bodyContent, '')
@@ -53,9 +86,9 @@ function validateFooter(
     .filter((line) => line.length > 0)
     .join('\n')
     .trim();
-  // return when no footer
+  // Return when no footer
   if (!footer || !message.includes('\n')) return [];
-  // check the lines of the footer
+  // Check the lines of the footer
   for (const line of footer.split('\n')) {
     if (
       !allowedFooterPrefixes.some((prefix) =>
@@ -73,7 +106,49 @@ function validateFooter(
   return [];
 }
 
-// eslint-disable-next-line max-lines-per-function
+/**
+ * Validates a commit message.
+ *
+ * @param message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateCommitMessage(':beetle: bug/fix(login) fix login');
+ */
+function findMessageErrors(message: string): {
+  stoppedEarly: boolean;
+  errors: ValidationError[];
+} {
+  const errors: ValidationError[] = [];
+  const parsed = parseMessage(message);
+  errors.push(...validateCategory(message));
+  if (errors.length > 0) return { stoppedEarly: true, errors };
+  errors.push(...validateEmoji(message));
+  errors.push(...new ScopeValidator(parsed.scope).errors);
+  errors.push(
+    ...new SubjectValidator({ subject: parsed.subject, maxLength: 48 }).errors,
+  );
+  if (parsed.messageBody) {
+    errors.push(...new BodyValidator(parsed.messageBody).errors);
+  }
+  for (const author of parsed.coAuthors) {
+    errors.push(...new AuthorsValidator(author).errors);
+  }
+  errors.push(...validateFooter(message, parsed.messageBody));
+  return {
+    stoppedEarly: false,
+    errors,
+  };
+}
+
+/**
+ * Validates a commit message.
+ *
+ * @param inputs - The inputs to validate.
+ * @param inputs.message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateMessage(':beetle: bug/fix(login) fix login');
+ */
 export function validateMessage(inputs: { message: string }): {
   valid: boolean;
   errors: ValidationError[];
@@ -81,25 +156,15 @@ export function validateMessage(inputs: { message: string }): {
   const errors: ValidationError[] = [];
   if (inputs.message) {
     if (inputs.message.toLowerCase().startsWith('merge')) {
-      // skipping validation for merge commits
+      // Skipping validation for merge commits
       return { valid: true, errors };
     }
-    const parsed = parseMessage(inputs.message);
-    errors.push(...validateCategory(inputs.message));
-    if (errors.length > 0) return { valid: false, errors };
-    errors.push(...validateEmoji(inputs.message));
-    errors.push(...new ScopeValidator(parsed.scope).errors);
-    errors.push(
-      ...new SubjectValidator({ subject: parsed.subject, maxLength: 48 })
-        .errors,
+
+    const { stoppedEarly, errors: messageErrors } = findMessageErrors(
+      inputs.message,
     );
-    if (parsed.messageBody) {
-      errors.push(...new BodyValidator(parsed.messageBody).errors);
-    }
-    for (const author of parsed.coAuthors) {
-      errors.push(...new AuthorsValidator(author).errors);
-    }
-    errors.push(...validateFooter(inputs.message, parsed.messageBody));
+    errors.push(...messageErrors);
+    if (stoppedEarly) return { valid: false, errors };
   } else {
     errors.push(
       new ValidationError({

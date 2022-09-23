@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import {
   ConfigFile,
   ConfigValidator,
@@ -13,7 +12,7 @@ describe('typescript config', () => {
       new ConfigValidator({
         config: ConfigFile.typescript,
         testFiles: [TestFile.javascript],
-        plugins: [PluginKey.import],
+        plugins: [PluginKey.import, PluginKey.jsdoc, PluginKey.jsdoc],
       }).validate(),
     ).resolves.toStrictEqual([]);
   });
@@ -23,7 +22,7 @@ describe('typescript config', () => {
       new ConfigValidator({
         config: ConfigFile.typescript,
         testFiles: [TestFile.typescript],
-        plugins: [PluginKey.import, PluginKey.typescript],
+        plugins: [PluginKey.import, PluginKey.typescript, PluginKey.jsdoc],
       }).validate(),
     ).resolves.toStrictEqual([]);
   });

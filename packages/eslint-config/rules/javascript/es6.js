@@ -1,5 +1,9 @@
-// @ts-nocheck
-
+/**
+ * @file ESLint rules for ECMAScript 6 (ES6) syntax.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 module.exports = {
   rules: {
     // https://eslint.org/docs/rules/arrow-body-style

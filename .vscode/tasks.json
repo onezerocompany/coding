@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "label": "lint",
+      "detail": "Lints all projects"
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": ["$tsc"],
+      "label": "build",
+      "detail": "Builds all projects"
+    },
+    {
+      "type": "npm",
+      "script": "test",
+      "label": "test",
+      "detail": "Runs all tests"
+    },
+    {
+      "type": "npm",
+      "script": "format",
+      "problemMatcher": ["$eslint-stylish"],
+      "label": "npm: format",
+      "detail": "Format all projects"
+    }
+  ]
+}

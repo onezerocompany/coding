@@ -81,3 +81,6 @@ node_modules/
 !actions/setup-flutter/dist
 **/dist-reference
 **/*.log
+**/docs
+**/*.log
+.commit-message

@@ -8305,6 +8305,12 @@ function wrappy (fn, cb) {
 "use strict";
 var __webpack_unused_export__;
 
+/**
+ * @file Index of the package, exports all of the public API.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 __webpack_unused_export__ = ({ value: true });
 __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.Nj = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
@@ -8337,9 +8343,9 @@ Object.defineProperty(exports, "Nj", ({ enumerable: true, get: function () { ret
 var VersionBump_1 = __nccwpck_require__(4033);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionBump_1.VersionBump; } });
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionBump_1.versionBumpOrder; } });
-var VersionTrack_1 = __nccwpck_require__(5352);
-__webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } });
-__webpack_unused_export__ = ({ enumerable: true, get: function () { return VersionTrack_1.versionTrackOrder; } });
+var ReleaseTrack_1 = __nccwpck_require__(268);
+__webpack_unused_export__ = ({ enumerable: true, get: function () { return ReleaseTrack_1.ReleaseTrack; } });
+__webpack_unused_export__ = ({ enumerable: true, get: function () { return ReleaseTrack_1.releaseTrackOrder; } });
 var Version_1 = __nccwpck_require__(8691);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return Version_1.Version; } });
 //# sourceMappingURL=index.js.map
@@ -8351,17 +8357,26 @@ __webpack_unused_export__ = ({ enumerable: true, get: function () { return Versi
 
 "use strict";
 
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.categoryForTag = exports.categories = exports.ChangeLogType = void 0;
 const VersionBump_1 = __nccwpck_require__(4033);
-/* eslint-disable max-lines */
+/** Types of changelogs. */
 var ChangeLogType;
 (function (ChangeLogType) {
+    /** Changelog for internal usage. */
     ChangeLogType["internal"] = "internal";
+    /** Changelog for external publication. */
     ChangeLogType["external"] = "external";
 })(ChangeLogType = exports.ChangeLogType || (exports.ChangeLogType = {}));
+/* eslint-disable max-lines */
 exports.categories = [
-    // feature
+    // Feature
     {
         tag: 'feat/new',
         emoji: ':tada:',
@@ -8376,7 +8391,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // feature improve
+    // Feature improve
     {
         tag: 'feat/impr',
         emoji: ':star2:',
@@ -8391,7 +8406,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // feature deprecate
+    // Feature deprecate
     {
         tag: 'feat/depr',
         emoji: ':anger:',
@@ -8406,7 +8421,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // feature remove
+    // Feature remove
     {
         tag: 'feat/rem',
         emoji: ':bomb:',
@@ -8421,7 +8436,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // bugfix
+    // Bugfix
     {
         tag: 'bug/fix',
         emoji: ':beetle:',
@@ -8436,7 +8451,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // hotfix
+    // Hotfix
     {
         tag: 'bug/hot',
         emoji: ':fire:',
@@ -8451,7 +8466,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // minorfix
+    // Minorfix
     {
         tag: 'bug/minor',
         emoji: ':bug:',
@@ -8466,7 +8481,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // test
+    // Test
     {
         tag: 'test',
         emoji: ':microscope:',
@@ -8481,7 +8496,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // chore
+    // Chore
     {
         tag: 'chore',
         emoji: ':broom:',
@@ -8496,7 +8511,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // scrips
+    // Scrips
     {
         tag: 'scripts',
         emoji: ':hammer:',
@@ -8511,7 +8526,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // editor
+    // Editor
     {
         tag: 'editor',
         emoji: ':computer:',
@@ -8526,7 +8541,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // docs
+    // Docs
     {
         tag: 'docs',
         emoji: ':open_book:',
@@ -8541,7 +8556,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // ci
+    // Ci
     {
         tag: 'ci/cd',
         emoji: ':robot:',
@@ -8556,7 +8571,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // deploy
+    // Deploy
     {
         tag: 'deploy',
         emoji: ':rocket:',
@@ -8571,7 +8586,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // wip
+    // Wip
     {
         tag: 'wip',
         emoji: ':construction:',
@@ -8586,7 +8601,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // dependencies
+    // Dependencies
     {
         tag: 'depend',
         emoji: ':link:',
@@ -8601,7 +8616,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // metadata
+    // Metadata
     {
         tag: 'metadata',
         emoji: ':memo:',
@@ -8616,7 +8631,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // license
+    // License
     {
         tag: 'license',
         emoji: ':bookmark_tabs:',
@@ -8631,7 +8646,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // typo
+    // Typo
     {
         tag: 'code/typo',
         emoji: ':writing_hand:',
@@ -8646,7 +8661,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // cleanup
+    // Cleanup
     {
         tag: 'code/clean',
         emoji: ':soap:',
@@ -8661,7 +8676,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // comment
+    // Comment
     {
         tag: 'code/comm',
         emoji: ':speech_balloon:',
@@ -8676,7 +8691,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // style -> changes to the formatting of the code or linter
+    // Style -> changes to the formatting of the code or linter
     {
         tag: 'code/style',
         emoji: ':art:',
@@ -8691,7 +8706,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // refactor -> changes to the code that do not affect the functionality
+    // Refactor -> changes to the code that do not affect the functionality
     {
         tag: 'code/ref',
         emoji: ':arrows_counterclockwise:',
@@ -8706,7 +8721,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // performance -> changes to the code that affect performance
+    // Performance -> changes to the code that affect performance
     {
         tag: 'code/perf',
         emoji: ':bullettrain_side:',
@@ -8721,7 +8736,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // security -> fix security issues
+    // Security -> fix security issues
     {
         tag: 'sec/fix',
         emoji: ':lock:',
@@ -8736,7 +8751,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // security -> fix security issues
+    // Security -> fix security issues
     {
         tag: 'sec/impr',
         emoji: ':lock_with_ink_pen:',
@@ -8751,7 +8766,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // infrastructure
+    // Infrastructure
     {
         tag: 'infra',
         emoji: ':children_crossing:',
@@ -8766,7 +8781,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // localization -> fix localization issues
+    // Localization -> fix localization issues
     {
         tag: 'locale',
         emoji: ':globe_with_meridians:',
@@ -8781,7 +8796,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // assets -> add new assets or update existing assets
+    // Assets -> add new assets or update existing assets
     {
         tag: 'assets',
         emoji: ':package:',
@@ -8796,7 +8811,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // accessibility
+    // Accessibility
     {
         tag: 'a11y',
         emoji: ':guide_dog:',
@@ -8811,7 +8826,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // seo
+    // Seo
     {
         tag: 'seo',
         emoji: ':mag:',
@@ -8826,7 +8841,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // log
+    // Log
     {
         tag: 'logging',
         emoji: ':scroll:',
@@ -8841,7 +8856,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // health
+    // Health
     {
         tag: 'health',
         emoji: ':satellite:',
@@ -8856,7 +8871,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // business
+    // Business
     {
         tag: 'business',
         emoji: ':necktie:',
@@ -8871,7 +8886,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // auth
+    // Auth
     {
         tag: 'auth',
         emoji: ':passport_control:',
@@ -8886,7 +8901,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // data models
+    // Data models
     {
         tag: 'data/mod',
         emoji: ':notebook_with_decorative_cover:',
@@ -8901,7 +8916,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // database
+    // Database
     {
         tag: 'data/db',
         emoji: ':books:',
@@ -8916,7 +8931,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // cache
+    // Cache
     {
         tag: 'data/cache',
         emoji: ':clock10:',
@@ -8931,7 +8946,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // storage
+    // Storage
     {
         tag: 'data/store',
         emoji: ':floppy_disk:',
@@ -8946,7 +8961,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // egg
+    // Egg
     {
         tag: 'easteregg',
         emoji: ':egg:',
@@ -8962,6 +8977,15 @@ exports.categories = [
         },
     },
 ];
+/* eslint-enable max-lines */
+/**
+ * Gets a category by its tag.
+ *
+ * @param tag - The tag of the category.
+ * @returns The category.
+ * @example
+ *   const category = getCategory('feat');
+ */
 function categoryForTag(tag) {
     const result = exports.categories.find((category) => category.tag === tag);
     return (result ?? {
@@ -8989,12 +9013,25 @@ exports.categoryForTag = categoryForTag;
 
 "use strict";
 
+/**
+ * @file Contains a.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.emojiForShortcode = void 0;
 const emoji_json_1 = __importDefault(__nccwpck_require__(3418));
+/**
+ * Get an emoji from the list based on a shortcode.
+ *
+ * @param code - The shortcode of the emoji.
+ * @returns The emoji.
+ * @example getEmoji('bug')
+ */
 function emojiForShortcode(code) {
     const result = emoji_json_1.default.emojis.find((search) => search.shortname === code);
     return result?.emoji ?? '?';
@@ -9009,11 +9046,44 @@ exports.emojiForShortcode = emojiForShortcode;
 
 "use strict";
 
+/**
+ * @file Contains the commit message object definition.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CommitMessage = void 0;
 const categories_1 = __nccwpck_require__(6823);
 const emoji_1 = __nccwpck_require__(7263);
+/** Commit message object. */
 class CommitMessage {
+    /**
+     * Creates a new commit message object.
+     *
+     * @param input - The input to create the commit message from.
+     * @param input.files - The files in the commit.
+     * @param input.category - The category of the commit.
+     * @param input.scope - The scope of the commit.
+     * @param input.subject - The subject of the commit.
+     * @param input.messageBody - The message body of the commit.
+     * @param input.breaking - Whether the commit is a breaking change.
+     * @param input.issues - The issues related to the commit.
+     * @param input.authors - The authors of the commit.
+     * @param input.signedOff - The sign-off on the commit.
+     * @example
+     *   const message = new CommitMessage({
+     *     files: ['package.json'],
+     *     category: 'build',
+     *     scope: 'commit',
+     *     subject: 'Add commit message object',
+     *     messageBody: 'This commit adds the commit message object.',
+     *     breaking: false,
+     *     issues: [1],
+     *     authors: ['Luca Silverentand <luca@onezero.company>'],
+     *     signedOff: 'Luca Silverentand <luca@onezero.company>',
+     *   });
+     */
     constructor(input) {
         this.files = input?.files?.flat() ?? [];
         this.category = (0, categories_1.categoryForTag)(input?.category);
@@ -9025,6 +9095,14 @@ class CommitMessage {
         this.coAuthors = input?.authors ?? [];
         this.signedOff = input?.signedOff ?? '';
     }
+    /**
+     * The actual string used for creating the commit.
+     *
+     * @returns The commit message.
+     * @example
+     *   const message = new CommitMessage({ ... });
+     *   console.log(message.toString());
+     */
     get message() {
         const lines = [
             `${this.category.emoji} ${this.category.tag}(${this.scope})${this.breaking ? '!' : ''}: ${this.subject}`,
@@ -9040,6 +9118,14 @@ class CommitMessage {
             .join('\n\n')
             .trim();
     }
+    /**
+     * Display version of the commit message meant for displaying to the user.
+     *
+     * @returns The display version of the commit message.
+     * @example
+     *   const message = new CommitMessage({ ... });
+     *   console.log(message.display);
+     */
     get displayString() {
         const lines = this.message
             .replace(this.category.emoji, (0, emoji_1.emojiForShortcode)(this.category.emoji))
@@ -9056,6 +9142,14 @@ class CommitMessage {
         ];
         return newLines.join('\n');
     }
+    /**
+     * JSON representation of the commit message.
+     *
+     * @returns The JSON representation of the commit message.
+     * @example
+     *   const message = new CommitMessage({ ... });
+     *   const json = commitMessage.json;
+     */
     get json() {
         return {
             files: this.files,
@@ -9069,6 +9163,15 @@ class CommitMessage {
             signedOff: this.signedOff,
         };
     }
+    /**
+     * Recreate a commit message from a JSON representation.
+     *
+     * @param input - The JSON representation of the commit message.
+     * @returns The commit message.
+     * @example
+     *   const json = { ... };
+     *   const message = CommitMessage.fromJSON(json);
+     */
     static fromJson(input) {
         return new CommitMessage({
             files: input.files,
@@ -9093,6 +9196,12 @@ exports.CommitMessage = CommitMessage;
 
 "use strict";
 
+/**
+ * @file Contains functions to parse a commit message.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.parseMessage = exports.firstLineRegex = void 0;
 const categories_1 = __nccwpck_require__(6823);
@@ -9100,6 +9209,14 @@ const CommitMessage_1 = __nccwpck_require__(3921);
 const issueTags = ['close', 'closes', 'closed', 'fixes', 'fixed'];
 const firstLineRegex = /^(?<emoji>:.*:)\s*(?<category>.*?)(?:\((?<scope>.*?)\))?(?<breaking>!)?:\s*(?<subject>.*)$/u;
 exports.firstLineRegex = firstLineRegex;
+/**
+ * Reads the first line of the commit message.
+ *
+ * @param line - The first line of the commit message.
+ * @param commitMessage - The commit message object.
+ * @example
+ *   readFirstLine(':bug: (core) Fix a bug', commitMessage);
+ */
 function readFirstLine(line, commitMessage) {
     const match = firstLineRegex.exec(line);
     commitMessage.category = (0, categories_1.categoryForTag)(match?.groups?.['category'] ?? '');
@@ -9107,12 +9224,28 @@ function readFirstLine(line, commitMessage) {
     commitMessage.subject = match?.groups?.['subject'] ?? '';
     commitMessage.breaking = match?.groups?.['breaking'] === '!';
 }
+/**
+ * Extracts the issue number from a line.
+ *
+ * @param line - The line to extract the issue number from.
+ * @param commitMessage - The commit message object.
+ * @example
+ *   const issueNumber = extractIssueNumber('Fixes #123', commitMessage);
+ */
 function extractIssueNumber(line, commitMessage) {
     const issue = line.substring(line.indexOf('#') + 1).trim();
     if (issue.length > 0) {
         commitMessage.issues.push(parseInt(issue, 10));
     }
 }
+/**
+ * Parses a string into a commit message object.
+ *
+ * @param message - The commit message.
+ * @returns The commit message object.
+ * @example
+ *   const commitMessage = parseMessage('Fixes #123');
+ */
 function parseMessage(message) {
     const commitMessage = new CommitMessage_1.CommitMessage();
     let reachedFooter = false;
@@ -9149,6 +9282,12 @@ exports.parseMessage = parseMessage;
 
 "use strict";
 
+/**
+ * @file Contains functions to validate commit messages.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.validateMessage = void 0;
 const categories_1 = __nccwpck_require__(6823);
@@ -9158,6 +9297,14 @@ const parseMessage_1 = __nccwpck_require__(6198);
 const ValidationError_1 = __nccwpck_require__(9017);
 const BodyValidator_1 = __nccwpck_require__(7159);
 const AuthorsValidator_1 = __nccwpck_require__(6366);
+/**
+ * Validates an emoji in the first line of a commit message.
+ *
+ * @param message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateEmoji(':beetle: bug/fix(login) fix login');
+ */
 function validateEmoji(message) {
     const [firstLine] = message.split('\n');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -9173,6 +9320,14 @@ function validateEmoji(message) {
         }),
     ];
 }
+/**
+ * Validates the category part of the first line in a commit message.
+ *
+ * @param message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateCategory(':beetle: bug/fix(login) fix login');
+ */
 function validateCategory(message) {
     const [firstLine] = message.split('\n');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -9188,8 +9343,17 @@ function validateCategory(message) {
     ];
 }
 const allowedFooterPrefixes = ['co-authored-by:', 'closes', 'signed-off-by:'];
+/**
+ * Validates the footer of a commit message.
+ *
+ * @param message - The message to validate.
+ * @param bodyContent - The content of the body.
+ * @returns The validation errors.
+ * @example
+ *   validateFooter(':beetle: bug/fix(login) fix login', 'fix login');
+ */
 function validateFooter(message, bodyContent) {
-    // remove first line and remove bodyContent
+    // Remove first line and remove bodyContent
     const footer = message
         .substring(message.indexOf('\n') + 1)
         .replace(bodyContent, '')
@@ -9198,10 +9362,10 @@ function validateFooter(message, bodyContent) {
         .filter((line) => line.length > 0)
         .join('\n')
         .trim();
-    // return when no footer
+    // Return when no footer
     if (!footer || !message.includes('\n'))
         return [];
-    // check the lines of the footer
+    // Check the lines of the footer
     for (const line of footer.split('\n')) {
         if (!allowedFooterPrefixes.some((prefix) => line.toLowerCase().trim().startsWith(prefix))) {
             return [
@@ -9214,29 +9378,55 @@ function validateFooter(message, bodyContent) {
     }
     return [];
 }
-// eslint-disable-next-line max-lines-per-function
+/**
+ * Validates a commit message.
+ *
+ * @param message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateCommitMessage(':beetle: bug/fix(login) fix login');
+ */
+function findMessageErrors(message) {
+    const errors = [];
+    const parsed = (0, parseMessage_1.parseMessage)(message);
+    errors.push(...validateCategory(message));
+    if (errors.length > 0)
+        return { stoppedEarly: true, errors };
+    errors.push(...validateEmoji(message));
+    errors.push(...new ScopeValidator_1.ScopeValidator(parsed.scope).errors);
+    errors.push(...new SubjectValidator_1.SubjectValidator({ subject: parsed.subject, maxLength: 48 }).errors);
+    if (parsed.messageBody) {
+        errors.push(...new BodyValidator_1.BodyValidator(parsed.messageBody).errors);
+    }
+    for (const author of parsed.coAuthors) {
+        errors.push(...new AuthorsValidator_1.AuthorsValidator(author).errors);
+    }
+    errors.push(...validateFooter(message, parsed.messageBody));
+    return {
+        stoppedEarly: false,
+        errors,
+    };
+}
+/**
+ * Validates a commit message.
+ *
+ * @param inputs - The inputs to validate.
+ * @param inputs.message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateMessage(':beetle: bug/fix(login) fix login');
+ */
 function validateMessage(inputs) {
     const errors = [];
     if (inputs.message) {
         if (inputs.message.toLowerCase().startsWith('merge')) {
-            // skipping validation for merge commits
+            // Skipping validation for merge commits
             return { valid: true, errors };
         }
-        const parsed = (0, parseMessage_1.parseMessage)(inputs.message);
-        errors.push(...validateCategory(inputs.message));
-        if (errors.length > 0)
+        const { stoppedEarly, errors: messageErrors } = findMessageErrors(inputs.message);
+        errors.push(...messageErrors);
+        if (stoppedEarly)
             return { valid: false, errors };
-        errors.push(...validateEmoji(inputs.message));
-        errors.push(...new ScopeValidator_1.ScopeValidator(parsed.scope).errors);
-        errors.push(...new SubjectValidator_1.SubjectValidator({ subject: parsed.subject, maxLength: 48 })
-            .errors);
-        if (parsed.messageBody) {
-            errors.push(...new BodyValidator_1.BodyValidator(parsed.messageBody).errors);
-        }
-        for (const author of parsed.coAuthors) {
-            errors.push(...new AuthorsValidator_1.AuthorsValidator(author).errors);
-        }
-        errors.push(...validateFooter(inputs.message, parsed.messageBody));
     }
     else {
         errors.push(new ValidationError_1.ValidationError({
@@ -9256,25 +9446,48 @@ exports.validateMessage = validateMessage;
 
 "use strict";
 
+/**
+ * @file Contains functions to validate authors input from the user.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthorsValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/** Validator for author field input. */
 class AuthorsValidator extends Validator_1.Validator {
+    /**
+     * Normalizes the input to make it easier to validate.
+     *
+     * @returns The normalized input.
+     * @example
+     *   const validator = new AuthorsValidator('Luca Silverentand <luca@onezero.company>');
+     *   const normalized = validator.normalized;
+     */
     get normalized() {
         return this.content
             .split(',')
             .map((line) => line.trim())
             .join(', ');
     }
+    /**
+     * Outputs a list of errors for the input.
+     *
+     * @returns The errors found in the input.
+     * @example
+     *   const validator = new AuthorsValidator('Luca Silverentand <luca@onezero.company>');
+     *   const errors = validator.errors;
+     */
     get errors() {
-        // allow empty field
+        // Allow empty field
         if (!this.normalized)
             return [];
         const errors = [];
         const lines = this.normalized.split(',').map((line) => line.trim());
         for (const line of lines) {
-            // regex for format: John Doe <john.doe@example.com>
+            // Regex for format: John Doe <john.doe@example.com>
             const regex = 
             // eslint-disable-next-line no-control-regex
             /^(?:[^<]+) <(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])>$/u;
@@ -9288,6 +9501,14 @@ class AuthorsValidator extends Validator_1.Validator {
         }
         return errors;
     }
+    /**
+     * Parses the input into a list of authors.
+     *
+     * @returns The list of authors.
+     * @example
+     *   const validator = new AuthorsValidator('Luca Silverentand');
+     *   const authors = validator.authors;
+     */
     get parsed() {
         return this.normalized
             .split(',')
@@ -9305,35 +9526,58 @@ exports.AuthorsValidator = AuthorsValidator;
 
 "use strict";
 
+/**
+ * @file Contains functions to validate the commit body.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BodyValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/** Validator for body input. */
 class BodyValidator extends Validator_1.Validator {
+    /**
+     * Normalized value of the body for easier validation.
+     *
+     * @returns The normalized value of the body.
+     * @example
+     *   const validator = new BodyValidator('This is a body.');
+     *   return validator.normalizedValue;
+     */
     get normalized() {
         return (this.content
-            // remove leading and trailing whitespace
+            // Remove leading and trailing whitespace
             .trim()
-            // remove lines that start with a #
+            // Remove lines that start with a #
             .split('\n')
-            // trim the line and remove double whitespaces between words
+            // Trim the line and remove double whitespaces between words
             .map((line) => line.trim().replace(/\s+/gu, ' '))
-            // remove comments
+            // Remove comments
             .filter((line) => !line.startsWith('#'))
             .join('\n')
             .replaceAll(/\n\n+/gu, '\n\n')
             .trim());
     }
+    /**
+     * Output the errors for the body.
+     *
+     * @returns The errors for the body.
+     * @example
+     *   const validator = new BodyValidator('This is a body.');
+     *   return validator.errors;
+     */
     get errors() {
         const errors = [];
-        // body must begin with a capital letter
+        // Body must begin with a capital letter
         if (!/^[A-Z]/u.test(this.normalized)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'body must begin with a capital letter',
             }));
         }
-        // body must end with a period, question mark, or exclamation mark
+        // Body must end with a period, question mark, or exclamation mark
         if (!/[.?!]$/u.test(this.normalized)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
@@ -9353,11 +9597,30 @@ exports.BodyValidator = BodyValidator;
 
 "use strict";
 
+/**
+ * @file Contains the validator.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.IssuesValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/**
+ * Validator for the issues field input.
+ *
+ * @returns A list of validation errors.
+ * @example
+ *   const validator = new IssuesValidator('foo');
+ *   return validator.errors; // []
+ */
 class IssuesValidator extends Validator_1.Validator {
+    /**
+     * Normalizes the input for easier validation.
+     *
+     * @returns The normalized input.
+     */
     get normalized() {
         return this.content
             .split(',')
@@ -9365,19 +9628,35 @@ class IssuesValidator extends Validator_1.Validator {
             .join(',')
             .trim();
     }
+    /**
+     * Outputs a parsed version of the input.
+     *
+     * @returns The parsed input.
+     * @example
+     *   const validator = new IssuesValidator('foo');
+     *   return validator.parsed; // ['foo']
+     */
     get parsed() {
         const issues = this.content.split(',').map((line) => line.trim());
         return issues
             .map((issue) => parseInt(issue, 10))
             .filter((issue) => !isNaN(issue));
     }
+    /**
+     * Outputs a list of validation errors (if any).
+     *
+     * @returns The list of validation errors.
+     * @example
+     *   const validator = new IssuesValidator('foo');
+     *   return validator.errors; // []
+     */
     get errors() {
         const errors = [];
         if (!this.content)
             return [];
         const lines = this.content.split(',').map((line) => line.trim());
         for (const line of lines) {
-            // regex for format: '11, 12, 13' or '11,12,13'
+            // Regex for format: '11, 12, 13' or '11,12,13'
             const regex = /^\d+(?:,\d+)*$/u;
             const match = regex.exec(line);
             if (!match) {
@@ -9400,62 +9679,109 @@ exports.IssuesValidator = IssuesValidator;
 
 "use strict";
 
+/**
+ * @file Contains a validator for the scope of a commit message.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ScopeValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/** Validator for the scope in a commit message. */
 class ScopeValidator extends Validator_1.Validator {
+    /**
+     * Normalizes the input for easier validation.
+     *
+     * @returns The normalized input.
+     * @example
+     *   const validator = new ScopeValidator('This is a scope.');
+     *   return validator.normalized;
+     */
     get normalized() {
         return (this.content
-            // trim the content
+            // Trim the content
             .trim()
-            // convert all to lowercase
+            // Convert all to lowercase
             .toLowerCase()
-            // remove whitespaces
+            // Remove whitespaces
             .replace(/\s/gu, ''));
     }
-    // eslint-disable-next-line max-lines-per-function
+    /**
+     * Outputs any validation errors for the scope.
+     *
+     * @returns The validation errors for the scope.
+     * @example
+     *   const validator = new ScopeValidator('This is a scope.');
+     *   return validator.errors;
+     */
     get errors() {
         const errors = [];
-        const minScopeLength = 3;
-        const maxScopeLength = 20;
-        // scope must be longer than 3 characters
-        if (this.content.length < minScopeLength) {
-            errors.push(new ValidationError_1.ValidationError({
-                level: ValidationError_1.ValidationErrorLevel.fatal,
-                message: 'scope must be at least 3 characters',
-            }));
-        }
-        // scope must be shorter than 20 characters
-        if (this.content.length > maxScopeLength) {
-            errors.push(new ValidationError_1.ValidationError({
-                level: ValidationError_1.ValidationErrorLevel.fatal,
-                message: 'scope must be at most 20 characters',
-            }));
-        }
-        // scope must be all lowercase
+        errors.push(...this.checkScopeLength());
+        errors.push(...this.checkInvalidCharacters());
+        // Scope must be all lowercase
         if (this.content !== this.content.toLowerCase()) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'scope must be all lowercase',
             }));
         }
-        // scope cannot contain whitespace
+        return errors;
+    }
+    /**
+     * Validates the scope length.
+     * The scope must be between 3 and 20 characters long.
+     *
+     * @returns The validation errors.
+     * @example this.checkScopeLength();
+     */
+    checkScopeLength() {
+        const errors = [];
+        const minScopeLength = 3;
+        const maxScopeLength = 20;
+        // Scope must be longer than 3 characters
+        if (this.content.length < minScopeLength) {
+            errors.push(new ValidationError_1.ValidationError({
+                level: ValidationError_1.ValidationErrorLevel.fatal,
+                message: 'scope must be at least 3 characters',
+            }));
+        }
+        // Scope must be shorter than 20 characters
+        if (this.content.length > maxScopeLength) {
+            errors.push(new ValidationError_1.ValidationError({
+                level: ValidationError_1.ValidationErrorLevel.fatal,
+                message: 'scope must be at most 20 characters',
+            }));
+        }
+        return errors;
+    }
+    /**
+     * Checks for invalid characters.
+     *
+     * @returns The validation errors.
+     * @example
+     *   const validator = new ScopeValidator('This is a scope.');
+     *   return validator.checkInvalidCharacters();
+     */
+    checkInvalidCharacters() {
+        const errors = [];
+        // Scope cannot contain whitespace
         if (/\s/u.test(this.content)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'scope cannot contain whitespace',
             }));
         }
-        // scope cannot contain numbers
+        // Scope cannot contain numbers
         if (/\d/u.test(this.content)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'scope cannot contain numbers',
             }));
-            // scope can only contain lowercase letters, forward slashes, dashes
+            // Scope can only contain lowercase letters, forward slashes, dashes
         }
-        // scope must not contain non alphanumeric characters
+        // Scope must not contain non alphanumeric characters
         if (/[^a-z0-9/-]/u.test(this.normalized)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
@@ -9475,48 +9801,78 @@ exports.ScopeValidator = ScopeValidator;
 
 "use strict";
 
+/**
+ * @file Contains the validator for the subject field.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SubjectValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/** Validator for the subject input field. */
 class SubjectValidator extends Validator_1.Validator {
+    /**
+     * Creates a new subject validator.
+     *
+     * @param input - The input to validate.
+     * @param input.subject - The subject to validate.
+     * @param input.maxLength - The maximum length of the subject.
+     * @example
+     *   const validator = new SubjectValidator('foo');
+     *   return validator.errors; // []
+     */
     constructor(input) {
         super(input.subject);
         this.maxLength = input.maxLength;
     }
+    /**
+     * Outputs a normalized version of the input.
+     *
+     * @returns The normalized input.
+     */
     get normalized() {
         return (this.content
-            // remove leading and trailing whitespace
+            // Remove leading and trailing whitespace
             .trim()
-            // convert to lowercase
+            // Convert to lowercase
             .toLowerCase()
-            // remove dot at the end
+            // Remove dot at the end
             .replace(/\.$/u, '')
-            // split into words
+            // Split into words
             .split(' ')
-            // remove empty words
+            // Remove empty words
             .filter((word) => word)
-            // join words with a space
+            // Join words with a space
             .join(' '));
     }
+    /**
+     * Outputs a list of validation errors (if any).
+     *
+     * @returns The list of validation errors.
+     * @example
+     *   const validator = new SubjectValidator('foo');
+     *   return validator.errors; // []
+     */
     get errors() {
         const errors = [];
         this.checkLength(errors);
-        // subject must be all lowercase
+        // Subject must be all lowercase
         if (this.content !== this.content.toLowerCase()) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'subject must be all lowercase',
             }));
         }
-        // subject must not contain parantheses or colons
+        // Subject must not contain parantheses or colons
         if (/[():]/u.test(this.content)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'subject must not contain parantheses or colons',
             }));
         }
-        // subject must not end with a dot
+        // Subject must not end with a dot
         if (this.content.endsWith('.')) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
@@ -9525,16 +9881,24 @@ class SubjectValidator extends Validator_1.Validator {
         }
         return errors;
     }
+    /**
+     * Checks the length of the subject.
+     *
+     * @param errors - The list of errors to add to.
+     * @example
+     *   const errors: ValidationError[] = [];
+     *   const validator = new SubjectValidator('foo');
+     */
     checkLength(errors) {
         const minSubjectLength = 10;
-        // subject must be longer than 10 characters
+        // Subject must be longer than 10 characters
         if (this.content.length < minSubjectLength) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: `subject must be at least ${minSubjectLength} characters`,
             }));
         }
-        // subject must be shorter than 48 characters
+        // Subject must be shorter than 48 characters
         if (this.content.length > this.maxLength) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
@@ -9553,19 +9917,52 @@ exports.SubjectValidator = SubjectValidator;
 
 "use strict";
 
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ValidationError = exports.ValidationErrorLevel = void 0;
+/** Level of validation error. */
 var ValidationErrorLevel;
 (function (ValidationErrorLevel) {
+    /** Fatal, no recovery. */
     ValidationErrorLevel["fatal"] = "fatal";
+    /** Warning, can proceed but not without explicit confirmation. */
     ValidationErrorLevel["warning"] = "warning";
+    /** Info, just informing about operations. */
     ValidationErrorLevel["info"] = "info";
 })(ValidationErrorLevel = exports.ValidationErrorLevel || (exports.ValidationErrorLevel = {}));
+/** An error occurred durign validation. */
 class ValidationError {
+    /**
+     * Creates a new instance of a validation error.
+     *
+     * @param input - The input to validate.
+     * @param input.level - The level of the error.
+     * @param input.message - The message to display.
+     * @example
+     *   new ValidationError({
+     *     level: ValidationErrorLevel.fatal,
+     *     message: 'This is a fatal error',
+     *   });
+     */
     constructor(input) {
         this.level = input.level;
         this.message = input.message.trim();
     }
+    /**
+     * Outputs the error as a string.
+     *
+     * @returns The error as a string.
+     * @example
+     *   const error = new ValidationError({
+     *     level: ValidationErrorLevel.fatal,
+     *     message: 'This is a fatal error',
+     *   });
+     */
     get displayString() {
         return `❗️ ${this.level} - ${this.message}`;
     }
@@ -9580,13 +9977,36 @@ exports.ValidationError = ValidationError;
 
 "use strict";
 
+/**
+ * @file Contains the definition of a universal validator.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Validator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
+/** Definition of a common validator implementation. */
 class Validator {
+    /**
+     * Create a new validator with the given content.
+     *
+     * @param content - The content that needs to be validated.
+     * @example
+     *   const validator = new Validator('foo');
+     *   validator.valid; // true
+     */
     constructor(content) {
         this.content = content;
     }
+    /**
+     * Outputs a list of validation errors.
+     *
+     * @returns A list of validation errors.
+     * @example
+     *   const validator = new Validator('foo');
+     *   return validator.errors; // []
+     */
     get errors() {
         const errors = [];
         if (this.content.length === 0) {
@@ -9597,6 +10017,11 @@ class Validator {
         }
         return errors;
     }
+    /**
+     * Whether the output is valid.
+     *
+     * @returns Whether the output is valid.
+     */
     get valid() {
         const { errors } = this;
         return errors.length > 0
@@ -9605,9 +10030,25 @@ class Validator {
                 .join(', ')
             : true;
     }
+    /**
+     * Normalizes the input for easier validation.
+     *
+     * @returns The normalized input.
+     * @example
+     *   const validator = new Validator('foo');
+     *   return validator.normalized; // 'foo'
+     */
     get normalized() {
         return this.content.trim();
     }
+    /**
+     * Outputs the parsed content.
+     *
+     * @returns The parsed content.
+     * @example
+     *   const validator = new Validator('foo');
+     *   return validator.parsed; // 'foo'
+     */
     get parsed() {
         return this.normalized;
     }
@@ -9617,43 +10058,94 @@ exports.Validator = Validator;
 
 /***/ }),
 
+/***/ 268:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/**
+ * @file Version Track definition.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.releaseTrackOrder = exports.ReleaseTrack = void 0;
+/** Tracks to create releases on. */
+var ReleaseTrack;
+(function (ReleaseTrack) {
+    /** Meant for publishing to end-users. */
+    ReleaseTrack["stable"] = "stable";
+    /**
+     * Meant for distribution to users that signed-up for
+     * testing new features, while they are still unstable.
+     */
+    ReleaseTrack["beta"] = "beta";
+    /** Meant for distribution within the development team, and select users. */
+    ReleaseTrack["alpha"] = "alpha";
+})(ReleaseTrack = exports.ReleaseTrack || (exports.ReleaseTrack = {}));
+exports.releaseTrackOrder = [
+    ReleaseTrack.alpha,
+    ReleaseTrack.beta,
+    ReleaseTrack.stable,
+];
+//# sourceMappingURL=ReleaseTrack.js.map
+
+/***/ }),
+
 /***/ 8691:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
+/**
+ * @file Definition of the Version class.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Version = void 0;
-const VersionTrack_1 = __nccwpck_require__(5352);
+const ReleaseTrack_1 = __nccwpck_require__(268);
 const VersionBump_1 = __nccwpck_require__(4033);
+/** An object containing details about a version number. */
 class Version {
+    /**
+     * Create a new version.
+     *
+     * @param inputs - The inputs to use.
+     * @param inputs.major - The major digit of the version.
+     * @param inputs.minor - The minor digit of the version.
+     * @param inputs.patch - The patch digit of the version.
+     * @param inputs.track - The track of the version.
+     * @param inputs.template - The template used to generate the displayString.
+     * @param inputs.includeTrack - Whether to include the track in the displayString.
+     * @param inputs.includeRelease - Whether to include the stable track in the displayString.
+     * @example
+     *   const version = new Version({
+     *     major: 1,
+     *     minor: 2,
+     *     patch: 3,
+     *     track: ReleaseTrack.stable,
+     *     template: '{major}.{minor}.{patch}-{track}',
+     *     includeTrack: true,
+     *     includeRelease: true,
+     *   });
+     */
     constructor(inputs) {
         this.major = inputs?.major ?? 0;
         this.minor = inputs?.minor ?? 0;
         this.patch = inputs?.patch ?? 1;
         this.template = inputs?.template ?? '{major}.{minor}.{patch}-{track}';
     }
-    displayString(inputs = {
-        includeTrack: false,
-        includeRelease: false,
-        track: VersionTrack_1.VersionTrack.live,
-    }) {
-        let display = this.template;
-        display = display.replace(/\{major\}/gu, this.major.toString());
-        display = display.replace(/\{minor\}/gu, this.minor.toString());
-        display = display.replace(/\{patch\}/gu, this.patch.toString());
-        if ((inputs.track === VersionTrack_1.VersionTrack.live && !inputs.includeRelease) ||
-            !inputs.includeTrack) {
-            display = display.replace(/\{track\}/gu, '');
-        }
-        else {
-            display = display.replace(/\{track\}/gu, inputs.track.toString());
-        }
-        // remove all non-alphanumeric characters leading and trailing
-        display = display.replace(/[^a-zA-Z0-9]*$/gu, '');
-        display = display.replace(/^[^a-zA-Z0-9]*/gu, '');
-        return display;
-    }
+    /**
+     * Output a JSON representation of this version.
+     *
+     * @returns A JSON representation of this version.
+     * @example
+     *   const json = version.toJson();
+     *   // { major: 1, minor: 2, patch: 3, template: '{major}.{minor}.{patch}-{track}' }
+     */
     get json() {
         return {
             major: this.major,
@@ -9662,6 +10154,13 @@ class Version {
             template: this.template,
         };
     }
+    /**
+     * Recreate a version object from a JSON representation.
+     *
+     * @param json - The JSON representation of the version.
+     * @returns A new version object.
+     * @example const version = Version.fromJson(json);
+     */
     static fromJson(json) {
         return new Version({
             major: json.major,
@@ -9670,10 +10169,18 @@ class Version {
             template: json.template,
         });
     }
+    /**
+     * Parse a string into a version.
+     *
+     * @param string - The string to parse.
+     * @returns The parsed version.
+     * @example const version = Version.parse('1.2.3');
+     */
     static fromString(string) {
-        // remove all non numbers and non dots
-        string = string.replace(/[^0-9.]/gu, '');
-        const parts = string.split('.');
+        // Remove all non numbers and non dots
+        const sanitizedString = string.replace(/[^0-9.]/gu, '');
+        // Split the string into parts
+        const parts = sanitizedString.split('.');
         const major = parseInt(parts[0] ?? '', 10);
         const minor = parseInt(parts[1] ?? '', 10);
         const patch = parseInt(parts[2] ?? '', 10);
@@ -9683,20 +10190,63 @@ class Version {
             patch,
         });
     }
+    /**
+     * String representation of the version.
+     *
+     * @param inputs - The inputs to use.
+     * @param inputs.includeTrack - Whether to include the track in the string.
+     * @param inputs.includeRelease - Whether to include the stable track in the string.
+     * @param inputs.track - The track to use.
+     * @returns The string representation of the version.
+     * @example const version = new Version().displayString();
+     */
+    displayString(inputs = {
+        includeTrack: false,
+        includeRelease: false,
+        track: ReleaseTrack_1.ReleaseTrack.stable,
+    }) {
+        let display = this.template;
+        display = display.replace(/\{major\}/gu, this.major.toString());
+        display = display.replace(/\{minor\}/gu, this.minor.toString());
+        display = display.replace(/\{patch\}/gu, this.patch.toString());
+        if ((inputs.track === ReleaseTrack_1.ReleaseTrack.stable && !inputs.includeRelease) ||
+            !inputs.includeTrack) {
+            display = display.replace(/\{track\}/gu, '');
+        }
+        else {
+            display = display.replace(/\{track\}/gu, inputs.track.toString());
+        }
+        // Remove all non-alphanumeric characters leading and trailing
+        display = display.replace(/[^a-zA-Z0-9]*$/gu, '');
+        display = display.replace(/^[^a-zA-Z0-9]*/gu, '');
+        return display;
+    }
+    /**
+     * Bump the version by the specified bump type.
+     *
+     * @param bump - The bump type to apply.
+     * @returns The new version.
+     * @example
+     *   const bumpedVersion = new Version().bump(VersionBump.major);
+     */
     bump(bump) {
         switch (bump) {
+            /** Bump the major digit 1 and set the others to 0. */
             case VersionBump_1.VersionBump.major:
                 this.major += 1;
                 this.minor = 0;
                 this.patch = 0;
                 break;
+            /** Bump the minor digit by 1 and set the path digit to 0. */
             case VersionBump_1.VersionBump.minor:
                 this.minor += 1;
                 this.patch = 0;
                 break;
+            /** Bump the patch digit by 1 and leave the others as they were. */
             case VersionBump_1.VersionBump.patch:
                 this.patch += 1;
                 break;
+            /** In any other case do not bump any digits. */
             default:
                 break;
         }
@@ -9704,6 +10254,16 @@ class Version {
     }
 }
 exports.Version = Version;
+/**
+ * Function to provide to the JavaScript sort function to sort an array of versions.
+ *
+ * @param lhs - The left hand side version.
+ * @param rhs - The right hand side version.
+ * @returns The result of the comparison.
+ * @example
+ *   const versions = [new Version(), new Version()];
+ *   const sorted = versions.sort(Version.sort);
+ */
 Version.sort = (lhs, rhs) => {
     if (lhs.major > rhs.major) {
         return 1;
@@ -9734,15 +10294,27 @@ Version.sort = (lhs, rhs) => {
 
 "use strict";
 
+/**
+ * @file Defines the VersionBump enum.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.versionBumpOrder = exports.VersionBump = void 0;
+/** Kinds of bumps that can be done to a version number. */
 var VersionBump;
 (function (VersionBump) {
+    /** No bump to any digit. */
     VersionBump["none"] = "none";
+    /** Bumps patch (third) digit (0.0.^). */
     VersionBump["patch"] = "patch";
+    /** Bumps minor (second) digit (0.^.0). */
     VersionBump["minor"] = "minor";
+    /** Bumps major (first) digit (^.0.0). */
     VersionBump["major"] = "major";
 })(VersionBump = exports.VersionBump || (exports.VersionBump = {}));
+/** Order of the version bumps, in order least impact to most impact. */
 exports.versionBumpOrder = [
     VersionBump.none,
     VersionBump.patch,
@@ -9750,28 +10322,6 @@ exports.versionBumpOrder = [
     VersionBump.major,
 ];
 //# sourceMappingURL=VersionBump.js.map
-
-/***/ }),
-
-/***/ 5352:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.versionTrackOrder = exports.VersionTrack = void 0;
-var VersionTrack;
-(function (VersionTrack) {
-    VersionTrack["live"] = "live";
-    VersionTrack["beta"] = "beta";
-    VersionTrack["alpha"] = "alpha";
-})(VersionTrack = exports.VersionTrack || (exports.VersionTrack = {}));
-exports.versionTrackOrder = [
-    VersionTrack.alpha,
-    VersionTrack.beta,
-    VersionTrack.live,
-];
-//# sourceMappingURL=VersionTrack.js.map
 
 /***/ }),
 
@@ -9974,14 +10524,20 @@ var github = __nccwpck_require__(4005);
 // EXTERNAL MODULE: ../../packages/commit/dist/index.js
 var dist = __nccwpck_require__(4670);
 ;// CONCATENATED MODULE: ./src/fetchPullRequest.ts
+/**
+ * @file Function to fetch a pull request from GitHub.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 const query = `
   query issues($owner: String!, $repo: String!, $prNumber: Int!) {
     repository(owner: $owner, name: $repo) {
       pullRequest(number: $prNumber) {
-        merged,
-        commits(first:100) {
+        merged
+        commits(first: 100) {s
           nodes {
             commit {
               message
@@ -9992,6 +10548,19 @@ const query = `
     }
   }
 `;
+/**
+ * Fetch the pull request from the GitHub API.
+ *
+ * @param owner - The owner of the repository.
+ * @param repo - The name of the repository.
+ * @param prNumber - The number of the pull request.
+ * @returns The pull request.
+ * @async
+ * @example
+ *   async function call() {
+ *     const pullRequest = await fetchPullRequest('onezerocompany', 'commit', 1);
+ *   }
+ */
 async function fetchPullRequest(owner, repo, prNumber) {
     const octokit = (0,github.getOctokit)((0,core.getInput)('token'));
     const output = await octokit.graphql(query, {
@@ -10003,6 +10572,12 @@ async function fetchPullRequest(owner, repo, prNumber) {
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
@@ -10011,11 +10586,22 @@ const prNumber = parseInt((0,core.getInput)('pull_request', {
     trimWhitespace: true,
 }), 10);
 const { repo, owner } = github.context.repo;
+/**
+ * Print context information.
+ *
+ * @example printContext();
+ */
 function printContext() {
     (0,core.info)(`repository: ${repo}`);
     (0,core.info)(`owner: ${owner}`);
     (0,core.info)(`pr: ${prNumber}`);
 }
+/**
+ * Main entry point of the pr-commit-check action.
+ *
+ * @example
+ *   main();
+ */
 async function run() {
     printContext();
     const { repository } = await fetchPullRequest(owner, repo, prNumber);

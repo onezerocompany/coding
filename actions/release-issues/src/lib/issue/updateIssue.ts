@@ -1,3 +1,10 @@
+/**
+ * @file Contains functions for updating a release issue.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import type { Globals } from '../../globals';
 import { closeIssue } from './closeIssue';
 import { issueIdentifier } from './issueIdentifier';
@@ -12,6 +19,14 @@ mutation updateIssue($issueId: ID!, $body:String!) {
 }
 `;
 
+/**
+ * Updates the release issue.
+ *
+ * @param globals - The global variables for this action.
+ * @returns Whether the issue was updated.
+ * @example
+ *   const { updated } = await updateIssue(globals);
+ */
 export async function updateIssue(
   globals: Globals,
 ): Promise<{ updated: boolean }> {
@@ -19,17 +34,17 @@ export async function updateIssue(
   const id = (await issueIdentifier(globals)) ?? null;
   if (id === null) return { updated: false };
 
-  // refresh all item states
+  // Refresh all item states
   await globals.context.issue.update(globals);
 
-  // update the content of the issue
+  // Update the content of the issue
   await graphql(query, {
     issueId: id,
     // eslint-disable-next-line id-denylist
     body: globals.context.issue.content,
   });
 
-  // if all items are done, close the issue
+  // If all items are done, close the issue
   if (globals.context.issue.allItemsDone) {
     await closeIssue(globals, id);
   }

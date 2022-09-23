@@ -1,3 +1,10 @@
+/**
+ * @file ESLint rules for Jest projects.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 /* eslint-disable id-length */
 module.exports = {
   rules: {

@@ -1,4 +1,11 @@
-// @ts-nocheck
+/**
+ * @file ESLint rules to add TypeScript support to base rules.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
+/** All JavaScript ESLint rules. */
 const rules = [
   require('../javascript/errors').rules,
   require('../javascript/es6').rules,

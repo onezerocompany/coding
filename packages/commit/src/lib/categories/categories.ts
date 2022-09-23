@@ -1,28 +1,49 @@
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { VersionBump } from '../versions/VersionBump';
 
-/* eslint-disable max-lines */
+/** Types of changelogs. */
 export enum ChangeLogType {
+  /** Changelog for internal usage. */
   internal = 'internal',
+  /** Changelog for external publication. */
   external = 'external',
 }
 
+/** Category of a commit. */
 export interface CommitCategory {
+  /** Tag that identifies the category. */
   tag: string;
+  /** An emoji visually representing the category. */
   emoji: string;
+  /** Name of the category meant for public display. */
   displayName: string;
+  /** Description of the category. */
   description: string;
+  /** Details for generating changelogs. */
   changelog: {
+    /** The title of the category in a changelog. */
     title: string;
+    /** What type of changelogs this category shows up in. */
     type: ChangeLogType;
   };
+  /** Details for versioning related to this category. */
   versioning: {
+    /** What bump. */
     bump: VersionBump;
+    /** Whether this category can cause a breaking change. */
     canBreak: boolean;
   };
 }
 
+/* eslint-disable max-lines */
 export const categories: CommitCategory[] = [
-  // feature
+  // Feature
   {
     tag: 'feat/new',
     emoji: ':tada:',
@@ -37,7 +58,7 @@ export const categories: CommitCategory[] = [
       canBreak: true,
     },
   },
-  // feature improve
+  // Feature improve
   {
     tag: 'feat/impr',
     emoji: ':star2:',
@@ -52,7 +73,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // feature deprecate
+  // Feature deprecate
   {
     tag: 'feat/depr',
     emoji: ':anger:',
@@ -67,7 +88,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // feature remove
+  // Feature remove
   {
     tag: 'feat/rem',
     emoji: ':bomb:',
@@ -82,7 +103,7 @@ export const categories: CommitCategory[] = [
       canBreak: true,
     },
   },
-  // bugfix
+  // Bugfix
   {
     tag: 'bug/fix',
     emoji: ':beetle:',
@@ -97,7 +118,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // hotfix
+  // Hotfix
   {
     tag: 'bug/hot',
     emoji: ':fire:',
@@ -112,7 +133,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // minorfix
+  // Minorfix
   {
     tag: 'bug/minor',
     emoji: ':bug:',
@@ -127,7 +148,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // test
+  // Test
   {
     tag: 'test',
     emoji: ':microscope:',
@@ -142,7 +163,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // chore
+  // Chore
   {
     tag: 'chore',
     emoji: ':broom:',
@@ -157,7 +178,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // scrips
+  // Scrips
   {
     tag: 'scripts',
     emoji: ':hammer:',
@@ -172,7 +193,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // editor
+  // Editor
   {
     tag: 'editor',
     emoji: ':computer:',
@@ -187,7 +208,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // docs
+  // Docs
   {
     tag: 'docs',
     emoji: ':open_book:',
@@ -202,7 +223,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // ci
+  // Ci
   {
     tag: 'ci/cd',
     emoji: ':robot:',
@@ -217,7 +238,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // deploy
+  // Deploy
   {
     tag: 'deploy',
     emoji: ':rocket:',
@@ -232,7 +253,7 @@ export const categories: CommitCategory[] = [
       canBreak: true,
     },
   },
-  // wip
+  // Wip
   {
     tag: 'wip',
     emoji: ':construction:',
@@ -247,7 +268,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // dependencies
+  // Dependencies
   {
     tag: 'depend',
     emoji: ':link:',
@@ -262,7 +283,7 @@ export const categories: CommitCategory[] = [
       canBreak: true,
     },
   },
-  // metadata
+  // Metadata
   {
     tag: 'metadata',
     emoji: ':memo:',
@@ -277,7 +298,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // license
+  // License
   {
     tag: 'license',
     emoji: ':bookmark_tabs:',
@@ -292,7 +313,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // typo
+  // Typo
   {
     tag: 'code/typo',
     emoji: ':writing_hand:',
@@ -307,7 +328,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // cleanup
+  // Cleanup
   {
     tag: 'code/clean',
     emoji: ':soap:',
@@ -322,7 +343,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // comment
+  // Comment
   {
     tag: 'code/comm',
     emoji: ':speech_balloon:',
@@ -337,7 +358,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // style -> changes to the formatting of the code or linter
+  // Style -> changes to the formatting of the code or linter
   {
     tag: 'code/style',
     emoji: ':art:',
@@ -352,7 +373,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // refactor -> changes to the code that do not affect the functionality
+  // Refactor -> changes to the code that do not affect the functionality
   {
     tag: 'code/ref',
     emoji: ':arrows_counterclockwise:',
@@ -367,7 +388,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // performance -> changes to the code that affect performance
+  // Performance -> changes to the code that affect performance
   {
     tag: 'code/perf',
     emoji: ':bullettrain_side:',
@@ -382,7 +403,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // security -> fix security issues
+  // Security -> fix security issues
   {
     tag: 'sec/fix',
     emoji: ':lock:',
@@ -397,7 +418,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // security -> fix security issues
+  // Security -> fix security issues
   {
     tag: 'sec/impr',
     emoji: ':lock_with_ink_pen:',
@@ -412,7 +433,7 @@ export const categories: CommitCategory[] = [
       canBreak: true,
     },
   },
-  // infrastructure
+  // Infrastructure
   {
     tag: 'infra',
     emoji: ':children_crossing:',
@@ -427,7 +448,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // localization -> fix localization issues
+  // Localization -> fix localization issues
   {
     tag: 'locale',
     emoji: ':globe_with_meridians:',
@@ -442,7 +463,7 @@ export const categories: CommitCategory[] = [
       canBreak: true,
     },
   },
-  // assets -> add new assets or update existing assets
+  // Assets -> add new assets or update existing assets
   {
     tag: 'assets',
     emoji: ':package:',
@@ -457,7 +478,7 @@ export const categories: CommitCategory[] = [
       canBreak: true,
     },
   },
-  // accessibility
+  // Accessibility
   {
     tag: 'a11y',
     emoji: ':guide_dog:',
@@ -472,7 +493,7 @@ export const categories: CommitCategory[] = [
       canBreak: true,
     },
   },
-  // seo
+  // Seo
   {
     tag: 'seo',
     emoji: ':mag:',
@@ -487,7 +508,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // log
+  // Log
   {
     tag: 'logging',
     emoji: ':scroll:',
@@ -502,7 +523,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // health
+  // Health
   {
     tag: 'health',
     emoji: ':satellite:',
@@ -517,7 +538,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // business
+  // Business
   {
     tag: 'business',
     emoji: ':necktie:',
@@ -532,7 +553,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // auth
+  // Auth
   {
     tag: 'auth',
     emoji: ':passport_control:',
@@ -547,7 +568,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // data models
+  // Data models
   {
     tag: 'data/mod',
     emoji: ':notebook_with_decorative_cover:',
@@ -562,7 +583,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // database
+  // Database
   {
     tag: 'data/db',
     emoji: ':books:',
@@ -577,7 +598,7 @@ export const categories: CommitCategory[] = [
       canBreak: true,
     },
   },
-  // cache
+  // Cache
   {
     tag: 'data/cache',
     emoji: ':clock10:',
@@ -592,7 +613,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // storage
+  // Storage
   {
     tag: 'data/store',
     emoji: ':floppy_disk:',
@@ -607,7 +628,7 @@ export const categories: CommitCategory[] = [
       canBreak: false,
     },
   },
-  // egg
+  // Egg
   {
     tag: 'easteregg',
     emoji: ':egg:',
@@ -623,7 +644,16 @@ export const categories: CommitCategory[] = [
     },
   },
 ];
+/* eslint-enable max-lines */
 
+/**
+ * Gets a category by its tag.
+ *
+ * @param tag - The tag of the category.
+ * @returns The category.
+ * @example
+ *   const category = getCategory('feat');
+ */
 export function categoryForTag(tag?: string): CommitCategory {
   const result = categories.find((category) => category.tag === tag);
   return (

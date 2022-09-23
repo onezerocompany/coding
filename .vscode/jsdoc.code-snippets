@@ -1,0 +1,14 @@
+{
+  "JSDoc File Header": {
+    "prefix": "file-header",
+    "body": [
+      "/**",
+      " * @file $1",
+      " * @copyright ${2:2022} ${3:OneZero Company}",
+      " * @license ${4:MIT}",
+      " * @author ${5:Luca Silverentand} <${6:luca}@${7:onezero.company}>",
+      " */"
+    ],
+    "description": "JSDoc file header"
+  }
+}

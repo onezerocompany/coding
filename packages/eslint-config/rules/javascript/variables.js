@@ -1,4 +1,9 @@
-// @ts-nocheck
+/**
+ * @file ESLint rules for variables.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 module.exports = {
   rules: {

@@ -1,3 +1,10 @@
+/**
+ * @file Contains the.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { debug } from '@actions/core';
 import type { getOctokit } from '@actions/github';
 import { context as githubContext } from '@actions/github';
@@ -21,18 +28,32 @@ const query = `
   }
 `;
 
+/** Output of the loadLabel query. */
 interface QueryOutput {
+  /** Repository object from the query. */
   repository?: {
+    /** Identifier of the repository. */
     id: string;
+    /** Labels object from the query. */
     labels: {
+      /** List of labels. */
       nodes: Array<{
+        /** Identifier of the label. */
         id: string;
+        /** Name of the label. */
         name: string;
       }>;
     };
   };
 }
 
+/**
+ * Loads the context from the GitHub Actions context.
+ *
+ * @param settings - Settings to use.
+ * @param graphql - GraphQL client to use.
+ * @example await loadContext(settings, graphql);
+ */
 export async function loadContext(
   settings: Settings,
   graphql: ReturnType<typeof getOctokit>['graphql'],

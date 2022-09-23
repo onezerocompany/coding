@@ -1,6 +1,11 @@
-// @ts-nocheck
+/**
+ * @file ESLint rules for following best practices.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
-/* eslint-disable max-lines */
+/** Maximum cyclomatic complexity allowed in a program. */
 const maxComplexity = 20;
 
 module.exports = {

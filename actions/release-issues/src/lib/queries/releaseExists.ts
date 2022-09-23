@@ -1,6 +1,13 @@
+/**
+ * @file Contains functions that are used to check if a release exists.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { debug } from '@actions/core';
 import type { Globals } from '../../globals';
-import { jsonIndent } from '../../defaults';
+import { jsonIndent } from '../../constants';
 import type { Item } from '../items/Item';
 
 const query = `
@@ -15,16 +22,31 @@ const query = `
   }
 `;
 
+/** Output of the query. */
 interface QueryOutput {
+  /** Repository object from the query output. */
   repository?: {
+    /** Release object from the query output. */
     release?: {
+      /** Node ID that identifies the node in the GitHub API. */
       id: string;
+      /** Name of the release. */
       name: string;
+      /** Tag name of the release. */
       tagName: string;
     };
   };
 }
 
+/**
+ * Checks if a release exists.
+ *
+ * @param globals - Global variables.
+ * @param item - Item to check.
+ * @returns Whether the release exists.
+ * @example
+ *   const releaseExists = await releaseExists(globals, item);
+ */
 export async function releaseExists(
   globals: Globals,
   item: Item,
@@ -38,6 +60,7 @@ export async function releaseExists(
     });
 
     const { graphql, context } = globals;
+
     const result: QueryOutput = await graphql(query, {
       owner: context.repo.owner,
       repo: context.repo.repo,

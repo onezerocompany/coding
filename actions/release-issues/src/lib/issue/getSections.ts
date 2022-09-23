@@ -1,5 +1,12 @@
-import type { VersionTrack } from '@onezerocompany/commit';
-import { versionTrackOrder } from '@onezerocompany/commit';
+/**
+ * @file Contains functions to get the sections for a release.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
+import type { ReleaseTrack } from '@onezerocompany/commit';
+import { releaseTrackOrder } from '@onezerocompany/commit';
 import type { Globals } from '../../globals';
 import { toTitleCase } from '../../utils/titlecase';
 import { Item } from '../items/Item';
@@ -7,7 +14,14 @@ import { ItemType } from '../items/ItemType';
 import { TrackSettings } from '../settings/TrackSettings';
 import type { ItemSection } from './Issue';
 
-function releasingItems(track: VersionTrack): Item[] {
+/**
+ * Returns a list of items for a release track.
+ *
+ * @param track - The release track to get items for.
+ * @returns A list of items for the release track.
+ * @example const items = getItems(ReleaseTrack.stable);
+ */
+function releasingItems(track: ReleaseTrack): Item[] {
   return [
     new Item({
       type: ItemType.changelogApproved,
@@ -33,11 +47,19 @@ function releasingItems(track: VersionTrack): Item[] {
   ];
 }
 
+/**
+ * Returns a list of sections that contain items.
+ *
+ * @param globals - Global variables.
+ * @returns A list of sections that contain items.
+ * @example const sections = getSections(globals);
+ */
 export function getSections(globals: Globals): ItemSection[] {
   const { settings } = globals;
   const sections: ItemSection[] = [];
-  for (const track of versionTrackOrder) {
+  for (const track of releaseTrackOrder) {
     const items: Item[] = [];
+
     const trackSettings = new TrackSettings({
       forTrack: track,
       json: settings[track],

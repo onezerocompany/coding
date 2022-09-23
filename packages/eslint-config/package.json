@@ -34,8 +34,10 @@
   ],
   "scripts": {
     "build": "echo 'package does not require building'",
+    "docs": "npx jsdoc -c jsdoc.json",
     "format": "npx prettier --write . && npx eslint --fix .",
     "lint": "npx prettier --check . && npx eslint .",
+    "open-docs": "open ./docs/index.html",
     "test": "npx jest --silent --coverage"
   },
   "prettier": "@onezerocompany/prettier-config",
@@ -54,7 +56,8 @@
     ],
     "ignorePatterns": [
       "**/node_modules/**",
-      "coverage/**"
+      "coverage/**",
+      "docs/**"
     ],
     "root": true
   },
@@ -81,15 +84,18 @@
       "^.+\\.tsx?$": "ts-jest"
     }
   },
+  "dependencies": {
+    "eslint-plugin-jsdoc": "^39.3.6"
+  },
   "devDependencies": {
+    "@onezerocompany/prettier-config": "../prettier-config",
+    "@onezerocompany/tsconfig": "../tsconfig",
     "@types/eslint": "^8.4.1",
     "@types/jest": "^27.4.1",
     "@types/react": "^18.0.1",
     "glob": "^8.0.1",
     "jest": "^27.5.1",
-    "nyc": "^15.1.0",
-    "@onezerocompany/prettier-config": "../prettier-config",
-    "@onezerocompany/tsconfig": "../tsconfig"
+    "nyc": "^15.1.0"
   },
   "peerDependencies": {
     "@next/eslint-plugin-next": "^12.1.4",
@@ -102,9 +108,10 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^26.1.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.4.0",
     "eslint-plugin-vue": "^8.6.0",
-    "react": "^18.0.0"
+    "react": "^18.2.0"
   }
 }

@@ -10,9 +10,10 @@
   },
   "devDependencies": {
     "@onezerocompany/commit": "file:../../packages/commit",
-    "@onezerocompany/prettier-config": "file:../../packages/prettier-config",
     "@onezerocompany/eslint-config": "file:../../packages/eslint-config",
-    "@vercel/ncc": "^0.33.4"
+    "@onezerocompany/prettier-config": "file:../../packages/prettier-config",
+    "@vercel/ncc": "^0.33.4",
+    "graphql-tag": "^2.12.6"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",
@@ -39,7 +40,8 @@
     },
     "parserOptions": {
       "project": "./tsconfig.spec.json",
-      "tsconfigRootDir": "./"
+      "tsconfigRootDir": "./",
+      "ecmaVersion": 2021
     },
     "extends": "@onezerocompany/eslint-config/typescript",
     "ignorePatterns": [

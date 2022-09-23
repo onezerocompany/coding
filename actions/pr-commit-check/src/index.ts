@@ -1,3 +1,10 @@
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import {
   error as logError,
   getInput,
@@ -18,14 +25,26 @@ const prNumber = parseInt(
 
 const { repo, owner } = context.repo;
 
+/**
+ * Print context information.
+ *
+ * @example printContext();
+ */
 function printContext(): void {
   logInfo(`repository: ${repo}`);
   logInfo(`owner: ${owner}`);
   logInfo(`pr: ${prNumber}`);
 }
 
+/**
+ * Main entry point of the pr-commit-check action.
+ *
+ * @example
+ *   main();
+ */
 async function run(): Promise<void> {
   printContext();
+
   const { repository } = await fetchPullRequest(owner, repo, prNumber);
 
   if (repository?.pullRequest.merged === true) {
@@ -34,6 +53,7 @@ async function run(): Promise<void> {
   }
 
   const errors: ValidationError[] = [];
+
   const commits =
     repository?.pullRequest.commits.nodes.map(
       (node: { commit: { message: string } }) => ({

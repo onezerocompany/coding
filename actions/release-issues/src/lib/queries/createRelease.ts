@@ -1,11 +1,28 @@
+/**
+ * @file Contains functions to create a release.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { debug, setFailed } from '@actions/core';
-import { VersionTrack } from '@onezerocompany/commit';
+import { ReleaseTrack } from '@onezerocompany/commit';
 import type { Globals } from '../../globals';
 import type { Item } from '../items/Item';
 
+/**
+ * Creates the release json file.
+ *
+ * @param globals - The global variables.
+ * @param track - The track to create the release for.
+ * @param tag - The tag to create the release for.
+ * @returns The release json file.
+ * @example
+ *   const releaseJson = releaseJson(globals, track, tag);
+ */
 function releaseJson(
   globals: Globals,
-  track: VersionTrack,
+  track: ReleaseTrack,
   tag: string,
 ): string {
   return JSON.stringify(
@@ -24,15 +41,23 @@ function releaseJson(
   );
 }
 
+/**
+ * Create a release for the given track.
+ *
+ * @param globals - The global variables.
+ * @param track - The track to create the release for.
+ * @param tag - The tag to create the release for.
+ * @example await createRelease(globals, track, tag);
+ */
 async function apiCall(
   globals: Globals,
-  track: VersionTrack,
+  track: ReleaseTrack,
   tag: string,
 ): Promise<void> {
   const { data: releaseData } = await globals.octokit.rest.repos.createRelease({
     owner: globals.context.repo.owner,
     repo: globals.context.repo.repo,
-    prerelease: track !== VersionTrack.live,
+    prerelease: track !== ReleaseTrack.stable,
     tag_name: tag,
     target_commitish: globals.context.issue.commitish,
     name: tag,
@@ -41,7 +66,7 @@ async function apiCall(
     body: globals.context.issue.changelogs[track],
   });
 
-  // create an asset with the release json
+  // Create an asset with the release json
   await globals.octokit.rest.repos.uploadReleaseAsset({
     owner: globals.context.repo.owner,
     repo: globals.context.repo.repo,
@@ -51,7 +76,7 @@ async function apiCall(
     data: releaseJson(globals, track, tag),
   });
 
-  // create an asset with the changelog
+  // Create an asset with the changelog
   await globals.octokit.rest.repos.uploadReleaseAsset({
     owner: globals.context.repo.owner,
     repo: globals.context.repo.repo,
@@ -62,6 +87,16 @@ async function apiCall(
   });
 }
 
+/**
+ * Create a release for the given track.
+ *
+ * @param globals - The global variables.
+ * @param item - The item to create the release for.
+ * @returns The created release.
+ * @example
+ *   const { created } = await createRelease(globals, item);
+ *   // created === true
+ */
 export async function createRelease(
   globals: Globals,
   item: Item,

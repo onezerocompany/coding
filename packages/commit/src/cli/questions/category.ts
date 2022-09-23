@@ -1,3 +1,10 @@
+/**
+ * @file Prompt object to ask for the category of the commit.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import type { PromptObject } from 'prompts';
 import type { CommitCategory } from '../../lib/categories/categories';
 import { categories } from '../../lib/categories/categories';
@@ -13,6 +20,15 @@ export const categoryQuestion: PromptObject = {
     value: category,
     description: category.description,
   })),
+
+  /**
+   * Provide suggestions for the user to choose from.
+   *
+   * @param input - The user's input.
+   * @param choices - The choices to choose from.
+   * @returns The suggestions.
+   * @example categoryQuestion.suggest('feat', choices);
+   */
   async suggest(input: string, choices: unknown[]): Promise<unknown[]> {
     return new Promise((resolve) => {
       const filteredChoices = choices.filter(
@@ -25,5 +41,13 @@ export const categoryQuestion: PromptObject = {
       resolve(filteredChoices);
     });
   },
+
+  /**
+   * Format the user's input.
+   *
+   * @param choice - The user's choice.
+   * @returns The formatted choice.
+   * @example categoryQuestion.format(choice);
+   */
   format: (choice: CommitCategory) => choice.tag,
 };

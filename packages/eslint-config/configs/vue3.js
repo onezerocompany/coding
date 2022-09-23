@@ -1,3 +1,10 @@
+/**
+ * @file Contains the rules for Vue 3 projects.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand
+ */
+
 module.exports = {
   parserOptions: {
     sourceType: 'module',
