@@ -1,8 +1,23 @@
+/**
+ * @file Contains functions to update release creation items.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import type { Globals } from '../../../globals';
 import { createRelease, releaseExists } from '../../queries';
 import type { Item } from '../Item';
 import { ItemStatus } from '../ItemStatus';
 
+/**
+ * Updates the status of a release creation item.
+ *
+ * @param globals - Global variables.
+ * @param item - Item to update.
+ * @example
+ *   await updateReleaseCreation(globals, item);
+ */
 export async function updateReleaseCreation(
   globals: Globals,
   item: Item,
@@ -22,10 +37,10 @@ export async function updateReleaseCreation(
     }
   }
 
-  // check if the version exists with an api request
+  // Check if the version exists with an api request
   if (await releaseExists(globals, item)) return ItemStatus.succeeded;
 
-  // create the release
+  // Create the release
   const { created } = await createRelease(globals, item);
   if (created) return ItemStatus.succeeded;
 

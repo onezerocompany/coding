@@ -1,3 +1,10 @@
+/**
+ * @file Contains functions to parse a commit message.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { categoryForTag } from '../categories/categories';
 import { CommitMessage } from './CommitMessage';
 
@@ -6,6 +13,14 @@ const issueTags = ['close', 'closes', 'closed', 'fixes', 'fixed'];
 const firstLineRegex =
   /^(?<emoji>:.*:)\s*(?<category>.*?)(?:\((?<scope>.*?)\))?(?<breaking>!)?:\s*(?<subject>.*)$/u;
 
+/**
+ * Reads the first line of the commit message.
+ *
+ * @param line - The first line of the commit message.
+ * @param commitMessage - The commit message object.
+ * @example
+ *   readFirstLine(':bug: (core) Fix a bug', commitMessage);
+ */
 function readFirstLine(line: string, commitMessage: CommitMessage): void {
   const match = firstLineRegex.exec(line);
   commitMessage.category = categoryForTag(match?.groups?.['category'] ?? '');
@@ -14,6 +29,14 @@ function readFirstLine(line: string, commitMessage: CommitMessage): void {
   commitMessage.breaking = match?.groups?.['breaking'] === '!';
 }
 
+/**
+ * Extracts the issue number from a line.
+ *
+ * @param line - The line to extract the issue number from.
+ * @param commitMessage - The commit message object.
+ * @example
+ *   const issueNumber = extractIssueNumber('Fixes #123', commitMessage);
+ */
 function extractIssueNumber(line: string, commitMessage: CommitMessage): void {
   const issue = line.substring(line.indexOf('#') + 1).trim();
   if (issue.length > 0) {
@@ -21,6 +44,14 @@ function extractIssueNumber(line: string, commitMessage: CommitMessage): void {
   }
 }
 
+/**
+ * Parses a string into a commit message object.
+ *
+ * @param message - The commit message.
+ * @returns The commit message object.
+ * @example
+ *   const commitMessage = parseMessage('Fixes #123');
+ */
 function parseMessage(message: string): CommitMessage {
   const commitMessage = new CommitMessage();
   let reachedFooter = false;

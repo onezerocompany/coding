@@ -1,13 +1,22 @@
+/**
+ * @file Git related utilities.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { execSync } from 'child_process';
 import { existsSync, statSync } from 'fs';
 import { dirname, resolve } from 'path';
 import type { FileItem } from '../../cli/questions/files';
 
-/*
- * fetches a list of staged files from the git repository.
- * gracefully handles the case where the git repository is not initialized.
- * @param gitRoot the root of the git repository
- * @returns an array of file names
+/**
+ * Fetches a list of staged files from the git repository. Gracefully handles the case where the git repository is not initialized.
+ *
+ * @param gitRoot - The root of the git repository.
+ * @returns An array of file names.
+ * @example
+ * getStagedFiles('~/project');
  */
 function getStagedFiles(gitRoot: string): string[] {
   try {
@@ -19,12 +28,15 @@ function getStagedFiles(gitRoot: string): string[] {
   }
 }
 
-/*
- * find the root of the current git repository
- * @returns the root of the git repository
+/**
+ * Find the root of the current git repository, moving up the directory tree until a .git directory is found.
+ *
+ * @returns The path to the root of the git repository.
+ * @example findGitRoot();
  */
 export function findGitRoot(): string {
-  // find the git folder by walking up the directory tree
+  // Find the git folder by walking up the directory tree
+
   let dir = process.cwd();
   while (dir !== '/') {
     const gitFolder = resolve(dir, '.git');
@@ -36,10 +48,14 @@ export function findGitRoot(): string {
   return dir.replace('/.git', '');
 }
 
-/*
- * fetches a list of all changed files from the git repository.
- * gracefully handles the case where the git repository is not initialized.
- * @returns an array of file names
+/**
+ * Fetches a list of all changed files from the git repository.
+ * Gracefully handles the case where the git repository is not initialized.
+ *
+ * @param gitFolder - The root of the git repository.
+ * @returns An array of file names.
+ * @throws When the git repository is not initialized.
+ * @example getChangedFiles('example/project');
  */
 export function getGitFiles(gitFolder: string): FileItem[] {
   const stagedFiles = getStagedFiles(gitFolder);
@@ -58,6 +74,7 @@ export function getGitFiles(gitFolder: string): FileItem[] {
           .substring(charactersToTrim)
           .split('->')
           .map((file) => file.trim());
+
         const selected = files.some((file) => stagedFiles.includes(file));
         return files.map((file) => ({
           title: file,

@@ -1,11 +1,27 @@
+/**
+ * @file
+ * @copyright 2021 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { resolve } from 'path';
 import { ESLint } from 'eslint';
 
+/**
+ * Setup an instance of ESLint with the given config file.
+ *
+ * @param config - Filename of the config file to use (without extension).
+ * @returns An instance of ESLint.
+ * @example
+ *   // Returns an instance of ESLint with the config file "configs/typescript.js"
+ *   const eslint = setupEslint('typescript');
+ */
 export function setupEslint(config: string): ESLint {
   return new ESLint({
-    // do not load configs from the project itself
+    // Do not load configs from the project itself
     useEslintrc: false,
-    // setup the base config
+    // Setup the base config
     baseConfig: {
       root: true,
       parserOptions: {
@@ -17,7 +33,7 @@ export function setupEslint(config: string): ESLint {
         },
       },
     },
-    // load the config
+    // Load the config
     overrideConfigFile: resolve(__dirname, `../../configs/${config}.js`),
   });
 }

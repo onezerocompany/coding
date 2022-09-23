@@ -1,3 +1,10 @@
+/**
+ * @file ESLint rules for TypeScript style.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 module.exports = {
   rules: {
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/naming-convention.md

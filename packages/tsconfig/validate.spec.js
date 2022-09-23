@@ -1,4 +1,5 @@
-/* eslint-disable strict */
+'use strict';
+
 const { readdirSync, readFileSync } = require('fs');
 const { resolve } = require('path');
 const Ajv = require('ajv-draft-04');

@@ -1,31 +1,57 @@
+/**
+ * @file Functions for generating a changelog.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import type { CommitCategory } from '@onezerocompany/commit';
-import { ChangeLogType, VersionTrack } from '@onezerocompany/commit';
+import { ChangeLogType, ReleaseTrack } from '@onezerocompany/commit';
 import type { Commit } from '../definitions/Commit';
 import type { Settings } from '../settings/Settings';
 
-const trackChangelogTypes: { [key in VersionTrack]: ChangeLogType[] } = {
-  [VersionTrack.alpha]: [ChangeLogType.external, ChangeLogType.internal],
-  [VersionTrack.beta]: [ChangeLogType.external],
-  [VersionTrack.live]: [ChangeLogType.external],
+/** Changelog types that are included in the changelog for each track. */
+const trackChangelogTypes: { [key in ReleaseTrack]: ChangeLogType[] } = {
+  [ReleaseTrack.alpha]: [ChangeLogType.external, ChangeLogType.internal],
+  [ReleaseTrack.beta]: [ChangeLogType.external],
+  [ReleaseTrack.stable]: [ChangeLogType.external],
 };
 
+/**
+ * Adds a commit to a changelog section.
+ *
+ * @param track - The track that the commit belongs to.
+ * @param sections - A list of sections where the commit should be added to one of them.
+ * @param commit - The commit to add.
+ * @example
+ * addCommitToSection(ReleaseTrack.alpha, [], {
+ *   message: {
+ *     subject: 'Test commit',
+ *     body: '',
+ *     footer: '',
+ *   },
+ *   type: ChangeLogType.internal,
+ *   category: CommitCategory.build,
+ * });
+ */
 function addCommitToSection(
-  track: VersionTrack,
+  track: ReleaseTrack,
   sections: Array<{ category: CommitCategory; commits: Commit[] }>,
   commit: Commit,
 ): void {
   if (
     trackChangelogTypes[track].includes(commit.message.category.changelog.type)
   ) {
-    // check if sections has a section for this category
+    // Check if sections has a section for this category
+
     const section = sections.find(
       (item) => item.category === commit.message.category,
     );
     if (section) {
-      // add commit to section
+      // Add commit to section
       section.commits.push(commit);
     } else {
-      // create new section
+      // Create new section
       sections.push({
         category: commit.message.category,
         commits: [commit],
@@ -34,9 +60,18 @@ function addCommitToSection(
   }
 }
 
+/**
+ * Generate a changelog for a specific release track.
+ *
+ * @param settings - The settings to use.
+ * @param track - The track to generate the changelog for.
+ * @param commits - A list of commits to include in the changelog.
+ * @returns The changelog.
+ * @example generateChangelog(settings, ReleaseTrack.alpha, [ ... ]);
+ */
 function changelogForTrack(
   settings: Settings,
-  track: VersionTrack,
+  track: ReleaseTrack,
   commits: Commit[],
 ): string {
   const trackSettings = settings[track];
@@ -46,12 +81,13 @@ function changelogForTrack(
     commits: Commit[];
   }> = [];
 
-  // loop over all commit categories and find commits that match the category
+  // Loop over all commit categories and find commits that match the category
   for (const commit of commits) {
     addCommitToSection(track, sections, commit);
   }
 
-  // convert sections to regular text
+  // Convert sections to regular text
+
   let changelog = '';
   for (const section of sections) {
     changelog += `\n\n${section.category.changelog.title}`;
@@ -64,26 +100,33 @@ function changelogForTrack(
   return `${trackSettings.changelog.header}\n\n${changelog}\n\n${trackSettings.changelog.footer}`.trim();
 }
 
+/**
+ * Generate all changelogs for a release.
+ *
+ * @param settings - The settings to use.
+ * @param commits - A list of commits to include in the changelog.
+ * @returns A list of changelogs for each track.
+ * @example generateChangelogs(settings, commits);
+ */
 export function generateChangelogs(
   settings: Settings,
   commits: Commit[],
-): {
-  [key in VersionTrack]: string;
-} {
+): Record<ReleaseTrack, string> {
+  // Loop over all tracks and generate changelog
   return {
-    [VersionTrack.alpha]: changelogForTrack(
+    [ReleaseTrack.alpha]: changelogForTrack(
       settings,
-      VersionTrack.alpha,
+      ReleaseTrack.alpha,
       commits,
     ),
-    [VersionTrack.beta]: changelogForTrack(
+    [ReleaseTrack.beta]: changelogForTrack(
       settings,
-      VersionTrack.beta,
+      ReleaseTrack.beta,
       commits,
     ),
-    [VersionTrack.live]: changelogForTrack(
+    [ReleaseTrack.stable]: changelogForTrack(
       settings,
-      VersionTrack.live,
+      ReleaseTrack.stable,
       commits,
     ),
   };

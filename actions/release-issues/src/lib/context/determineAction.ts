@@ -1,3 +1,10 @@
+/**
+ * @file Functions for determining the action to take for a release.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { context as eventContext } from '@actions/github';
 import { setFailed } from '@actions/core';
 import type {
@@ -6,6 +13,12 @@ import type {
 } from '@octokit/webhooks-definitions/schema';
 import { Action } from '../definitions/Action';
 
+/**
+ * Determine the action to take based on the event context.
+ *
+ * @returns The determined action.
+ * @example determineAction();
+ */
 export function determineAction(): Action {
   const { eventName } = eventContext;
   if (eventName === 'push') {

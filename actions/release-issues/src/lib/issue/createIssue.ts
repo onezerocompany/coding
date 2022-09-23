@@ -1,10 +1,66 @@
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { debug, error as logError, info } from '@actions/core';
 import type { Globals } from '../../globals';
-import { jsonIndent } from '../../defaults';
+import { jsonIndent } from '../../constants';
 import { issueExists } from './issueExists';
 import { loadAssignees } from './loadAssignees';
+import type { Issue } from './Issue';
 
-// eslint-disable-next-line max-lines-per-function
+const createQuery = `
+  mutation createIssue(
+    $repositoryId: ID!
+    $labelId: ID!
+    $title: String!
+    $content: String!
+    $assignees: [ID!]
+  ) {
+    createIssue(
+      input: {
+        repositoryId: $repositoryId
+        labelIds: [$labelId]
+        title: $title
+        body: $content
+        assigneeIds: $assignees
+      }
+    ) {
+      issue {
+        id
+        number
+        url
+      }
+    }
+  }
+`;
+
+/**
+ * Prints debug information.
+ *
+ * @param issue - The issue.
+ * @example printDebugInfo(issue);
+ */
+function printDebugInfo(issue: Issue): void {
+  debug(
+    `Creating issue ${issue.title}: ${JSON.stringify(
+      issue.json,
+      null,
+      jsonIndent,
+    )}`,
+  );
+}
+
+/**
+ * Creates an issue for a release.
+ *
+ * @param globals - Global variables.
+ * @returns The issue number.
+ * @example await createIssue(globals);
+ */
 export async function createIssue(
   globals: Globals,
 ): Promise<{ created: boolean }> {
@@ -15,50 +71,20 @@ export async function createIssue(
 
   const { graphql, context } = globals;
   await globals.context.issue.update(globals);
+
   const { issue } = context;
-  debug(
-    `Creating issue ${issue.title}: ${JSON.stringify(
-      issue.json,
-      null,
-      jsonIndent,
-    )}`,
-  );
+
+  printDebugInfo(issue);
+
   try {
     const users = await loadAssignees(globals);
-    await graphql(
-      `
-        mutation createIssue(
-          $repositoryId: ID!
-          $labelId: ID!
-          $title: String!
-          $content: String!
-          $assignees: [ID!]
-        ) {
-          createIssue(
-            input: {
-              repositoryId: $repositoryId
-              labelIds: [$labelId]
-              title: $title
-              body: $content
-              assigneeIds: $assignees
-            }
-          ) {
-            issue {
-              id
-              number
-              url
-            }
-          }
-        }
-      `,
-      {
-        repositoryId: context.repo.id,
-        labelId: context.repo.trackerLabelId,
-        title: issue.title,
-        content: issue.content,
-        assignees: users,
-      },
-    );
+    await graphql(createQuery, {
+      repositoryId: context.repo.id,
+      labelId: context.repo.trackerLabelId,
+      title: issue.title,
+      content: issue.content,
+      assignees: users,
+    });
 
     return { created: true };
   } catch (createError: unknown) {

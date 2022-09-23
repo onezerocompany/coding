@@ -18,6 +18,7 @@ describe('react config', () => {
           PluginKey.react,
           PluginKey.reactHooks,
           PluginKey.jsxA11y,
+          PluginKey.jsdoc,
         ],
       }).validate(),
     ).resolves.toStrictEqual([]);
@@ -34,6 +35,7 @@ describe('react config', () => {
           PluginKey.react,
           PluginKey.reactHooks,
           PluginKey.jsxA11y,
+          PluginKey.jsdoc,
         ],
       }).validate(),
     ).resolves.toStrictEqual([]);

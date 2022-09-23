@@ -1,11 +1,10 @@
-#!/usr/bin/env node
-/*
+#!/usr/bin/env ts-node
 
-  This script is used to sync the packages.json file with the
-  main packages.json file in the root of the project.
-
-  It keeps the author, license, repository, version, bugs and homepage fields in sync
-
+/**
+ * @file Syncs the packages in the monorepo with the main package.json
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
  */
 
 const { execSync } = require('child_process');
@@ -18,9 +17,11 @@ var {
 } = require('fs');
 var { resolve } = require('path');
 
+var actionsDir = resolve(__dirname, '../actions');
 var packagesDir = resolve(__dirname, '../packages');
 var mainPackage = require(resolve(__dirname, '../package.json'));
 
+// List of fields to sync accross packages
 const fieldsToCopy = [
   'author',
   'license',
@@ -29,8 +30,12 @@ const fieldsToCopy = [
   'homepage',
   'version',
 ];
-for (const package of readdirSync(packagesDir)) {
-  const packageDir = resolve(packagesDir, package);
+
+const actions = readdirSync(actionsDir);
+const packages = readdirSync(packagesDir);
+
+for (const packageName of readdirSync(packagesDir)) {
+  const packageDir = resolve(packagesDir, packageName);
   const packageJsonPath = resolve(packageDir, 'package.json');
   // skip if not a directory
   if (!statSync(packageDir).isDirectory()) continue;
@@ -41,12 +46,13 @@ for (const package of readdirSync(packagesDir)) {
   // skip if package.json doesn't exist
   if (!existsSync(packageJsonPath)) continue;
 
+  // read the package.json
   const packageJson = require(packageJsonPath);
   for (const field of fieldsToCopy) {
     packageJson[field] = mainPackage[field];
   }
 
-  packageJson.repository.directory = `packages/${package}`;
+  packageJson.repository.directory = `packages/${packageName}`;
 
   // update the package.json
   writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));

@@ -1,22 +1,54 @@
+/**
+ * @file Setup functionality for the setup-flutter action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { platform, homedir } from 'os';
 import { createWriteStream, rmSync } from 'fs';
 import { get } from 'https';
 import { execSync } from 'child_process';
 import { addPath } from '@actions/core';
 
+/**
+ * Detects the current platform the action is running on.
+ *
+ * @returns The platform the action is running on.
+ * @throws If the platform is not supported (unknown).
+ * @example
+ *   const platform = currentPlatform();
+ *   // Returns: 'macos'
+ */
 function currentPlatform(): string {
   switch (platform()) {
+    /** Apple macOS. */
     case 'darwin':
       return 'macos';
+    /** Microsoft Windows. */
     case 'win32':
       return 'windows';
+    /** Linux. */
     case 'linux':
       return 'linux';
+    /** Any others are unsupported. */
     default:
       throw new Error(`Unsupported platform: ${platform()}`);
   }
 }
 
+/**
+ * Function to determine the correct download URL for the Flutter SDK.
+ *
+ * @param input - Object containing the input parameters.
+ * @param input.platform - The platform to download the SDK for.
+ * @param input.version - The version of the SDK to download.
+ * @param input.channel - The channel of the SDK to download.
+ * @returns The download URL for the Flutter SDK.
+ * @example
+ * const url = urlForVersion({ platform: 'macos', version: '2.5.3', channel: 'stable' });
+ * // Returns 'https://(truncated)/stable/macos/flutter_macos_2.5.3-stable.zip'
+ */
 function urlForVersion(input: {
   platform: string;
   version: string;
@@ -36,6 +68,19 @@ function urlForVersion(input: {
   };
 }
 
+/**
+ * Downloads the Flutter SDK.
+ *
+ * @param input - Object containing the input parameters.
+ * @param input.url - The download URL for the Flutter SDK.
+ * @param input.file - The file path to download the SDK to.
+ * @returns Promise that resolves when the download is complete, or rejects if the download fails.
+ * @example
+ * downloadFile({
+ *   url: 'https://(truncated)/stable/macos/flutter_macos_2.5.3-stable.zip',
+ *   file: '/Users/runner/flutter_macos_2.5.3-stable.zip',
+ * })
+ */
 async function downloadFile(input: {
   url: string;
   file: string;
@@ -50,17 +95,30 @@ async function downloadFile(input: {
   });
 }
 
+/**
+ * Extracts the Flutter SDK in the correct location and adds it to the PATH.
+ *
+ * @param input - Object containing the input parameters.
+ * @param input.version - The version of the SDK to download.
+ * @param input.channel - The channel of the SDK to download.
+ * @example
+ * setup({
+ *   version: '2.5.3',
+ *   channel: 'stable',
+ * })
+ */
 export async function setup(input: {
   version: string;
   channel: string;
 }): Promise<void> {
-  // download the sdk
+  // Download the sdk
+
   const download = urlForVersion({ ...input, platform: currentPlatform() });
   process.stdout.write(`Downloading ${download.url}...`);
   await downloadFile(download);
   process.stdout.write(' done\n');
 
-  // decompress the file
+  // Decompress the file
   process.stdout.write('Decompressing...');
   if (download.file.endsWith('.zip')) {
     execSync(`unzip ${download.file} -d ${homedir()}`, { stdio: 'ignore' });
@@ -71,11 +129,11 @@ export async function setup(input: {
   }
   process.stdout.write(' done\n');
 
-  // remove the downloaded file
+  // Remove the downloaded file
   process.stdout.write('Cleaning up...');
   rmSync(download.file);
   process.stdout.write(' done\n');
 
-  // install flutter into profiles
+  // Install flutter into profiles
   addPath(`${homedir()}/flutter/bin`);
 }

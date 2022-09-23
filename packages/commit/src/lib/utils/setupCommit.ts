@@ -1,3 +1,10 @@
+/**
+ * @file Utility function to setup a commit.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 /* eslint-disable max-lines-per-function */
 import { exec, spawn } from 'child_process';
 import { createWriteStream, existsSync, rmSync } from 'fs';
@@ -5,9 +12,13 @@ import { Listr } from 'listr2';
 import type { FileItem } from '../../cli/questions/files';
 import { findGitRoot, getGitFiles } from './git';
 
+/** Context in which the action runs. */
 interface SetupContext {
+  /** Root of the repository. */
   gitRoot: string;
+  /** List of changed files. */
   files: FileItem[];
+  /** Whether to skip the pre-commit hook run. */
   skipHooks: boolean;
 }
 
@@ -15,6 +26,13 @@ const tasks = new Listr(
   [
     {
       title: 'Load git environment',
+      /**
+       * Task that finds the root of the git repository.
+       *
+       * @param ctx - Context in which the action runs.
+       * @example
+       *   const ctx = await tasks.run();
+       */
       async task(ctx: SetupContext): Promise<void> {
         return new Promise((resolve) => {
           ctx.gitRoot = findGitRoot();
@@ -24,27 +42,45 @@ const tasks = new Listr(
     },
     {
       title: 'Run pre-commit hook',
+      /**
+       * Indicates whether pre-commit hooks should be skipped or not.
+       *
+       * @param ctx - Context in which the action runs.
+       * @returns Whether the hook should be skipped or not.
+       * @example
+       *   const ctx = await tasks.run();
+       */
       skip: (ctx: SetupContext): boolean => ctx.skipHooks,
+      /**
+       * Task that runs the pre-commit hook.
+       *
+       * @param ctx - Context in which the action runs.
+       * @param task - Task instance.
+       * @returns Promise that resolves when the task is done.
+       * @example
+       *   const ctx = await tasks.run();
+       */
       async task(ctx, task): Promise<void> {
         return new Promise((resolve, reject) => {
           const preCommitHook = `${ctx.gitRoot}/.husky/pre-commit`;
           if (existsSync(preCommitHook)) {
-            // start the pre-commit hook
+            // Start the pre-commit hook
             const hookProcess = spawn(preCommitHook, {
               cwd: ctx.gitRoot,
             });
-            // open temp file to capture all output
+
+            // Open temp file to capture all output
             const tempFile = `${ctx.gitRoot}/.pre-commit.log`;
             const outputStream = createWriteStream(tempFile);
             hookProcess.stderr.pipe(outputStream);
             hookProcess.stdout.pipe(outputStream);
-            // hook process should exit with code 0
-            hookProcess.on('close', (code) => {
+            // Hook process should exit with code 0
+            hookProcess.on('exit', (code) => {
               if (code === 0) {
                 rmSync(tempFile);
                 resolve();
               } else {
-                // open the temp file in the default editor
+                // Open the temp file in the default editor
                 exec(`code ${tempFile}`);
                 reject(
                   new Error(
@@ -62,6 +98,13 @@ const tasks = new Listr(
     },
     {
       title: 'Load changed files from git',
+      /**
+       * Task that loads the list of changed files from git.
+       *
+       * @param ctx - Context in which the action runs.
+       * @example
+       *   const ctx = await tasks.run();
+       */
       async task(ctx: SetupContext): Promise<void> {
         return new Promise((resolve) => {
           const files = getGitFiles(ctx.gitRoot);
@@ -80,6 +123,13 @@ const tasks = new Listr(
   },
 );
 
+/**
+ * Setup a commit.
+ *
+ * @param options - Options to setup the commit.
+ * @param options.skipHooks - Whether to skip the pre-commit hook run.
+ * @example await setupCommit();
+ */
 async function setupCommit(options: {
   skipHooks: boolean;
 }): Promise<SetupContext | null> {
@@ -87,7 +137,7 @@ async function setupCommit(options: {
     tasks
       .run({
         skipHooks: options.skipHooks,
-        gitRoot: process.cwd(),
+        gitRoot: findGitRoot(),
         files: [],
       })
       .then((ctx) => {

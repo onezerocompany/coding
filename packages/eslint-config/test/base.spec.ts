@@ -12,7 +12,7 @@ describe('base config', () => {
       new ConfigValidator({
         config: ConfigFile.javascript,
         testFiles: [TestFile.javascript],
-        plugins: [PluginKey.import],
+        plugins: [PluginKey.import, PluginKey.jsdoc],
       }).validate(),
     ).resolves.toStrictEqual([]);
   });

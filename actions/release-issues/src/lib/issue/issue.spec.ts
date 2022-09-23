@@ -18,7 +18,7 @@ describe('issues', () => {
       changelogs: {
         alpha: '',
         beta: '',
-        live: '',
+        stable: '',
       },
       commits: [],
     });

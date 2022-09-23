@@ -8305,8 +8305,14 @@ function wrappy (fn, cb) {
 "use strict";
 var __webpack_unused_export__;
 
+/**
+ * @file Index of the package, exports all of the public API.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 __webpack_unused_export__ = ({ value: true });
-exports.Gf = exports.Hr = exports.Os = exports.V9 = exports.ib = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.ac = __webpack_unused_export__ = void 0;
+exports.Gf = exports.mS = exports.A3 = exports.V9 = exports.ib = __webpack_unused_export__ = exports.kW = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = __webpack_unused_export__ = exports.ac = __webpack_unused_export__ = void 0;
 /* eslint-disable import/max-dependencies */
 var categories_1 = __nccwpck_require__(6823);
 __webpack_unused_export__ = ({ enumerable: true, get: function () { return categories_1.categories; } });
@@ -8337,9 +8343,9 @@ __webpack_unused_export__ = ({ enumerable: true, get: function () { return valid
 var VersionBump_1 = __nccwpck_require__(4033);
 Object.defineProperty(exports, "ib", ({ enumerable: true, get: function () { return VersionBump_1.VersionBump; } }));
 Object.defineProperty(exports, "V9", ({ enumerable: true, get: function () { return VersionBump_1.versionBumpOrder; } }));
-var VersionTrack_1 = __nccwpck_require__(5352);
-Object.defineProperty(exports, "Os", ({ enumerable: true, get: function () { return VersionTrack_1.VersionTrack; } }));
-Object.defineProperty(exports, "Hr", ({ enumerable: true, get: function () { return VersionTrack_1.versionTrackOrder; } }));
+var ReleaseTrack_1 = __nccwpck_require__(268);
+Object.defineProperty(exports, "A3", ({ enumerable: true, get: function () { return ReleaseTrack_1.ReleaseTrack; } }));
+Object.defineProperty(exports, "mS", ({ enumerable: true, get: function () { return ReleaseTrack_1.releaseTrackOrder; } }));
 var Version_1 = __nccwpck_require__(8691);
 Object.defineProperty(exports, "Gf", ({ enumerable: true, get: function () { return Version_1.Version; } }));
 //# sourceMappingURL=index.js.map
@@ -8351,17 +8357,26 @@ Object.defineProperty(exports, "Gf", ({ enumerable: true, get: function () { ret
 
 "use strict";
 
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.categoryForTag = exports.categories = exports.ChangeLogType = void 0;
 const VersionBump_1 = __nccwpck_require__(4033);
-/* eslint-disable max-lines */
+/** Types of changelogs. */
 var ChangeLogType;
 (function (ChangeLogType) {
+    /** Changelog for internal usage. */
     ChangeLogType["internal"] = "internal";
+    /** Changelog for external publication. */
     ChangeLogType["external"] = "external";
 })(ChangeLogType = exports.ChangeLogType || (exports.ChangeLogType = {}));
+/* eslint-disable max-lines */
 exports.categories = [
-    // feature
+    // Feature
     {
         tag: 'feat/new',
         emoji: ':tada:',
@@ -8376,7 +8391,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // feature improve
+    // Feature improve
     {
         tag: 'feat/impr',
         emoji: ':star2:',
@@ -8391,7 +8406,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // feature deprecate
+    // Feature deprecate
     {
         tag: 'feat/depr',
         emoji: ':anger:',
@@ -8406,7 +8421,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // feature remove
+    // Feature remove
     {
         tag: 'feat/rem',
         emoji: ':bomb:',
@@ -8421,7 +8436,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // bugfix
+    // Bugfix
     {
         tag: 'bug/fix',
         emoji: ':beetle:',
@@ -8436,7 +8451,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // hotfix
+    // Hotfix
     {
         tag: 'bug/hot',
         emoji: ':fire:',
@@ -8451,7 +8466,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // minorfix
+    // Minorfix
     {
         tag: 'bug/minor',
         emoji: ':bug:',
@@ -8466,7 +8481,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // test
+    // Test
     {
         tag: 'test',
         emoji: ':microscope:',
@@ -8481,7 +8496,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // chore
+    // Chore
     {
         tag: 'chore',
         emoji: ':broom:',
@@ -8496,7 +8511,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // scrips
+    // Scrips
     {
         tag: 'scripts',
         emoji: ':hammer:',
@@ -8511,7 +8526,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // editor
+    // Editor
     {
         tag: 'editor',
         emoji: ':computer:',
@@ -8526,7 +8541,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // docs
+    // Docs
     {
         tag: 'docs',
         emoji: ':open_book:',
@@ -8541,7 +8556,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // ci
+    // Ci
     {
         tag: 'ci/cd',
         emoji: ':robot:',
@@ -8556,7 +8571,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // deploy
+    // Deploy
     {
         tag: 'deploy',
         emoji: ':rocket:',
@@ -8571,7 +8586,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // wip
+    // Wip
     {
         tag: 'wip',
         emoji: ':construction:',
@@ -8586,7 +8601,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // dependencies
+    // Dependencies
     {
         tag: 'depend',
         emoji: ':link:',
@@ -8601,7 +8616,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // metadata
+    // Metadata
     {
         tag: 'metadata',
         emoji: ':memo:',
@@ -8616,7 +8631,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // license
+    // License
     {
         tag: 'license',
         emoji: ':bookmark_tabs:',
@@ -8631,7 +8646,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // typo
+    // Typo
     {
         tag: 'code/typo',
         emoji: ':writing_hand:',
@@ -8646,7 +8661,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // cleanup
+    // Cleanup
     {
         tag: 'code/clean',
         emoji: ':soap:',
@@ -8661,7 +8676,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // comment
+    // Comment
     {
         tag: 'code/comm',
         emoji: ':speech_balloon:',
@@ -8676,7 +8691,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // style -> changes to the formatting of the code or linter
+    // Style -> changes to the formatting of the code or linter
     {
         tag: 'code/style',
         emoji: ':art:',
@@ -8691,7 +8706,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // refactor -> changes to the code that do not affect the functionality
+    // Refactor -> changes to the code that do not affect the functionality
     {
         tag: 'code/ref',
         emoji: ':arrows_counterclockwise:',
@@ -8706,7 +8721,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // performance -> changes to the code that affect performance
+    // Performance -> changes to the code that affect performance
     {
         tag: 'code/perf',
         emoji: ':bullettrain_side:',
@@ -8721,7 +8736,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // security -> fix security issues
+    // Security -> fix security issues
     {
         tag: 'sec/fix',
         emoji: ':lock:',
@@ -8736,7 +8751,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // security -> fix security issues
+    // Security -> fix security issues
     {
         tag: 'sec/impr',
         emoji: ':lock_with_ink_pen:',
@@ -8751,7 +8766,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // infrastructure
+    // Infrastructure
     {
         tag: 'infra',
         emoji: ':children_crossing:',
@@ -8766,7 +8781,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // localization -> fix localization issues
+    // Localization -> fix localization issues
     {
         tag: 'locale',
         emoji: ':globe_with_meridians:',
@@ -8781,7 +8796,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // assets -> add new assets or update existing assets
+    // Assets -> add new assets or update existing assets
     {
         tag: 'assets',
         emoji: ':package:',
@@ -8796,7 +8811,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // accessibility
+    // Accessibility
     {
         tag: 'a11y',
         emoji: ':guide_dog:',
@@ -8811,7 +8826,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // seo
+    // Seo
     {
         tag: 'seo',
         emoji: ':mag:',
@@ -8826,7 +8841,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // log
+    // Log
     {
         tag: 'logging',
         emoji: ':scroll:',
@@ -8841,7 +8856,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // health
+    // Health
     {
         tag: 'health',
         emoji: ':satellite:',
@@ -8856,7 +8871,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // business
+    // Business
     {
         tag: 'business',
         emoji: ':necktie:',
@@ -8871,7 +8886,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // auth
+    // Auth
     {
         tag: 'auth',
         emoji: ':passport_control:',
@@ -8886,7 +8901,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // data models
+    // Data models
     {
         tag: 'data/mod',
         emoji: ':notebook_with_decorative_cover:',
@@ -8901,7 +8916,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // database
+    // Database
     {
         tag: 'data/db',
         emoji: ':books:',
@@ -8916,7 +8931,7 @@ exports.categories = [
             canBreak: true,
         },
     },
-    // cache
+    // Cache
     {
         tag: 'data/cache',
         emoji: ':clock10:',
@@ -8931,7 +8946,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // storage
+    // Storage
     {
         tag: 'data/store',
         emoji: ':floppy_disk:',
@@ -8946,7 +8961,7 @@ exports.categories = [
             canBreak: false,
         },
     },
-    // egg
+    // Egg
     {
         tag: 'easteregg',
         emoji: ':egg:',
@@ -8962,6 +8977,15 @@ exports.categories = [
         },
     },
 ];
+/* eslint-enable max-lines */
+/**
+ * Gets a category by its tag.
+ *
+ * @param tag - The tag of the category.
+ * @returns The category.
+ * @example
+ *   const category = getCategory('feat');
+ */
 function categoryForTag(tag) {
     const result = exports.categories.find((category) => category.tag === tag);
     return (result ?? {
@@ -8989,12 +9013,25 @@ exports.categoryForTag = categoryForTag;
 
 "use strict";
 
+/**
+ * @file Contains a.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.emojiForShortcode = void 0;
 const emoji_json_1 = __importDefault(__nccwpck_require__(3418));
+/**
+ * Get an emoji from the list based on a shortcode.
+ *
+ * @param code - The shortcode of the emoji.
+ * @returns The emoji.
+ * @example getEmoji('bug')
+ */
 function emojiForShortcode(code) {
     const result = emoji_json_1.default.emojis.find((search) => search.shortname === code);
     return result?.emoji ?? '?';
@@ -9009,11 +9046,44 @@ exports.emojiForShortcode = emojiForShortcode;
 
 "use strict";
 
+/**
+ * @file Contains the commit message object definition.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CommitMessage = void 0;
 const categories_1 = __nccwpck_require__(6823);
 const emoji_1 = __nccwpck_require__(7263);
+/** Commit message object. */
 class CommitMessage {
+    /**
+     * Creates a new commit message object.
+     *
+     * @param input - The input to create the commit message from.
+     * @param input.files - The files in the commit.
+     * @param input.category - The category of the commit.
+     * @param input.scope - The scope of the commit.
+     * @param input.subject - The subject of the commit.
+     * @param input.messageBody - The message body of the commit.
+     * @param input.breaking - Whether the commit is a breaking change.
+     * @param input.issues - The issues related to the commit.
+     * @param input.authors - The authors of the commit.
+     * @param input.signedOff - The sign-off on the commit.
+     * @example
+     *   const message = new CommitMessage({
+     *     files: ['package.json'],
+     *     category: 'build',
+     *     scope: 'commit',
+     *     subject: 'Add commit message object',
+     *     messageBody: 'This commit adds the commit message object.',
+     *     breaking: false,
+     *     issues: [1],
+     *     authors: ['Luca Silverentand <luca@onezero.company>'],
+     *     signedOff: 'Luca Silverentand <luca@onezero.company>',
+     *   });
+     */
     constructor(input) {
         this.files = input?.files?.flat() ?? [];
         this.category = (0, categories_1.categoryForTag)(input?.category);
@@ -9025,6 +9095,14 @@ class CommitMessage {
         this.coAuthors = input?.authors ?? [];
         this.signedOff = input?.signedOff ?? '';
     }
+    /**
+     * The actual string used for creating the commit.
+     *
+     * @returns The commit message.
+     * @example
+     *   const message = new CommitMessage({ ... });
+     *   console.log(message.toString());
+     */
     get message() {
         const lines = [
             `${this.category.emoji} ${this.category.tag}(${this.scope})${this.breaking ? '!' : ''}: ${this.subject}`,
@@ -9040,6 +9118,14 @@ class CommitMessage {
             .join('\n\n')
             .trim();
     }
+    /**
+     * Display version of the commit message meant for displaying to the user.
+     *
+     * @returns The display version of the commit message.
+     * @example
+     *   const message = new CommitMessage({ ... });
+     *   console.log(message.display);
+     */
     get displayString() {
         const lines = this.message
             .replace(this.category.emoji, (0, emoji_1.emojiForShortcode)(this.category.emoji))
@@ -9056,6 +9142,14 @@ class CommitMessage {
         ];
         return newLines.join('\n');
     }
+    /**
+     * JSON representation of the commit message.
+     *
+     * @returns The JSON representation of the commit message.
+     * @example
+     *   const message = new CommitMessage({ ... });
+     *   const json = commitMessage.json;
+     */
     get json() {
         return {
             files: this.files,
@@ -9069,6 +9163,15 @@ class CommitMessage {
             signedOff: this.signedOff,
         };
     }
+    /**
+     * Recreate a commit message from a JSON representation.
+     *
+     * @param input - The JSON representation of the commit message.
+     * @returns The commit message.
+     * @example
+     *   const json = { ... };
+     *   const message = CommitMessage.fromJSON(json);
+     */
     static fromJson(input) {
         return new CommitMessage({
             files: input.files,
@@ -9093,6 +9196,12 @@ exports.CommitMessage = CommitMessage;
 
 "use strict";
 
+/**
+ * @file Contains functions to parse a commit message.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.parseMessage = exports.firstLineRegex = void 0;
 const categories_1 = __nccwpck_require__(6823);
@@ -9100,6 +9209,14 @@ const CommitMessage_1 = __nccwpck_require__(3921);
 const issueTags = ['close', 'closes', 'closed', 'fixes', 'fixed'];
 const firstLineRegex = /^(?<emoji>:.*:)\s*(?<category>.*?)(?:\((?<scope>.*?)\))?(?<breaking>!)?:\s*(?<subject>.*)$/u;
 exports.firstLineRegex = firstLineRegex;
+/**
+ * Reads the first line of the commit message.
+ *
+ * @param line - The first line of the commit message.
+ * @param commitMessage - The commit message object.
+ * @example
+ *   readFirstLine(':bug: (core) Fix a bug', commitMessage);
+ */
 function readFirstLine(line, commitMessage) {
     const match = firstLineRegex.exec(line);
     commitMessage.category = (0, categories_1.categoryForTag)(match?.groups?.['category'] ?? '');
@@ -9107,12 +9224,28 @@ function readFirstLine(line, commitMessage) {
     commitMessage.subject = match?.groups?.['subject'] ?? '';
     commitMessage.breaking = match?.groups?.['breaking'] === '!';
 }
+/**
+ * Extracts the issue number from a line.
+ *
+ * @param line - The line to extract the issue number from.
+ * @param commitMessage - The commit message object.
+ * @example
+ *   const issueNumber = extractIssueNumber('Fixes #123', commitMessage);
+ */
 function extractIssueNumber(line, commitMessage) {
     const issue = line.substring(line.indexOf('#') + 1).trim();
     if (issue.length > 0) {
         commitMessage.issues.push(parseInt(issue, 10));
     }
 }
+/**
+ * Parses a string into a commit message object.
+ *
+ * @param message - The commit message.
+ * @returns The commit message object.
+ * @example
+ *   const commitMessage = parseMessage('Fixes #123');
+ */
 function parseMessage(message) {
     const commitMessage = new CommitMessage_1.CommitMessage();
     let reachedFooter = false;
@@ -9149,6 +9282,12 @@ exports.parseMessage = parseMessage;
 
 "use strict";
 
+/**
+ * @file Contains functions to validate commit messages.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.validateMessage = void 0;
 const categories_1 = __nccwpck_require__(6823);
@@ -9158,6 +9297,14 @@ const parseMessage_1 = __nccwpck_require__(6198);
 const ValidationError_1 = __nccwpck_require__(9017);
 const BodyValidator_1 = __nccwpck_require__(7159);
 const AuthorsValidator_1 = __nccwpck_require__(6366);
+/**
+ * Validates an emoji in the first line of a commit message.
+ *
+ * @param message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateEmoji(':beetle: bug/fix(login) fix login');
+ */
 function validateEmoji(message) {
     const [firstLine] = message.split('\n');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -9173,6 +9320,14 @@ function validateEmoji(message) {
         }),
     ];
 }
+/**
+ * Validates the category part of the first line in a commit message.
+ *
+ * @param message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateCategory(':beetle: bug/fix(login) fix login');
+ */
 function validateCategory(message) {
     const [firstLine] = message.split('\n');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -9188,8 +9343,17 @@ function validateCategory(message) {
     ];
 }
 const allowedFooterPrefixes = ['co-authored-by:', 'closes', 'signed-off-by:'];
+/**
+ * Validates the footer of a commit message.
+ *
+ * @param message - The message to validate.
+ * @param bodyContent - The content of the body.
+ * @returns The validation errors.
+ * @example
+ *   validateFooter(':beetle: bug/fix(login) fix login', 'fix login');
+ */
 function validateFooter(message, bodyContent) {
-    // remove first line and remove bodyContent
+    // Remove first line and remove bodyContent
     const footer = message
         .substring(message.indexOf('\n') + 1)
         .replace(bodyContent, '')
@@ -9198,10 +9362,10 @@ function validateFooter(message, bodyContent) {
         .filter((line) => line.length > 0)
         .join('\n')
         .trim();
-    // return when no footer
+    // Return when no footer
     if (!footer || !message.includes('\n'))
         return [];
-    // check the lines of the footer
+    // Check the lines of the footer
     for (const line of footer.split('\n')) {
         if (!allowedFooterPrefixes.some((prefix) => line.toLowerCase().trim().startsWith(prefix))) {
             return [
@@ -9214,29 +9378,55 @@ function validateFooter(message, bodyContent) {
     }
     return [];
 }
-// eslint-disable-next-line max-lines-per-function
+/**
+ * Validates a commit message.
+ *
+ * @param message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateCommitMessage(':beetle: bug/fix(login) fix login');
+ */
+function findMessageErrors(message) {
+    const errors = [];
+    const parsed = (0, parseMessage_1.parseMessage)(message);
+    errors.push(...validateCategory(message));
+    if (errors.length > 0)
+        return { stoppedEarly: true, errors };
+    errors.push(...validateEmoji(message));
+    errors.push(...new ScopeValidator_1.ScopeValidator(parsed.scope).errors);
+    errors.push(...new SubjectValidator_1.SubjectValidator({ subject: parsed.subject, maxLength: 48 }).errors);
+    if (parsed.messageBody) {
+        errors.push(...new BodyValidator_1.BodyValidator(parsed.messageBody).errors);
+    }
+    for (const author of parsed.coAuthors) {
+        errors.push(...new AuthorsValidator_1.AuthorsValidator(author).errors);
+    }
+    errors.push(...validateFooter(message, parsed.messageBody));
+    return {
+        stoppedEarly: false,
+        errors,
+    };
+}
+/**
+ * Validates a commit message.
+ *
+ * @param inputs - The inputs to validate.
+ * @param inputs.message - The message to validate.
+ * @returns The validation errors.
+ * @example
+ *   validateMessage(':beetle: bug/fix(login) fix login');
+ */
 function validateMessage(inputs) {
     const errors = [];
     if (inputs.message) {
         if (inputs.message.toLowerCase().startsWith('merge')) {
-            // skipping validation for merge commits
+            // Skipping validation for merge commits
             return { valid: true, errors };
         }
-        const parsed = (0, parseMessage_1.parseMessage)(inputs.message);
-        errors.push(...validateCategory(inputs.message));
-        if (errors.length > 0)
+        const { stoppedEarly, errors: messageErrors } = findMessageErrors(inputs.message);
+        errors.push(...messageErrors);
+        if (stoppedEarly)
             return { valid: false, errors };
-        errors.push(...validateEmoji(inputs.message));
-        errors.push(...new ScopeValidator_1.ScopeValidator(parsed.scope).errors);
-        errors.push(...new SubjectValidator_1.SubjectValidator({ subject: parsed.subject, maxLength: 48 })
-            .errors);
-        if (parsed.messageBody) {
-            errors.push(...new BodyValidator_1.BodyValidator(parsed.messageBody).errors);
-        }
-        for (const author of parsed.coAuthors) {
-            errors.push(...new AuthorsValidator_1.AuthorsValidator(author).errors);
-        }
-        errors.push(...validateFooter(inputs.message, parsed.messageBody));
     }
     else {
         errors.push(new ValidationError_1.ValidationError({
@@ -9256,25 +9446,48 @@ exports.validateMessage = validateMessage;
 
 "use strict";
 
+/**
+ * @file Contains functions to validate authors input from the user.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthorsValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/** Validator for author field input. */
 class AuthorsValidator extends Validator_1.Validator {
+    /**
+     * Normalizes the input to make it easier to validate.
+     *
+     * @returns The normalized input.
+     * @example
+     *   const validator = new AuthorsValidator('Luca Silverentand <luca@onezero.company>');
+     *   const normalized = validator.normalized;
+     */
     get normalized() {
         return this.content
             .split(',')
             .map((line) => line.trim())
             .join(', ');
     }
+    /**
+     * Outputs a list of errors for the input.
+     *
+     * @returns The errors found in the input.
+     * @example
+     *   const validator = new AuthorsValidator('Luca Silverentand <luca@onezero.company>');
+     *   const errors = validator.errors;
+     */
     get errors() {
-        // allow empty field
+        // Allow empty field
         if (!this.normalized)
             return [];
         const errors = [];
         const lines = this.normalized.split(',').map((line) => line.trim());
         for (const line of lines) {
-            // regex for format: John Doe <john.doe@example.com>
+            // Regex for format: John Doe <john.doe@example.com>
             const regex = 
             // eslint-disable-next-line no-control-regex
             /^(?:[^<]+) <(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])>$/u;
@@ -9288,6 +9501,14 @@ class AuthorsValidator extends Validator_1.Validator {
         }
         return errors;
     }
+    /**
+     * Parses the input into a list of authors.
+     *
+     * @returns The list of authors.
+     * @example
+     *   const validator = new AuthorsValidator('Luca Silverentand');
+     *   const authors = validator.authors;
+     */
     get parsed() {
         return this.normalized
             .split(',')
@@ -9305,35 +9526,58 @@ exports.AuthorsValidator = AuthorsValidator;
 
 "use strict";
 
+/**
+ * @file Contains functions to validate the commit body.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BodyValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/** Validator for body input. */
 class BodyValidator extends Validator_1.Validator {
+    /**
+     * Normalized value of the body for easier validation.
+     *
+     * @returns The normalized value of the body.
+     * @example
+     *   const validator = new BodyValidator('This is a body.');
+     *   return validator.normalizedValue;
+     */
     get normalized() {
         return (this.content
-            // remove leading and trailing whitespace
+            // Remove leading and trailing whitespace
             .trim()
-            // remove lines that start with a #
+            // Remove lines that start with a #
             .split('\n')
-            // trim the line and remove double whitespaces between words
+            // Trim the line and remove double whitespaces between words
             .map((line) => line.trim().replace(/\s+/gu, ' '))
-            // remove comments
+            // Remove comments
             .filter((line) => !line.startsWith('#'))
             .join('\n')
             .replaceAll(/\n\n+/gu, '\n\n')
             .trim());
     }
+    /**
+     * Output the errors for the body.
+     *
+     * @returns The errors for the body.
+     * @example
+     *   const validator = new BodyValidator('This is a body.');
+     *   return validator.errors;
+     */
     get errors() {
         const errors = [];
-        // body must begin with a capital letter
+        // Body must begin with a capital letter
         if (!/^[A-Z]/u.test(this.normalized)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'body must begin with a capital letter',
             }));
         }
-        // body must end with a period, question mark, or exclamation mark
+        // Body must end with a period, question mark, or exclamation mark
         if (!/[.?!]$/u.test(this.normalized)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
@@ -9353,11 +9597,30 @@ exports.BodyValidator = BodyValidator;
 
 "use strict";
 
+/**
+ * @file Contains the validator.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.IssuesValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/**
+ * Validator for the issues field input.
+ *
+ * @returns A list of validation errors.
+ * @example
+ *   const validator = new IssuesValidator('foo');
+ *   return validator.errors; // []
+ */
 class IssuesValidator extends Validator_1.Validator {
+    /**
+     * Normalizes the input for easier validation.
+     *
+     * @returns The normalized input.
+     */
     get normalized() {
         return this.content
             .split(',')
@@ -9365,19 +9628,35 @@ class IssuesValidator extends Validator_1.Validator {
             .join(',')
             .trim();
     }
+    /**
+     * Outputs a parsed version of the input.
+     *
+     * @returns The parsed input.
+     * @example
+     *   const validator = new IssuesValidator('foo');
+     *   return validator.parsed; // ['foo']
+     */
     get parsed() {
         const issues = this.content.split(',').map((line) => line.trim());
         return issues
             .map((issue) => parseInt(issue, 10))
             .filter((issue) => !isNaN(issue));
     }
+    /**
+     * Outputs a list of validation errors (if any).
+     *
+     * @returns The list of validation errors.
+     * @example
+     *   const validator = new IssuesValidator('foo');
+     *   return validator.errors; // []
+     */
     get errors() {
         const errors = [];
         if (!this.content)
             return [];
         const lines = this.content.split(',').map((line) => line.trim());
         for (const line of lines) {
-            // regex for format: '11, 12, 13' or '11,12,13'
+            // Regex for format: '11, 12, 13' or '11,12,13'
             const regex = /^\d+(?:,\d+)*$/u;
             const match = regex.exec(line);
             if (!match) {
@@ -9400,62 +9679,109 @@ exports.IssuesValidator = IssuesValidator;
 
 "use strict";
 
+/**
+ * @file Contains a validator for the scope of a commit message.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ScopeValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/** Validator for the scope in a commit message. */
 class ScopeValidator extends Validator_1.Validator {
+    /**
+     * Normalizes the input for easier validation.
+     *
+     * @returns The normalized input.
+     * @example
+     *   const validator = new ScopeValidator('This is a scope.');
+     *   return validator.normalized;
+     */
     get normalized() {
         return (this.content
-            // trim the content
+            // Trim the content
             .trim()
-            // convert all to lowercase
+            // Convert all to lowercase
             .toLowerCase()
-            // remove whitespaces
+            // Remove whitespaces
             .replace(/\s/gu, ''));
     }
-    // eslint-disable-next-line max-lines-per-function
+    /**
+     * Outputs any validation errors for the scope.
+     *
+     * @returns The validation errors for the scope.
+     * @example
+     *   const validator = new ScopeValidator('This is a scope.');
+     *   return validator.errors;
+     */
     get errors() {
         const errors = [];
-        const minScopeLength = 3;
-        const maxScopeLength = 20;
-        // scope must be longer than 3 characters
-        if (this.content.length < minScopeLength) {
-            errors.push(new ValidationError_1.ValidationError({
-                level: ValidationError_1.ValidationErrorLevel.fatal,
-                message: 'scope must be at least 3 characters',
-            }));
-        }
-        // scope must be shorter than 20 characters
-        if (this.content.length > maxScopeLength) {
-            errors.push(new ValidationError_1.ValidationError({
-                level: ValidationError_1.ValidationErrorLevel.fatal,
-                message: 'scope must be at most 20 characters',
-            }));
-        }
-        // scope must be all lowercase
+        errors.push(...this.checkScopeLength());
+        errors.push(...this.checkInvalidCharacters());
+        // Scope must be all lowercase
         if (this.content !== this.content.toLowerCase()) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'scope must be all lowercase',
             }));
         }
-        // scope cannot contain whitespace
+        return errors;
+    }
+    /**
+     * Validates the scope length.
+     * The scope must be between 3 and 20 characters long.
+     *
+     * @returns The validation errors.
+     * @example this.checkScopeLength();
+     */
+    checkScopeLength() {
+        const errors = [];
+        const minScopeLength = 3;
+        const maxScopeLength = 20;
+        // Scope must be longer than 3 characters
+        if (this.content.length < minScopeLength) {
+            errors.push(new ValidationError_1.ValidationError({
+                level: ValidationError_1.ValidationErrorLevel.fatal,
+                message: 'scope must be at least 3 characters',
+            }));
+        }
+        // Scope must be shorter than 20 characters
+        if (this.content.length > maxScopeLength) {
+            errors.push(new ValidationError_1.ValidationError({
+                level: ValidationError_1.ValidationErrorLevel.fatal,
+                message: 'scope must be at most 20 characters',
+            }));
+        }
+        return errors;
+    }
+    /**
+     * Checks for invalid characters.
+     *
+     * @returns The validation errors.
+     * @example
+     *   const validator = new ScopeValidator('This is a scope.');
+     *   return validator.checkInvalidCharacters();
+     */
+    checkInvalidCharacters() {
+        const errors = [];
+        // Scope cannot contain whitespace
         if (/\s/u.test(this.content)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'scope cannot contain whitespace',
             }));
         }
-        // scope cannot contain numbers
+        // Scope cannot contain numbers
         if (/\d/u.test(this.content)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'scope cannot contain numbers',
             }));
-            // scope can only contain lowercase letters, forward slashes, dashes
+            // Scope can only contain lowercase letters, forward slashes, dashes
         }
-        // scope must not contain non alphanumeric characters
+        // Scope must not contain non alphanumeric characters
         if (/[^a-z0-9/-]/u.test(this.normalized)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
@@ -9475,48 +9801,78 @@ exports.ScopeValidator = ScopeValidator;
 
 "use strict";
 
+/**
+ * @file Contains the validator for the subject field.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SubjectValidator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
 const Validator_1 = __nccwpck_require__(5282);
+/** Validator for the subject input field. */
 class SubjectValidator extends Validator_1.Validator {
+    /**
+     * Creates a new subject validator.
+     *
+     * @param input - The input to validate.
+     * @param input.subject - The subject to validate.
+     * @param input.maxLength - The maximum length of the subject.
+     * @example
+     *   const validator = new SubjectValidator('foo');
+     *   return validator.errors; // []
+     */
     constructor(input) {
         super(input.subject);
         this.maxLength = input.maxLength;
     }
+    /**
+     * Outputs a normalized version of the input.
+     *
+     * @returns The normalized input.
+     */
     get normalized() {
         return (this.content
-            // remove leading and trailing whitespace
+            // Remove leading and trailing whitespace
             .trim()
-            // convert to lowercase
+            // Convert to lowercase
             .toLowerCase()
-            // remove dot at the end
+            // Remove dot at the end
             .replace(/\.$/u, '')
-            // split into words
+            // Split into words
             .split(' ')
-            // remove empty words
+            // Remove empty words
             .filter((word) => word)
-            // join words with a space
+            // Join words with a space
             .join(' '));
     }
+    /**
+     * Outputs a list of validation errors (if any).
+     *
+     * @returns The list of validation errors.
+     * @example
+     *   const validator = new SubjectValidator('foo');
+     *   return validator.errors; // []
+     */
     get errors() {
         const errors = [];
         this.checkLength(errors);
-        // subject must be all lowercase
+        // Subject must be all lowercase
         if (this.content !== this.content.toLowerCase()) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'subject must be all lowercase',
             }));
         }
-        // subject must not contain parantheses or colons
+        // Subject must not contain parantheses or colons
         if (/[():]/u.test(this.content)) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: 'subject must not contain parantheses or colons',
             }));
         }
-        // subject must not end with a dot
+        // Subject must not end with a dot
         if (this.content.endsWith('.')) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
@@ -9525,16 +9881,24 @@ class SubjectValidator extends Validator_1.Validator {
         }
         return errors;
     }
+    /**
+     * Checks the length of the subject.
+     *
+     * @param errors - The list of errors to add to.
+     * @example
+     *   const errors: ValidationError[] = [];
+     *   const validator = new SubjectValidator('foo');
+     */
     checkLength(errors) {
         const minSubjectLength = 10;
-        // subject must be longer than 10 characters
+        // Subject must be longer than 10 characters
         if (this.content.length < minSubjectLength) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
                 message: `subject must be at least ${minSubjectLength} characters`,
             }));
         }
-        // subject must be shorter than 48 characters
+        // Subject must be shorter than 48 characters
         if (this.content.length > this.maxLength) {
             errors.push(new ValidationError_1.ValidationError({
                 level: ValidationError_1.ValidationErrorLevel.fatal,
@@ -9553,19 +9917,52 @@ exports.SubjectValidator = SubjectValidator;
 
 "use strict";
 
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ValidationError = exports.ValidationErrorLevel = void 0;
+/** Level of validation error. */
 var ValidationErrorLevel;
 (function (ValidationErrorLevel) {
+    /** Fatal, no recovery. */
     ValidationErrorLevel["fatal"] = "fatal";
+    /** Warning, can proceed but not without explicit confirmation. */
     ValidationErrorLevel["warning"] = "warning";
+    /** Info, just informing about operations. */
     ValidationErrorLevel["info"] = "info";
 })(ValidationErrorLevel = exports.ValidationErrorLevel || (exports.ValidationErrorLevel = {}));
+/** An error occurred durign validation. */
 class ValidationError {
+    /**
+     * Creates a new instance of a validation error.
+     *
+     * @param input - The input to validate.
+     * @param input.level - The level of the error.
+     * @param input.message - The message to display.
+     * @example
+     *   new ValidationError({
+     *     level: ValidationErrorLevel.fatal,
+     *     message: 'This is a fatal error',
+     *   });
+     */
     constructor(input) {
         this.level = input.level;
         this.message = input.message.trim();
     }
+    /**
+     * Outputs the error as a string.
+     *
+     * @returns The error as a string.
+     * @example
+     *   const error = new ValidationError({
+     *     level: ValidationErrorLevel.fatal,
+     *     message: 'This is a fatal error',
+     *   });
+     */
     get displayString() {
         return `❗️ ${this.level} - ${this.message}`;
     }
@@ -9580,13 +9977,36 @@ exports.ValidationError = ValidationError;
 
 "use strict";
 
+/**
+ * @file Contains the definition of a universal validator.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Validator = void 0;
 const ValidationError_1 = __nccwpck_require__(9017);
+/** Definition of a common validator implementation. */
 class Validator {
+    /**
+     * Create a new validator with the given content.
+     *
+     * @param content - The content that needs to be validated.
+     * @example
+     *   const validator = new Validator('foo');
+     *   validator.valid; // true
+     */
     constructor(content) {
         this.content = content;
     }
+    /**
+     * Outputs a list of validation errors.
+     *
+     * @returns A list of validation errors.
+     * @example
+     *   const validator = new Validator('foo');
+     *   return validator.errors; // []
+     */
     get errors() {
         const errors = [];
         if (this.content.length === 0) {
@@ -9597,6 +10017,11 @@ class Validator {
         }
         return errors;
     }
+    /**
+     * Whether the output is valid.
+     *
+     * @returns Whether the output is valid.
+     */
     get valid() {
         const { errors } = this;
         return errors.length > 0
@@ -9605,9 +10030,25 @@ class Validator {
                 .join(', ')
             : true;
     }
+    /**
+     * Normalizes the input for easier validation.
+     *
+     * @returns The normalized input.
+     * @example
+     *   const validator = new Validator('foo');
+     *   return validator.normalized; // 'foo'
+     */
     get normalized() {
         return this.content.trim();
     }
+    /**
+     * Outputs the parsed content.
+     *
+     * @returns The parsed content.
+     * @example
+     *   const validator = new Validator('foo');
+     *   return validator.parsed; // 'foo'
+     */
     get parsed() {
         return this.normalized;
     }
@@ -9617,43 +10058,94 @@ exports.Validator = Validator;
 
 /***/ }),
 
+/***/ 268:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/**
+ * @file Version Track definition.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.releaseTrackOrder = exports.ReleaseTrack = void 0;
+/** Tracks to create releases on. */
+var ReleaseTrack;
+(function (ReleaseTrack) {
+    /** Meant for publishing to end-users. */
+    ReleaseTrack["stable"] = "stable";
+    /**
+     * Meant for distribution to users that signed-up for
+     * testing new features, while they are still unstable.
+     */
+    ReleaseTrack["beta"] = "beta";
+    /** Meant for distribution within the development team, and select users. */
+    ReleaseTrack["alpha"] = "alpha";
+})(ReleaseTrack = exports.ReleaseTrack || (exports.ReleaseTrack = {}));
+exports.releaseTrackOrder = [
+    ReleaseTrack.alpha,
+    ReleaseTrack.beta,
+    ReleaseTrack.stable,
+];
+//# sourceMappingURL=ReleaseTrack.js.map
+
+/***/ }),
+
 /***/ 8691:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
+/**
+ * @file Definition of the Version class.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Version = void 0;
-const VersionTrack_1 = __nccwpck_require__(5352);
+const ReleaseTrack_1 = __nccwpck_require__(268);
 const VersionBump_1 = __nccwpck_require__(4033);
+/** An object containing details about a version number. */
 class Version {
+    /**
+     * Create a new version.
+     *
+     * @param inputs - The inputs to use.
+     * @param inputs.major - The major digit of the version.
+     * @param inputs.minor - The minor digit of the version.
+     * @param inputs.patch - The patch digit of the version.
+     * @param inputs.track - The track of the version.
+     * @param inputs.template - The template used to generate the displayString.
+     * @param inputs.includeTrack - Whether to include the track in the displayString.
+     * @param inputs.includeRelease - Whether to include the stable track in the displayString.
+     * @example
+     *   const version = new Version({
+     *     major: 1,
+     *     minor: 2,
+     *     patch: 3,
+     *     track: ReleaseTrack.stable,
+     *     template: '{major}.{minor}.{patch}-{track}',
+     *     includeTrack: true,
+     *     includeRelease: true,
+     *   });
+     */
     constructor(inputs) {
         this.major = inputs?.major ?? 0;
         this.minor = inputs?.minor ?? 0;
         this.patch = inputs?.patch ?? 1;
         this.template = inputs?.template ?? '{major}.{minor}.{patch}-{track}';
     }
-    displayString(inputs = {
-        includeTrack: false,
-        includeRelease: false,
-        track: VersionTrack_1.VersionTrack.live,
-    }) {
-        let display = this.template;
-        display = display.replace(/\{major\}/gu, this.major.toString());
-        display = display.replace(/\{minor\}/gu, this.minor.toString());
-        display = display.replace(/\{patch\}/gu, this.patch.toString());
-        if ((inputs.track === VersionTrack_1.VersionTrack.live && !inputs.includeRelease) ||
-            !inputs.includeTrack) {
-            display = display.replace(/\{track\}/gu, '');
-        }
-        else {
-            display = display.replace(/\{track\}/gu, inputs.track.toString());
-        }
-        // remove all non-alphanumeric characters leading and trailing
-        display = display.replace(/[^a-zA-Z0-9]*$/gu, '');
-        display = display.replace(/^[^a-zA-Z0-9]*/gu, '');
-        return display;
-    }
+    /**
+     * Output a JSON representation of this version.
+     *
+     * @returns A JSON representation of this version.
+     * @example
+     *   const json = version.toJson();
+     *   // { major: 1, minor: 2, patch: 3, template: '{major}.{minor}.{patch}-{track}' }
+     */
     get json() {
         return {
             major: this.major,
@@ -9662,6 +10154,13 @@ class Version {
             template: this.template,
         };
     }
+    /**
+     * Recreate a version object from a JSON representation.
+     *
+     * @param json - The JSON representation of the version.
+     * @returns A new version object.
+     * @example const version = Version.fromJson(json);
+     */
     static fromJson(json) {
         return new Version({
             major: json.major,
@@ -9670,10 +10169,18 @@ class Version {
             template: json.template,
         });
     }
+    /**
+     * Parse a string into a version.
+     *
+     * @param string - The string to parse.
+     * @returns The parsed version.
+     * @example const version = Version.parse('1.2.3');
+     */
     static fromString(string) {
-        // remove all non numbers and non dots
-        string = string.replace(/[^0-9.]/gu, '');
-        const parts = string.split('.');
+        // Remove all non numbers and non dots
+        const sanitizedString = string.replace(/[^0-9.]/gu, '');
+        // Split the string into parts
+        const parts = sanitizedString.split('.');
         const major = parseInt(parts[0] ?? '', 10);
         const minor = parseInt(parts[1] ?? '', 10);
         const patch = parseInt(parts[2] ?? '', 10);
@@ -9683,20 +10190,63 @@ class Version {
             patch,
         });
     }
+    /**
+     * String representation of the version.
+     *
+     * @param inputs - The inputs to use.
+     * @param inputs.includeTrack - Whether to include the track in the string.
+     * @param inputs.includeRelease - Whether to include the stable track in the string.
+     * @param inputs.track - The track to use.
+     * @returns The string representation of the version.
+     * @example const version = new Version().displayString();
+     */
+    displayString(inputs = {
+        includeTrack: false,
+        includeRelease: false,
+        track: ReleaseTrack_1.ReleaseTrack.stable,
+    }) {
+        let display = this.template;
+        display = display.replace(/\{major\}/gu, this.major.toString());
+        display = display.replace(/\{minor\}/gu, this.minor.toString());
+        display = display.replace(/\{patch\}/gu, this.patch.toString());
+        if ((inputs.track === ReleaseTrack_1.ReleaseTrack.stable && !inputs.includeRelease) ||
+            !inputs.includeTrack) {
+            display = display.replace(/\{track\}/gu, '');
+        }
+        else {
+            display = display.replace(/\{track\}/gu, inputs.track.toString());
+        }
+        // Remove all non-alphanumeric characters leading and trailing
+        display = display.replace(/[^a-zA-Z0-9]*$/gu, '');
+        display = display.replace(/^[^a-zA-Z0-9]*/gu, '');
+        return display;
+    }
+    /**
+     * Bump the version by the specified bump type.
+     *
+     * @param bump - The bump type to apply.
+     * @returns The new version.
+     * @example
+     *   const bumpedVersion = new Version().bump(VersionBump.major);
+     */
     bump(bump) {
         switch (bump) {
+            /** Bump the major digit 1 and set the others to 0. */
             case VersionBump_1.VersionBump.major:
                 this.major += 1;
                 this.minor = 0;
                 this.patch = 0;
                 break;
+            /** Bump the minor digit by 1 and set the path digit to 0. */
             case VersionBump_1.VersionBump.minor:
                 this.minor += 1;
                 this.patch = 0;
                 break;
+            /** Bump the patch digit by 1 and leave the others as they were. */
             case VersionBump_1.VersionBump.patch:
                 this.patch += 1;
                 break;
+            /** In any other case do not bump any digits. */
             default:
                 break;
         }
@@ -9704,6 +10254,16 @@ class Version {
     }
 }
 exports.Version = Version;
+/**
+ * Function to provide to the JavaScript sort function to sort an array of versions.
+ *
+ * @param lhs - The left hand side version.
+ * @param rhs - The right hand side version.
+ * @returns The result of the comparison.
+ * @example
+ *   const versions = [new Version(), new Version()];
+ *   const sorted = versions.sort(Version.sort);
+ */
 Version.sort = (lhs, rhs) => {
     if (lhs.major > rhs.major) {
         return 1;
@@ -9734,15 +10294,27 @@ Version.sort = (lhs, rhs) => {
 
 "use strict";
 
+/**
+ * @file Defines the VersionBump enum.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.versionBumpOrder = exports.VersionBump = void 0;
+/** Kinds of bumps that can be done to a version number. */
 var VersionBump;
 (function (VersionBump) {
+    /** No bump to any digit. */
     VersionBump["none"] = "none";
+    /** Bumps patch (third) digit (0.0.^). */
     VersionBump["patch"] = "patch";
+    /** Bumps minor (second) digit (0.^.0). */
     VersionBump["minor"] = "minor";
+    /** Bumps major (first) digit (^.0.0). */
     VersionBump["major"] = "major";
 })(VersionBump = exports.VersionBump || (exports.VersionBump = {}));
+/** Order of the version bumps, in order least impact to most impact. */
 exports.versionBumpOrder = [
     VersionBump.none,
     VersionBump.patch,
@@ -9750,28 +10322,6 @@ exports.versionBumpOrder = [
     VersionBump.major,
 ];
 //# sourceMappingURL=VersionBump.js.map
-
-/***/ }),
-
-/***/ 5352:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.versionTrackOrder = exports.VersionTrack = void 0;
-var VersionTrack;
-(function (VersionTrack) {
-    VersionTrack["live"] = "live";
-    VersionTrack["beta"] = "beta";
-    VersionTrack["alpha"] = "alpha";
-})(VersionTrack = exports.VersionTrack || (exports.VersionTrack = {}));
-exports.versionTrackOrder = [
-    VersionTrack.alpha,
-    VersionTrack.beta,
-    VersionTrack.live,
-];
-//# sourceMappingURL=VersionTrack.js.map
 
 /***/ }),
 
@@ -18265,26 +18815,58 @@ const external_process_namespaceObject = require("process");
 // EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(7117);
 ;// CONCATENATED MODULE: ./src/lib/definitions/Action.ts
+/**
+ * @file Contains a list of actions that can be performed by 'release-issues'.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+/** Type of action to execute based on the event context. */
 var Action;
 (function (Action) {
+    /** A new issue should be created. */
     Action["create"] = "create";
+    /** An existing issue should be updated. */
     Action["update"] = "update";
+    /** The action should not do anything. */
     Action["stop"] = "stop";
 })(Action || (Action = {}));
 
-;// CONCATENATED MODULE: ./src/defaults.ts
-const defaults_jsonIndent = 2;
+;// CONCATENATED MODULE: ./src/constants.ts
+/**
+ * @file Global constants to be used throughout the project.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+const constants_jsonIndent = 2;
 
 ;// CONCATENATED MODULE: ./src/utils/getContentBetweenTags.ts
-function getContentBetweenTags(before, after) {
-    return (content) => {
-        const beforeIndex = content.indexOf(before);
-        const afterIndex = content.indexOf(after);
-        if (beforeIndex === -1 || afterIndex === -1) {
-            return '';
-        }
-        return content.substring(beforeIndex + before.length, afterIndex);
-    };
+/**
+ * @file Functions for getting content between a beginning and ending tag.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand
+ */
+/**
+ * Fetches a string between two tags in a string.
+ *
+ * @param before - The tag before the content.
+ * @param after - The tag after the contents.
+ * @param content - The string to search.
+ * @returns The content between the tags.
+ * @example
+ *   const content = "This is an example. <!-- before -->Hello world!<!-- after -->";
+ *   // Returns "Hello world!"
+ *   const result = getContentBetweenTags("<!-- before -->", "<!-- after -->", content);
+ */
+function getContentBetweenTags(before, after, content) {
+    const beforeIndex = content.indexOf(before);
+    const afterIndex = content.indexOf(after);
+    if (beforeIndex === -1 || afterIndex === -1) {
+        return '';
+    }
+    return content.substring(beforeIndex + before.length, afterIndex);
 }
 
 // EXTERNAL MODULE: ../../packages/commit/dist/index.js
@@ -18292,26 +18874,45 @@ var dist = __nccwpck_require__(4670);
 // EXTERNAL MODULE: ../../packages/commit/dist/lib/versions/Version.js
 var Version = __nccwpck_require__(8691);
 ;// CONCATENATED MODULE: ./src/lib/items/ItemStatus.ts
-// status of an item in a release
+/**
+ * @file Contains the definition of the item status.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+/** Status of an item in a release issue. */
 var ItemStatus;
 (function (ItemStatus) {
-    // the item is successfully completed
+    /** The item is successfully completed. */
     ItemStatus["succeeded"] = "succeeded";
-    // the item is waiting for user action
+    /** The item is waiting for user action. */
     ItemStatus["awaitingItem"] = "awaiting-item";
-    // the item has failed
+    /** The item has failed. */
     ItemStatus["failed"] = "failed";
-    // the item is waiting on another item to complete
+    /** The item is waiting on another item to complete. */
     ItemStatus["pending"] = "pending";
-    // the item is in progress
+    /** The item is in progress. */
     ItemStatus["inProgress"] = "in-progress";
-    // the item was skipped
+    /** The item was skipped. */
     ItemStatus["skipped"] = "skipped";
-    // the status of the item is unknown
+    /** The status of the item is unknown. */
     ItemStatus["unknown"] = "unknown";
 })(ItemStatus || (ItemStatus = {}));
 
 ;// CONCATENATED MODULE: ./src/utils/titlecase.ts
+/**
+ * @file Utility function to convert a string to title case.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+/**
+ * Converts a string to title case.
+ *
+ * @param str - The string to titlecase.
+ * @returns The titlecased string.
+ * @example toTitleCase('foo bar') // Foo Bar
+ */
 function toTitleCase(str) {
     return str.replace(/\w\S*/gu, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
@@ -18319,6 +18920,12 @@ function toTitleCase(str) {
 ;// CONCATENATED MODULE: external "crypto"
 const external_crypto_namespaceObject = require("crypto");
 ;// CONCATENATED MODULE: ./src/lib/items/icons.ts
+/**
+ * @file List of emojis to use for the release action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 const icons = {
     [ItemStatus.succeeded]: { icon: '✅', code: 'white_check_mark' },
@@ -18331,16 +18938,30 @@ const icons = {
 };
 
 ;// CONCATENATED MODULE: ./src/lib/items/ItemType.ts
+/**
+ * @file Contains types of items that can be used in the release action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+/** Types of items there are. */
 var ItemType;
 (function (ItemType) {
+    /** Changelog approval, whether the changelog is ready to be released. */
     ItemType["changelogApproved"] = "changelogApproved";
+    /** Release clearance, whether the release is ready to be created. */
     ItemType["releaseClearance"] = "releaseClearance";
+    /** Release creation, whether the release has been created. */
     ItemType["releaseCreation"] = "releaseCreation";
-    ItemType["coverage"] = "coverage";
-    ItemType["tests"] = "tests";
 })(ItemType || (ItemType = {}));
 
 ;// CONCATENATED MODULE: ./src/lib/items/labels.ts
+/**
+ * @file Contains a list of labels to be used in the release action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 const labels = {
@@ -18371,32 +18992,28 @@ const labels = {
         [ItemStatus.skipped]: 'Release creation was skipped',
         [ItemStatus.unknown]: 'Release creation status unknown',
     },
-    [ItemType.coverage]: {
-        [ItemStatus.succeeded]: 'Coverage is sufficient',
-        [ItemStatus.failed]: 'Coverage is insufficient',
-        [ItemStatus.pending]: 'Waiting for coverage',
-        [ItemStatus.awaitingItem]: 'Waiting for tests to pass',
-        [ItemStatus.inProgress]: 'Coverage in progress',
-        [ItemStatus.skipped]: 'Coverage was skipped',
-        [ItemStatus.unknown]: 'Coverage status unknown',
-    },
-    [ItemType.tests]: {
-        [ItemStatus.succeeded]: 'Tests have all passed',
-        [ItemStatus.failed]: 'Tests have failed',
-        [ItemStatus.pending]: 'Waiting for tests',
-        [ItemStatus.awaitingItem]: 'Waiting for another checklist item to complete',
-        [ItemStatus.inProgress]: 'Tests in progress',
-        [ItemStatus.skipped]: 'Tests were skipped',
-        [ItemStatus.unknown]: 'Tests status unknown',
-    },
 };
 
 // EXTERNAL MODULE: ../../node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(4005);
 ;// CONCATENATED MODULE: ./src/lib/items/wasItemChecked.ts
+/**
+ * @file Contains the function to check if an item was checked.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
+/**
+ * Checks if the item was already checked in a previous run.
+ *
+ * @param globals - The global variables.
+ * @param item - The item to check.
+ * @returns Whether the item was already checked.
+ * @example wasItemChecked(globals, item);
+ */
 function wasItemChecked(globals, item) {
     if (github.context.eventName === 'issues') {
         const issueEvent = github.context.payload;
@@ -18414,15 +19031,29 @@ function wasItemChecked(globals, item) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateChangelogApproval.ts
+/**
+ * @file Contains functions for updating changelog approval status items.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
+/**
+ * Update the changelog approval item.
+ *
+ * @param globals - The globals.
+ * @param item - The item.
+ * @returns The updated item status.
+ * @example updateChangelogApproval(globals, item);
+ */
 async function updateChangelogApproval(globals, item) {
     const { track } = item.metadata;
     if (track) {
         const trackSettings = globals.settings[track];
         if (!trackSettings.release.manual)
             return ItemStatus.skipped;
-        // either changelog was already approved or the line has a checkmark in it
+        // Either changelog was already approved or the line has a checkmark in it
         if (item.status === ItemStatus.succeeded || wasItemChecked(globals, item)) {
             return ItemStatus.succeeded;
         }
@@ -18432,48 +19063,86 @@ async function updateChangelogApproval(globals, item) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseClearance.ts
+/**
+ * @file Contains functions to update the status of a release clearance item.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
+/**
+ * Check if the items the release clearance depends on are all done.
+ *
+ * @param globals - The global variables.
+ * @param item - The item to check.
+ * @param track - The track to check.
+ * @example dependenciesDone(globals, item, 'major');
+ */
 async function dependenciesDone(globals, item, track) {
-    // only continue if the track is specified in the item metadata
+    // Only continue if the track is specified in the item metadata
     const dependedItems = item.metadata.dependsOn
         .map((dependsOn) => globals.context.issue.itemForType(dependsOn, track))
         .filter((dependedItem) => dependedItem !== null);
-    // make sure the depended items are updated
+    // Make sure the depended items are updated
     const updates = dependedItems.map(async (dependedItem) => dependedItem.update(globals));
     await Promise.all(updates);
-    // depending on other items, they should either be succeeded or skipped
+    // Depending on other items, they should either be succeeded or skipped
     const depenciesSucceeded = dependedItems.every((dependedItem) => dependedItem.status === ItemStatus.succeeded ||
         dependedItem.status === ItemStatus.skipped);
     return depenciesSucceeded;
 }
+/**
+ * Update the status of a release clearance item.
+ *
+ * @param globals - The global variables.
+ * @param item - The item to update.
+ * @returns The updated item status.
+ * @example updateReleaseClearance(globals, item);
+ */
 async function updateReleaseClearance(globals, item) {
-    // return status if status type is definitive result
+    // Return status if status type is definitive result
     if (item.status === ItemStatus.succeeded || item.status === ItemStatus.failed)
         return item.status;
     const { track } = item.metadata;
     if (track) {
         if (await dependenciesDone(globals, item, track)) {
             const trackSettings = globals.settings[track];
-            // in case the release is not manual, we don't need to do anything
+            // In case the release is not manual, we don't need to do anything
             if (!trackSettings.release.manual)
                 return ItemStatus.skipped;
             if (wasItemChecked(globals, item)) {
-                // if the item was checked or was previously succeeded, we mark the item as succeeded
+                // If the item was checked or was previously succeeded, we mark the item as succeeded
                 return ItemStatus.succeeded;
             }
-            // in all other cases, we mark the item as pending
+            // In all other cases, we mark the item as pending
             return ItemStatus.pending;
         }
-        // the items we depend on are still pending or failed
+        // The items we depend on are still pending or failed
         return ItemStatus.awaitingItem;
     }
     return ItemStatus.unknown;
 }
 
 ;// CONCATENATED MODULE: ./src/lib/queries/createRelease.ts
+/**
+ * @file Contains functions to create a release.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
+/**
+ * Creates the release json file.
+ *
+ * @param globals - The global variables.
+ * @param track - The track to create the release for.
+ * @param tag - The tag to create the release for.
+ * @returns The release json file.
+ * @example
+ *   const releaseJson = releaseJson(globals, track, tag);
+ */
 function releaseJson(globals, track, tag) {
     return JSON.stringify({
         tag,
@@ -18486,11 +19155,19 @@ function releaseJson(globals, track, tag) {
         publish: false,
     }, null, 0);
 }
+/**
+ * Create a release for the given track.
+ *
+ * @param globals - The global variables.
+ * @param track - The track to create the release for.
+ * @param tag - The tag to create the release for.
+ * @example await createRelease(globals, track, tag);
+ */
 async function apiCall(globals, track, tag) {
     const { data: releaseData } = await globals.octokit.rest.repos.createRelease({
         owner: globals.context.repo.owner,
         repo: globals.context.repo.repo,
-        prerelease: track !== dist/* VersionTrack.live */.Os.live,
+        prerelease: track !== dist/* ReleaseTrack.stable */.A3.stable,
         tag_name: tag,
         target_commitish: globals.context.issue.commitish,
         name: tag,
@@ -18498,7 +19175,7 @@ async function apiCall(globals, track, tag) {
         // eslint-disable-next-line id-denylist
         body: globals.context.issue.changelogs[track],
     });
-    // create an asset with the release json
+    // Create an asset with the release json
     await globals.octokit.rest.repos.uploadReleaseAsset({
         owner: globals.context.repo.owner,
         repo: globals.context.repo.repo,
@@ -18507,7 +19184,7 @@ async function apiCall(globals, track, tag) {
         // eslint-disable-next-line id-denylist
         data: releaseJson(globals, track, tag),
     });
-    // create an asset with the changelog
+    // Create an asset with the changelog
     await globals.octokit.rest.repos.uploadReleaseAsset({
         owner: globals.context.repo.owner,
         repo: globals.context.repo.repo,
@@ -18517,6 +19194,16 @@ async function apiCall(globals, track, tag) {
         data: globals.context.issue.changelogs[track],
     });
 }
+/**
+ * Create a release for the given track.
+ *
+ * @param globals - The global variables.
+ * @param item - The item to create the release for.
+ * @returns The created release.
+ * @example
+ *   const { created } = await createRelease(globals, item);
+ *   // created === true
+ */
 async function createRelease(globals, item) {
     const { track } = item.metadata;
     if (track) {
@@ -18542,6 +19229,12 @@ async function createRelease(globals, item) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/queries/fetchReleases.ts
+/**
+ * @file Contains functions to fetch a list of releases.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 const query = (/* unused pure expression or super */ null && (`
@@ -18558,6 +19251,14 @@ const query = (/* unused pure expression or super */ null && (`
     }
   }
 `));
+/**
+ * Fetches a list of releases.
+ *
+ * @param globals - Global variables.
+ * @returns List of releases.
+ * @example
+ *   const releases = await fetchReleases(globals);
+ */
 async function fetchReleases(globals) {
     const { graphql, context } = globals;
     const result = await graphql(query, {
@@ -18569,6 +19270,12 @@ async function fetchReleases(globals) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/queries/releaseExists.ts
+/**
+ * @file Contains functions that are used to check if a release exists.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 const releaseExists_query = `
@@ -18582,6 +19289,15 @@ const releaseExists_query = `
     }
   }
 `;
+/**
+ * Checks if a release exists.
+ *
+ * @param globals - Global variables.
+ * @param item - Item to check.
+ * @returns Whether the release exists.
+ * @example
+ *   const releaseExists = await releaseExists(globals, item);
+ */
 async function releaseExists(globals, item) {
     const { track } = item.metadata;
     if (track) {
@@ -18596,7 +19312,7 @@ async function releaseExists(globals, item) {
             repo: context.repo.repo,
             tag,
         });
-        (0,core.debug)(JSON.stringify(result, null, defaults_jsonIndent));
+        (0,core.debug)(JSON.stringify(result, null, constants_jsonIndent));
         const release = result.repository?.release;
         if (release) {
             const nameMatch = release.name === tag;
@@ -18609,13 +19325,33 @@ async function releaseExists(globals, item) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/queries/index.ts
+/**
+ * @file Contains a collection of queries that are used to fetch data from the GitHub GraphQL API.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/updateReleaseCreation.ts
+/**
+ * @file Contains functions to update release creation items.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
+/**
+ * Updates the status of a release creation item.
+ *
+ * @param globals - Global variables.
+ * @param item - Item to update.
+ * @example
+ *   await updateReleaseCreation(globals, item);
+ */
 async function updateReleaseCreation(globals, item) {
     if (item.status === ItemStatus.succeeded)
         return item.status;
@@ -18628,10 +19364,10 @@ async function updateReleaseCreation(globals, item) {
             return ItemStatus.awaitingItem;
         }
     }
-    // check if the version exists with an api request
+    // Check if the version exists with an api request
     if (await releaseExists(globals, item))
         return ItemStatus.succeeded;
-    // create the release
+    // Create the release
     const { created } = await createRelease(globals, item);
     if (created)
         return ItemStatus.succeeded;
@@ -18639,11 +19375,23 @@ async function updateReleaseCreation(globals, item) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/items/update/index.ts
+/**
+ * @file Index of functions to update items.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
 ;// CONCATENATED MODULE: ./src/lib/items/Item.ts
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
@@ -18651,19 +19399,49 @@ async function updateReleaseCreation(globals, item) {
 
 
 
+/** Item for keeping track of a stage in the release flow. */
 class Item {
+    /** Which type of item this is. */
     type;
+    /** Metadata for this item, containing information needed to update the status. */
     metadata;
+    /** Current status of the item. */
     status = ItemStatus.unknown;
+    /**
+     * Creates a new item.
+     *
+     * @param inputs - The inputs to create the item with.
+     * @param inputs.type - The type of the item.
+     * @param inputs.metadata - The metadata of the item.
+     * @example
+     *   const item = new Item({
+     *     type: ItemType.releaseClearance,
+     *     metadata: {
+     *       track: 'major',
+     *       dependsOn: [ItemType.changelogApproved],
+     *     },
+     *     status: ItemStatus.unknown,
+     *   });
+     */
     constructor(inputs) {
         this.type = inputs.type;
         this.metadata = inputs.metadata;
     }
+    /**
+     * Hash of the item contents to uniquely identify the item accross runs of the action.
+     *
+     * @returns The hash of the item contents.
+     */
     get id() {
-        // hash the type and metadata
+        // Hash the type and metadata
         const hashContent = `${this.type}-${JSON.stringify(this.metadata)}`;
         return (0,external_crypto_namespaceObject.createHash)('md5').update(hashContent).digest('hex');
     }
+    /**
+     * Outputs the item as a JSON object.
+     *
+     * @returns The item as a JSON object.
+     */
     get json() {
         return {
             id: this.id,
@@ -18671,50 +19449,101 @@ class Item {
             status: this.status,
         };
     }
+    /**
+     * Get the labels for this item.
+     *
+     * @returns The labels for this item.
+     */
     get labels() {
         return labels[this.type];
     }
+    /**
+     * String representation of the item, to be used in the issue body.
+     *
+     * @returns The string representation of the item.
+     */
     get statusLine() {
         return `- [ ] :${icons[this.status].code}: ${this.labels[this.status]} <!--ID ${this.id} ID-->`;
     }
+    /**
+     * Update the item status.
+     *
+     * @param globals - The global variables.
+     * @example
+     *   await item.updateStatus(globals);
+     */
     async update(globals) {
         (0,core.debug)(`updating item: ${this.id}`);
         switch (this.type) {
+            /** Update status of a changelog approval item. */
             case ItemType.changelogApproved:
                 this.status = await updateChangelogApproval(globals, this);
                 break;
+            /** Update status of a release clearance item. */
             case ItemType.releaseClearance:
                 this.status = await updateReleaseClearance(globals, this);
                 break;
+            /** Update status of a release creation item. */
             case ItemType.releaseCreation:
                 this.status = ItemStatus.unknown;
                 this.status = await updateReleaseCreation(globals, this);
                 break;
+            /** Any other item cannot be updated. */
             default:
-                throw new Error(`Unknown item type: ${this.type}`);
+                throw new Error(`Unknown item type`);
         }
         return this.status;
     }
 }
 
 ;// CONCATENATED MODULE: ./src/lib/definitions/Platform.ts
+/**
+ * @file Contains a list of platforms we can distribute to.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+/** Type of platforms we can release the projec to. */
 var Platform;
 (function (Platform) {
+    /** Apple iOS, upload to the App Store. */
     Platform["ios"] = "ios";
+    /** Google Android, upload to Google Play. */
     Platform["android"] = "android";
+    /** Web app, upload to servers. */
     Platform["web"] = "web";
+    /** Apple macOS, uplaod to the App Store. */
     Platform["macos"] = "macos";
+    /** Windows, upload to the Windows Store. */
     Platform["windows"] = "windows";
+    /** Linux, package for redistribution on a website. */
     Platform["linux"] = "linux";
+    /** Website, upload to servers. */
     Platform["website"] = "website";
+    /** NPM, upload an npm package to either npm or GitHub. */
     Platform["npm"] = "npm";
+    /** Pub.dev, upload dart package to pub.dev. */
     Platform["pub"] = "pub";
+    /** Docker, upload to either Docker Hub or GitHub. */
     Platform["docker"] = "docker";
 })(Platform || (Platform = {}));
 
 ;// CONCATENATED MODULE: ./src/lib/settings/TrackSettings.ts
+/**
+ * @file Settings for a release track.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
+/**
+ * Load changelog settings from a JSON object.
+ *
+ * @param json - JSON object to load from.
+ * @returns ChangelogSettings object.
+ * @example loadChangelogSettings({ header: 'Changelog', footer: 'Thanks for using this project!' })
+ */
 function loadChangelogSettings(json) {
     return {
         footer: json?.changelog?.footer ?? '',
@@ -18722,35 +19551,60 @@ function loadChangelogSettings(json) {
         fallback: json?.changelog?.fallback ?? '- minor bug fixes and improvements',
     };
 }
+/**
+ * Load release settings from a JSON object.
+ *
+ * @param json - JSON object to load from.
+ * @returns ReleaseSettings object.
+ * @example loadReleaseSettings({ manual: true, waitForTracks: ['alpha', 'beta'] })
+ */
 function loadReleaseSettings(json) {
     return {
         manual: json?.release?.manual ?? true,
-        // convert array of strings to array of tracks
-        waitForTracks: (json?.release?.waitForTracks.filter((waitTrack) => Object.keys(dist/* VersionTrack */.Os).includes(waitTrack)) ?? []),
-        // convert array of strings to array of platforms
+        // Convert array of strings to array of tracks
+        waitForTracks: (json?.release?.waitForTracks.filter((waitTrack) => Object.keys(dist/* ReleaseTrack */.A3).includes(waitTrack)) ?? []),
+        // Convert array of strings to array of platforms
         platforms: (json?.release?.platforms.filter((platform) => Object.keys(Platform).includes(platform)) ?? []),
         allowedUsers: json?.release?.allowedUsers ?? [],
     };
 }
+/** Settings for a release track. */
 class TrackSettings {
+    /** Whether the release track is used by this project. */
     enabled;
+    /** Version number related settings. */
     version;
+    /** Release related settings. */
     release;
+    /** Changelog related settings. */
     changelog;
+    /**
+     * Create a new TrackSettings object.
+     *
+     * @param inputs - Inputs to create the object from.
+     * @param inputs.forTrack - Track to create the settings for.
+     * @param inputs.json - JSON object to create the object from.
+     * @example new TrackSettings({ forTrack: 'alpha' });
+     */
     constructor(inputs) {
-        const track = inputs?.forTrack ?? dist/* VersionTrack.live */.Os.live;
+        const track = inputs?.forTrack ?? dist/* ReleaseTrack.stable */.A3.stable;
         this.enabled = inputs?.json?.enabled ?? TrackSettings.defaultEnabled(track);
         this.version = {
             template: inputs?.json?.version?.template ??
                 TrackSettings.defaultVersionTemplate(track),
         };
         this.release = loadReleaseSettings(inputs?.json);
-        // filter out non existent tracks
-        this.release.waitForTracks = this.release.waitForTracks.filter((waitTrack) => Object.keys(dist/* VersionTrack */.Os).includes(waitTrack));
-        // filter out non existent platforms
+        // Filter out non existent tracks
+        this.release.waitForTracks = this.release.waitForTracks.filter((waitTrack) => Object.keys(dist/* ReleaseTrack */.A3).includes(waitTrack));
+        // Filter out non existent platforms
         this.release.platforms = this.release.platforms.filter((platform) => Object.keys(Platform).includes(platform));
         this.changelog = loadChangelogSettings(inputs?.json);
     }
+    /**
+     * Get a JSON version of the object.
+     *
+     * @returns JSON version of the object.
+     */
     get json() {
         return {
             enabled: this.enabled,
@@ -18770,25 +19624,52 @@ class TrackSettings {
             },
         };
     }
+    /**
+     * Recreate a TrackSettings object from a JSON object.
+     *
+     * @param json - JSON object to recreate the object from.
+     * @returns TrackSettings object.
+     * @example TrackSettings.fromJSON({ enabled: true });
+     */
     static fromJson(json) {
         return new TrackSettings({ json });
     }
+    /**
+     * Whether the track is enabled by default for a given track.
+     *
+     * @param track - Track to get the enabled status for.
+     * @returns Whether the track is enabled by default.
+     * @example TrackSettings.defaultEnabled('alpha');
+     */
     static defaultEnabled(track) {
         switch (track) {
-            case dist/* VersionTrack.alpha */.Os.alpha:
+            /** It's not enabled for the alpha track by default. */
+            case dist/* ReleaseTrack.alpha */.A3.alpha:
                 return false;
-            case dist/* VersionTrack.beta */.Os.beta:
+            /** It's not enabled for the beta and stable tracks by default. */
+            case dist/* ReleaseTrack.beta */.A3.beta:
                 return false;
+            /** It's enabled for the stable track by default (and others). */
             default:
                 return true;
         }
     }
+    /**
+     * The default version template for a given track.
+     *
+     * @param track - Track to get the default version template for.
+     * @returns The default version template for the track.
+     * @example TrackSettings.defaultVersionTemplate('alpha');
+     */
     static defaultVersionTemplate(track) {
         switch (track) {
-            case dist/* VersionTrack.alpha */.Os.alpha:
+            /** Template in case the version track is alpha. */
+            case dist/* ReleaseTrack.alpha */.A3.alpha:
                 return '{{version}}-alpha';
-            case dist/* VersionTrack.beta */.Os.beta:
+            /** Template in case the version track is beta. */
+            case dist/* ReleaseTrack.beta */.A3.beta:
                 return '{{version}}-beta';
+            /** Template in all other cases (including stable). */
             default:
                 return '{{version}}';
         }
@@ -18796,11 +19677,24 @@ class TrackSettings {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/getSections.ts
+/**
+ * @file Contains functions to get the sections for a release.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
 
+/**
+ * Returns a list of items for a release track.
+ *
+ * @param track - The release track to get items for.
+ * @returns A list of items for the release track.
+ * @example const items = getItems(ReleaseTrack.stable);
+ */
 function releasingItems(track) {
     return [
         new Item({
@@ -18826,10 +19720,17 @@ function releasingItems(track) {
         }),
     ];
 }
+/**
+ * Returns a list of sections that contain items.
+ *
+ * @param globals - Global variables.
+ * @returns A list of sections that contain items.
+ * @example const sections = getSections(globals);
+ */
 function getSections(globals) {
     const { settings } = globals;
     const sections = [];
-    for (const track of dist/* versionTrackOrder */.Hr) {
+    for (const track of dist/* releaseTrackOrder */.mS) {
         const items = [];
         const trackSettings = new TrackSettings({
             forTrack: track,
@@ -18848,37 +19749,71 @@ function getSections(globals) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/Issue.ts
+/**
+ * @file Contains the definition of Issue objects.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
+/** Definition of an Issue object. */
 class Issue {
+    /** Number of the issue. */
     number;
+    /** Version number associated with the issue. */
     version;
+    /** Sections of items associated with the issue. */
     sections;
-    // sha of the commit that this issue is for
+    /** SHA of the commit that this was created from (the last commit). */
     commitish;
-    // dict of strings with VersionTrack as key
+    /** Generated changelogs for the issue. */
     changelogs;
-    // list of commits for this issue
+    /** List of commits that are in this issue. */
     commits;
+    /** Items that were created in a previous run of this action. */
     preloadedItems = [];
+    /**
+     * Creates a new Issue object.
+     *
+     * @param inputs - The inputs for the action.
+     * @param inputs.number - The number of the issue.
+     * @param inputs.version - The version number associated with the issue.
+     * @param inputs.commitish - The SHA of the commit that created the issue.
+     * @param inputs.changelogs - The changelogs generated for the issue.
+     * @param inputs.commits - The list of commit objects associated with the issue.
+     * @param inputs.items - The items associated with the issue.
+     * @returns The new Issue object.
+     * @example new Issue({ number: 1, version: '1.0.0', commitish: 'abc123' });
+     */
     constructor(inputs) {
         this.number = inputs?.number ?? -1;
         this.version = inputs?.version ?? new Version.Version();
         this.sections = [];
         this.commitish = inputs?.commitish ?? '';
         this.changelogs = {
-            [dist/* VersionTrack.alpha */.Os.alpha]: inputs?.changelogs[dist/* VersionTrack.alpha */.Os.alpha] ?? '',
-            [dist/* VersionTrack.beta */.Os.beta]: inputs?.changelogs[dist/* VersionTrack.beta */.Os.beta] ?? '',
-            [dist/* VersionTrack.live */.Os.live]: inputs?.changelogs[dist/* VersionTrack.live */.Os.live] ?? '',
+            [dist/* ReleaseTrack.alpha */.A3.alpha]: inputs?.changelogs[dist/* ReleaseTrack.alpha */.A3.alpha] ?? '',
+            [dist/* ReleaseTrack.beta */.A3.beta]: inputs?.changelogs[dist/* ReleaseTrack.beta */.A3.beta] ?? '',
+            [dist/* ReleaseTrack.stable */.A3.stable]: inputs?.changelogs[dist/* ReleaseTrack.stable */.A3.stable] ?? '',
         };
         this.commits = inputs?.commits ?? [];
         this.preloadedItems = inputs?.items ?? [];
     }
+    /**
+     * Title for the issue.
+     *
+     * @returns The title of the issue.
+     */
     get title() {
         return `🚀 Release ${this.version.displayString()}`;
     }
+    /**
+     * Returns the content for the issue body.
+     *
+     * @returns The content for the issue body.
+     */
     get content() {
         const lines = [];
         for (const section of this.sections) {
@@ -18900,6 +19835,11 @@ class Issue {
             'JSON END -->',
         ].join('\n'));
     }
+    /**
+     * JSON representation of the issue.
+     *
+     * @returns The JSON representation of the issue.
+     */
     get json() {
         return {
             number: this.number,
@@ -18914,10 +19854,24 @@ class Issue {
             })),
         };
     }
+    /**
+     * Indicates whether all the items are either succeeded or skipped.
+     *
+     * @returns Whether all the items are done.
+     */
     get allItemsDone() {
         return this.sections.every((section) => section.items.every((item) => item.status === ItemStatus.succeeded ||
             item.status === ItemStatus.skipped));
     }
+    /**
+     * Recreate an issue from a JSON object.
+     *
+     * @param inputs - Input object for the issue creation.
+     * @param inputs.number - Number of the issue.
+     * @param inputs.json - JSON object to recreate the issue from.
+     * @returns The recreated issue.
+     * @example Issue.fromJSON({ number: 1, json: { ... } })
+     */
     static fromJson(inputs) {
         return new Issue({
             number: inputs.number,
@@ -18931,6 +19885,13 @@ class Issue {
             items: inputs.json.items,
         });
     }
+    /**
+     * Fetches an item based on it's identifier.
+     *
+     * @param id - The identifier of the item.
+     * @returns The item if it exists, otherwise null.
+     * @example const item = issue.getItem('s8d3j...');
+     */
     itemForId(id) {
         for (const section of this.sections) {
             for (const item of section.items) {
@@ -18940,6 +19901,14 @@ class Issue {
         }
         return null;
     }
+    /**
+     * Fetches an item based on it's type and the release track it's on.
+     *
+     * @param type - The type of the item.
+     * @param track - The release track the item is on.
+     * @returns The item if it exists, otherwise null.
+     * @example const item = issue.itemForType('changelog', 'alpha');
+     */
     itemForType(type, track) {
         for (const section of this.sections) {
             for (const item of section.items) {
@@ -18949,15 +19918,27 @@ class Issue {
         }
         return null;
     }
+    /**
+     * Setup the issue for the release.
+     *
+     * @param globals - Global variables.
+     * @example await issue.setup();
+     */
     setup(globals) {
         this.sections = getSections(globals);
-        // preload items
+        // Preload items
         for (const preloadItem of this.preloadedItems) {
             const item = this.itemForId(preloadItem.id);
             if (item)
                 item.status = preloadItem.status;
         }
     }
+    /**
+     * Update the items in the issue.
+     *
+     * @param globals - The global variables.
+     * @example issue.updateItems(globals);
+     */
     async update(globals) {
         await Promise.all(this.sections.flatMap((section) => section.items.map(async (item) => {
             await item.update(globals);
@@ -18966,6 +19947,12 @@ class Issue {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/issueExists.ts
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
@@ -18982,8 +19969,17 @@ const issueExists_query = `
     }
   }
 `;
+/**
+ * Match an issue object to a GitHub issue.
+ *
+ * @param issue - The issue object to match.
+ * @param issueNode - The GitHub issue to match.
+ * @returns Whether the issue object matches the GitHub issue.
+ * @example
+ *   const matches = matchIssueToNode(issue, issueNode);
+ */
 function issueMatch(issue, issueNode) {
-    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(issueNode.body);
+    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->', issueNode.body);
     try {
         const json = JSON.parse(jsonContent);
         const jsonIssue = Issue.fromJson({
@@ -19001,10 +19997,18 @@ function issueMatch(issue, issueNode) {
         return false;
     }
 }
+/**
+ * Checks wheter an issue for the given version already exists.
+ *
+ * @param globals - The global variables.
+ * @returns A boolean indicating whether an issue exists.
+ * @example
+ *  const issueExists = await issueExists(globals);
+ */
 async function issueExists(globals) {
     const { graphql, context } = globals;
     const { issue } = context;
-    // check if issue exists using the graphql api
+    // Check if issue exists using the graphql api
     const { repository } = await graphql(issueExists_query, {
         owner: context.repo.owner,
         repo: context.repo.repo,
@@ -19017,6 +20021,12 @@ async function issueExists(globals) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/loadAssignees.ts
+/**
+ * @file Contains functions for loading the ids of the assignees attached to a release issue.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 const loadAssignees_query = `
 query loadUser($user:String!) {
   user(login:$user) {
@@ -19024,6 +20034,14 @@ query loadUser($user:String!) {
   }
 }
 `;
+/**
+ * Loads a list of user ids from a list of usernames.
+ *
+ * @param globals - The global variables for this action.
+ * @returns The list of user ids.
+ * @example
+ *   const ids = await loadAssignees(globals);
+ */
 async function loadAssignees(globals) {
     const { graphql, settings } = globals;
     const ids = await Promise.all(settings.assignees.map(async (assignee) => {
@@ -19036,11 +20054,57 @@ async function loadAssignees(globals) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/createIssue.ts
+/**
+ * @file
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
-// eslint-disable-next-line max-lines-per-function
+const createQuery = `
+  mutation createIssue(
+    $repositoryId: ID!
+    $labelId: ID!
+    $title: String!
+    $content: String!
+    $assignees: [ID!]
+  ) {
+    createIssue(
+      input: {
+        repositoryId: $repositoryId
+        labelIds: [$labelId]
+        title: $title
+        body: $content
+        assigneeIds: $assignees
+      }
+    ) {
+      issue {
+        id
+        number
+        url
+      }
+    }
+  }
+`;
+/**
+ * Prints debug information.
+ *
+ * @param issue - The issue.
+ * @example printDebugInfo(issue);
+ */
+function printDebugInfo(issue) {
+    (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, constants_jsonIndent)}`);
+}
+/**
+ * Creates an issue for a release.
+ *
+ * @param globals - Global variables.
+ * @returns The issue number.
+ * @example await createIssue(globals);
+ */
 async function createIssue(globals) {
     if (await issueExists(globals)) {
         (0,core.info)(`Issue already exists: ${globals.context.issue.title}`);
@@ -19049,34 +20113,10 @@ async function createIssue(globals) {
     const { graphql, context } = globals;
     await globals.context.issue.update(globals);
     const { issue } = context;
-    (0,core.debug)(`Creating issue ${issue.title}: ${JSON.stringify(issue.json, null, defaults_jsonIndent)}`);
+    printDebugInfo(issue);
     try {
         const users = await loadAssignees(globals);
-        await graphql(`
-        mutation createIssue(
-          $repositoryId: ID!
-          $labelId: ID!
-          $title: String!
-          $content: String!
-          $assignees: [ID!]
-        ) {
-          createIssue(
-            input: {
-              repositoryId: $repositoryId
-              labelIds: [$labelId]
-              title: $title
-              body: $content
-              assigneeIds: $assignees
-            }
-          ) {
-            issue {
-              id
-              number
-              url
-            }
-          }
-        }
-      `, {
+        await graphql(createQuery, {
             repositoryId: context.repo.id,
             labelId: context.repo.trackerLabelId,
             title: issue.title,
@@ -19092,15 +20132,33 @@ async function createIssue(globals) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/definitions/index.ts
+/**
+ * @file An index of all the definitions used in the project.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
 
 ;// CONCATENATED MODULE: ./src/lib/context/loadCommits.ts
+/**
+ * @file Implementation of the loadCommits function.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
+/**
+ * Get the last commit from the current event context.
+ *
+ * @returns The last commit.
+ * @example const lastCommit = await loadCommits();
+ */
 function lastCommit() {
     const { eventName } = github.context;
     if (eventName === 'push') {
@@ -19109,6 +20167,12 @@ function lastCommit() {
     }
     return '';
 }
+/**
+ * Get the commits from the current event context.
+ *
+ * @returns The commits.
+ * @example const commits = await loadCommits();
+ */
 function loadCommits() {
     const { eventName } = github.context;
     if (eventName === 'push') {
@@ -19127,9 +20191,21 @@ function loadCommits() {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/context/determineAction.ts
+/**
+ * @file Functions for determining the action to take for a release.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
+/**
+ * Determine the action to take based on the event context.
+ *
+ * @returns The determined action.
+ * @example determineAction();
+ */
 function determineAction() {
     const { eventName } = github.context;
     if (eventName === 'push') {
@@ -19152,22 +20228,46 @@ function determineAction() {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/context/generateChangelogs.ts
+/**
+ * @file Functions for generating a changelog.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
+/** Changelog types that are included in the changelog for each track. */
 const trackChangelogTypes = {
-    [dist/* VersionTrack.alpha */.Os.alpha]: [dist/* ChangeLogType.external */.ac.external, dist/* ChangeLogType.internal */.ac.internal],
-    [dist/* VersionTrack.beta */.Os.beta]: [dist/* ChangeLogType.external */.ac.external],
-    [dist/* VersionTrack.live */.Os.live]: [dist/* ChangeLogType.external */.ac.external],
+    [dist/* ReleaseTrack.alpha */.A3.alpha]: [dist/* ChangeLogType.external */.ac.external, dist/* ChangeLogType.internal */.ac.internal],
+    [dist/* ReleaseTrack.beta */.A3.beta]: [dist/* ChangeLogType.external */.ac.external],
+    [dist/* ReleaseTrack.stable */.A3.stable]: [dist/* ChangeLogType.external */.ac.external],
 };
+/**
+ * Adds a commit to a changelog section.
+ *
+ * @param track - The track that the commit belongs to.
+ * @param sections - A list of sections where the commit should be added to one of them.
+ * @param commit - The commit to add.
+ * @example
+ * addCommitToSection(ReleaseTrack.alpha, [], {
+ *   message: {
+ *     subject: 'Test commit',
+ *     body: '',
+ *     footer: '',
+ *   },
+ *   type: ChangeLogType.internal,
+ *   category: CommitCategory.build,
+ * });
+ */
 function addCommitToSection(track, sections, commit) {
     if (trackChangelogTypes[track].includes(commit.message.category.changelog.type)) {
-        // check if sections has a section for this category
+        // Check if sections has a section for this category
         const section = sections.find((item) => item.category === commit.message.category);
         if (section) {
-            // add commit to section
+            // Add commit to section
             section.commits.push(commit);
         }
         else {
-            // create new section
+            // Create new section
             sections.push({
                 category: commit.message.category,
                 commits: [commit],
@@ -19175,14 +20275,23 @@ function addCommitToSection(track, sections, commit) {
         }
     }
 }
+/**
+ * Generate a changelog for a specific release track.
+ *
+ * @param settings - The settings to use.
+ * @param track - The track to generate the changelog for.
+ * @param commits - A list of commits to include in the changelog.
+ * @returns The changelog.
+ * @example generateChangelog(settings, ReleaseTrack.alpha, [ ... ]);
+ */
 function changelogForTrack(settings, track, commits) {
     const trackSettings = settings[track];
     const sections = [];
-    // loop over all commit categories and find commits that match the category
+    // Loop over all commit categories and find commits that match the category
     for (const commit of commits) {
         addCommitToSection(track, sections, commit);
     }
-    // convert sections to regular text
+    // Convert sections to regular text
     let changelog = '';
     for (const section of sections) {
         changelog += `\n\n${section.category.changelog.title}`;
@@ -19194,18 +20303,40 @@ function changelogForTrack(settings, track, commits) {
         changelog = trackSettings.changelog.fallback;
     return `${trackSettings.changelog.header}\n\n${changelog}\n\n${trackSettings.changelog.footer}`.trim();
 }
+/**
+ * Generate all changelogs for a release.
+ *
+ * @param settings - The settings to use.
+ * @param commits - A list of commits to include in the changelog.
+ * @returns A list of changelogs for each track.
+ * @example generateChangelogs(settings, commits);
+ */
 function generateChangelogs(settings, commits) {
+    // Loop over all tracks and generate changelog
     return {
-        [dist/* VersionTrack.alpha */.Os.alpha]: changelogForTrack(settings, dist/* VersionTrack.alpha */.Os.alpha, commits),
-        [dist/* VersionTrack.beta */.Os.beta]: changelogForTrack(settings, dist/* VersionTrack.beta */.Os.beta, commits),
-        [dist/* VersionTrack.live */.Os.live]: changelogForTrack(settings, dist/* VersionTrack.live */.Os.live, commits),
+        [dist/* ReleaseTrack.alpha */.A3.alpha]: changelogForTrack(settings, dist/* ReleaseTrack.alpha */.A3.alpha, commits),
+        [dist/* ReleaseTrack.beta */.A3.beta]: changelogForTrack(settings, dist/* ReleaseTrack.beta */.A3.beta, commits),
+        [dist/* ReleaseTrack.stable */.A3.stable]: changelogForTrack(settings, dist/* ReleaseTrack.stable */.A3.stable, commits),
     };
 }
 
 ;// CONCATENATED MODULE: ./src/lib/context/loadIssueFromContext.ts
+/**
+ * @file Contains functions to load the issue from the context.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
+/**
+ * Loads the issue from the GitHub Actions context.
+ *
+ * @returns An issue object.
+ * @throws In case the event is not supported.
+ * @example loadIssueFromContext();
+ */
 function loadIssueFromContext() {
     if (github.context.eventName !== 'issues') {
         throw new Error('This action can only be used in an issue event');
@@ -19215,7 +20346,7 @@ function loadIssueFromContext() {
         event.issue.body === event.changes.body?.from) {
         throw new Error('This action can only be used on an edited issue');
     }
-    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->')(event.issue.body);
+    const jsonContent = getContentBetweenTags('<!-- JSON BEGIN', 'JSON END -->', event.issue.body);
     const json = JSON.parse(jsonContent);
     return Issue.fromJson({
         number: github.context.issue.number,
@@ -19224,7 +20355,20 @@ function loadIssueFromContext() {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/context/determineBump.ts
+/**
+ * @file Functions for determining the bump type for a release.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
+/**
+ * Determine the version bump based on a list of commits.
+ *
+ * @param commits - List of commits.
+ * @returns The determined version bump.
+ * @example determineBump(commits);
+ */
 function determineBump(commits) {
     let bump = dist/* VersionBump.none */.ib.none;
     for (const commit of commits) {
@@ -19237,6 +20381,12 @@ function determineBump(commits) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/context/contextDeps.ts
+/**
+ * @file Contains an index of all context related functions and classes.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
@@ -19247,37 +20397,75 @@ function determineBump(commits) {
 
 
 ;// CONCATENATED MODULE: ./src/lib/context/Context.ts
+/**
+ * @file Contains the definition of the context object.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
+/** Context object for the action. */
 class Context {
+    /** Information about the repository. */
     repo;
-    // specific to this run of the action
+    // Specific to this run of the action
+    /** The action that is being performed. */
     action;
+    /** Issue object for this action run. */
     issue;
+    /** Last previous version that was created. */
     previousVersion;
+    /** List of commits that triggered the creation of this issue. */
     commits;
+    /** Amount the version should be bumped. */
     bump = dist/* VersionBump.none */.ib.none;
+    /**
+     * Create a new context object.
+     *
+     * @param input - Settings object for the action.
+     * @param input.settings - Settings object for the action.
+     * @param input.repo - Information about the repository.
+     * @param input.previousVersion - Last previous version that was created.
+     * @example
+     *   const context = new Context({
+     *     settings,
+     *     repo,
+     *     previousVersion,
+     *   });
+     */
     constructor(input) {
         this.repo = input.repo;
         this.action = determineAction();
         this.previousVersion = input.previousVersion;
         switch (this.action) {
+            /** Create a new issue. */
             case Action.create:
                 this.commits = loadCommits();
                 this.bump = determineBump(this.commits);
                 this.issue = this.createIssue(input.settings);
                 break;
+            /** Update an existing issue. */
             case Action.update:
                 this.commits = [];
                 this.issue = loadIssueFromContext();
                 break;
+            /** Do nothing in all other cases. */
             default:
                 (0,core.setFailed)('Unsupported action');
                 this.commits = [];
                 this.issue = new Issue();
         }
     }
+    /**
+     * Create a new issue object.
+     *
+     * @param settings - Settings object for the action.
+     * @returns A new issue object.
+     * @example
+     *   const issue = context.createIssue(settings);
+     */
     createIssue(settings) {
         return new Issue({
             version: this.previousVersion?.bump(this.bump) ?? new dist/* Version */.Gf(),
@@ -19290,6 +20478,12 @@ class Context {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/context/previousVersion.ts
+/**
+ * @file Contains functions to determine the previous version.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 const previousVersion_query = `
@@ -19303,6 +20497,13 @@ const previousVersion_query = `
     }
   }
 `;
+/**
+ * Gets the latest release version from the GitHub GraphQL API.
+ *
+ * @param graphql - GraphQL client.
+ * @returns Latest release version.
+ * @example await getLatestReleaseVersion(graphql);
+ */
 async function previousVersion(graphql) {
     const { repository } = await graphql(previousVersion_query, {
         owner: github.context.repo.owner,
@@ -19317,6 +20518,12 @@ async function previousVersion(graphql) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/context/loadContext.ts
+/**
+ * @file Contains the.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
@@ -19336,6 +20543,13 @@ const loadContext_query = `
     }
   }
 `;
+/**
+ * Loads the context from the GitHub Actions context.
+ *
+ * @param settings - Settings to use.
+ * @param graphql - GraphQL client to use.
+ * @example await loadContext(settings, graphql);
+ */
 async function loadContext(settings, graphql) {
     const { repository } = await graphql(loadContext_query, {
         owner: github.context.repo.owner,
@@ -19368,44 +20582,87 @@ var external_fs_ = __nccwpck_require__(7147);
 // EXTERNAL MODULE: ../../node_modules/yaml/dist/index.js
 var yaml_dist = __nccwpck_require__(8447);
 ;// CONCATENATED MODULE: ./src/lib/settings/Settings.ts
+/**
+ * @file Settings for the release action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
+/** Settings for the release action. */
 class Settings {
+    /** GitHub assignees. */
     assignees;
+    /** Alpha track settings. */
     alpha;
+    /** Beta track settings. */
     beta;
-    live;
+    /** Stable track settings. */
+    stable;
+    /**
+     * Create a new instance of the Settings object.
+     *
+     * @param json - JSON object to create the instance from.
+     * @example
+     *   const settings = new Settings({
+     *     assignees: ['luca'],
+     *     alpha: { ... },
+     *     beta: { ... },
+     *     stable: { ... },
+     *   });
+     */
     constructor(json) {
         this.assignees = json.assignees;
         this.alpha = new TrackSettings({
-            forTrack: dist/* VersionTrack.alpha */.Os.alpha,
+            forTrack: dist/* ReleaseTrack.alpha */.A3.alpha,
             json: json.alpha,
         });
         this.beta = new TrackSettings({
-            forTrack: dist/* VersionTrack.beta */.Os.beta,
+            forTrack: dist/* ReleaseTrack.beta */.A3.beta,
             json: json.beta,
         });
-        this.live = new TrackSettings({
-            forTrack: dist/* VersionTrack.live */.Os.live,
-            json: json.live,
+        this.stable = new TrackSettings({
+            forTrack: dist/* ReleaseTrack.stable */.A3.stable,
+            json: json.stable,
         });
     }
+    /**
+     * Outputs the settings as a JSON object.
+     *
+     * @returns JSON representation of the Settings object.
+     * @example
+     *   const settings = new Settings({ ... });
+     *   const json = settings.json;
+     */
     get json() {
         return {
             assignees: this.assignees,
             alpha: this.alpha.json,
             beta: this.beta.json,
-            live: this.live.json,
+            stable: this.stable.json,
         };
     }
 }
 
 ;// CONCATENATED MODULE: ./src/lib/settings/loadSettings.ts
+/**
+ * @file Loading settings from a JSON file in the repository.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
 
+/**
+ * Load settings from a JSON file in the repository.
+ *
+ * @returns The settings.
+ * @example loadSettings();
+ */
 function loadSettings() {
     const file = (0,core.getInput)('settings_file', {
         trimWhitespace: true,
@@ -19420,10 +20677,22 @@ function loadSettings() {
 }
 
 ;// CONCATENATED MODULE: ./src/globals.ts
+/**
+ * @file Contains the definition of the globals object.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
+/**
+ * Loads the globals object for the action.
+ *
+ * @returns Globals object for the action.
+ * @example const globals = await loadGlobals();
+ */
 async function getGlobals() {
     const octokit = (0,github.getOctokit)((0,core.getInput)('token'));
     const { graphql } = octokit;
@@ -19436,6 +20705,12 @@ async function getGlobals() {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/closeIssue.ts
+/**
+ * @file Contains functions to close an issue.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 const closeIssue_query = `
   mutation closeIssue($issueId: ID!, $reason: IssueClosedStateReason) {
@@ -19449,6 +20724,13 @@ const closeIssue_query = `
     }
   }
 `;
+/**
+ * Closes the issue, if possible.
+ *
+ * @param globals - Global variables.
+ * @param issueId - The issue ID.
+ * @example await closeIssue(globals, issueId);
+ */
 async function closeIssue(globals, issueId) {
     const { graphql } = globals;
     try {
@@ -19466,6 +20748,12 @@ async function closeIssue(globals, issueId) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/issueIdentifier.ts
+/**
+ * @file Contains functions for loading issue identifiers.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 const issueIdentifier_query = `
   query issueIdentifier($owner:String!, $repo:String!, $issue:Int!) {
     repository(owner:$owner, name:$repo) {
@@ -19475,6 +20763,13 @@ const issueIdentifier_query = `
     }
   }
 `;
+/**
+ * Loads the id of the issue found in the globals.
+ *
+ * @param globals - The global variables for this action.
+ * @returns The id of the issue.
+ * @example const id = await loadIssueIdentifier(globals);
+ */
 async function issueIdentifier(globals) {
     const { graphql } = globals;
     const { repository } = await graphql(issueIdentifier_query, {
@@ -19486,6 +20781,12 @@ async function issueIdentifier(globals) {
 }
 
 ;// CONCATENATED MODULE: ./src/lib/issue/updateIssue.ts
+/**
+ * @file Contains functions for updating a release issue.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 const updateIssue_query = `
@@ -19497,20 +20798,28 @@ mutation updateIssue($issueId: ID!, $body:String!) {
   }
 }
 `;
+/**
+ * Updates the release issue.
+ *
+ * @param globals - The global variables for this action.
+ * @returns Whether the issue was updated.
+ * @example
+ *   const { updated } = await updateIssue(globals);
+ */
 async function updateIssue(globals) {
     const { graphql } = globals;
     const id = (await issueIdentifier(globals)) ?? null;
     if (id === null)
         return { updated: false };
-    // refresh all item states
+    // Refresh all item states
     await globals.context.issue.update(globals);
-    // update the content of the issue
+    // Update the content of the issue
     await graphql(updateIssue_query, {
         issueId: id,
         // eslint-disable-next-line id-denylist
         body: globals.context.issue.content,
     });
-    // if all items are done, close the issue
+    // If all items are done, close the issue
     if (globals.context.issue.allItemsDone) {
         await closeIssue(globals, id);
     }
@@ -19518,16 +20827,29 @@ async function updateIssue(globals) {
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts
+/**
+ * @file The main entry point for the release-issues action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
 
 
+/**
+ * The main function of the action. It is the root of the action's execution.
+ *
+ * @async
+ * @example await run();
+ */
 async function run() {
     const globals = await getGlobals();
     const { context } = globals;
     switch (context.action) {
+        /** Create a new issue. */
         case Action.create: {
             const { created } = await createIssue(globals);
             if (created) {
@@ -19538,6 +20860,7 @@ async function run() {
             }
             break;
         }
+        /** Update an existing issue. */
         case Action.update: {
             const { updated } = await updateIssue(globals);
             if (updated) {
@@ -19548,6 +20871,7 @@ async function run() {
             }
             break;
         }
+        /** Any other, exit with an error. */
         default:
             (0,external_process_namespaceObject.exit)(1);
     }

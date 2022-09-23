@@ -1702,19 +1702,31 @@ var external_os_ = __nccwpck_require__(37);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(147);
 ;// CONCATENATED MODULE: ./src/credentials.ts
+/**
+ * @file Function for setting up credentials to upload to pub.dev.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
+/**
+ * Set up credentials to upload to pub.dev.
+ *
+ * @param credentials - The pub credentials to setup.
+ * @example applyCredentials(pub_credentials);
+ */
 function applyCredentials(credentials) {
     if (credentials.length > 0) {
         process.stdout.write('Applying credentials...');
         const libraryFolder = (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/Library/Application Support/dart`);
         const pubCacheFolder = (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/.pub-cache`);
         const pubspecFile = (0,external_path_.resolve)(libraryFolder, 'pub-credentials.json');
-        // create folders
+        // Create folders
         (0,external_fs_.mkdirSync)(libraryFolder, { mode: 0o700, recursive: true });
         (0,external_fs_.mkdirSync)(pubCacheFolder, { mode: 0o700, recursive: true });
-        // write the credential files
+        // Write the credential files
         (0,external_fs_.writeFileSync)(pubspecFile, credentials);
         (0,external_fs_.symlinkSync)(pubspecFile, (0,external_path_.resolve)(`${(0,external_os_.homedir)()}/.pub-cache/credentials.json`));
     }
@@ -1725,23 +1737,54 @@ var external_https_ = __nccwpck_require__(687);
 ;// CONCATENATED MODULE: external "child_process"
 const external_child_process_namespaceObject = require("child_process");
 ;// CONCATENATED MODULE: ./src/setup.ts
+/**
+ * @file Setup functionality for the setup-flutter action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
 
+/**
+ * Detects the current platform the action is running on.
+ *
+ * @returns The platform the action is running on.
+ * @throws If the platform is not supported (unknown).
+ * @example
+ *   const platform = currentPlatform();
+ *   // Returns: 'macos'
+ */
 function currentPlatform() {
     switch ((0,external_os_.platform)()) {
+        /** Apple macOS. */
         case 'darwin':
             return 'macos';
+        /** Microsoft Windows. */
         case 'win32':
             return 'windows';
+        /** Linux. */
         case 'linux':
             return 'linux';
+        /** Any others are unsupported. */
         default:
             throw new Error(`Unsupported platform: ${(0,external_os_.platform)()}`);
     }
 }
+/**
+ * Function to determine the correct download URL for the Flutter SDK.
+ *
+ * @param input - Object containing the input parameters.
+ * @param input.platform - The platform to download the SDK for.
+ * @param input.version - The version of the SDK to download.
+ * @param input.channel - The channel of the SDK to download.
+ * @returns The download URL for the Flutter SDK.
+ * @example
+ * const url = urlForVersion({ platform: 'macos', version: '2.5.3', channel: 'stable' });
+ * // Returns 'https://(truncated)/stable/macos/flutter_macos_2.5.3-stable.zip'
+ */
 function urlForVersion(input) {
     const base = 'https://storage.googleapis.com/flutter_infra_release/releases';
     const ext = input.platform === 'linux' ? 'tar.xz' : 'zip';
@@ -1751,6 +1794,19 @@ function urlForVersion(input) {
         file: `${(0,external_os_.homedir)()}/flutter_${input.platform}_${input.version}-${input.channel}.${ext}`,
     };
 }
+/**
+ * Downloads the Flutter SDK.
+ *
+ * @param input - Object containing the input parameters.
+ * @param input.url - The download URL for the Flutter SDK.
+ * @param input.file - The file path to download the SDK to.
+ * @returns Promise that resolves when the download is complete, or rejects if the download fails.
+ * @example
+ * downloadFile({
+ *   url: 'https://(truncated)/stable/macos/flutter_macos_2.5.3-stable.zip',
+ *   file: '/Users/runner/flutter_macos_2.5.3-stable.zip',
+ * })
+ */
 async function downloadFile(input) {
     return new Promise((resolve, reject) => {
         const stream = (0,external_fs_.createWriteStream)(input.file);
@@ -1761,13 +1817,25 @@ async function downloadFile(input) {
         }).on('error', reject);
     });
 }
+/**
+ * Extracts the Flutter SDK in the correct location and adds it to the PATH.
+ *
+ * @param input - Object containing the input parameters.
+ * @param input.version - The version of the SDK to download.
+ * @param input.channel - The channel of the SDK to download.
+ * @example
+ * setup({
+ *   version: '2.5.3',
+ *   channel: 'stable',
+ * })
+ */
 async function setup(input) {
-    // download the sdk
+    // Download the sdk
     const download = urlForVersion({ ...input, platform: currentPlatform() });
     process.stdout.write(`Downloading ${download.url}...`);
     await downloadFile(download);
     process.stdout.write(' done\n');
-    // decompress the file
+    // Decompress the file
     process.stdout.write('Decompressing...');
     if (download.file.endsWith('.zip')) {
         (0,external_child_process_namespaceObject.execSync)(`unzip ${download.file} -d ${(0,external_os_.homedir)()}`, { stdio: 'ignore' });
@@ -1779,23 +1847,34 @@ async function setup(input) {
         throw new Error(`Unsupported file extension: ${download.file}`);
     }
     process.stdout.write(' done\n');
-    // remove the downloaded file
+    // Remove the downloaded file
     process.stdout.write('Cleaning up...');
     (0,external_fs_.rmSync)(download.file);
     process.stdout.write(' done\n');
-    // install flutter into profiles
+    // Install flutter into profiles
     (0,core.addPath)(`${(0,external_os_.homedir)()}/flutter/bin`);
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts
+/**
+ * @file Index file for the setup-flutter action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
 
 
 
 
 
-// inputs
+// Inputs
 const workingDirectory = (0,core.getInput)('working_directory');
 const pubCredentials = (0,core.getInput)('pub_credentials');
+/**
+ * Main function that runs the action.
+ *
+ * @example run();
+ */
 async function run() {
     const directory = (0,external_path_.resolve)((0,external_process_namespaceObject.cwd)(), workingDirectory);
     (0,core.debug)(`Running in directory: ${directory}`);

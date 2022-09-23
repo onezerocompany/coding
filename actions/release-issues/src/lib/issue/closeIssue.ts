@@ -1,3 +1,10 @@
+/**
+ * @file Contains functions to close an issue.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { error as logError, info as logInfo } from '@actions/core';
 import type { Globals } from '../../globals';
 
@@ -14,6 +21,13 @@ const query = `
   }
 `;
 
+/**
+ * Closes the issue, if possible.
+ *
+ * @param globals - Global variables.
+ * @param issueId - The issue ID.
+ * @example await closeIssue(globals, issueId);
+ */
 export async function closeIssue(
   globals: Globals,
   issueId: string,

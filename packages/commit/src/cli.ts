@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+/**
+ * @file CLI entry point for the commit package.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { program } from 'commander';
 import { tool as categories } from './cli/tools/categories';
 import { tool as commit } from './cli/tools/create';
@@ -12,14 +19,14 @@ program
     "OneZero's tool for commiting, generating changelogs from git history and bumping version numbers.",
   );
 
-// commit
+/** Commit creation tool. */
 program
   .command('create')
   .option('--skip-hooks', 'Skip pre-commit hooks')
   .description('Create a commit')
   .action(commit);
 
-// parse
+/** Commit message parser tool. */
 program
   .command('parse')
   .option('-m, --message <message>', 'Commit message')
@@ -30,7 +37,7 @@ program
   .description('Parse a commit message')
   .action(parse);
 
-// validate
+// Validate
 program
   .command('validate')
   .option('-m, --message <message>', 'Commit message')
@@ -38,7 +45,7 @@ program
   .description('Validate a change')
   .action(validate);
 
-// categories
+// Categories
 program
   .command('categories')
   .option('-j, --json', 'Output as JSON')

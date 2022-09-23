@@ -1,3 +1,10 @@
+/**
+ * @file Contains an index of all context related functions and classes.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 export type { Commit, RepoInfo } from '../definitions';
 export type { Settings } from '../settings/Settings';
 export { Issue } from '../issue/Issue';

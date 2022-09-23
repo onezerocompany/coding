@@ -1,3 +1,10 @@
+/**
+ * @file List of emojis to use for the release action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import { ItemStatus } from './ItemStatus';
 
 export const icons: {

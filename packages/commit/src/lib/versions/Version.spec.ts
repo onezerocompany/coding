@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Version } from './Version';
 import { VersionBump } from './VersionBump';
-import { VersionTrack } from './VersionTrack';
+import { ReleaseTrack } from './ReleaseTrack';
 
 describe('version', () => {
   it('default version should be 0.0.1', () => {
@@ -13,26 +13,26 @@ describe('version', () => {
     expect(version.displayString()).toBe('0.0.1');
   });
   it('should create correct alpha version', () => {
-    const version = new Version({ track: VersionTrack.alpha });
+    const version = new Version({ track: ReleaseTrack.alpha });
     expect(version.major).toBe(0);
     expect(version.minor).toBe(0);
     expect(version.patch).toBe(1);
     expect(
       version.displayString({
-        track: VersionTrack.alpha,
+        track: ReleaseTrack.alpha,
         includeRelease: false,
         includeTrack: true,
       }),
     ).toBe('0.0.1-alpha');
   });
   it('should create correct beta version', () => {
-    const version = new Version({ track: VersionTrack.beta });
+    const version = new Version({ track: ReleaseTrack.beta });
     expect(version.major).toBe(0);
     expect(version.minor).toBe(0);
     expect(version.patch).toBe(1);
     expect(
       version.displayString({
-        track: VersionTrack.beta,
+        track: ReleaseTrack.beta,
         includeRelease: false,
         includeTrack: true,
       }),
@@ -50,11 +50,11 @@ describe('version', () => {
     expect(version.patch).toBe(0);
     expect(
       version.displayString({
-        track: VersionTrack.live,
+        track: ReleaseTrack.stable,
         includeRelease: true,
         includeTrack: true,
       }),
-    ).toBe('1.0.0 live');
+    ).toBe('1.0.0 stable');
   });
   it('major bump should work correctly', () => {
     const version = new Version({ major: 0, minor: 2, patch: 6 });
@@ -131,11 +131,11 @@ describe('version', () => {
     expect(version.patch).toBe(6);
     expect(
       version.displayString({
-        track: VersionTrack.live,
+        track: ReleaseTrack.stable,
         includeRelease: true,
         includeTrack: true,
       }),
-    ).toBe('0.2.6-live');
+    ).toBe('0.2.6-stable');
   });
   it('should create alpha version', () => {
     const version = Version.fromJson({
@@ -149,7 +149,7 @@ describe('version', () => {
     expect(version.patch).toBe(6);
     expect(
       version.displayString({
-        track: VersionTrack.alpha,
+        track: ReleaseTrack.alpha,
         includeRelease: true,
         includeTrack: true,
       }),
@@ -167,7 +167,7 @@ describe('version', () => {
     expect(version.patch).toBe(6);
     expect(
       version.displayString({
-        track: VersionTrack.beta,
+        track: ReleaseTrack.beta,
         includeTrack: true,
         includeRelease: false,
       }),

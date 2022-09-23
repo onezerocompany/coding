@@ -1,4 +1,10 @@
-/* eslint-disable max-lines */
+/**
+ * @file Contains essential rules for Vue.js projects.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 module.exports = {
   rules: {
     // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/multi-word-component-names.md

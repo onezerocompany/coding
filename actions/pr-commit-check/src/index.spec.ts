@@ -4,24 +4,24 @@ import { readFileSync } from 'fs';
 
 describe('commit-check', () => {
   it('dist should be up-to-date', async () => {
-    // generate reference
+    // Generate reference
     expect.assertions(1);
     execSync('npx ncc build src/index.ts -o dist-reference', {
       cwd: resolve(__dirname, '..'),
     });
-    // load the reference
+    // Load the reference
     const reference = readFileSync(
       resolve(__dirname, '..', 'dist-reference', 'index.js'),
       'utf8',
     );
 
-    // load the dist
+    // Load the dist
     const dist = readFileSync(
       resolve(__dirname, '..', 'dist', 'index.js'),
       'utf8',
     );
 
-    // compare
+    // Compare
     expect(dist).toEqual(reference);
   });
 });

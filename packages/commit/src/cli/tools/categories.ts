@@ -1,13 +1,26 @@
+/**
+ * @file Tools for printing the categories to the console.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+
 import Table from 'cli-table';
 import { stringify as stringifyYAML } from 'yaml';
 import { categories } from '../../lib/categories/categories';
 import { emojiForShortcode } from '../../lib/categories/emoji/emoji';
 
-// eslint-disable-next-line max-lines-per-function
-function printMarkdownTable(): void {
+/**
+ * Calculates the sizes of the columns for the table.
+ *
+ * @returns The sizes of the columns.
+ * @example
+ *   const sizes = markdownTableColumSizes();
+ */
+function markdownTableColumSizes(): number[] {
   const defaultBreakLength = 9;
   const defaultEmojiLength = 2;
-  const sizes = categories.reduce(
+  return categories.reduce(
     (acc, category) => {
       if (category.tag.length > (acc[1] ?? 0)) acc[1] = category.tag.length;
       if (category.displayName.length > (acc[2] ?? 0))
@@ -20,21 +33,45 @@ function printMarkdownTable(): void {
     },
     [defaultEmojiLength, 0, 0, 0, 0, defaultBreakLength],
   );
+}
+
+/**
+ * Generate the header for the markdown table.
+ *
+ * @param sizes - The sizes of the columns.
+ * @returns The header for the categories table.
+ * @example
+ *   markdownTableHeader();
+ */
+function markdownTableHeader(sizes: number[]): string[] {
+  return [
+    `|    | ${'Tag'.padEnd(sizes[1] ?? 0)} | ${'Name'.padEnd(
+      sizes[2] ?? 0,
+    )} | ${'Description'.padEnd(sizes[3] ?? 0)} | ${'Bump'.padEnd(
+      sizes[4] ?? 0,
+    )} | ${'Can Break'.padEnd(sizes[5] ?? 0, '-')} |`,
+    `| -- | ${'-'.padEnd(sizes[1] ?? 0, '-')} | ${'-'.padEnd(
+      sizes[2] ?? 0,
+      '-',
+    )} | ${'-'.padEnd(sizes[3] ?? 0, '-')} | ${'-'.padEnd(
+      sizes[4] ?? 0,
+      '-',
+    )} | ${'-'.padEnd(sizes[5] ?? 0, '-')} |`,
+  ];
+}
+
+/**
+ * Print the categories to the console in a markdown table.
+ *
+ * @example
+ *   printMarkdownTable();
+ */
+function printMarkdownTable(): void {
+  const sizes = markdownTableColumSizes();
 
   process.stdout.write(
     `${[
-      `|    | ${'Tag'.padEnd(sizes[1] ?? 0)} | ${'Name'.padEnd(
-        sizes[2] ?? 0,
-      )} | ${'Description'.padEnd(sizes[3] ?? 0)} | ${'Bump'.padEnd(
-        sizes[4] ?? 0,
-      )} | ${'Can Break'.padEnd(sizes[5] ?? 0, '-')} |`,
-      `| -- | ${'-'.padEnd(sizes[1] ?? 0, '-')} | ${'-'.padEnd(
-        sizes[2] ?? 0,
-        '-',
-      )} | ${'-'.padEnd(sizes[3] ?? 0, '-')} | ${'-'.padEnd(
-        sizes[4] ?? 0,
-        '-',
-      )} | ${'-'.padEnd(sizes[5] ?? 0, '-')} |`,
+      ...markdownTableHeader(sizes),
       ...categories.map((category) =>
         [
           '',
@@ -53,7 +90,21 @@ function printMarkdownTable(): void {
   );
 }
 
-// eslint-disable-next-line max-lines-per-function
+/**
+ * Tool for outputting the categories to the console in different formats.
+ *
+ * @param options - The options for the tool.
+ * @param options.json - Whether to output the categories as JSON.
+ * @param options.yaml - Whether to output the categories as YAML.
+ * @param options.markdown - Whether to output the categories as a markdown table.
+ * @example
+ *  // output a json string
+ *  tool({ json: true });
+ *  // output a yaml string
+ *  tool({ yaml: true });
+ *  // output a markdown table
+ *  tool({ markdown: true });
+ */
 export function tool(options: {
   json: boolean;
   yaml: boolean;
