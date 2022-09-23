@@ -13,7 +13,7 @@ const query = `
     repository(owner: $owner, name: $repo) {
       pullRequest(number: $prNumber) {
         merged
-        commits(first: 100) {s
+        commits(first: 100) {
           nodes {
             commit {
               message
