@@ -6,7 +6,7 @@ describe('commit-check', () => {
   it('dist should be up-to-date', async () => {
     // Generate reference
     expect.assertions(1);
-    execSync('npx ncc build src/index.ts -o dist-reference', {
+    execSync('npx ncc build -m src/index.ts -o dist-reference', {
       cwd: resolve(__dirname, '..'),
     });
     // Load the reference
