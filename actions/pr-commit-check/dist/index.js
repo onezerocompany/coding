@@ -109,7 +109,7 @@
  */
 const n=`\n  query issues($owner: String!, $repo: String!, $prNumber: Int!) {\n    repository(owner: $owner, name: $repo) {\n      pullRequest(number: $prNumber) {\n        merged\n        commits(first: 100) {\n          nodes {\n            commit {\n              message\n            }\n          }\n        }\n      }\n    }\n  }\n`;async function fetchPullRequest(a,r,t){const i=(0,o.getOctokit)((0,e.getInput)("token"));const m=await i.graphql(n,{owner:a,repo:r,prNumber:t});return m}
 /**
- * @file
+ * @file This file is the entry point for the pr-commit-check action.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>

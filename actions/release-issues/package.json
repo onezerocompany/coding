@@ -2,6 +2,9 @@
   "name": "release-issues",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": ">= 14.0.0"
+  },
   "scripts": {
     "build": "npx ncc build -m src/index.ts -o dist",
     "format": "prettier --write . && eslint --fix .",
@@ -42,9 +45,10 @@
     "parserOptions": {
       "project": "./tsconfig.spec.json",
       "tsconfigRootDir": "./",
-      "ecmaVersion": 2021
+      "ecmaVersion": 2021,
+      "sourceType": "module"
     },
-    "extends": "@onezerocompany/eslint-config/typescript",
+    "extends": "@onezerocompany/eslint-config/node",
     "ignorePatterns": [
       "dist/",
       "dist-reference/",

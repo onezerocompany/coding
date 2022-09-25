@@ -5,7 +5,6 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { exit } from 'process';
 import { info, setFailed } from '@actions/core';
 import { Action } from './lib/definitions/Action';
 import { createIssue } from './lib/issue/createIssue';
@@ -45,7 +44,7 @@ async function run(): Promise<void> {
     }
     /** Any other, exit with an error. */
     default:
-      exit(1);
+      process.exit(1);
   }
 }
 
