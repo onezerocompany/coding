@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04
 
 # Define SDK versions to install
+ARG INSTALL_BUN="true"
 ARG INSTALL_NODE="true"
 ARG NODE_VERSION="16"
 
@@ -25,6 +26,7 @@ USER vscode
 RUN ~/scripts/install_tools.sh
 RUN ~/scripts/install_nvm.sh
 RUN ~/scripts/install_node.sh
+RUN ~/scripts/install_bun.sh
 RUN ~/scripts/install_flutter.sh
 
 # Cleanup
