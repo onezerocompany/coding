@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file This file is the entry point for the pr-commit-check action.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>

@@ -39,7 +39,7 @@
     "parserOptions": {
       "ecmaVersion": 2021
     },
-    "extends": "@onezerocompany/eslint-config/base"
+    "extends": "@onezerocompany/eslint-config/node"
   },
   "devDependencies": {
     "@onezerocompany/eslint-config": "../eslint-config",

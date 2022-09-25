@@ -23,7 +23,8 @@
     "./typescript": "./configs/typescript.js",
     "./react": "./configs/react.js",
     "./next": "./configs/next.js",
-    "./vue3": "./configs/vue3.js"
+    "./vue3": "./configs/vue3.js",
+    "./node": "./configs/node.js"
   },
   "main": "src/configs/base.js",
   "files": [
