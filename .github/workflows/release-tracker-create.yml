@@ -17,3 +17,5 @@ jobs:
 
       - name: Create Issue
         uses: ./actions/release-issues
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}
