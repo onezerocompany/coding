@@ -324,14 +324,14 @@ const k=`\n  query loadLabel($owner: String!, $repo: String!, $label: String!) {
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class Settings{assignees;alpha;beta;stable;constructor(e){this.assignees=e.assignees;this.alpha=new TrackSettings({forTrack:t.A3.alpha,json:e.alpha});this.beta=new TrackSettings({forTrack:t.A3.beta,json:e.beta});this.stable=new TrackSettings({forTrack:t.A3.stable,json:e.stable})}get json(){return{assignees:this.assignees,alpha:this.alpha.json,beta:this.beta.json,stable:this.stable.json}}}
+class Settings{assignees;alpha;beta;stable;constructor(e){this.assignees=e?.assignees??[];this.alpha=new TrackSettings({forTrack:t.A3.alpha,json:e?.alpha});this.beta=new TrackSettings({forTrack:t.A3.beta,json:e?.beta});this.stable=new TrackSettings({forTrack:t.A3.stable,json:e?.stable})}get json(){return{assignees:this.assignees,alpha:this.alpha.json,beta:this.beta.json,stable:this.stable.json}}}
 /**
  * @file Loading settings from a JSON file in the repository.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function loadSettings(){const o=(0,e.getInput)("settings_file",{trimWhitespace:true,required:false});const n=(0,_.resolve)(process.cwd(),o.length===0?".release-settings.yml":o);(0,e.debug)(`Loading settings from ${n}`);const t=(0,D.readFileSync)(n,"utf8");const a=(0,w.Qc)(t);(0,e.debug)(`Loaded settings: ${JSON.stringify(a,null)}`);return new Settings(a)}
+function getSettingsPath(){const o=(0,e.getInput)("settings_file",{trimWhitespace:true,required:false});let n=(0,_.resolve)(process.cwd(),o.length===0?".release-settings.yml":o);if(!(0,D.existsSync)(n)){if(n.endsWith(".yml")){n=n.replace(".yml",".yaml")}else{n=n.replace(".yaml",".yml")}}if(!(0,D.existsSync)(n)){throw new Error(`The settings file "${n}" does not exist.`)}return n}function loadSettings(){try{const o=getSettingsPath();(0,e.debug)(`Loading settings from ${o}`);const n=(0,D.readFileSync)(o,"utf8");const t=(0,w.Qc)(n);(0,e.debug)(`Loaded settings: ${JSON.stringify(t,null)}`);return new Settings(t)}catch{(0,e.debug)("No settings file found. Using default settings.");return new Settings}}
 /**
  * @file Contains the definition of the globals object.
  * @copyright 2022 OneZero Company
