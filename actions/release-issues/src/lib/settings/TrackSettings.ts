@@ -109,7 +109,7 @@ export class TrackSettings {
    */
   public constructor(inputs?: {
     forTrack?: ReleaseTrack;
-    json?: TrackSettingsJSON;
+    json?: TrackSettingsJSON | undefined;
   }) {
     const track = inputs?.forTrack ?? ReleaseTrack.stable;
     this.enabled = inputs?.json?.enabled ?? TrackSettings.defaultEnabled(track);
