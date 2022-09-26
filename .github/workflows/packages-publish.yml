@@ -5,6 +5,35 @@ on:
     types: [released]
 
 jobs:
+  publish_extensions:
+    name: Publish Extensions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        extension:
+          - path: extensions/onezero-themes
+            name: OneZero Themes
+    defaults:
+      run:
+        working-directory: ${{ matrix.extension.path }}
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          path: .
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Publish to Marketplace
+        run: vsce publish -p ${{ secrets.VSCODE_MARKETPLACE_TOKEN }} ${{ github.ref_name }}
+
   publish_devcontainers:
     name: Publish Devcontainer
     runs-on: ubuntu-latest

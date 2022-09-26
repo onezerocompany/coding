@@ -84,3 +84,4 @@ node_modules/
 **/docs
 **/*.log
 .commit-message
+**/*.vsix

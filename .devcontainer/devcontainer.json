@@ -2,7 +2,11 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.234.0/containers/typescript-node
 {
   "name": "Coding",
-  "image": "ghcr.io/onezerocompany/devcontainer-universal:latest",
+  // "image": "ghcr.io/onezerocompany/devcontainer-universal:latest",
+  "build": {
+    "dockerfile": "../devcontainer/Dockerfile",
+    "context": "../devcontainer"
+  },
 
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
@@ -22,5 +26,7 @@
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install",
-  "updateContentCommand": "npm install"
+  "updateContentCommand": "npm install",
+  "remoteUser": "vscode",
+  "containerUser": "vscode"
 }

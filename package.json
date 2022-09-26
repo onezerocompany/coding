@@ -60,6 +60,7 @@
       "<rootDir>/packages/eslint-config",
       "<rootDir>/packages/prettier-config",
       "<rootDir>/packages/tsconfig",
+      "<rootDir>/packages/onezero-themes",
       "<rootDir>/actions/pr-commit-check",
       "<rootDir>/actions/setup-flutter",
       "<rootDir>/actions/release-issues"
@@ -77,6 +78,7 @@
     "jest": "^27.5.1",
     "jsdoc": "^3.6.11",
     "prettier": "^2.6.2",
+    "sort-package-json": "^1.57.0",
     "ts-jest": "^27.1.4"
   }
 }

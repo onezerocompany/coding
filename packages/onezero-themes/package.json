@@ -1,0 +1,48 @@
+{
+  "name": "onezero-themes",
+  "displayName": "OneZero Themes",
+  "version": "0.0.1",
+  "categories": [
+    "Themes"
+  ],
+  "keywords": [
+    "themes",
+    "onezero"
+  ],
+  "homepage": "https://github.com/onezerocompany/coding#readme",
+  "bugs": {
+    "url": "https://github.com/onezerocompany/coding/issues/new"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onezerocompany/coding.git",
+    "directory": "packages/onezero-themes"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "OneZero Company",
+    "email": "code-support@onezero.company",
+    "url": "https://onezero.company"
+  },
+  "contributes": {
+    "themes": [
+      {
+        "label": "OneZero Light",
+        "uiTheme": "vs",
+        "path": "./themes/onezero-light.json"
+      },
+      {
+        "label": "OneZero Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/onezero-dark.json"
+      }
+    ]
+  },
+  "devDependencies": {
+    "vsce": "^2.11.0"
+  },
+  "engines": {
+    "vscode": "^1.71.0"
+  },
+  "extensionid": "onezero-themes"
+}

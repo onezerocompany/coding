@@ -5,14 +5,22 @@
 {
   "version": "0.2.0",
   "configurations": [
+    // {
+    //   "name": "Run Commit Extension",
+    //   "type": "extensionHost",
+    //   "request": "launch",
+    //   "args": [
+    //     "--extensionDevelopmentPath=${workspaceFolder}/extensions/onezero-commit"
+    //   ],
+    //   "outFiles": ["${workspaceFolder}/extensions/onezero-commit/out/**/*.js"]
+    // },
     {
-      "name": "Run Commit Extension",
+      "name": "Run Theme Extension",
       "type": "extensionHost",
       "request": "launch",
       "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}/extensions/onezero-commit"
-      ],
-      "outFiles": ["${workspaceFolder}/extensions/onezero-commit/out/**/*.js"]
+        "--extensionDevelopmentPath=${workspaceFolder}/extensions/onezero-themes"
+      ]
     }
   ]
 }
