@@ -44,9 +44,9 @@
   "jest.coverageFormatter": "GutterFormatter",
   "jest.enableCodeLens": true,
   "jest.autoRun": {
-    "watch": true,
-    "onStartup": ["all-tests"],
-    "onSave": "test-src-file"
+    "watch": false
+    // "onStartup": ["all-tests"],
+    // "onSave": "test-src-file"
   },
   "jest.jestCommandLine": "npm run test --",
   "jest.showTerminalOnLaunch": false,
