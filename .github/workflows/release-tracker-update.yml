@@ -1,0 +1,23 @@
+name: Update Release Tracking Issue
+
+on:
+  issues:
+    types:
+      - edited
+
+jobs:
+  update_release_tracker:
+    name: Update Release Tracker
+    runs-on: ubuntu-latest
+    # only run on 'release-tracker' issues
+    if: ${{ contains(github.event.issue.labels.*.name, 'release-tracker') }}
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v3
+        with:
+          path: .
+
+      - name: Update Issue
+        uses: onezerocompany/coding/actions/release-issues@main
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}

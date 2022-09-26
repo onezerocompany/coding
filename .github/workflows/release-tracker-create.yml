@@ -1,0 +1,21 @@
+name: Create Release Tracking Issue
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_release_tracker:
+    name: Create Release Tracker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v3
+        with:
+          path: .
+
+      - name: Create Issue
+        uses: ./actions/release-issues
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}

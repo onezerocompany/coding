@@ -47,19 +47,19 @@ export class Settings {
    *     stable: { ... },
    *   });
    */
-  public constructor(json: SettingsJSON) {
-    this.assignees = json.assignees;
+  public constructor(json?: SettingsJSON) {
+    this.assignees = json?.assignees ?? [];
     this.alpha = new TrackSettings({
       forTrack: ReleaseTrack.alpha,
-      json: json.alpha,
+      json: json?.alpha,
     });
     this.beta = new TrackSettings({
       forTrack: ReleaseTrack.beta,
-      json: json.beta,
+      json: json?.beta,
     });
     this.stable = new TrackSettings({
       forTrack: ReleaseTrack.stable,
-      json: json.stable,
+      json: json?.stable,
     });
   }
 
