@@ -12,7 +12,7 @@ jobs:
       fail-fast: true
       matrix:
         extension:
-          - path: extensions/onezero-themes
+          - path: packages/onezero-themes
             name: OneZero Themes
     defaults:
       run:
