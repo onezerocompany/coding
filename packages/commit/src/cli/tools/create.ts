@@ -16,13 +16,12 @@ import type { PromptObject } from 'prompts';
 import prompts from 'prompts';
 import { CommitMessage } from '../../lib/message/CommitMessage';
 // Questions
-import { bodyQuestion } from '../questions/addBody';
+import { bodyQuestion } from '../questions/body';
 import { breakingQuestion } from '../questions/breaking';
 import { categoryQuestion } from '../questions/category';
 import { confirmQuestion } from '../questions/confirm';
 import { filesQuestion } from '../questions/files';
 import { issuesQuestion } from '../questions/issues';
-import { bodyEditor } from '../questions/bodyEditor';
 import { scopeQuestion } from '../questions/scope';
 import { authorsQuestion } from '../questions/authors';
 import { subjectQuestion } from '../questions/subject';
@@ -215,7 +214,6 @@ function listOfPrompts(context: SetupContext | null): PromptObject[] {
     subjectQuestion,
     breakingQuestion,
     bodyQuestion,
-    bodyEditor,
     issuesQuestion,
     authorsQuestion,
     confirmQuestion,

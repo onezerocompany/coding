@@ -28,6 +28,7 @@
     "packages/tsconfig",
     "packages/eslint-config",
     "packages/commit",
+    "packages/onezero-themes",
     "actions/pr-commit-check",
     "actions/setup-flutter",
     "actions/release-issues"

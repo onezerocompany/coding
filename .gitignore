@@ -85,3 +85,4 @@ node_modules/
 **/*.log
 .commit-message
 **/*.vsix
+**/.commit-body.tmp
