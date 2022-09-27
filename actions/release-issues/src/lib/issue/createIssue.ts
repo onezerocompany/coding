@@ -6,6 +6,7 @@
  */
 
 import { debug, error as logError, info } from '@actions/core';
+import { VersionBump } from '@onezerocompany/commit';
 import type { Globals } from '../../globals';
 import { jsonIndent } from '../../constants';
 import { issueExists } from './issueExists';
@@ -64,6 +65,11 @@ function printDebugInfo(issue: Issue): void {
 export async function createIssue(
   globals: Globals,
 ): Promise<{ created: boolean }> {
+  if (globals.context.bump === VersionBump.none) {
+    info('No release needed, skipping issue creation');
+    return { created: false };
+  }
+
   if (await issueExists(globals)) {
     info(`Issue already exists: ${globals.context.issue.title}`);
     return { created: false };

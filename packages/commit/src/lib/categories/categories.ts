@@ -234,7 +234,7 @@ export const categories: CommitCategory[] = [
       type: ChangeLogType.internal,
     },
     versioning: {
-      bump: VersionBump.none,
+      bump: VersionBump.patch,
       canBreak: false,
     },
   },
