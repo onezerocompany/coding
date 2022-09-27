@@ -72,7 +72,7 @@ export function promptBody(previous?: string | null): BodyValidator {
 
   // Create a temporary file
 
-  const tmpFilePath = resolve(cwd(), 'temp-body.txt');
+  const tmpFilePath = resolve(cwd(), '.commit-body.tmp');
   writeFileSync(
     tmpFilePath,
     (previous?.length ?? 0) > 0 ? previous ?? '' : instructions,
@@ -81,13 +81,17 @@ export function promptBody(previous?: string | null): BodyValidator {
     },
   );
 
-  // Open the editor
-  spawnSync(env['EDITOR'] ?? 'vi', [tmpFilePath], {
-    stdio: 'inherit',
-  });
+  // In case the `code` command is available, use it to open the file
+  // use which to check if the command is available
+  if (spawnSync('which', ['code']).status === 0) {
+    spawnSync('code', ['-w', tmpFilePath], { stdio: 'ignore' });
+  } else {
+    spawnSync(env['EDITOR'] ?? 'vi', [tmpFilePath], {
+      stdio: 'inherit',
+    });
+  }
 
   // Read the file
-
   const content = readBodyFile(tmpFilePath);
 
   // Remove the temporary file

@@ -2,6 +2,7 @@
   "prettier.enable": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
+  "editor.wordWrap": "bounded",
 
   "files.exclude": {
     "**/node_modules": true,
