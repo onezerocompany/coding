@@ -36,7 +36,8 @@ export const bodyQuestion: PromptObject = {
   },
 
   format(value: string): string {
-    if (value) return previousBody ?? value;
+    const yes = ['y', 'yes', 'true'].includes(value.toLowerCase()) || breaking;
+    if (yes) return previousBody ?? value;
     return '';
   },
 

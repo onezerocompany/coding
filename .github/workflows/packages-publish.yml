@@ -14,9 +14,6 @@ jobs:
         extension:
           - path: packages/onezero-themes
             name: OneZero Themes
-    defaults:
-      run:
-        working-directory: ${{ matrix.extension.path }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
@@ -33,6 +30,7 @@ jobs:
 
       - name: Publish to Marketplace
         run: vsce publish -p ${{ secrets.VSCODE_MARKETPLACE_TOKEN }} ${{ github.ref_name }}
+        working-directory: ${{ matrix.extension.path }}
 
   publish_devcontainers:
     name: Publish Devcontainer
