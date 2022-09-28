@@ -73,5 +73,5 @@ jobs:
         working-directory: .
         run: npm install
 
-      - name: Test Prettier Config
+      - name: Run Tests
         run: npm run test
