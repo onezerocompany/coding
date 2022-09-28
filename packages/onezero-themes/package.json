@@ -24,6 +24,11 @@
     "email": "code-support@onezero.company",
     "url": "https://onezero.company"
   },
+  "publisher": "onezero-company",
+  "files": [
+    "themes",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "echo 'This is a theme package and does not need to be built.'"
   },
