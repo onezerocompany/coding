@@ -2,11 +2,7 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.234.0/containers/typescript-node
 {
   "name": "Coding",
-  // "image": "ghcr.io/onezerocompany/devcontainer-universal:latest",
-  "build": {
-    "dockerfile": "../devcontainer/Dockerfile",
-    "context": "../devcontainer"
-  },
+  "image": "ghcr.io/onezerocompany/devcontainer-universal:latest",
 
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
