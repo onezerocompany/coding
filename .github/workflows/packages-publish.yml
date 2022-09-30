@@ -39,7 +39,44 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - directory: ./devcontainer
+          - directory: images/devcontainer
+            tags: |
+              ghcr.io/onezerocompany/devcontainer:latest
+              ghcr.io/onezerocompany/devcontainer:${{ github.ref_name }}
+              ghcr.io/onezerocompany/devcontainer:universal
+              ghcr.io/onezerocompany/devcontainer:universal-${{ github.ref_name }}
+              ghcr.io/onezerocompany/devcontainer:universal-latest
+            args: |
+              INSTALL_NODE="true"
+              INSTALL_DOCKER="true"
+              INSTALL_FLUTTER="true"
+          - directory: images/devcontainer
+            tags: |
+              ghcr.io/onezerocompany/devcontainer:node
+              ghcr.io/onezerocompany/devcontainer:node-${{ github.ref_name }}
+              ghcr.io/onezerocompany/devcontainer:node-latest
+            args: |
+              INSTALL_NODE="true"
+              INSTALL_DOCKER="false"
+              INSTALL_FLUTTER="false"
+          - directory: images/devcontainer
+            tags: |
+              ghcr.io/onezerocompany/devcontainer:docker
+              ghcr.io/onezerocompany/devcontainer:docker-${{ github.ref_name }}
+              ghcr.io/onezerocompany/devcontainer:docker-latest
+            args: |
+              INSTALL_NODE="false"
+              INSTALL_DOCKER="true"
+              INSTALL_FLUTTER="false"
+          - directory: images/devcontainer
+            tags: |
+              ghcr.io/onezerocompany/devcontainer:flutter
+              ghcr.io/onezerocompany/devcontainer:flutter-${{ github.ref_name }}
+              ghcr.io/onezerocompany/devcontainer:flutter-latest
+            args: |
+              INSTALL_NODE="false"
+              INSTALL_DOCKER="false"
+              INSTALL_FLUTTER="true"
     defaults:
       run:
         working-directory: ${{ matrix.image.directory }}
@@ -65,12 +102,11 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./devcontainer
-          platforms: linux/amd64,linux/arm64
+          context: ${{ matrix.image.directory }}
+          platforms: linux/amd64,linux/arm64,linux/386
           push: true
-          tags: |
-            ghcr.io/onezerocompany/devcontainer-universal:latest
-            ghcr.io/onezerocompany/devcontainer-universal:${{ github.ref_name }}
+          build-args: ${{ matrix.image.args }}
+          tags: ${{ matrix.image.tags }}
 
   publish_dart:
     name: Publish Dart Package

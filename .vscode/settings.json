@@ -2,7 +2,7 @@
   "prettier.enable": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "editor.wordWrap": "bounded",
+  "editor.wordWrap": "on",
 
   "files.exclude": {
     "**/node_modules": true,
@@ -77,71 +77,9 @@
   "editor.bracketPairColorization.enabled": true,
   "editor.minimap.enabled": true,
   "editor.minimap.autohide": true,
-  "workbench.preferredDarkColorTheme": "Ayu Dark",
-  "workbench.preferredLightColorTheme": "Ayu Light",
-  "workbench.colorTheme": "Ayu Dark",
+  "workbench.preferredDarkColorTheme": "OneZero Dark",
+  "workbench.preferredLightColorTheme": "OneZero Light",
 
-  "workbench.colorCustomizations": {
-    "[*Dark*][*Mirage*]": {
-      // Brackets
-      "editorBracketHighlight.foreground1": "#f32a8b",
-      "editorBracketHighlight.foreground2": "#724cf1",
-      "editorBracketHighlight.foreground3": "#0ed19a",
-      "editorBracketHighlight.foreground4": "#e8d60e",
-      "editorBracketHighlight.foreground5": "#2c7dd3",
-      "editorBracketHighlight.foreground6": "#dd39cc",
-      // Errors
-      "editorError.foreground": "#ffffff00",
-      "editorError.background": "#ff006f3e",
-      "editor.selectionBackground": "#2c2727",
-      "editor.selectionHighlightBackground": "#111111",
-      "editor.wordHighlightBorder": "#00000000",
-      "editorWarning.background": "#ff00592c",
-      "editorWarning.foreground": "#ff005900",
-      "editor.snippetTabstopHighlightBackground": "#222020",
-      "focusBorder": "#ffffff00",
-      // Sidebar
-      "list.activeSelectionBackground": "#5d4ebd",
-      "list.activeSelectionIconForeground": "#c2c0d3",
-      "list.inactiveSelectionIconForeground": "#8c80d8",
-      "list.activeSelectionForeground": "#ffffff",
-      "list.inactiveSelectionBackground": "#191630",
-      // Sidebat Items
-      "list.errorForeground": "#e43f6b",
-      "sideBar.foreground": "#6f8399",
-      "gitDecoration.modifiedResourceForeground": "#3f9ce4",
-      "gitDecoration.untrackedResourceForeground": "#32e08f",
-      "gitDecoration.deletedResourceForeground": "#ff005d",
-      "gitDecoration.ignoredResourceForeground": "#3b3636"
-    },
-    "[*Light*]": {
-      "editorBracketHighlight.foreground1": "#f32a8b",
-      "editorBracketHighlight.foreground2": "#724cf1",
-      "editorBracketHighlight.foreground3": "#0ed19a",
-      "editorBracketHighlight.foreground4": "#e8d60e",
-      "editorBracketHighlight.foreground5": "#2c7dd3",
-      "editorBracketHighlight.foreground6": "#dd39cc",
-      "editorError.foreground": "#ffffff00",
-      "editorError.background": "#ff006f3e",
-      "editor.selectionBackground": "#312c2c17",
-      "list.activeSelectionBackground": "#5d4ebd",
-      "list.activeSelectionIconForeground": "#c2c0d3",
-      "list.inactiveSelectionIconForeground": "#8c80d8",
-      "list.activeSelectionForeground": "#ffffff",
-      "list.inactiveSelectionBackground": "#ebebf1",
-      "list.errorForeground": "#ef2a5f",
-      "gitDecoration.modifiedResourceForeground": "#2b9bf0",
-      "gitDecoration.untrackedResourceForeground": "#13c788",
-      "gitDecoration.deletedResourceForeground": "#ff005d",
-      "gitDecoration.ignoredResourceForeground": "#3b3636",
-      "editor.selectionHighlightBackground": "#e8dada",
-      "editor.wordHighlightBorder": "#00000000",
-      "editorWarning.background": "#f4d8de",
-      "editor.snippetTabstopHighlightBackground": "#eeeeee",
-      "sideBar.foreground": "#5a5f63",
-      "focusBorder": "#ffffff00"
-    }
-  },
   "indentRainbow.colors": [
     "#f32a8b",
     "#724cf1",
@@ -331,5 +269,6 @@
     }
   },
   "workbench.iconTheme": "helium-icon-theme",
-  "markdown-preview-github-styles.colorTheme": "system"
+  "markdown-preview-github-styles.colorTheme": "system",
+  "workbench.colorTheme": "OneZero Light"
 }
