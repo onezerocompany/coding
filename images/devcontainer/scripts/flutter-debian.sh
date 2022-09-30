@@ -70,6 +70,9 @@ curl -C - --output flutter.tar.xz "https://storage.googleapis.com/flutter_infra_
 tar xf flutter.tar.xz -C .
 rm flutter.tar.xz
 
+# Set permissions
+chown -R ${USERNAME} ${FLUTTER_HOME}
+
 # Accept the Android SDK licenses 
 # yes | flutter doctor --android-licenses
 
