@@ -2,17 +2,21 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.234.0/containers/typescript-node
 {
   "name": "Coding",
-  // "image": "ghcr.io/onezerocompany/devcontainer-universal:latest",
-  "build": {
-    "dockerfile": "../images/devcontainer/Dockerfile",
-    "context": "../images/devcontainer"
-  },
+  "image": "ghcr.io/onezerocompany/devcontainer",
+  // "build": {
+  //   "context": "../images/devcontainer",
+  //   "dockerfile": "../images/devcontainer/Dockerfile",
+  //   "args": {
+  //     "INSTALL_NODE": "true",
+  //     "INSTALL_DOCKER": "true",
+  //     "INSTALL_FLUTTER": "false"
+  //   }
+  // },
 
   "runArgs": ["--init", "--privileged"],
   "mounts": ["source=dind-var-lib-docker,target=/var/lib/docker,type=volume"],
   "overrideCommand": false,
 
-  // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
     "orta.vscode-jest",
     "dbaeumer.vscode-eslint",
@@ -29,7 +33,6 @@
     "onezero-company.onezero-themes"
   ],
 
-  // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install",
   "updateContentCommand": "npm install",
 
