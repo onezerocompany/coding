@@ -70,15 +70,16 @@ curl -C - --output flutter.tar.xz "https://storage.googleapis.com/flutter_infra_
 tar xf flutter.tar.xz -C .
 rm flutter.tar.xz
 
-# Accept the Android SDK licenses
-yes | flutter doctor --android-licenses
+# Accept the Android SDK licenses 
+# yes | flutter doctor --android-licenses
 
-# Disable analytics
-flutter config --no-analytics
+# Disable analytics, run command as codespace
+# flutter config --no-analytics
+su ${USERNAME} -c "flutter config --no-analytics"
 
 # Enable web support
-if [ "$FLUTTER_WEB" = "enable" ]; then flutter config --enable-web; fi
+if [ "$FLUTTER_WEB" = "enable" ]; then su ${USERNAME} -c "flutter config --enable-web"; fi
 
 # Pre-download development binaries
-flutter precache
-flutter update packages
+su ${USERNAME} -c "flutter precache"
+su ${USERNAME} -c "flutter update packages"
