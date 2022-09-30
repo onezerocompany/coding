@@ -7,14 +7,14 @@
 # Docs: https://github.com/microsoft/vscode-dev-containers/blob/main/script-library/docs/docker-in-docker.md
 # Maintainer: The VS Code and Codespaces Teams
 #
-# Syntax: ./docker-in-docker-debian.sh [install] [enable non-root docker access flag] [non-root user] [use moby] [Engine/CLI Version] [Major version for docker-compose]
+# Syntax: ./docker-in-docker-debian.sh [install] [enable non-root docker access flag] [non-root user] [use moby] [Engine/CLI Version] [Major version for docker-compose] [scripts folder]
 
 INSTALL=${1:-"false"}
 ENABLE_NONROOT_DOCKER=${2:-"true"}
 USERNAME=${3:-"automatic"}
 USE_MOBY=${4:-"true"}
 DOCKER_VERSION=${5:-"latest"} # The Docker/Moby Engine + CLI should match in version
-DOCKER_DASH_COMPOSE_VERSION=${6:-"v1"} # v1 or v2
+DOCKER_DASH_COMPOSE_VERSION=${6:-"v2"} # v1 or v2
 SCRIPTS_FOLDER=${7:-"/root/scripts"}
 MICROSOFT_GPG_KEYS_URI="https://packages.microsoft.com/keys/microsoft.asc"
 
