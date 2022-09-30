@@ -85,4 +85,3 @@ if [ "$FLUTTER_WEB" = "enable" ]; then su ${USERNAME} -c "flutter config --enabl
 
 # Pre-download development binaries
 su ${USERNAME} -c "flutter precache"
-su ${USERNAME} -c "flutter update packages"
