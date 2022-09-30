@@ -2,7 +2,15 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.234.0/containers/typescript-node
 {
   "name": "Coding",
-  "image": "ghcr.io/onezerocompany/devcontainer-universal:latest",
+  // "image": "ghcr.io/onezerocompany/devcontainer-universal:latest",
+  "build": {
+    "dockerfile": "../images/devcontainer/Dockerfile",
+    "context": "../images/devcontainer"
+  },
+
+  "runArgs": ["--init", "--privileged"],
+  "mounts": ["source=dind-var-lib-docker,target=/var/lib/docker,type=volume"],
+  "overrideCommand": false,
 
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
@@ -17,12 +25,14 @@
     "esbenp.prettier-vscode",
     "ms-vscode-remote.remote-containers",
     "redhat.vscode-yaml",
-    "oderwat.indent-rainbow"
+    "oderwat.indent-rainbow",
+    "onezero-company.onezero-themes"
   ],
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install",
   "updateContentCommand": "npm install",
-  "remoteUser": "vscode",
-  "containerUser": "vscode"
+
+  "remoteUser": "codespace",
+  "containerUser": "codespace"
 }
