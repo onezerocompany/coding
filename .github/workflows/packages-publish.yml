@@ -113,9 +113,9 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
           build-args: |
-            INSTALL_NODE="${{ matrix.image.features.node }}"
-            INSTALL_DOCKER="${{ matrix.image.features.docker }}"
-            INSTALL_FLUTTER="${{ matrix.image.features.flutter }}"
+            INSTALL_NODE=${{ matrix.image.features.node }}
+            INSTALL_DOCKER=${{ matrix.image.features.docker }}
+            INSTALL_FLUTTER=${{ matrix.image.features.flutter }}
           tags: ${{ matrix.image.tags }}
 
   # publish_dart:
