@@ -33,7 +33,7 @@ jobs:
         working-directory: ${{ matrix.extension.path }}
 
   publish_devcontainers:
-    name: Publish ${{ matrix.extension.name }} Devcontainer
+    name: Publish ${{ matrix.image.name }} Devcontainer
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
