@@ -28,7 +28,7 @@ RUN $SCRIPTS_FOLDER/node-debian.sh "${INSTALL_NODE}" "${NVM_DIR}" "${NVM_VERSION
 ARG INSTALL_DOCKER="false"
 ARG DOCKER_VERSION="latest"
 ENV DOCKER_BUILDKIT=1
-RUN $SCRIPTS_FOLDER/docker-in-docker-debian.sh "${INSTALL_DOCKER}" "true" "${USERNAME}" "true" "${DOCKER_VERSION}" "v2"
+RUN $SCRIPTS_FOLDER/docker-in-docker-debian.sh "${INSTALL_DOCKER}" "true" "${USERNAME}" "true" "${DOCKER_VERSION}" "v1" "${SCRIPTS_FOLDER}"
 
 # Flutter & Dart
 ARG INSTALL_FLUTTER="false"
@@ -45,5 +45,5 @@ VOLUME [ "/var/lib/docker" ]
 # Default shell to use
 ENV SHELL=/bin/zsh
 
-ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
+ENTRYPOINT [ "/usr/local/share/entrypoint.sh" ]
 CMD [ "sleep", "infinity" ]

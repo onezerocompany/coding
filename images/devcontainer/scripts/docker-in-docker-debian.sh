@@ -15,6 +15,7 @@ USERNAME=${3:-"automatic"}
 USE_MOBY=${4:-"true"}
 DOCKER_VERSION=${5:-"latest"} # The Docker/Moby Engine + CLI should match in version
 DOCKER_DASH_COMPOSE_VERSION=${6:-"v1"} # v1 or v2
+SCRIPTS_FOLDER=${7:-"/root/scripts"}
 MICROSOFT_GPG_KEYS_URI="https://packages.microsoft.com/keys/microsoft.asc"
 
 set -e
@@ -27,6 +28,9 @@ fi
 # Stop gracefull if INSTALL is not true
 if [ "$INSTALL" != "true" ]; then
     echo "Skipping Docker installation"
+    # create empty entrypoint to avoid docker-in-docker issues which exits with 0
+    cp "$SCRIPTS_FOLDER/fallback-entrypoint.sh" /usr/local/share/entrypoint.sh
+    chmod +x /usr/local/share/entrypoint.sh
     exit 0
 fi
 
@@ -256,11 +260,11 @@ else
 fi
 
 # If init file already exists, exit
-if [ -f "/usr/local/share/docker-init.sh" ]; then
-    echo "/usr/local/share/docker-init.sh already exists, so exiting."
+if [ -f "/usr/local/share/entrypoint.sh" ]; then
+    echo "/usr/local/share/entrypoint.sh already exists, so exiting."
     exit 0
 fi
-echo "docker-init doesnt exist, adding..."
+echo "entrypoint doesnt exist, adding..."
 
 # Add user to the docker group
 if [ "${ENABLE_NONROOT_DOCKER}" = "true" ]; then
@@ -271,7 +275,7 @@ if [ "${ENABLE_NONROOT_DOCKER}" = "true" ]; then
     usermod -aG docker ${USERNAME}
 fi
 
-tee /usr/local/share/docker-init.sh > /dev/null \
+tee /usr/local/share/entrypoint.sh > /dev/null \
 << 'EOF'
 #!/bin/sh
 #-------------------------------------------------------------------------------------------------------------
@@ -337,5 +341,5 @@ set +e
 exec "$@"
 EOF
 
-chmod +x /usr/local/share/docker-init.sh
-chown ${USERNAME}:root /usr/local/share/docker-init.sh
+chmod +x /usr/local/share/entrypoint.sh
+chown ${USERNAME}:root /usr/local/share/entrypoint.sh

@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish_extensions:
-    name: Publish Extensions
+    name: Publish ${{ matrix.extension.name }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -33,13 +33,14 @@ jobs:
         working-directory: ${{ matrix.extension.path }}
 
   publish_devcontainers:
-    name: Publish Devcontainer
+    name: Publish ${{ matrix.extension.name }} Devcontainer
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         image:
           - directory: images/devcontainer
+            name: Universal
             tags: |
               ghcr.io/onezerocompany/devcontainer:latest
               ghcr.io/onezerocompany/devcontainer:${{ github.ref_name }}
@@ -51,6 +52,7 @@ jobs:
               INSTALL_DOCKER="true"
               INSTALL_FLUTTER="true"
           - directory: images/devcontainer
+            name: Node
             tags: |
               ghcr.io/onezerocompany/devcontainer:node
               ghcr.io/onezerocompany/devcontainer:node-${{ github.ref_name }}
@@ -60,6 +62,7 @@ jobs:
               INSTALL_DOCKER="false"
               INSTALL_FLUTTER="false"
           - directory: images/devcontainer
+            name: Docker
             tags: |
               ghcr.io/onezerocompany/devcontainer:docker
               ghcr.io/onezerocompany/devcontainer:docker-${{ github.ref_name }}
@@ -69,6 +72,7 @@ jobs:
               INSTALL_DOCKER="true"
               INSTALL_FLUTTER="false"
           - directory: images/devcontainer
+            name: Flutter
             tags: |
               ghcr.io/onezerocompany/devcontainer:flutter
               ghcr.io/onezerocompany/devcontainer:flutter-${{ github.ref_name }}
@@ -108,49 +112,54 @@ jobs:
           build-args: ${{ matrix.image.args }}
           tags: ${{ matrix.image.tags }}
 
-  publish_dart:
-    name: Publish Dart Package
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - directory: packages/flutter_lints
-            build: false
-    defaults:
-      run:
-        working-directory: ${{ matrix.package.directory }}
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v3
-        with:
-          path: .
+  # publish_dart:
+  #   name: Publish ${{ matrix.extension.name }}
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       package:
+  #         - directory: packages/flutter_lints
+  #           name: Flutter Lint Rules
+  #           build: false
+  #   defaults:
+  #     run:
+  #       working-directory: ${{ matrix.package.directory }}
+  #   steps:
+  #     - name: Checkout project
+  #       uses: actions/checkout@v3
+  #       with:
+  #         path: .
 
-      - name: Setup Flutter
-        uses: ./actions/setup-flutter
-        with:
-          working_directory: ${{ matrix.package.directory }}
-          pub_credentials: ${{ secrets.PUB_CREDENTIALS }}
-          version: 2.10.5
-          channel: stable
+  #     - name: Setup Flutter
+  #       uses: ./actions/setup-flutter
+  #       with:
+  #         working_directory: ${{ matrix.package.directory }}
+  #         pub_credentials: ${{ secrets.PUB_CREDENTIALS }}
+  #         version: 2.10.5
+  #         channel: stable
 
-      - name: Publish Dart Package
-        run: flutter pub publish
+  #     - name: Publish Dart Package
+  #       run: flutter pub publish
 
   publish_node:
-    name: Publish Node Package
+    name: Publish ${{ matrix.package.name }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         package:
           - directory: packages/prettier-config
+            name: Prettier Config
             build: false
           - directory: packages/eslint-config
+            name: ESLint Configs
             build: false
           - directory: packages/tsconfig
+            name: TypeScript Configs
             build: false
           - directory: packages/commit
+            name: Commit Tool
             build: true
     defaults:
       run:
