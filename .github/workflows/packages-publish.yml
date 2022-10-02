@@ -39,7 +39,7 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - path: images/firebase-emulators
+          - directory: images/firebase-emulators
             name: Firebase Emulators
             tags: |
               ghcr.io/onezerocompany/firebase-emulators:latest
