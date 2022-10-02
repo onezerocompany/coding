@@ -34,7 +34,10 @@ RUN $SCRIPTS_FOLDER/docker-in-docker-debian.sh "${INSTALL_DOCKER}" "true" "${USE
 ARG INSTALL_FLUTTER="false"
 ARG FLUTTER_CHANNEL="stable"
 ARG FLUTTER_VERSION="2.10.5"
-RUN ~/scripts/flutter-debian.sh "${INSTALL_FLUTTER}" "${FLUTTER_CHANNEL}" "${FLUTTER_VERSION}" "${USERNAME}"
+RUN $SCRIPTS_FOLDER/flutter-debian.sh "${INSTALL_FLUTTER}" "${FLUTTER_CHANNEL}" "${FLUTTER_VERSION}" "${USERNAME}"
+
+# Welcome message
+RUN $SCRIPTS_FOLDER/setup-shell.sh "${SCRIPTS_FOLDER}"
 
 # Cleanup
 RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*

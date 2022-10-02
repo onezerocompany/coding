@@ -4,9 +4,8 @@ INSTALL=${1:-"false"}
 CHANNEL=${2:-"stable"}
 VERSION=${3:-"3.3.3"}
 USERNAME=${4:-"automatic"}
-export FLUTTER_HOME=/opt/flutter
+FLUTTER_HOME=${5:-"/usr/local/flutter"}
 export FLUTTER_WEB="enable"
-export PATH=${PATH}:${FLUTTER_HOME}/bin
 
 set -e
 
@@ -61,23 +60,30 @@ check_packages() {
 export DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
-check_packages curl xz-utils
+check_packages curl file git unzip xz-utils zip libglu1-mesa
 
-cd /opt
-
-# Download the release
-curl -C - --output flutter.tar.xz "https://storage.googleapis.com/flutter_infra_release/releases/$CHANNEL/linux/flutter_linux_$VERSION-stable.tar.xz"
-tar xf flutter.tar.xz -C .
-rm flutter.tar.xz
+# Clone the repo and output to $FLUTTER_HOME
+git clone https://github.com/flutter/flutter.git -b stable $FLUTTER_HOME
 
 # Set permissions
 chown -R ${USERNAME} ${FLUTTER_HOME}
+
+# Add flutter to path to bash
+echo "export FLUTTER_HOME=${FLUTTER_HOME}" >> /etc/profile
+echo "export PATH=\$PATH:\$FLUTTER_HOME/bin" >> /etc/profile
+echo "export PATH=\$PATH:\$FLUTTER_HOME/bin/cache/dart-sdk/bin" >> /etc/profile
+
+# Add flutter to path to zsh
+echo "export FLUTTER_HOME=${FLUTTER_HOME}" >> /etc/zsh/zshenv
+echo "export PATH=\$PATH:\$FLUTTER_HOME/bin" >> /etc/zsh/zshenv
+echo "export PATH=\$PATH:\$FLUTTER_HOME/bin/cache/dart-sdk/bin" >> /etc/zsh/zshenv
+
+export PATH=$PATH:$FLUTTER_HOME/bin
 
 # Accept the Android SDK licenses 
 # yes | flutter doctor --android-licenses
 
 # Disable analytics, run command as codespace
-# flutter config --no-analytics
 su ${USERNAME} -c "flutter config --no-analytics"
 
 # Enable web support
