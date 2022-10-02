@@ -20,10 +20,6 @@ RUN chown -R node:node /emulators
 # Install latest jre
 RUN apk add --no-cache openjdk11-jre-headless bash
 
-# Import start-emulators script
-COPY start-emulators.sh /usr/local/bin/start-emulators.sh
-RUN chmod +x /usr/local/bin/start-emulators.sh
-
 # Setup emulators
 RUN firebase setup:emulators:firestore && \
     firebase setup:emulators:pubsub && \
@@ -32,6 +28,3 @@ RUN firebase setup:emulators:firestore && \
 
 USER node
 VOLUME ["/emulators/data"]
-
-# start firebase emulators and store data on exit
-CMD [ ".devcontainer/start-emulators.sh" ]
