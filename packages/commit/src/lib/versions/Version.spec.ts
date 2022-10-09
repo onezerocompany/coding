@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+import { ReleaseTrack } from '@onezerocompany/project-manager';
 import { Version } from './Version';
 import { VersionBump } from './VersionBump';
-import { ReleaseTrack } from './ReleaseTrack';
 
 describe('version', () => {
   it('default version should be 0.0.1', () => {

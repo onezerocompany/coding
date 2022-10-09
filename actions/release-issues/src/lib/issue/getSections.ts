@@ -5,13 +5,12 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import type { ReleaseTrack } from '@onezerocompany/commit';
-import { releaseTrackOrder } from '@onezerocompany/commit';
+import type { ReleaseTrack } from '@onezerocompany/project-manager';
+import { releaseTracks } from '@onezerocompany/project-manager';
 import type { Globals } from '../../globals';
 import { toTitleCase } from '../../utils/titlecase';
 import { Item } from '../items/Item';
 import { ItemType } from '../items/ItemType';
-import { TrackSettings } from '../settings/TrackSettings';
 import type { ItemSection } from './Issue';
 
 /**
@@ -55,15 +54,11 @@ function releasingItems(track: ReleaseTrack): Item[] {
  * @example const sections = getSections(globals);
  */
 export function getSections(globals: Globals): ItemSection[] {
-  const { settings } = globals;
+  const { projectManifest } = globals;
   const sections: ItemSection[] = [];
-  for (const track of releaseTrackOrder) {
+  for (const track of releaseTracks) {
     const items: Item[] = [];
-
-    const trackSettings = new TrackSettings({
-      forTrack: track,
-      json: settings[track],
-    });
+    const trackSettings = projectManifest.releaseTrackSettings(track);
     if (trackSettings.enabled) {
       items.push(...releasingItems(track));
       sections.push({

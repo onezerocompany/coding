@@ -7,17 +7,17 @@
 
 import { getInput } from '@actions/core';
 import { getOctokit } from '@actions/github';
+import type { ProjectManifest } from '@onezerocompany/project-manager';
+import { loadManifestFromProject } from '@onezerocompany/project-manager';
 import type { Context } from './lib/context/Context';
 import { loadContext } from './lib/context/loadContext';
-import { loadSettings } from './lib/settings/loadSettings';
-import type { Settings } from './lib/settings/Settings';
 
 /** Variables shared by the entire action. */
 export interface Globals {
   /** Context object for the action. */
   context: Context;
   /** Settings object for the action. */
-  settings: Settings;
+  projectManifest: ProjectManifest;
   /** Octokit instance for the action. */
   octokit: ReturnType<typeof getOctokit>;
   /** GraphQL instance for the action. */
@@ -33,9 +33,9 @@ export interface Globals {
 export async function getGlobals(): Promise<Globals> {
   const octokit = getOctokit(getInput('token'));
   const { graphql } = octokit;
-  const settings = loadSettings();
-  const context = await loadContext(settings, graphql);
-  const globals = { context, settings, octokit, graphql };
+  const projectManifest = loadManifestFromProject();
+  const context = await loadContext(projectManifest, graphql);
+  const globals = { context, projectManifest, octokit, graphql };
   context.issue.setup(globals);
   await context.issue.update(globals);
   return globals;

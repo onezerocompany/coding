@@ -6,9 +6,11 @@
  */
 
 import type { CommitCategory } from '@onezerocompany/commit';
-import { ChangeLogType, ReleaseTrack } from '@onezerocompany/commit';
+import { ChangeLogType } from '@onezerocompany/commit';
+import type { ProjectManifest } from '@onezerocompany/project-manager';
+import { ReleaseTrack } from '@onezerocompany/project-manager';
+import { randomItem } from '../../utils/randomItem';
 import type { Commit } from '../definitions/Commit';
-import type { Settings } from '../settings/Settings';
 
 /** Changelog types that are included in the changelog for each track. */
 const trackChangelogTypes: { [key in ReleaseTrack]: ChangeLogType[] } = {
@@ -63,19 +65,17 @@ function addCommitToSection(
 /**
  * Generate a changelog for a specific release track.
  *
- * @param settings - The settings to use.
+ * @param projectManifest - The project manifest.
  * @param track - The track to generate the changelog for.
  * @param commits - A list of commits to include in the changelog.
  * @returns The changelog.
  * @example generateChangelog(settings, ReleaseTrack.alpha, [ ... ]);
  */
 function changelogForTrack(
-  settings: Settings,
+  projectManifest: ProjectManifest,
   track: ReleaseTrack,
   commits: Commit[],
 ): string {
-  const trackSettings = settings[track];
-
   const sections: Array<{
     category: CommitCategory;
     commits: Commit[];
@@ -87,7 +87,6 @@ function changelogForTrack(
   }
 
   // Convert sections to regular text
-
   let changelog = '';
   for (const section of sections) {
     changelog += `\n\n${section.category.changelog.title}`;
@@ -96,36 +95,40 @@ function changelogForTrack(
     }
   }
 
-  if (changelog.trim() === '') changelog = trackSettings.changelog.fallback;
-  return `${trackSettings.changelog.header}\n\n${changelog}\n\n${trackSettings.changelog.footer}`.trim();
+  const trackSettings = projectManifest.releaseTracks[track];
+  if (changelog.trim() === '')
+    changelog = trackSettings?.changelog.fallbackMessage ?? '';
+  const header = randomItem(trackSettings?.changelog.headers ?? []);
+  const footer = randomItem(trackSettings?.changelog.footers ?? []);
+  return `${header}\n\n${changelog}\n\n${footer}`.trim();
 }
 
 /**
  * Generate all changelogs for a release.
  *
- * @param settings - The settings to use.
+ * @param projectManifest - The project manifest.
  * @param commits - A list of commits to include in the changelog.
  * @returns A list of changelogs for each track.
  * @example generateChangelogs(settings, commits);
  */
 export function generateChangelogs(
-  settings: Settings,
+  projectManifest: ProjectManifest,
   commits: Commit[],
 ): Record<ReleaseTrack, string> {
   // Loop over all tracks and generate changelog
   return {
     [ReleaseTrack.alpha]: changelogForTrack(
-      settings,
+      projectManifest,
       ReleaseTrack.alpha,
       commits,
     ),
     [ReleaseTrack.beta]: changelogForTrack(
-      settings,
+      projectManifest,
       ReleaseTrack.beta,
       commits,
     ),
     [ReleaseTrack.stable]: changelogForTrack(
-      settings,
+      projectManifest,
       ReleaseTrack.stable,
       commits,
     ),

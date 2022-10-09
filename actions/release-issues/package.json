@@ -16,6 +16,7 @@
     "@onezerocompany/commit": "file:../../packages/commit",
     "@onezerocompany/eslint-config": "file:../../packages/eslint-config",
     "@onezerocompany/prettier-config": "file:../../packages/prettier-config",
+    "@onezerocompany/project-manager": "file:../../packages/project-manager",
     "@vercel/ncc": "^0.33.4"
   },
   "dependencies": {

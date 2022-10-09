@@ -1,0 +1,24 @@
+permissions:
+  - username: lucasilverentand
+    assignIssue: true
+    canEditChangelog: true
+    canReleaseTracks:
+      - stable
+releaseTracks:
+  stable:
+    enabled: true
+    waitForTracks: [alpha, beta]
+    changelog:
+      fallbackMessage: This update contains minor improvements and fixes.
+      includeInternal: false
+      autoApproval: true
+      headers:
+        - 'Take a look at what changes we made this time'
+        - 'Have a look at what we changed this time'
+        - 'Check out what we changed this time'
+        - 'Check out what changes we made this time'
+    release:
+      versionTemplate: '{{version}}'
+      tagTemplate: '{{version}}'
+      autoRelease: true
+    platforms: [npm, docker]

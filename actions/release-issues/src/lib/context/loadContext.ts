@@ -8,7 +8,7 @@
 import { debug } from '@actions/core';
 import type { getOctokit } from '@actions/github';
 import { context as githubContext } from '@actions/github';
-import type { Settings } from '../settings/Settings';
+import type { ProjectManifest } from '@onezerocompany/project-manager';
 import { Context } from './Context';
 import { previousVersion } from './previousVersion';
 
@@ -50,12 +50,12 @@ interface QueryOutput {
 /**
  * Loads the context from the GitHub Actions context.
  *
- * @param settings - Settings to use.
+ * @param projectManifest - Project manifest.
  * @param graphql - GraphQL client to use.
  * @example await loadContext(settings, graphql);
  */
 export async function loadContext(
-  settings: Settings,
+  projectManifest: ProjectManifest,
   graphql: ReturnType<typeof getOctokit>['graphql'],
 ): Promise<Context> {
   const { repository }: QueryOutput = await graphql(query, {
@@ -75,7 +75,7 @@ export async function loadContext(
   const lastRelease = await previousVersion(graphql);
 
   return new Context({
-    settings,
+    projectManifest,
     previousVersion: lastRelease,
     repo: {
       id: repositoryId,

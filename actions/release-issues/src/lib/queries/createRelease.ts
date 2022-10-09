@@ -6,7 +6,7 @@
  */
 
 import { debug, setFailed } from '@actions/core';
-import { ReleaseTrack } from '@onezerocompany/commit';
+import { ReleaseTrack } from '@onezerocompany/project-manager';
 import type { Globals } from '../../globals';
 import type { Item } from '../items/Item';
 

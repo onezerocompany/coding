@@ -3,7 +3,7 @@
 const { readdirSync, readFileSync } = require('fs');
 const { resolve } = require('path');
 const Ajv = require('ajv-draft-04');
-const fetch = require('node-fetch');
+const nodeFetch = require('node-fetch');
 
 const ajv = new Ajv({
   strict: false,
@@ -16,7 +16,9 @@ describe('check if tsconfigs is valid', () => {
   const baseFiles = readdirSync(resolve(__dirname, 'bases'));
 
   beforeAll(async () => {
-    schema = await (await fetch('http://json.schemastore.org/tsconfig')).json();
+    schema = await (
+      await nodeFetch('http://json.schemastore.org/tsconfig')
+    ).json();
   });
 
   for (const file of baseFiles) {

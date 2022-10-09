@@ -12,6 +12,7 @@ import { jsonIndent } from '../../constants';
 import { issueExists } from './issueExists';
 import { loadAssignees } from './loadAssignees';
 import type { Issue } from './Issue';
+import { closeIssue } from './closeIssue';
 
 const createQuery = `
   mutation createIssue(
@@ -39,6 +40,22 @@ const createQuery = `
   }
 `;
 
+/** Output of the creation query. */
+interface CreateIssueResult {
+  /** Query name 'createIssue'. */
+  createIssue: {
+    /** The created issue. */
+    issue: {
+      /** The ID of the issue. */
+      id: string;
+      /** The number of the issue. */
+      number: number;
+      /** The URL of the issue. */
+      url: string;
+    };
+  };
+}
+
 /**
  * Prints debug information.
  *
@@ -53,6 +70,28 @@ function printDebugInfo(issue: Issue): void {
       jsonIndent,
     )}`,
   );
+}
+
+/**
+ * Closes the issue if needed.
+ *
+ * @param globals - The global variables.
+ * @param queryResponse - The response of the query.
+ * @example closeIssueIfNeeded(globals, queryResponse);
+ */
+async function closeIfNeeded(
+  globals: Globals,
+  queryResponse: unknown,
+): Promise<void> {
+  if (typeof queryResponse === 'object') {
+    const result = queryResponse as CreateIssueResult;
+    const { id } = result.createIssue.issue;
+
+    // If all items are done, close the issue
+    if (globals.context.issue.allItemsDone) {
+      await closeIssue(globals, id);
+    }
+  }
 }
 
 /**
@@ -84,13 +123,14 @@ export async function createIssue(
 
   try {
     const users = await loadAssignees(globals);
-    await graphql(createQuery, {
+    const queryResponse = await graphql(createQuery, {
       repositoryId: context.repo.id,
       labelId: context.repo.trackerLabelId,
       title: issue.title,
       content: issue.content,
       assignees: users,
     });
+    await closeIfNeeded(globals, queryResponse);
 
     return { created: true };
   } catch (createError: unknown) {

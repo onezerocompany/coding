@@ -7,7 +7,8 @@
 
 import { setFailed } from '@actions/core';
 import { VersionBump, Version } from '@onezerocompany/commit';
-import type { Commit, RepoInfo, Settings } from './contextDeps';
+import type { ProjectManifest } from '@onezerocompany/project-manager';
+import type { Commit, RepoInfo } from './contextDeps';
 import {
   Action,
   determineAction,
@@ -44,9 +45,9 @@ export class Context {
    * Create a new context object.
    *
    * @param input - Settings object for the action.
-   * @param input.settings - Settings object for the action.
    * @param input.repo - Information about the repository.
    * @param input.previousVersion - Last previous version that was created.
+   * @param input.projectManifest - Project manifest.
    * @example
    *   const context = new Context({
    *     settings,
@@ -55,7 +56,7 @@ export class Context {
    *   });
    */
   public constructor(input: {
-    settings: Settings;
+    projectManifest: ProjectManifest;
     repo: RepoInfo;
     previousVersion: Version | null;
   }) {
@@ -68,7 +69,7 @@ export class Context {
       case Action.create:
         this.commits = loadCommits();
         this.bump = determineBump(this.commits);
-        this.issue = this.createIssue(input.settings);
+        this.issue = this.createIssue(input.projectManifest);
         break;
       /** Update an existing issue. */
       case Action.update:
@@ -86,16 +87,16 @@ export class Context {
   /**
    * Create a new issue object.
    *
-   * @param settings - Settings object for the action.
+   * @param projectManifest - Project manifest.
    * @returns A new issue object.
    * @example
    *   const issue = context.createIssue(settings);
    */
-  private createIssue(settings: Settings): Issue {
+  private createIssue(projectManifest: ProjectManifest): Issue {
     return new Issue({
       version: this.previousVersion?.bump(this.bump) ?? new Version(),
       commitish: lastCommit(),
-      changelogs: generateChangelogs(settings, this.commits),
+      changelogs: generateChangelogs(projectManifest, this.commits),
       commits: this.commits,
       items: [],
     });

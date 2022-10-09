@@ -6,7 +6,6 @@
  */
 
 export type { Commit, RepoInfo } from '../definitions';
-export type { Settings } from '../settings/Settings';
 export { Issue } from '../issue/Issue';
 export { Action } from '../definitions';
 export { lastCommit, loadCommits } from './loadCommits';

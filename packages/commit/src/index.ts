@@ -30,5 +30,4 @@ export { parseMessage } from './lib/message/parseMessage';
 export { validateMessage } from './lib/message/validateMessage';
 
 export { VersionBump, versionBumpOrder } from './lib/versions/VersionBump';
-export { ReleaseTrack, releaseTrackOrder } from './lib/versions/ReleaseTrack';
 export { Version, VersionJSON } from './lib/versions/Version';
