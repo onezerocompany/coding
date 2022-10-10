@@ -115,7 +115,7 @@ export NVM_SYMLINK_CURRENT=true
 if [ -d "${NVM_DIR}" ]; then
     echo "NVM already installed."
     if [ "${NODE_VERSION}" != "" ]; then
-        su ${USERNAME} -c ". $NVM_DIR/nvm.sh && nvm install ${NODE_VERSION} && nvm clear-cache"
+        su ${USERNAME} -c ". $NVM_DIR/nvm.sh && nvm install --latest-npm ${NODE_VERSION} && nvm clear-cache"
     fi
     exit 0
 fi
@@ -174,6 +174,9 @@ if [ "${INSTALL_TOOLS_FOR_NODE_GYP}" = "true" ]; then
     fi
 fi
 
+# Set the .npmrc file
+echo "//npm.pkg.github.com/:_authToken=\${NPM_TOKEN}" >> /home/${USERNAME}/.npmrc
+echo "@onezerocompany:registry=https://npm.pkg.github.com" >> /home/${USERNAME}/.npmrc
 
 # Install into bash profile if possible
 if command -v bash > /dev/null; then
