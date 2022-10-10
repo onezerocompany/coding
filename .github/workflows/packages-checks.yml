@@ -17,6 +17,7 @@ jobs:
           - packages/eslint-config
           - packages/tsconfig
           - packages/commit
+          - packages/project-manager
     defaults:
       run:
         working-directory: ${{ matrix.package }}
@@ -52,6 +53,7 @@ jobs:
           - packages/eslint-config
           - packages/tsconfig
           - packages/commit
+          - packages/project-manager
     defaults:
       run:
         working-directory: ${{ matrix.package }}
