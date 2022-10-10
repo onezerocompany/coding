@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Release Issues Settings",
+  "description": "Settings for the release-issues action",
+  "type": "object",
+  "minProperties": 1,
+
+  "definitions": {
+    "Permissions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$",
+            "description": "GitHub username"
+          },
+          "canEditChangelog": {
+            "type": "boolean",
+            "description": "Whether the user can edit the changelog",
+            "default": false
+          },
+          "canReleaseTracks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Track the user is allowed to release",
+              "enum": ["stable", "beta", "alpha"]
+            }
+          },
+          "assignIssue": {
+            "type": "boolean",
+            "description": "Whether the user gets the release issue assigned to them",
+            "default": false
+          }
+        }
+      }
+    },
+    "Platforms": {
+      "description": "List of platforms this track releases to",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "ios",
+          "android",
+          "macos",
+          "windows",
+          "linux",
+          "web",
+          "npm",
+          "docker"
+        ]
+      }
+    },
+    "ChangelogSettings": {
+      "type": "object",
+      "description": "Settings for the changelog generation",
+      "properties": {
+        "includeInternal": {
+          "type": "boolean",
+          "description": "Whether to include internal issues in the changelog",
+          "default": false
+        },
+        "fallbackMessage": {
+          "type": "string",
+          "description": "Fallback message to use when there are no changes for the visible changelog",
+          "default": "This update contains minor improvements and fixes.",
+          "minLength": 10
+        },
+        "autoApproval": {
+          "type": "boolean",
+          "description": "Whether to automatically accept the changelog",
+          "default": false
+        },
+        "headers": {
+          "type": "array",
+          "description": "Header messages to use for the changelog, they will be used randomly",
+          "items": {
+            "type": "string",
+            "minLength": 10
+          }
+        },
+        "footers": {
+          "type": "array",
+          "description": "Footer messages to use for the changelog, they will be used randomly",
+          "items": {
+            "type": "string",
+            "minLength": 10
+          }
+        }
+      },
+      "required": ["includeInternal", "fallbackMessage", "autoApproval"],
+      "additionalProperties": false
+    },
+    "ReleaseSettings": {
+      "type": "object",
+      "description": "Settings for the version to be released",
+      "properties": {
+        "versionTemplate": {
+          "description": "The version number template to use",
+          "type": "string",
+          "default": "{{version}}",
+          "examples": ["v{{version}}", "{{version}}", "v{{version}}-beta"],
+          "pattern": "^.*\\{\\{version\\}\\}.*$"
+        },
+        "tagTemplate": {
+          "description": "The template for the tag name. If not specified, the tag name will be the same as the version.",
+          "type": "string",
+          "default": "{{version}}"
+        },
+        "autoRelease": {
+          "description": "Whether to automatically release the version",
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false,
+      "required": ["versionTemplate"]
+    }
+  },
+
+  "additionalProperties": false,
+  "required": ["permissions", "releaseTracks"],
+  "properties": {
+    "permissions": {
+      "$ref": "#/definitions/Permissions"
+    },
+    "releaseTracks": {
+      "minProperties": 1,
+      "patternProperties": {
+        "(stable|beta|alpha)": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "release": { "$ref": "#/definitions/ReleaseSettings" },
+            "platforms": { "$ref": "#/definitions/Platforms" },
+            "changelog": { "$ref": "#/definitions/ChangelogSettings" },
+            "waitForTracks": {
+              "description": "Wait for these other tracks to be released to start on this track",
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "enum": ["stable", "beta", "alpha"]
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  }
+}

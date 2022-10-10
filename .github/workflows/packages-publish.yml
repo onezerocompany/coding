@@ -209,6 +209,9 @@ jobs:
           - directory: packages/commit
             name: Commit Tool
             build: true
+          - directory: packages/project-manager
+            name: Project Manager
+            build: true
     defaults:
       run:
         working-directory: ${{ matrix.package.directory }}

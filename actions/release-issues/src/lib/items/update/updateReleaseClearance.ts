@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import type { ReleaseTrack } from '@onezerocompany/commit';
+import type { ReleaseTrack } from '@onezerocompany/project-manager';
 import type { Globals } from '../../../globals';
 import type { Item } from '../Item';
 import { ItemStatus } from '../ItemStatus';
@@ -64,9 +64,9 @@ export async function updateReleaseClearance(
   const { track } = item.metadata;
   if (track) {
     if (await dependenciesDone(globals, item, track)) {
-      const trackSettings = globals.settings[track];
+      const trackSettings = globals.projectManifest.releaseTrackSettings(track);
       // In case the release is not manual, we don't need to do anything
-      if (!trackSettings.release.manual) return ItemStatus.skipped;
+      if (trackSettings.release.autoRelease) return ItemStatus.skipped;
 
       if (wasItemChecked(globals, item)) {
         // If the item was checked or was previously succeeded, we mark the item as succeeded

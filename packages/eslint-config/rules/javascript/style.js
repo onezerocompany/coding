@@ -212,7 +212,7 @@ module.exports = {
     // https://eslint.org/docs/rules/max-lines-per-function
     'max-lines-per-function': [
       'warn',
-      { max: 30, skipBlankLines: true, skipComments: true },
+      { max: 50, skipBlankLines: true, skipComments: true },
     ],
 
     // https://eslint.org/docs/rules/max-nested-callbacks

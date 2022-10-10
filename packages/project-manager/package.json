@@ -1,6 +1,6 @@
 {
-  "name": "@onezerocompany/commit",
-  "displayName": "OneZero Commit",
+  "name": "@onezerocompany/project-manager",
+  "displayName": "OneZero Project Manager",
   "version": "0.0.1",
   "categories": [
     "Other"
@@ -12,7 +12,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/onezerocompany/coding.git",
-    "directory": "packages/commit"
+    "directory": "packages/project-manager"
   },
   "license": "MIT",
   "author": {
@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.lib.json && chmod +x ./dist/cli.js",
-    "cli": "npm run build && node ./dist/cli.js",
+    "cli": "ts-node ./src/cli.ts",
     "format": "prettier --write . && eslint --fix .",
     "lint": "prettier --check . && eslint .",
     "test": "npx jest --silent --coverage"
@@ -85,7 +85,6 @@
   "devDependencies": {
     "@onezerocompany/eslint-config": "file:../eslint-config",
     "@onezerocompany/prettier-config": "file:../prettier-config",
-    "@onezerocompany/project-manager": "file:../project-manager",
     "@types/cli-table": "^0.3.0",
     "@types/node": "^17.0.23",
     "@types/prompts": "^2.0.14",
@@ -93,6 +92,7 @@
     "@types/yaml": "^1.9.7",
     "eslint": "^8.13.0",
     "prettier": "^2.6.2",
+    "ts-node": "^10.9.1",
     "typescript": "^4.6.3"
   },
   "engines": {

@@ -33,10 +33,14 @@ interface QueryOutput {
  *   const ids = await loadAssignees(globals);
  */
 export async function loadAssignees(globals: Globals): Promise<string[]> {
-  const { graphql, settings } = globals;
+  const { graphql, projectManifest } = globals;
+
+  const assignees = projectManifest.permissions
+    .filter((permission) => permission.assignIssue)
+    .map((permission) => permission.username);
 
   const ids = await Promise.all(
-    settings.assignees.map(async (assignee) => {
+    assignees.map(async (assignee) => {
       const { user }: QueryOutput = await graphql(query, {
         user: assignee,
       });

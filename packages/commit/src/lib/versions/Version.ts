@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { ReleaseTrack } from './ReleaseTrack';
+import { ReleaseTrack } from '@onezerocompany/project-manager';
 import { VersionBump } from './VersionBump';
 
 /** A JSON representation of a Version. */

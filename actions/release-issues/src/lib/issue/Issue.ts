@@ -5,9 +5,10 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { parseMessage, ReleaseTrack } from '@onezerocompany/commit';
+import { parseMessage } from '@onezerocompany/commit';
 import type { VersionJSON } from '@onezerocompany/commit/dist/lib/versions/Version';
 import { Version } from '@onezerocompany/commit/dist/lib/versions/Version';
+import { ReleaseTrack } from '@onezerocompany/project-manager';
 import type { Globals } from '../../globals';
 import type { Commit } from '../definitions/Commit';
 import type { Item, ItemJSON } from '../items/Item';

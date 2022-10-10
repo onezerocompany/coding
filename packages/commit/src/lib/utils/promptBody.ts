@@ -45,17 +45,7 @@ function readBodyFile(tmpFilePath: string): string {
   return content;
 }
 
-/**
- * Create a commit body file in the git root directory.
- *
- * @param previous - The previous body (if any).
- * @returns The path to the temporary file.
- * @example createBodyFile('This is the previous body.')
- */
-export function promptBody(previous?: string | null): BodyValidator {
-  // Create a temporary file with instructions
-
-  const instructions = `
+const instructions = `
   # Please enter the commit body below.
   # Lines starting with '#' will be ignored
   # empty lines around the message will be trimmed
@@ -65,10 +55,20 @@ export function promptBody(previous?: string | null): BodyValidator {
   # --------------------------------------------------
   # save this file and close the editor to return
 `
-    .split('\n')
-    .map((line) => line.trim())
-    .join('\n')
-    .trim();
+  .split('\n')
+  .map((line) => line.trim())
+  .join('\n')
+  .trim();
+
+/**
+ * Create a commit body file in the git root directory.
+ *
+ * @param previous - The previous body (if any).
+ * @returns The path to the temporary file.
+ * @example createBodyFile('This is the previous body.')
+ */
+export function promptBody(previous?: string | null): BodyValidator {
+  // Create a temporary file with instructions
 
   // Create a temporary file
 
@@ -81,8 +81,10 @@ export function promptBody(previous?: string | null): BodyValidator {
     },
   );
 
-  // In case the `code` command is available, use it to open the file
-  // use which to check if the command is available
+  /*
+   * In case the `code` command is available, use it to open the file
+   * use which to check if the command is available
+   */
   if (spawnSync('which', ['code']).status === 0) {
     spawnSync('code', ['-w', tmpFilePath], { stdio: 'ignore' });
   } else {

@@ -6,8 +6,8 @@
  */
 
 import { createHash } from 'crypto';
-import type { ReleaseTrack } from '@onezerocompany/commit';
 import { debug } from '@actions/core';
+import type { ReleaseTrack } from '@onezerocompany/project-manager';
 import type { Globals } from '../../globals';
 import { icons } from './icons';
 import { ItemStatus } from './ItemStatus';

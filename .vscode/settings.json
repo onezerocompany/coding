@@ -4,11 +4,16 @@
   "editor.formatOnSave": true,
   "editor.wordWrap": "on",
 
+  "yaml.validate": true,
+  "yaml.schemas": {
+    "schemas/project-manifest.json": ["project-manifest.yaml"]
+  },
+
   "files.exclude": {
     "**/node_modules": true,
     "**/package-lock.json": true,
     "**/.git": true,
-    "**/dist": false,
+    "**/dist": true,
     "**/coverage": true,
     "**/dist-reference": true
   },
@@ -28,6 +33,7 @@
   "eslint.workingDirectories": [
     "packages/eslint-config",
     "packages/commit",
+    "packages/project-manager",
     "packages/prettier-config",
     "packages/tsconfig",
     "actions/pr-commit-check",

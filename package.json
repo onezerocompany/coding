@@ -27,6 +27,7 @@
     "packages/prettier-config",
     "packages/tsconfig",
     "packages/eslint-config",
+    "packages/project-manager",
     "packages/commit",
     "packages/onezero-themes",
     "actions/pr-commit-check",
@@ -58,6 +59,7 @@
     },
     "projects": [
       "<rootDir>/packages/commit",
+      "<rootDir>/packages/project-manager",
       "<rootDir>/packages/eslint-config",
       "<rootDir>/packages/prettier-config",
       "<rootDir>/packages/tsconfig",

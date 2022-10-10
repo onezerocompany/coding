@@ -24,8 +24,8 @@ export async function updateChangelogApproval(
 ): Promise<ItemStatus> {
   const { track } = item.metadata;
   if (track) {
-    const trackSettings = globals.settings[track];
-    if (!trackSettings.release.manual) return ItemStatus.skipped;
+    const trackSettings = globals.projectManifest.releaseTrackSettings(track);
+    if (trackSettings.release.autoRelease) return ItemStatus.skipped;
 
     // Either changelog was already approved or the line has a checkmark in it
     if (item.status === ItemStatus.succeeded || wasItemChecked(globals, item)) {

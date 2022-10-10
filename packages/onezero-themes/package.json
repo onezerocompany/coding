@@ -30,7 +30,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "echo 'This is a theme package and does not need to be built.'"
+    "build": "echo 'This is a theme package and does not need to be built.'",
+    "lint": "npx prettier --check ."
   },
   "contributes": {
     "themes": [
@@ -46,7 +47,9 @@
       }
     ]
   },
+  "prettier": "@onezerocompany/prettier-config",
   "devDependencies": {
+    "@onezerocompany/prettier-config": "../prettier-config",
     "vsce": "^2.11.0"
   },
   "engines": {
