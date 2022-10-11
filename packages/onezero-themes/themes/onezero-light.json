@@ -244,12 +244,6 @@
   },
   "tokenColors": [
     {
-      "settings": {
-        "background": "#f8f9fa",
-        "foreground": "#5c6166"
-      }
-    },
-    {
       "name": "Regular Expressions and Escape Characters",
       "scope": ["string.regexp", "constant.character", "constant.other"],
       "settings": {
@@ -261,20 +255,6 @@
       "scope": ["constant.numeric"],
       "settings": {
         "foreground": "#a37acc"
-      }
-    },
-    {
-      "name": "Built-in constants",
-      "scope": ["constant.language"],
-      "settings": {
-        "foreground": "#a37acc"
-      }
-    },
-    {
-      "name": "Variable",
-      "scope": ["variable", "variable.parameter.function-call"],
-      "settings": {
-        "foreground": "#5c6166"
       }
     },
     {
@@ -290,13 +270,6 @@
       "settings": {
         "fontStyle": "italic",
         "foreground": "#55b4d4"
-      }
-    },
-    {
-      "name": "Storage",
-      "scope": ["storage"],
-      "settings": {
-        "foreground": "#fa8d3e"
       }
     },
     {
@@ -353,13 +326,6 @@
       }
     },
     {
-      "name": "Function name",
-      "scope": ["entity.name.function"],
-      "settings": {
-        "foreground": "#f2ae49"
-      }
-    },
-    {
       "name": "Function arguments",
       "scope": ["variable.parameter", "meta.parameter"],
       "settings": {
@@ -390,13 +356,6 @@
       "scope": ["entity.name.import", "entity.name.package"],
       "settings": {
         "foreground": "#86b300"
-      }
-    },
-    {
-      "name": "Entity name",
-      "scope": ["entity.name"],
-      "settings": {
-        "foreground": "#399ee6"
       }
     },
     {
@@ -502,14 +461,6 @@
       ],
       "settings": {
         "foreground": "#787b8099"
-      }
-    },
-    {
-      "name": "CSS Properties",
-      "scope": ["support.type.property-name"],
-      "settings": {
-        "fontStyle": "normal",
-        "foreground": "#55b4d4"
       }
     },
     {
@@ -682,20 +633,23 @@
       }
     },
     {
-      "name": "String",
+      "scope": ["storage"],
+      "settings": {
+        "foreground": "#f51c85"
+      }
+    },
+    {
       "scope": ["string", "constant.other.symbol"],
       "settings": {
         "foreground": "#4a4c55"
       }
     },
     {
-      "name": "Comment",
       "scope": [
         "comment",
         "punctuation.separator",
         "punctuation.terminator",
         "punctuation.accessor",
-        "punctuation.section",
         "punctuation.support.type.property-name.begin.json",
         "punctuation.support.type.property-name.end.json",
         "punctuation.definition.array.begin.json.comments",
@@ -713,7 +667,6 @@
       }
     },
     {
-      "name": "Keyword",
       "scope": ["keyword"],
       "settings": {
         "foreground": "#035ae6"
@@ -726,7 +679,6 @@
       }
     },
     {
-      "name": "Operators",
       "scope": ["keyword.operator"],
       "settings": {
         "foreground": "#5d70ee"
@@ -739,16 +691,7 @@
       }
     },
     {
-      "scope": [
-        "punctuation.definition.string.begin.json",
-        "punctuation.definition.string.end.json"
-      ],
-      "settings": {
-        "foreground": "#574e4e"
-      }
-    },
-    {
-      "scope": ["variable", "source.json"],
+      "scope": ["variable", "source.json", "variable.parameter.function-call"],
       "settings": {
         "foreground": "#1ac87d"
       }
