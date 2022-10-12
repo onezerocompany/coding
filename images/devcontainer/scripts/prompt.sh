@@ -1,6 +1,8 @@
 #!/bin/bash
 
-WORKSPACE_DIRECTORY="/workspaces/$(ls /workspaces | head -n 1)"
+# Workspace directory is either 'WORKSPACE_DIR' or the first directory in the workspaces folder
+WORKSPACE_DIRECTORY=${WORKSPACE_DIR:-$(ls -d /workspaces/* | head -n 1)}
+
 PROJECT="$(basename "${WORKSPACE_DIRECTORY}")"
 CURRENT_DIRECTORY="$(pwd)"
 
