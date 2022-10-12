@@ -11,8 +11,8 @@ echo "$PERMANENT_SCRIPT_FOLDER/motd.sh" >> /etc/zsh/zshrc
 echo "$PERMANENT_SCRIPT_FOLDER/motd.sh" >> /etc/profile
 
 # Add alias for cd to the first workspace folder
-echo "alias cdw='cd /workspaces/\$(ls /workspaces | head -n 1)'" >> /etc/zsh/zshenv
-echo "alias cdw='cd /workspaces/\$(ls /workspaces | head -n 1)'" >> /etc/profile
+echo "alias cdw='cd \${WORKSPACE_DIR:-\$(ls -d /workspaces/* | head -n 1)}'" >> /etc/zsh/zshenv
+echo "alias cdw='cd \${WORKSPACE_DIR:-\$(ls -d /workspaces/* | head -n 1)}'" >> /etc/profile
 
 # Add alias for motd
 echo "alias motd='$PERMANENT_SCRIPT_FOLDER/motd.sh'" >> /etc/zsh/zshenv
