@@ -17,8 +17,11 @@ RUN npm install -g firebase-tools
 RUN mkdir -p /emulators
 RUN chown -R node:node /emulators
 
-# Install latest jre
-RUN apk add --no-cache openjdk11-jre-headless bash
+# Install latest jre on debian
+RUN apt-get update && apt-get install -y openjdk-11-jre-headless bash
+
+# Cleanup apt-get
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup emulators
 RUN firebase setup:emulators:firestore && \
