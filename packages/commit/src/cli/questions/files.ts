@@ -35,7 +35,6 @@ export function filesQuestion(files: FileItem[]): PromptObject {
     message: 'Files',
     choices: files,
     min: 1,
-    max: 15,
     hint: 'select the files you want to commit',
     /**
      * Formats the user's input.
