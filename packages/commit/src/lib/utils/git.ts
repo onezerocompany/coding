@@ -59,6 +59,7 @@ export function findGitRoot(): string {
  */
 export function getGitFiles(gitFolder: string): FileItem[] {
   const stagedFiles = getStagedFiles(gitFolder);
+  const noStagedFiles = stagedFiles.length === 0 || stagedFiles[0] === '';
 
   try {
     const output = execSync('git status -s --untracked-files=all --porcelain', {
@@ -75,7 +76,13 @@ export function getGitFiles(gitFolder: string): FileItem[] {
           .split('->')
           .map((file) => file.trim());
 
-        const selected = files.some((file) => stagedFiles.includes(file));
+        /*
+         * Mark the file as selected if it is staged
+         * or if there are no staged files select all files
+         */
+        const selected = noStagedFiles
+          ? true
+          : files.some((file) => stagedFiles.includes(file));
         return files.map((file) => ({
           title: file,
           value: files,
