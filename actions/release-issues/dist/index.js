@@ -377,7 +377,7 @@ class Context{repo;action;issue;previousVersion;commits;bump=n.ib.none;construct
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-const _=`\n  query latestReleases($owner:String!, $repo:String!) {\n    repository(owner:$owner, name:$repo) {\n      releases(last:10) {\n        nodes {\n          name,\n        }\n      }\n    }\n  }\n`;async function previousVersion(o){const{repository:t}=await o(_,{owner:p.context.repo.owner,repo:p.context.repo.repo});if(!t){(0,e.error)("Could not load previous versions.");return null}(0,e.debug)(`Loaded previous releases:\n ${t.releases.nodes.map((e=>e.name)).join("\n")}`);return t.releases.nodes.map((e=>n.Gf.fromString(e.name))).sort(n.Gf.sort).reverse()[0]??null}
+const _=`\n  query latestReleases($owner:String!, $repo:String!) {\n    repository(owner:$owner, name:$repo) {\n      releases(orderBy: {\n        field: CREATED_AT,\n        direction: DESC\n      }, first: 10) {\n        nodes {\n          name,\n        }\n      }\n    }\n  }\n`;async function previousVersion(o){const{repository:t}=await o(_,{owner:p.context.repo.owner,repo:p.context.repo.repo});if(!t){(0,e.error)("Could not load previous versions.");return null}(0,e.debug)(`Loaded previous releases:\n ${t.releases.nodes.map((e=>e.name)).join("\n")}`);return t.releases.nodes.map((e=>n.Gf.fromString(e.name))).sort(n.Gf.sort).reverse()[0]??null}
 /**
  * @file Contains the.
  * @copyright 2022 OneZero Company

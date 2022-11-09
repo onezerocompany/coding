@@ -13,7 +13,10 @@ import { Version } from '@onezerocompany/commit';
 const query = `
   query latestReleases($owner:String!, $repo:String!) {
     repository(owner:$owner, name:$repo) {
-      releases(last:10) {
+      releases(orderBy: {
+        field: CREATED_AT,
+        direction: DESC
+      }, first: 10) {
         nodes {
           name,
         }
