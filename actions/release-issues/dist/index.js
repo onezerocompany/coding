@@ -363,7 +363,7 @@ function loadIssueFromContext(){if(p.context.eventName!=="issues"){throw new Err
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function determineBump(e){let o=n.ib.none;for(const t of e){const e=t.message.category.versioning.bump;if(n.V9.indexOf(e)>n.V9.indexOf(o)){o=e}}return o}
+function determineBump(o){let t=n.ib.none;for(const a of o){const o=a.message.category.versioning.bump;(0,e.info)(`Determined bump for commit ${a.sha}: ${o}`);if(n.V9.indexOf(o)>n.V9.indexOf(t)){t=o}}return t}
 /**
  * @file Contains the definition of the context object.
  * @copyright 2022 OneZero Company
@@ -377,7 +377,7 @@ class Context{repo;action;issue;previousVersion;commits;bump=n.ib.none;construct
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-const _=`\n  query latestReleases($owner:String!, $repo:String!) {\n    repository(owner:$owner, name:$repo) {\n      releases(last:10) {\n        nodes {\n          name,\n        }\n      }\n    }\n  }\n`;async function previousVersion(e){const{repository:o}=await e(_,{owner:p.context.repo.owner,repo:p.context.repo.repo});if(!o)return null;return o.releases.nodes.map((e=>n.Gf.fromString(e.name))).sort(n.Gf.sort).reverse()[0]??null}
+const _=`\n  query latestReleases($owner:String!, $repo:String!) {\n    repository(owner:$owner, name:$repo) {\n      releases(last:10) {\n        nodes {\n          name,\n        }\n      }\n    }\n  }\n`;async function previousVersion(o){const{repository:t}=await o(_,{owner:p.context.repo.owner,repo:p.context.repo.repo});if(!t){(0,e.error)("Could not load previous versions.");return null}(0,e.debug)(`Loaded previous releases:\n ${t.releases.nodes.map((e=>e.name)).join("\n")}`);return t.releases.nodes.map((e=>n.Gf.fromString(e.name))).sort(n.Gf.sort).reverse()[0]??null}
 /**
  * @file Contains the.
  * @copyright 2022 OneZero Company
