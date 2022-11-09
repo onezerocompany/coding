@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { debug, error } from '@actions/core';
+import { debug as logDebug, error as logError } from '@actions/core';
 import type { getOctokit } from '@actions/github';
 import { context as githubContext } from '@actions/github';
 import { Version } from '@onezerocompany/commit';
@@ -56,13 +56,13 @@ export async function previousVersion(
   });
 
   if (!repository) {
-    error('Could not load previous versions.');
+    logError('Could not load previous versions.');
     return null;
   }
 
-  debug(
+  logDebug(
     `Loaded previous releases:\n ${repository.releases.nodes
-      .map((r) => r.name)
+      .map((version) => version.name)
       .join('\n')}`,
   );
 
