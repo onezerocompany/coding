@@ -75,6 +75,7 @@ apt_get_update_if_needed()
 if [ "${PACKAGES_ALREADY_INSTALLED}" != "true" ]; then
 
     package_list="apt-utils \
+        iputils-ping \
         openssh-client \
         gnupg2 \
         dirmngr \
