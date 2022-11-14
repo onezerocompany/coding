@@ -24,10 +24,10 @@ async function run(): Promise<void> {
   switch (context.action) {
     /** Create a new issue. */
     case Action.create: {
-      const { created } = await createIssue(globals);
-      if (created) {
+      const { created, failed } = await createIssue(globals);
+      if (created && !failed) {
         info(`Created issue: ${context.issue.title}`);
-      } else {
+      } else if (failed) {
         setFailed('Failed to create issue');
       }
       break;

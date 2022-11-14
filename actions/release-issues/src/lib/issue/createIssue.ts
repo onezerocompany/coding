@@ -103,15 +103,15 @@ async function closeIfNeeded(
  */
 export async function createIssue(
   globals: Globals,
-): Promise<{ created: boolean }> {
+): Promise<{ created: boolean; failed: boolean }> {
   if (globals.context.bump === VersionBump.none) {
     info('No release needed, skipping issue creation');
-    return { created: false };
+    return { created: false, failed: false };
   }
 
   if (await issueExists(globals)) {
     info(`Issue already exists: ${globals.context.issue.title}`);
-    return { created: false };
+    return { created: false, failed: false };
   }
 
   const { graphql, context } = globals;
@@ -132,9 +132,9 @@ export async function createIssue(
     });
     await closeIfNeeded(globals, queryResponse);
 
-    return { created: true };
+    return { created: true, failed: false };
   } catch (createError: unknown) {
     logError(createError as Error);
-    return { created: false };
+    return { created: false, failed: true };
   }
 }
