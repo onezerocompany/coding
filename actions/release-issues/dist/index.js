@@ -118,7 +118,7 @@
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
- */Object.defineProperty(o,"__esModule",{value:true});o.ProjectManifest=void 0;const t=n(9560);const a=n(2021);class ProjectManifest{constructor(e){if(typeof e==="object"&&e!==null){const o=e;this.permissions=(0,t.parsePermissionArray)(o["permissions"]??[]);this.releaseTracks=(0,a.parseReleaseTracks)(o["releaseTracks"])}else{this.permissions=[];this.releaseTracks={}}}releaseTrackSettings(e){return this.releaseTracks[e]??{enabled:false,changelog:{fallbackMessage:"Minor changes and bug fixes.",autoApproval:false,footers:[],headers:[],includeInternal:false},release:{autoRelease:false,tagTemplate:"{{version}}",versionTemplate:"{{version}}"},platforms:[],waitForTracks:[]}}}o.ProjectManifest=ProjectManifest},6915:(e,o)=>{"use strict";
+ */Object.defineProperty(o,"__esModule",{value:true});o.ProjectManifest=void 0;const t=n(9560);const a=n(2021);class ProjectManifest{constructor(e){if(typeof e==="object"&&e!==null){const o=e;this.mainBranch=o["mainBranch"];this.permissions=(0,t.parsePermissionArray)(o["permissions"]??[]);this.releaseTracks=(0,a.parseReleaseTracks)(o["releaseTracks"])}else{this.mainBranch="main";this.permissions=[];this.releaseTracks={}}}releaseTrackSettings(e){return this.releaseTracks[e]??{enabled:false,changelog:{fallbackMessage:"Minor changes and bug fixes.",autoApproval:false,footers:[],headers:[],includeInternal:false},release:{autoRelease:false,tagTemplate:"{{version}}",versionTemplate:"{{version}}"},platforms:[],waitForTracks:[]}}}o.ProjectManifest=ProjectManifest},6915:(e,o)=>{"use strict";
 /**
  * @file Release track definition.
  * @copyright 2022 OneZero Company
@@ -328,14 +328,14 @@ var x;(function(e){e["ios"]="ios";e["android"]="android";e["web"]="web";e["macos
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function lastCommit(){const{eventName:e}=p.context;if(e==="push"){const e=p.context.payload;return e.after}return""}function loadCommits(){const{eventName:o}=p.context;if(o==="push"){const o=p.context.payload;if(o.ref!=="refs/heads/main"){(0,e.setFailed)("Only pushes to the main branch are supported");return[]}return o.commits.map((e=>({sha:e.id,message:(0,n.kW)(e.message)})))}(0,e.setFailed)("Unsupported event");return[]}
+function lastCommit(){const{eventName:e}=p.context;if(e==="push"){const e=p.context.payload;return e.after}return""}function loadCommits({projectManifest:o}){const{eventName:t}=p.context;if(t==="push"){const t=p.context.payload;if(t.ref!==`refs/heads/${o.mainBranch}`){(0,e.setFailed)(`Only pushes to the ${o.mainBranch} branch are supported`);return[]}return t.commits.map((e=>({sha:e.id,message:(0,n.kW)(e.message)})))}(0,e.setFailed)("Unsupported event");return[]}
 /**
  * @file Functions for determining the action to take for a release.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function determineAction(){const{eventName:n}=p.context;if(n==="push"){const n=p.context.payload;if(n.ref!=="refs/heads/main"){(0,e.setFailed)("Only pushes to the main branch are supported");return o.stop}return o.create}if(n==="issues"){const e=p.context.payload;if(e.action==="edited"){return o.update}return o.stop}(0,e.setFailed)(new Error("Unsupported event"));return o.stop}
+function determineAction({projectManifest:n}){const{eventName:t}=p.context;if(t==="push"){const t=p.context.payload;if(t.ref!==`refs/heads/${n.mainBranch}`){(0,e.setFailed)(`Only pushes to the ${n.mainBranch} branch are supported`);return o.stop}return o.create}if(t==="issues"){const e=p.context.payload;if(e.action==="edited"){return o.update}return o.stop}(0,e.setFailed)(new Error("Unsupported event"));return o.stop}
 /**
  * @file Contains functions for getting random items from an array.
  * @copyright 2022 OneZero Company
@@ -370,7 +370,7 @@ function determineBump(o){let t=n.ib.none;for(const a of o){const o=a.message.ca
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class Context{repo;action;issue;previousVersion;commits;bump=n.ib.none;constructor(n){this.repo=n.repo;this.action=determineAction();this.previousVersion=n.previousVersion;switch(this.action){case o.create:this.commits=loadCommits();this.bump=determineBump(this.commits);this.issue=this.createIssue(n.projectManifest);break;case o.update:this.commits=[];this.issue=loadIssueFromContext();break;default:(0,e.setFailed)("Unsupported action");this.commits=[];this.issue=new Issue}}createIssue(e){return new Issue({version:this.previousVersion?.bump(this.bump)??new n.Gf,commitish:lastCommit(),changelogs:generateChangelogs(e,this.commits),commits:this.commits,items:[]})}}
+class Context{repo;action;issue;previousVersion;commits;bump=n.ib.none;constructor(n){this.repo=n.repo;this.action=determineAction({projectManifest:n.projectManifest});this.previousVersion=n.previousVersion;switch(this.action){case o.create:this.commits=loadCommits({projectManifest:n.projectManifest});this.bump=determineBump(this.commits);this.issue=this.createIssue(n.projectManifest);break;case o.update:this.commits=[];this.issue=loadIssueFromContext();break;default:(0,e.setFailed)("Unsupported action");this.commits=[];this.issue=new Issue}}createIssue(e){return new Issue({version:this.previousVersion?.bump(this.bump)??new n.Gf,commitish:lastCommit(),changelogs:generateChangelogs(e,this.commits),commits:this.commits,items:[]})}}
 /**
  * @file Contains functions to determine the previous version.
  * @copyright 2022 OneZero Company

@@ -13,6 +13,9 @@ import { parseReleaseTracks } from './ReleaseTrackSettings';
 
 /** Project manifest containing all settings, references and instructions for a project. */
 export class ProjectManifest {
+  /** Name of the main branch */
+  public mainBranch;
+
   /** Permissions assigned to specific users. */
   public permissions: PermissionSettings[];
 
@@ -28,9 +31,11 @@ export class ProjectManifest {
   public constructor(manifest?: unknown) {
     if (typeof manifest === 'object' && manifest !== null) {
       const parsed = manifest as Record<string, unknown>;
+      this.mainBranch = parsed['mainBranch'] as string;
       this.permissions = parsePermissionArray(parsed['permissions'] ?? []);
       this.releaseTracks = parseReleaseTracks(parsed['releaseTracks']);
     } else {
+      this.mainBranch = 'main';
       this.permissions = [];
       this.releaseTracks = {};
     }

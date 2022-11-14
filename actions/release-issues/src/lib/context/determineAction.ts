@@ -11,20 +11,29 @@ import type {
   IssuesEvent,
   PushEvent,
 } from '@octokit/webhooks-definitions/schema';
+import type { ProjectManifest } from '@onezerocompany/project-manager';
 import { Action } from '../definitions/Action';
 
 /**
  * Determine the action to take based on the event context.
  *
+ * @param options - Options for the function.
+ * @param options.projectManifest - Project manifest.
  * @returns The determined action.
  * @example determineAction();
  */
-export function determineAction(): Action {
+export function determineAction({
+  projectManifest,
+}: {
+  projectManifest: ProjectManifest;
+}): Action {
   const { eventName } = eventContext;
   if (eventName === 'push') {
     const pushEvent = eventContext.payload as PushEvent;
-    if (pushEvent.ref !== 'refs/heads/main') {
-      setFailed('Only pushes to the main branch are supported');
+    if (pushEvent.ref !== `refs/heads/${projectManifest.mainBranch}`) {
+      setFailed(
+        `Only pushes to the ${projectManifest.mainBranch} branch are supported`,
+      );
       return Action.stop;
     }
     return Action.create;

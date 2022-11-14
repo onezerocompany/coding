@@ -61,13 +61,17 @@ export class Context {
     previousVersion: Version | null;
   }) {
     this.repo = input.repo;
-    this.action = determineAction();
+    this.action = determineAction({
+      projectManifest: input.projectManifest,
+    });
     this.previousVersion = input.previousVersion;
 
     switch (this.action) {
       /** Create a new issue. */
       case Action.create:
-        this.commits = loadCommits();
+        this.commits = loadCommits({
+          projectManifest: input.projectManifest,
+        });
         this.bump = determineBump(this.commits);
         this.issue = this.createIssue(input.projectManifest);
         break;

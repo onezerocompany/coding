@@ -9,6 +9,7 @@ import { context as eventContext } from '@actions/github';
 import { setFailed } from '@actions/core';
 import type { PushEvent } from '@octokit/webhooks-definitions/schema';
 import { parseMessage } from '@onezerocompany/commit';
+import type { ProjectManifest } from '@onezerocompany/project-manager';
 import type { Commit } from '../definitions/Commit';
 
 /**
@@ -29,15 +30,23 @@ export function lastCommit(): string {
 /**
  * Get the commits from the current event context.
  *
+ * @param options - Options for the function.
+ * @param options.projectManifest - Project manifest.
  * @returns The commits.
  * @example const commits = await loadCommits();
  */
-export function loadCommits(): Commit[] {
+export function loadCommits({
+  projectManifest,
+}: {
+  projectManifest: ProjectManifest;
+}): Commit[] {
   const { eventName } = eventContext;
   if (eventName === 'push') {
     const pushEvent = eventContext.payload as PushEvent;
-    if (pushEvent.ref !== 'refs/heads/main') {
-      setFailed('Only pushes to the main branch are supported');
+    if (pushEvent.ref !== `refs/heads/${projectManifest.mainBranch}`) {
+      setFailed(
+        `Only pushes to the ${projectManifest.mainBranch} branch are supported`,
+      );
       return [];
     }
     return pushEvent.commits.map((commit) => ({
