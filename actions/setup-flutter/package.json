@@ -10,13 +10,16 @@
   },
   "devDependencies": {
     "@onezerocompany/commit": "file:../../packages/commit",
-    "@onezerocompany/prettier-config": "file:../../packages/prettier-config",
     "@onezerocompany/eslint-config": "file:../../packages/eslint-config",
+    "@onezerocompany/prettier-config": "file:../../packages/prettier-config",
+    "@types/node-fetch": "^2.6.2",
     "@vercel/ncc": "^0.33.4"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.1"
+    "@actions/github": "^5.0.1",
+    "@actions/tool-cache": "^2.0.1",
+    "node-fetch": "^2.6.7"
   },
   "jest": {
     "globals": {

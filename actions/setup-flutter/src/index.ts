@@ -9,12 +9,31 @@ import { resolve } from 'path';
 import { cwd } from 'process';
 import { debug, getInput } from '@actions/core';
 import { applyCredentials } from './credentials';
-import { setup } from './setup';
+import { setupSdk } from './setup/setup';
+import { determineArch } from './setup/determineArch';
+import { FlutterPlatform } from './setup/determinePlatform';
 
 // Inputs
 
 const workingDirectory = getInput('working_directory');
 const pubCredentials = getInput('pub_credentials');
+
+/**
+ * Function that gets an action input but allows it to be undefined.
+ * It will return undefined if the input is empty.
+ *
+ * @param name - The name of the input.
+ * @returns The input value or undefined.
+ * @example getOptionalInput('working_directory');
+ */
+function getOptionalInput(name: string): string | undefined {
+  return (
+    getInput(name, {
+      required: false,
+      // eslint-disable-next-line no-undefined
+    }) || undefined
+  );
+}
 
 /**
  * Main function that runs the action.
@@ -26,10 +45,22 @@ async function run(): Promise<void> {
   debug(`Running in directory: ${directory}`);
 
   applyCredentials(pubCredentials);
-  await setup({
-    version: getInput('version'),
-    channel: getInput('channel'),
-  });
+
+  const normalized = {
+    version: getOptionalInput('version') ?? 'latest',
+    channel: getOptionalInput('channel') ?? 'stable',
+    /*
+     * Platform: determinePlatform({
+     *   platform: getOptionalInput('platform'),
+     * }),
+     */
+    platform: FlutterPlatform.macos,
+    arch: determineArch({
+      arch: getOptionalInput('arch'),
+    }),
+  };
+
+  await setupSdk({ ...normalized });
 }
 
 // eslint-disable-next-line no-void

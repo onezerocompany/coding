@@ -95,5 +95,6 @@
     "#dd39cc"
   ],
 
-  "markdown-preview-github-styles.colorTheme": "system"
+  "markdown-preview-github-styles.colorTheme": "system",
+  "workbench.colorTheme": "OneZero Dark"
 }

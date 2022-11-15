@@ -8,6 +8,7 @@
 import { resolve } from 'path';
 import { homedir } from 'os';
 import { mkdirSync, writeFileSync, symlinkSync } from 'fs';
+import { info } from '@actions/core';
 
 /**
  * Set up credentials to upload to pub.dev.
@@ -17,7 +18,7 @@ import { mkdirSync, writeFileSync, symlinkSync } from 'fs';
  */
 export function applyCredentials(credentials: string): void {
   if (credentials.length > 0) {
-    process.stdout.write('Applying credentials...');
+    info('Applying credentials...');
 
     const libraryFolder = resolve(
       `${homedir()}/Library/Application Support/dart`,
@@ -36,5 +37,7 @@ export function applyCredentials(credentials: string): void {
       pubspecFile,
       resolve(`${homedir()}/.pub-cache/credentials.json`),
     );
+
+    info('Credentials applied.');
   }
 }
