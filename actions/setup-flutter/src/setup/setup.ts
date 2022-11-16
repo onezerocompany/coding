@@ -76,7 +76,7 @@ export async function setupSdk({
 
   // Install flutter into profiles
   info('Installing...');
-  const flutterBin = resolve(cachedFolder, 'bin');
+  const flutterBin = resolve(cachedFolder, 'flutter', 'bin');
   if (isDebug()) {
     // Show contents of flutter bin folder
     debug(`Adding ${flutterBin} to PATH`);
