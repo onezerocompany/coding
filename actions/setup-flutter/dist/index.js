@@ -26,14 +26,14 @@ function findRelease({releases:e,platform:p,filter:a}){const d=e.releases.find((
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function extract({path:e,extension:p}){if(p===".zip"){return(0,i.extractZip)(e)}else if(p===".tar.xz"){return(0,i.extractTar)(e)}throw new Error(`Unsupported file extension: ${p}`)}
+async function extract({path:e,filename:p}){if(p.endsWith(".zip")){return(0,i.extractZip)(e)}else if(p.endsWith(".tar.xz")){return(0,i.extractTar)(e)}throw new Error(`Unsupported file for: ${p}`)}
 /**
  * @file Contains a function to fetch the Flutter SDK from Google.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function fetchFromGoogle({downloadUrl:p,cacheVersion:d,cachePlatform:r}){(0,a.info)(`Downloading...`);const l=await(0,i.downloadTool)(p);(0,a.info)(" done\n");(0,a.info)("Decompressing...");const s=(0,e.extname)(p);const m=await extract({path:l,extension:s});(0,a.info)(" done\n");(0,a.info)("Caching...");const o=await(0,i.cacheDir)(m,"flutter",d,r);(0,a.info)(" done\n");(0,a.info)("Cleaning up download...");(0,t.rmSync)(l);(0,a.info)(" done\n");return o}
+async function fetchFromGoogle({downloadUrl:p,cacheVersion:d,cachePlatform:r}){(0,a.info)(`Downloading...`);const l=await(0,i.downloadTool)(p);(0,a.info)(" done\n");(0,a.info)("Decompressing...");const s=(0,e.basename)(p);const m=await extract({path:l,filename:s});(0,a.info)(" done\n");(0,a.info)("Caching...");const o=await(0,i.cacheDir)(m,"flutter",d,r);(0,a.info)(" done\n");(0,a.info)("Cleaning up download...");(0,t.rmSync)(l);(0,a.info)(" done\n");return o}
 /**
  * @file Function that sets up the flutter environment.
  * @copyright 2022 OneZero Company

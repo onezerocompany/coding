@@ -12,21 +12,21 @@ import { extractTar, extractZip } from '@actions/tool-cache';
  *
  * @param inputs - Function inputs.
  * @param inputs.path - Path to the archive.
- * @param inputs.extension - Archive extension.
+ * @param inputs.filename - Name of the archive.
  * @returns The path to the extracted folder.
  * @example const extractedFolder = await extract(downloadedPath);
  */
 export async function extract({
   path,
-  extension,
+  filename,
 }: {
   path: string;
-  extension: string;
+  filename: string;
 }): Promise<string> {
-  if (extension === '.zip') {
+  if (filename.endsWith('.zip')) {
     return extractZip(path);
-  } else if (extension === '.tar.xz') {
+  } else if (filename.endsWith('.tar.xz')) {
     return extractTar(path);
   }
-  throw new Error(`Unsupported file extension: ${extension}`);
+  throw new Error(`Unsupported file for: ${filename}`);
 }

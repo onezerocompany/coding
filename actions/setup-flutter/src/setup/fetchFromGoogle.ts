@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { extname } from 'path';
+import { basename } from 'path';
 import { rmSync } from 'fs';
 import { info } from '@actions/core';
 import { cacheDir, downloadTool } from '@actions/tool-cache';
@@ -41,10 +41,10 @@ export async function fetchFromGoogle({
 
   // Decompress the file
   info('Decompressing...');
-  const extension = extname(downloadUrl);
+  const filename = basename(downloadUrl);
   const extractedFolder = await extract({
     path: downloadedPath,
-    extension,
+    filename,
   });
   info(' done\n');
 
