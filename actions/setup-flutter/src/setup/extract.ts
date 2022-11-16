@@ -26,7 +26,8 @@ export async function extract({
   if (filename.endsWith('.zip')) {
     return extractZip(path);
   } else if (filename.endsWith('.tar.xz')) {
-    return extractTar(path);
+    // eslint-disable-next-line no-undefined
+    return extractTar(path, undefined, 'xf');
   }
   throw new Error(`Unsupported file for: ${filename}`);
 }
