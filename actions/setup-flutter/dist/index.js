@@ -47,11 +47,11 @@ async function setupSdk({version:e,channel:p,platform:d,arch:t}){(0,a.info)("Res
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-var m;(function(e){e["linux"]="linux";e["macos"]="macos";e["windows"]="windows"})(m||(m={}));function determinePlatform({platform:e}){const p=e??currentPlatform();switch(p){case"darwin":return m.macos;case"win32":return m.windows;case"linux":return m.linux;default:throw new Error(`Unsupported platform: ${p}`)}}
+var m;(function(e){e["linux"]="linux";e["macos"]="macos";e["windows"]="windows"})(m||(m={}));function determinePlatform({platform:e}){const p=e??(0,d.platform)();switch(p){case"darwin":return m.macos;case"win32":return m.windows;case"linux":return m.linux;default:throw new Error(`Unsupported platform: ${p}`)}}
 /**
  * @file Index file for the setup-flutter action.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-const o=(0,a.getInput)("working_directory");const n=(0,a.getInput)("pub_credentials");function getOptionalInput(e){return(0,a.getInput)(e,{required:false})||undefined}async function run(){const d=(0,e.resolve)((0,p.cwd)(),o);(0,a.debug)(`Running in directory: ${d}`);applyCredentials(n);const t={version:getOptionalInput("version")??"latest",channel:getOptionalInput("channel")??"stable",platform:m.macos,arch:determineArch({arch:getOptionalInput("arch")})};await setupSdk({...t})}void run()})();module.exports=__webpack_exports__})();
+const o=(0,a.getInput)("working_directory");const n=(0,a.getInput)("pub_credentials");function getOptionalInput(e){return(0,a.getInput)(e,{required:false})||undefined}async function run(){const d=(0,e.resolve)((0,p.cwd)(),o);(0,a.debug)(`Running in directory: ${d}`);applyCredentials(n);const t={version:getOptionalInput("version")??"latest",channel:getOptionalInput("channel")??"stable",platform:determinePlatform({platform:getOptionalInput("platform")}),arch:determineArch({arch:getOptionalInput("arch")})};await setupSdk({...t})}void run()})();module.exports=__webpack_exports__})();

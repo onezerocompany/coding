@@ -11,7 +11,7 @@ import { debug, getInput } from '@actions/core';
 import { applyCredentials } from './credentials';
 import { setupSdk } from './setup/setup';
 import { determineArch } from './setup/determineArch';
-import { FlutterPlatform } from './setup/determinePlatform';
+import { determinePlatform } from './setup/determinePlatform';
 
 // Inputs
 
@@ -54,7 +54,9 @@ async function run(): Promise<void> {
      *   platform: getOptionalInput('platform'),
      * }),
      */
-    platform: FlutterPlatform.macos,
+    platform: determinePlatform({
+      platform: getOptionalInput('platform'),
+    }),
     arch: determineArch({
       arch: getOptionalInput('arch'),
     }),
