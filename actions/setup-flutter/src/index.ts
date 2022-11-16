@@ -7,7 +7,7 @@
 
 import { resolve } from 'path';
 import { cwd } from 'process';
-import { debug, getInput } from '@actions/core';
+import { debug, getInput, isDebug } from '@actions/core';
 import { applyCredentials } from './credentials';
 import { setupSdk } from './setup/setup';
 import { determineArch } from './setup/determineArch';
@@ -64,7 +64,7 @@ async function run(): Promise<void> {
   };
 
   await setupSdk({ ...normalized });
-  checkFlutter();
+  if (isDebug()) checkFlutter();
 }
 
 // eslint-disable-next-line no-void
