@@ -40,7 +40,7 @@ async function fetchFromGoogle({downloadUrl:p,cacheVersion:d,cachePlatform:r}){(
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function setupSdk({version:e,channel:p,platform:d,arch:t}){(0,a.info)("Resolving version to install...");(0,a.info)(` specified: ${e}`);const r=await determineVersion({version:e,channel:p,platform:d,arch:t});(0,a.info)(` resolved to: ${r.version} (${r.channel}) for ${r.platform} (${r.arch})`);(0,a.info)("Fetching Flutter SDK...");(0,a.info)(" checking cache...");const l=`${r.version}-${r.channel}`;const s=`${r.platform}-${r.arch}`;let m=(0,i.find)("flutter",l,s);if(m){(0,a.info)(" found in cache.\n")}else{(0,a.info)(" not found in cache, downloading...");m=await fetchFromGoogle({downloadUrl:r.downloadUrl,cacheVersion:l,cachePlatform:s})}(0,a.info)("Installing...");(0,a.addPath)(`${m}/bin`);(0,a.info)(" done\n")}
+async function setupSdk({version:p,channel:d,platform:t,arch:r}){(0,a.info)("Resolving version to install...");(0,a.info)(` specified: ${p}`);const l=await determineVersion({version:p,channel:d,platform:t,arch:r});(0,a.info)(` resolved to: ${l.version} (${l.channel}) for ${l.platform} (${l.arch})`);(0,a.info)("Fetching Flutter SDK...");(0,a.info)(" checking cache...");const s=`${l.version}-${l.channel}`;const m=`${l.platform}-${l.arch}`;let o=(0,i.find)("flutter",s,m);if(o){(0,a.info)(" found in cache.\n")}else{(0,a.info)(" not found in cache, downloading...");o=await fetchFromGoogle({downloadUrl:l.downloadUrl,cacheVersion:s,cachePlatform:m})}(0,a.info)("Installing...");const n=(0,e.resolve)(o,"bin");(0,a.debug)(`Adding ${n} to PATH`);(0,a.addPath)(n);(0,a.info)(" done\n")}
 /**
  * @file Contains a function to detect the current platform.
  * @copyright 2022 OneZero Company

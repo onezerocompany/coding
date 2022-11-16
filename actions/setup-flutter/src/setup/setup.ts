@@ -5,7 +5,8 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { addPath, info } from '@actions/core';
+import { resolve } from 'path';
+import { addPath, debug, info } from '@actions/core';
 import { find } from '@actions/tool-cache';
 import type { FlutterArch } from './determineArch';
 import type { FlutterPlatform } from './determinePlatform';
@@ -74,6 +75,8 @@ export async function setupSdk({
 
   // Install flutter into profiles
   info('Installing...');
-  addPath(`${cachedFolder}/bin`);
+  const flutterBin = resolve(cachedFolder, 'bin');
+  debug(`Adding ${flutterBin} to PATH`);
+  addPath(flutterBin);
   info(' done\n');
 }
