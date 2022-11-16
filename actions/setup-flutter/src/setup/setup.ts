@@ -6,7 +6,8 @@
  */
 
 import { resolve } from 'path';
-import { addPath, debug, info } from '@actions/core';
+import { addPath, debug, info, isDebug } from '@actions/core';
+import { exec } from '@actions/exec';
 import { find } from '@actions/tool-cache';
 import type { FlutterArch } from './determineArch';
 import type { FlutterPlatform } from './determinePlatform';
@@ -76,7 +77,12 @@ export async function setupSdk({
   // Install flutter into profiles
   info('Installing...');
   const flutterBin = resolve(cachedFolder, 'bin');
-  debug(`Adding ${flutterBin} to PATH`);
+  if (isDebug()) {
+    // Show contents of flutter bin folder
+    debug(`Adding ${flutterBin} to PATH`);
+    debug(`Contents of ${flutterBin}:`);
+    await exec('ls', ['-l', flutterBin]);
+  }
   addPath(flutterBin);
   info(' done\n');
 }
