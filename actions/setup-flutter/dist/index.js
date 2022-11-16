@@ -33,7 +33,7 @@ async function extract({path:e,filename:p}){if(p.endsWith(".zip")){return(0,i.ex
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function fetchFromGoogle({downloadUrl:p,cacheVersion:d,cachePlatform:r}){(0,a.info)(`Downloading...`);const l=await(0,i.downloadTool)(p);(0,a.info)(" done\n");(0,a.info)("Decompressing...");const s=(0,e.basename)(p);const m=await extract({path:l,filename:s});(0,a.info)(" done\n");(0,a.info)("Caching...");const o=await(0,i.cacheDir)(m,"flutter",d,r);(0,a.info)(" done\n");(0,a.info)("Cleaning up download...");(0,t.rmSync)(l);(0,a.info)(" done\n");return o}
+async function fetchFromGoogle({downloadUrl:p,cacheVersion:d,cachePlatform:t}){(0,a.info)(`Downloading...`);const r=await(0,i.downloadTool)(p);(0,a.info)(" done\n");(0,a.info)("Decompressing...");const l=(0,e.basename)(p);const s=await extract({path:r,filename:l});(0,a.info)(" done\n");(0,a.info)("Caching...");const m=await(0,i.cacheDir)(s,"flutter",d,t);(0,a.info)(" done\n");return m}
 /**
  * @file Function that sets up the flutter environment.
  * @copyright 2022 OneZero Company
@@ -47,11 +47,18 @@ async function setupSdk({version:p,channel:d,platform:t,arch:r}){(0,a.info)("Res
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-var m;(function(e){e["linux"]="linux";e["macos"]="macos";e["windows"]="windows"})(m||(m={}));function determinePlatform({platform:e}){const p=e??(0,d.platform)();switch(p){case"darwin":return m.macos;case"win32":return m.windows;case"linux":return m.linux;default:throw new Error(`Unsupported platform: ${p}`)}}
+var m;(function(e){e["linux"]="linux";e["macos"]="macos";e["windows"]="windows"})(m||(m={}));function determinePlatform({platform:e}){const p=e??(0,d.platform)();switch(p){case"darwin":return m.macos;case"win32":return m.windows;case"linux":return m.linux;default:throw new Error(`Unsupported platform: ${p}`)}}var o=__nccwpck_require__(2081);
+/**
+ * @file Function for checking if flutter is installed correctly.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+function checkFlutter(){(0,a.info)("Checking Flutter installation...");try{(0,o.execSync)("flutter doctor -v",{stdio:"inherit"})}catch{throw new Error("Flutter is not installed")}}
 /**
  * @file Index file for the setup-flutter action.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-const o=(0,a.getInput)("working_directory");const n=(0,a.getInput)("pub_credentials");function getOptionalInput(e){return(0,a.getInput)(e,{required:false})||undefined}async function run(){const d=(0,e.resolve)((0,p.cwd)(),o);(0,a.debug)(`Running in directory: ${d}`);applyCredentials(n);const t={version:getOptionalInput("version")??"latest",channel:getOptionalInput("channel")??"stable",platform:determinePlatform({platform:getOptionalInput("platform")}),arch:determineArch({arch:getOptionalInput("arch")})};await setupSdk({...t})}void run()})();module.exports=__webpack_exports__})();
+const n=(0,a.getInput)("working_directory");const u=(0,a.getInput)("pub_credentials");function getOptionalInput(e){return(0,a.getInput)(e,{required:false})||undefined}async function run(){const d=(0,e.resolve)((0,p.cwd)(),n);(0,a.debug)(`Running in directory: ${d}`);applyCredentials(u);const t={version:getOptionalInput("version")??"latest",channel:getOptionalInput("channel")??"stable",platform:determinePlatform({platform:getOptionalInput("platform")}),arch:determineArch({arch:getOptionalInput("arch")})};await setupSdk({...t});checkFlutter()}void run()})();module.exports=__webpack_exports__})();

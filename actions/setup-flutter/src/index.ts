@@ -12,6 +12,7 @@ import { applyCredentials } from './credentials';
 import { setupSdk } from './setup/setup';
 import { determineArch } from './setup/determineArch';
 import { determinePlatform } from './setup/determinePlatform';
+import { checkFlutter } from './check';
 
 // Inputs
 
@@ -63,6 +64,7 @@ async function run(): Promise<void> {
   };
 
   await setupSdk({ ...normalized });
+  checkFlutter();
 }
 
 // eslint-disable-next-line no-void

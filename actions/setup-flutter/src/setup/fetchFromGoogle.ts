@@ -6,7 +6,6 @@
  */
 
 import { basename } from 'path';
-import { rmSync } from 'fs';
 import { info } from '@actions/core';
 import { cacheDir, downloadTool } from '@actions/tool-cache';
 import { extract } from './extract';
@@ -56,11 +55,6 @@ export async function fetchFromGoogle({
     cacheVersion,
     cachePlatform,
   );
-  info(' done\n');
-
-  // Remove the downloaded file
-  info('Cleaning up download...');
-  rmSync(downloadedPath);
   info(' done\n');
 
   return cachedFolder;
