@@ -26,7 +26,7 @@ function findRelease({releases:e,platform:p,filter:a}){const d=e.releases.find((
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function extract({path:e,filename:p}){if(p.endsWith(".zip")){return(0,i.extractZip)(e)}else if(p.endsWith(".tar.xz")){return(0,i.extractTar)(e,undefined,"xf")}throw new Error(`Unsupported file for: ${p}`)}
+async function extract({path:e,filename:p}){if(p.endsWith(".zip")){return(0,i.extractZip)(e)}else if(p.endsWith(".tar.xz")){return(0,i.extractTar)(e,undefined,"x")}throw new Error(`Unsupported file for: ${p}`)}
 /**
  * @file Contains a function to fetch the Flutter SDK from Google.
  * @copyright 2022 OneZero Company
