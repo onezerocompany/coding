@@ -6,9 +6,10 @@
  */
 
 import { resolve } from 'path';
+import { homedir } from 'os';
 import { restoreCache } from '@actions/cache';
 import { exec } from '@actions/exec';
-import { info, saveState } from '@actions/core';
+import { debug, info, saveState } from '@actions/core';
 
 /**
  * Installs the dependencies for the project.
@@ -34,11 +35,11 @@ export async function installDependencies({
   if (recoverCache) {
     info('Restoring dependencies cache...');
     const sdkCache = resolve(sdkPath, '.pub-cache');
-    const restoreKey = await restoreCache(
-      ['~/.pub-cache', sdkCache],
-      cacheKey,
-      ['pub-cache-'],
-    );
+    const homeCache = resolve(homedir(), '.pub-cache');
+    const restoreKey = await restoreCache([homeCache, sdkCache], cacheKey, [
+      'pub-cache-',
+    ]);
+    debug(`Cache restored with key: ${restoreKey ?? 'none'}`);
     if (restoreKey !== cacheKey) {
       saveState('should-cache-dependencies', 'true');
     }

@@ -255,7 +255,7 @@ function checkFlutter(){(0,a.info)("Checking Flutter installation...");try{(0,m.
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function installDependencies({workingDirectory:t,recoverCache:i,cacheKey:n,sdkPath:s}){if(i){(0,a.info)("Restoring dependencies cache...");const t=(0,e.resolve)(s,".pub-cache");const i=await(0,r.restoreCache)(["~/.pub-cache",t],n,["pub-cache-"]);if(i!==n){(0,a.saveState)("should-cache-dependencies","true")}(0,a.info)(" done")}(0,a.info)("Installing dependencies...");await(0,o.exec)("flutter",["pub","get"],{cwd:t});(0,a.info)(" done")}
+async function installDependencies({workingDirectory:t,recoverCache:n,cacheKey:s,sdkPath:p}){if(n){(0,a.info)("Restoring dependencies cache...");const t=(0,e.resolve)(p,".pub-cache");const n=(0,e.resolve)((0,i.homedir)(),".pub-cache");const o=await(0,r.restoreCache)([n,t],s,["pub-cache-"]);(0,a.debug)(`Cache restored with key: ${o??"none"}`);if(o!==s){(0,a.saveState)("should-cache-dependencies","true")}(0,a.info)(" done")}(0,a.info)("Installing dependencies...");await(0,o.exec)("flutter",["pub","get"],{cwd:t});(0,a.info)(" done")}
 /**
  * @file Index file for the setup-flutter action.
  * @copyright 2022 OneZero Company
