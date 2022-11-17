@@ -35,9 +35,12 @@ export async function installDependencies({
     info('Restoring dependencies cache...');
     const sdkCache = resolve(sdkPath, '.pub-cache');
     await restoreCache(['~/.pub-cache', sdkCache], cacheKey);
+    info(' done');
   }
 
+  info('Installing dependencies...');
   await exec('flutter', ['pub', 'get'], {
     cwd: workingDirectory,
   });
+  info(' done');
 }
