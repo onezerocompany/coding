@@ -4,24 +4,41 @@ import { readFileSync } from 'fs';
 
 describe('commit-check', () => {
   it('dist should be up-to-date', async () => {
-    expect.assertions(1);
-    // Generate reference
-    execSync('npx ncc build -m src/index.ts -o dist-reference', {
+    expect.hasAssertions();
+
+    // Generate references
+    execSync('npx ncc build -m src/index.ts -o dist-reference/main', {
       cwd: resolve(__dirname, '..'),
     });
-    // Load the reference
-    const reference = readFileSync(
-      resolve(__dirname, '..', 'dist-reference', 'index.js'),
+    execSync('npx ncc build -m src/post.ts -o dist-reference/post', {
+      cwd: resolve(__dirname, '..'),
+    });
+
+    // Load the references
+    const mainReference = readFileSync(
+      resolve(__dirname, '..', 'dist-reference', 'main', 'index.js'),
       'utf8',
     );
 
-    // Load the dist
-    const dist = readFileSync(
-      resolve(__dirname, '..', 'dist', 'index.js'),
+    const postReference = readFileSync(
+      resolve(__dirname, '..', 'dist-reference', 'post', 'index.js'),
+      'utf8',
+    );
+
+    // Load the main dist
+    const mainDist = readFileSync(
+      resolve(__dirname, '..', 'dist', 'main', 'index.js'),
+      'utf8',
+    );
+
+    // Load the post dist
+    const postDist = readFileSync(
+      resolve(__dirname, '..', 'dist', 'post', 'index.js'),
       'utf8',
     );
 
     // Compare
-    expect(dist).toEqual(reference);
+    expect(mainDist).toEqual(mainReference);
+    expect(postDist).toEqual(postReference);
   });
 });

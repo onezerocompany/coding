@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npx ncc build -m src/index.ts -o dist",
+    "build": "npx ncc build -m src/index.ts -o dist/main && npx ncc build -m src/post.ts -o dist/post",
     "format": "prettier --write . && eslint --fix .",
     "lint": "prettier --check . && eslint .",
     "test": "npx jest"
