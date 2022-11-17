@@ -67,7 +67,6 @@ outputs:
 runs:
   using: 'node16'
   main: 'dist/index.js'
-  post-if: ${{ inputs.cache-sdk == 'true' || inputs.cache-dependencies == 'true' }}
   post: 'dist/post.js'
 
 branding:

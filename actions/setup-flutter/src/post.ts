@@ -17,8 +17,15 @@ import { rmRF } from '@actions/io';
  * @example post();
  */
 async function post(): Promise<void> {
-  const sdkPath = getState('sdk-path');
   const cacheDependencies = getBooleanInput('cache-dependencies');
+  const cacheSdk = getBooleanInput('cache-sdk');
+
+  if (!cacheDependencies && !cacheSdk) {
+    info('No cache specified, skipping...');
+    return;
+  }
+
+  const sdkPath = getState('sdk-path');
   const sdkCachePath = resolve(sdkPath, '.pub-cache');
 
   if (cacheDependencies) {
@@ -32,7 +39,6 @@ async function post(): Promise<void> {
     await rmRF(sdkCachePath);
   }
 
-  const cacheSdk = getBooleanInput('cache-sdk');
   if (cacheSdk) {
     info('Caching SDK...');
     const sdkCacheKey = getState('sdk-cache-key');
