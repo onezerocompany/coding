@@ -227,7 +227,7 @@ async function extract({path:e,filename:t,destinationFolder:a}){if(t.endsWith(".
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function fetchFromGoogle({downloadUrl:t,destinationFolder:i}){(0,a.info)(`Downloading...`);const n=await(0,d.downloadTool)(t);(0,a.info)(" done\n");(0,a.info)("Decompressing...");const o=(0,e.basename)(t);await extract({path:n,filename:o,destinationFolder:i});(0,a.info)(" done\n")}
+async function fetchFromGoogle({downloadUrl:t,destinationFolder:i}){(0,a.info)(`Downloading...`);const n=await(0,d.downloadTool)(t);(0,a.info)(" done\n");(0,a.info)("Decompressing...");const o=(0,e.basename)(t);await extract({path:n,filename:o,destinationFolder:i});(0,a.info)(" done\n");(0,a.saveState)("should-cache-sdk","true")}
 /**
  * @file Function that sets up the flutter environment.
  * @copyright 2022 OneZero Company
@@ -255,7 +255,7 @@ function checkFlutter(){(0,a.info)("Checking Flutter installation...");try{(0,m.
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function installDependencies({workingDirectory:t,recoverCache:i,cacheKey:n,sdkPath:s}){if(i){(0,a.info)("Restoring dependencies cache...");const t=(0,e.resolve)(s,".pub-cache");await(0,r.restoreCache)(["~/.pub-cache",t],n,["pub-cache-"]);(0,a.info)(" done")}(0,a.info)("Installing dependencies...");await(0,o.exec)("flutter",["pub","get"],{cwd:t});(0,a.info)(" done")}
+async function installDependencies({workingDirectory:t,recoverCache:i,cacheKey:n,sdkPath:s}){if(i){(0,a.info)("Restoring dependencies cache...");const t=(0,e.resolve)(s,".pub-cache");const i=await(0,r.restoreCache)(["~/.pub-cache",t],n,["pub-cache-"]);if(i!==n){(0,a.saveState)("should-cache-dependencies","true")}(0,a.info)(" done")}(0,a.info)("Installing dependencies...");await(0,o.exec)("flutter",["pub","get"],{cwd:t});(0,a.info)(" done")}
 /**
  * @file Index file for the setup-flutter action.
  * @copyright 2022 OneZero Company

@@ -6,7 +6,7 @@
  */
 
 import { basename } from 'path';
-import { info } from '@actions/core';
+import { info, saveState } from '@actions/core';
 import { downloadTool } from '@actions/tool-cache';
 import { extract } from './extract';
 
@@ -44,4 +44,5 @@ export async function fetchFromGoogle({
     destinationFolder,
   });
   info(' done\n');
+  saveState('should-cache-sdk', 'true');
 }

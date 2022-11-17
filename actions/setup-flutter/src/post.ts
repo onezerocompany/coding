@@ -19,8 +19,14 @@ import { rmRF } from '@actions/io';
 async function post(): Promise<void> {
   const cacheDependencies = getBooleanInput('cache-dependencies');
   const cacheSdk = getBooleanInput('cache-sdk');
+  const shouldCacheSdk = getState('should-cache-sdk') === 'true';
+  const shouldCacheDependencies =
+    getState('should-cache-dependencies') === 'true';
 
-  if (!cacheDependencies && !cacheSdk) {
+  const willCacheSdk = cacheSdk && shouldCacheSdk;
+  const willCacheDependencies = cacheDependencies && shouldCacheDependencies;
+
+  if (!willCacheDependencies && !willCacheSdk) {
     info('No cache specified, skipping...');
     return;
   }
@@ -28,7 +34,7 @@ async function post(): Promise<void> {
   const sdkPath = getState('sdk-path');
   const sdkCachePath = resolve(sdkPath, '.pub-cache');
 
-  if (cacheDependencies) {
+  if (willCacheDependencies) {
     info('Caching dependencies...');
     const dependenciesCacheKey = getInput('dependencies-cache-key');
     await saveCache([sdkCachePath, '~/.pub-cache'], dependenciesCacheKey);
@@ -39,7 +45,7 @@ async function post(): Promise<void> {
     await rmRF(sdkCachePath);
   }
 
-  if (cacheSdk) {
+  if (willCacheSdk) {
     info('Caching SDK...');
     const sdkCacheKey = getState('sdk-cache-key');
     await saveCache([sdkPath], sdkCacheKey);
