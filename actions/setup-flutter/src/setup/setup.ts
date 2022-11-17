@@ -44,6 +44,7 @@ async function fetchSdk({
   arch: FlutterArch;
   downloadUrl: string;
 }): Promise<{
+  destinationFolder: string;
   sdkPath: string;
   cacheKey: string;
 }> {
@@ -56,14 +57,22 @@ async function fetchSdk({
   const restoredCache = await restoreCache([destinationFolder], cacheKey);
   if (restoredCache ?? '') {
     info(' found in cache.\n');
-    return { sdkPath: destinationFolder, cacheKey };
+    return {
+      destinationFolder,
+      sdkPath: destinationFolder,
+      cacheKey,
+    };
   }
   info(' not found in cache, downloading...');
   await fetchFromGoogle({
     downloadUrl,
     destinationFolder,
   });
-  return { sdkPath: resolve(destinationFolder, 'flutter'), cacheKey };
+  return {
+    destinationFolder,
+    sdkPath: resolve(destinationFolder, 'flutter'),
+    cacheKey,
+  };
 }
 
 /**
@@ -110,7 +119,7 @@ export async function setupSdk({
     ` resolved to: ${resolvedVersion.version} (${resolvedVersion.channel}) for ${resolvedVersion.platform} (${resolvedVersion.arch})`,
   );
 
-  const { sdkPath, cacheKey } = await fetchSdk({
+  const { sdkPath, cacheKey, destinationFolder } = await fetchSdk({
     ...resolvedVersion,
   });
 
@@ -128,6 +137,6 @@ export async function setupSdk({
 
   // Save to cache
   info('Saving to cache...');
-  await saveCache([sdkPath], cacheKey);
+  await saveCache([destinationFolder], cacheKey);
   info(' done\n');
 }
