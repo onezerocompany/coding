@@ -7,7 +7,14 @@
 
 import { resolve } from 'path';
 import { homedir } from 'os';
-import { addPath, debug, info, isDebug } from '@actions/core';
+import {
+  addPath,
+  debug,
+  info,
+  isDebug,
+  setOutput,
+  saveState,
+} from '@actions/core';
 import { exec } from '@actions/exec';
 import { restoreCache } from '@actions/cache';
 import type { FlutterArch } from './determineArch';
@@ -52,9 +59,11 @@ async function fetchSdk({
   const cacheVersion = `${version}-${channel}`;
   const cachePlatform = `${platform}-${arch}`;
   const cacheKey = `flutter-${cacheVersion}-${cachePlatform}`;
+  saveState('sdk-cache-key', cacheKey);
   const restoredCache = await restoreCache([destinationFolder], cacheKey);
   if (restoredCache ?? '') {
     info(' found in cache.\n');
+    setOutput('cache-hit', 'true');
     return {
       sdkPath: resolve(destinationFolder, 'flutter'),
     };
@@ -63,8 +72,8 @@ async function fetchSdk({
   await fetchFromGoogle({
     downloadUrl,
     destinationFolder,
-    cacheKey,
   });
+  setOutput('cache-hit', 'false');
   return {
     sdkPath: resolve(destinationFolder, 'flutter'),
   };
@@ -99,7 +108,7 @@ export async function setupSdk({
   channel: string;
   platform: FlutterPlatform;
   arch: FlutterArch;
-}): Promise<void> {
+}): Promise<string> {
   // Download the sdk
 
   info('Resolving version to install...');
@@ -129,4 +138,14 @@ export async function setupSdk({
   }
   addPath(flutterBin);
   info(' done\n');
+
+  setOutput('version', resolvedVersion.version);
+  setOutput('channel', resolvedVersion.channel);
+  setOutput('platform', resolvedVersion.platform);
+  setOutput('arch', resolvedVersion.arch);
+  setOutput('sdk-path', sdkPath);
+  saveState('sdk-path', sdkPath);
+  setOutput('flutter-bin-path', resolve(flutterBin, 'flutter'));
+
+  return sdkPath;
 }

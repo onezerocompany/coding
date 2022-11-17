@@ -7,12 +7,13 @@
 
 import { resolve } from 'path';
 import { cwd } from 'process';
-import { debug, getInput, isDebug } from '@actions/core';
+import { debug, getBooleanInput, getInput, isDebug } from '@actions/core';
 import { applyCredentials } from './credentials';
 import { setupSdk } from './setup/setup';
 import { determineArch } from './setup/determineArch';
 import { determinePlatform } from './setup/determinePlatform';
 import { checkFlutter } from './check';
+import { installDependencies } from './dependencies';
 
 // Inputs
 
@@ -50,11 +51,6 @@ async function run(): Promise<void> {
   const normalized = {
     version: getOptionalInput('version') ?? 'latest',
     channel: getOptionalInput('channel') ?? 'stable',
-    /*
-     * Platform: determinePlatform({
-     *   platform: getOptionalInput('platform'),
-     * }),
-     */
     platform: determinePlatform({
       platform: getOptionalInput('platform'),
     }),
@@ -63,8 +59,18 @@ async function run(): Promise<void> {
     }),
   };
 
-  await setupSdk({ ...normalized });
+  const sdkPath = await setupSdk({ ...normalized });
   if (isDebug()) checkFlutter();
+
+  const shouldInstallDependencies = getBooleanInput('install-dependencies');
+  if (shouldInstallDependencies) {
+    await installDependencies({
+      workingDirectory: directory,
+      recoverCache: getBooleanInput('cache-dependencies'),
+      cacheKey: getInput('dependencies-cache-key'),
+      sdkPath,
+    });
+  }
 }
 
 // eslint-disable-next-line no-void

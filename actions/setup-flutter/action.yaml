@@ -1,13 +1,12 @@
-name: 'Publish Dart Package'
-description: 'Validates commit messages'
+name: 'Setup Flutter'
+description: 'Setup a Flutter environment and add it to the PATH'
+author: 'OneZero Company'
 inputs:
-  pub_credentials:
-    description: 'Google account access token from ~/.pub-cache/credentials.json'
-    required: false
-  working_directory:
+  working-directory:
     description: 'Directory to run the action in'
     required: false
     default: '.'
+
   version:
     description: Flutter version to use'
     required: false
@@ -19,11 +18,58 @@ inputs:
   platform:
     description: 'Platform to use'
     required: false
-    default: linux
+    default: detect
   arch:
     description: 'Architecture to use'
     required: false
-    default: x64
+    default: detect
+
+  install-dependencies:
+    description: 'Whether to run flutter pub get'
+    required: false
+    default: 'true'
+  cache-dependencies:
+    description: 'Whether to cache dependencies'
+    required: false
+    default: 'true'
+  dependencies-cache-key:
+    description: 'Cache key for dependencies'
+    required: false
+    default: 'pub-cache'
+
+  cache-sdk:
+    description: 'Cache flutter'
+    required: false
+    default: 'true'
+
+  pub-credentials:
+    description: 'Google account access token from ~/.pub-cache/credentials.json'
+    required: false
+
+outputs:
+  version:
+    description: 'The version of Flutter used'
+  channel:
+    description: 'The channel of Flutter used'
+  platform:
+    description: 'The platform of Flutter used'
+  arch:
+    description: 'The architecture of Flutter used'
+  sdk-path:
+    description: 'The path to the Flutter SDK'
+  flutter-bin-path:
+    description: 'The path to the Flutter binary'
+  flutter-cache-hit:
+    description: 'Whether the cache was hit or not'
+  dependencies-cache-hit:
+    description: 'Whether the dependencies cache was hit or not'
+
 runs:
   using: 'node16'
   main: 'dist/index.js'
+  post-if: ${{ inputs.cache-sdk == 'true' || inputs.cache-dependencies == 'true' }}
+  post: 'dist/post.js'
+
+branding:
+  icon: terminal
+  color: 'blue'

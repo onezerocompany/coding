@@ -206,7 +206,7 @@ function applyCredentials(t){if(t.length>0){(0,a.info)("Applying credentials..."
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-var l;(function(e){e["x64"]="x64";e["arm64"]="arm64"})(l||(l={}));function determineArch({arch:e}){const t=e??process.arch;switch(t){case"x64":return l.x64;case"arm64":return l.arm64;default:throw new Error(`Unsupported architecture: ${t}`)}}
+var l;(function(e){e["x64"]="x64";e["arm64"]="arm64"})(l||(l={}));function determineArch({arch:e}){let t=e??process.arch;if(t==="detect"){t=process.arch}switch(t){case"x64":return l.x64;case"arm64":return l.arm64;default:throw new Error(`Unsupported architecture: ${t}`)}}
 /**
  * @file Contains a function to determine the version of Flutter to install.
  * @copyright 2022 OneZero Company
@@ -227,21 +227,21 @@ async function extract({path:e,filename:t,destinationFolder:a}){if(t.endsWith(".
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function fetchFromGoogle({downloadUrl:t,destinationFolder:i,cacheKey:n}){(0,a.info)(`Downloading...`);const o=await(0,d.downloadTool)(t);(0,a.info)(" done\n");(0,a.info)("Decompressing...");const s=(0,e.basename)(t);await extract({path:o,filename:s,destinationFolder:i});(0,a.info)(" done\n");(0,a.info)("Saving to cache...");await(0,r.saveCache)([i],n);(0,a.info)(" done\n")}
+async function fetchFromGoogle({downloadUrl:t,destinationFolder:i}){(0,a.info)(`Downloading...`);const n=await(0,d.downloadTool)(t);(0,a.info)(" done\n");(0,a.info)("Decompressing...");const o=(0,e.basename)(t);await extract({path:n,filename:o,destinationFolder:i});(0,a.info)(" done\n")}
 /**
  * @file Function that sets up the flutter environment.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function fetchSdk({version:t,channel:n,platform:o,arch:s,downloadUrl:p}){(0,a.info)("Fetching Flutter SDK...");(0,a.info)(" checking cache...");const l=(0,e.resolve)((0,i.homedir)(),"flutter");const d=`${t}-${n}`;const c=`${o}-${s}`;const m=`flutter-${d}-${c}`;const u=await(0,r.restoreCache)([l],m);if(u??""){(0,a.info)(" found in cache.\n");return{sdkPath:(0,e.resolve)(l,"flutter")}}(0,a.info)(" not found in cache, downloading...");await fetchFromGoogle({downloadUrl:p,destinationFolder:l,cacheKey:m});return{sdkPath:(0,e.resolve)(l,"flutter")}}async function setupSdk({version:t,channel:i,platform:n,arch:r}){(0,a.info)("Resolving version to install...");(0,a.info)(` specified: ${t}`);const s=await determineVersion({version:t,channel:i,platform:n,arch:r});(0,a.info)(` resolved to: ${s.version} (${s.channel}) for ${s.platform} (${s.arch})`);const{sdkPath:p}=await fetchSdk({...s});(0,a.info)("Installing...");const l=(0,e.resolve)(p,"bin");if((0,a.isDebug)()){(0,a.debug)(`Adding ${l} to PATH`);(0,a.debug)(`Contents of ${l}:`);await(0,o.exec)("ls",["-l",l])}(0,a.addPath)(l);(0,a.info)(" done\n")}
+async function fetchSdk({version:t,channel:n,platform:o,arch:s,downloadUrl:p}){(0,a.info)("Fetching Flutter SDK...");(0,a.info)(" checking cache...");const l=(0,e.resolve)((0,i.homedir)(),"flutter");const d=`${t}-${n}`;const c=`${o}-${s}`;const m=`flutter-${d}-${c}`;(0,a.saveState)("sdk-cache-key",m);const u=await(0,r.restoreCache)([l],m);if(u??""){(0,a.info)(" found in cache.\n");(0,a.setOutput)("cache-hit","true");return{sdkPath:(0,e.resolve)(l,"flutter")}}(0,a.info)(" not found in cache, downloading...");await fetchFromGoogle({downloadUrl:p,destinationFolder:l});(0,a.setOutput)("cache-hit","false");return{sdkPath:(0,e.resolve)(l,"flutter")}}async function setupSdk({version:t,channel:i,platform:n,arch:r}){(0,a.info)("Resolving version to install...");(0,a.info)(` specified: ${t}`);const s=await determineVersion({version:t,channel:i,platform:n,arch:r});(0,a.info)(` resolved to: ${s.version} (${s.channel}) for ${s.platform} (${s.arch})`);const{sdkPath:p}=await fetchSdk({...s});(0,a.info)("Installing...");const l=(0,e.resolve)(p,"bin");if((0,a.isDebug)()){(0,a.debug)(`Adding ${l} to PATH`);(0,a.debug)(`Contents of ${l}:`);await(0,o.exec)("ls",["-l",l])}(0,a.addPath)(l);(0,a.info)(" done\n");(0,a.setOutput)("version",s.version);(0,a.setOutput)("channel",s.channel);(0,a.setOutput)("platform",s.platform);(0,a.setOutput)("arch",s.arch);(0,a.setOutput)("sdk-path",p);(0,a.saveState)("sdk-path",p);(0,a.setOutput)("flutter-bin-path",(0,e.resolve)(l,"flutter"));return p}
 /**
  * @file Contains a function to detect the current platform.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-var c;(function(e){e["linux"]="linux";e["macos"]="macos";e["windows"]="windows"})(c||(c={}));function determinePlatform({platform:e}){const t=e??(0,i.platform)();switch(t){case"darwin":return c.macos;case"win32":return c.windows;case"linux":return c.linux;default:throw new Error(`Unsupported platform: ${t}`)}}var m=__nccwpck_require__(2081);
+var c;(function(e){e["linux"]="linux";e["macos"]="macos";e["windows"]="windows"})(c||(c={}));function determinePlatform({platform:e}){let t=e??(0,i.platform)();if(t==="detect"){t=(0,i.platform)()}switch(t){case"darwin":return c.macos;case"win32":return c.windows;case"linux":return c.linux;default:throw new Error(`Unsupported platform: ${t}`)}}var m=__nccwpck_require__(2081);
 /**
  * @file Function for checking if flutter is installed correctly.
  * @copyright 2022 OneZero Company
@@ -250,9 +250,16 @@ var c;(function(e){e["linux"]="linux";e["macos"]="macos";e["windows"]="windows"}
  */
 function checkFlutter(){(0,a.info)("Checking Flutter installation...");try{(0,m.execSync)("flutter doctor -v",{stdio:"inherit"})}catch{throw new Error("Flutter is not installed")}}
 /**
+ * @file Dependency related functions.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+async function installDependencies({workingDirectory:t,recoverCache:i,cacheKey:n,sdkPath:s}){if(i){(0,a.info)("Restoring dependencies cache...");const t=(0,e.resolve)(s,".pub-cache");await(0,r.restoreCache)(["~/.pub-cache",t],n)}await(0,o.exec)("flutter",["pub","get"],{cwd:t})}
+/**
  * @file Index file for the setup-flutter action.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-const u=(0,a.getInput)("working_directory");const h=(0,a.getInput)("pub_credentials");function getOptionalInput(e){return(0,a.getInput)(e,{required:false})||undefined}async function run(){const i=(0,e.resolve)((0,t.cwd)(),u);(0,a.debug)(`Running in directory: ${i}`);applyCredentials(h);const n={version:getOptionalInput("version")??"latest",channel:getOptionalInput("channel")??"stable",platform:determinePlatform({platform:getOptionalInput("platform")}),arch:determineArch({arch:getOptionalInput("arch")})};await setupSdk({...n});if((0,a.isDebug)())checkFlutter()}void run()})();module.exports=__webpack_exports__})();
+const u=(0,a.getInput)("working_directory");const h=(0,a.getInput)("pub_credentials");function getOptionalInput(e){return(0,a.getInput)(e,{required:false})||undefined}async function run(){const i=(0,e.resolve)((0,t.cwd)(),u);(0,a.debug)(`Running in directory: ${i}`);applyCredentials(h);const n={version:getOptionalInput("version")??"latest",channel:getOptionalInput("channel")??"stable",platform:determinePlatform({platform:getOptionalInput("platform")}),arch:determineArch({arch:getOptionalInput("arch")})};const o=await setupSdk({...n});if((0,a.isDebug)())checkFlutter();const r=(0,a.getBooleanInput)("install-dependencies");if(r){await installDependencies({workingDirectory:i,recoverCache:(0,a.getBooleanInput)("cache-dependencies"),cacheKey:(0,a.getInput)("dependencies-cache-key"),sdkPath:o})}}void run()})();module.exports=__webpack_exports__})();

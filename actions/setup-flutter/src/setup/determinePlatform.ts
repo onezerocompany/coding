@@ -33,7 +33,10 @@ export function determinePlatform({
 }: {
   platform?: FlutterPlatform | string | undefined;
 }): FlutterPlatform {
-  const specifiedPlatform = platform ?? currentPlatform();
+  let specifiedPlatform = platform ?? currentPlatform();
+  if (specifiedPlatform === 'detect') {
+    specifiedPlatform = currentPlatform();
+  }
   switch (specifiedPlatform) {
     /** Apple macOS. */
     case 'darwin':

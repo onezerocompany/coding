@@ -28,7 +28,10 @@ export function determineArch({
 }: {
   arch?: FlutterArch | string | undefined;
 }): FlutterArch {
-  const specifiedArch = arch ?? process.arch;
+  let specifiedArch = arch ?? process.arch;
+  if (specifiedArch === 'detect') {
+    specifiedArch = process.arch;
+  }
   switch (specifiedArch) {
     /** X86_64. */
     case 'x64':

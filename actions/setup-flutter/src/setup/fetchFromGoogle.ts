@@ -8,7 +8,6 @@
 import { basename } from 'path';
 import { info } from '@actions/core';
 import { downloadTool } from '@actions/tool-cache';
-import { saveCache } from '@actions/cache';
 import { extract } from './extract';
 
 /**
@@ -17,7 +16,6 @@ import { extract } from './extract';
  * @param input - Object containing the input parameters.
  * @param input.downloadUrl - The URL to download the SDK from.
  * @param input.destinationFolder - The folder to extract the SDK to.
- * @param input.cacheKey - The key to use for caching the SDK.
  * @returns The path to the extracted folder.
  * @example
  * fetchFromGoogle({
@@ -29,11 +27,9 @@ import { extract } from './extract';
 export async function fetchFromGoogle({
   downloadUrl,
   destinationFolder,
-  cacheKey,
 }: {
   downloadUrl: string;
   destinationFolder: string;
-  cacheKey: string;
 }): Promise<void> {
   info(`Downloading...`);
   const downloadedPath = await downloadTool(downloadUrl);
@@ -47,10 +43,5 @@ export async function fetchFromGoogle({
     filename,
     destinationFolder,
   });
-  info(' done\n');
-
-  // Save to cache
-  info('Saving to cache...');
-  await saveCache([destinationFolder], cacheKey);
   info(' done\n');
 }
