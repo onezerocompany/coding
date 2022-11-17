@@ -43,7 +43,8 @@ function getOptionalInput(name: string): string | undefined {
  * @example run();
  */
 async function run(): Promise<void> {
-  const directory = resolve(cwd(), workingDirectory);
+  const workspace = process.env['GITHUB_WORKSPACE'] ?? cwd();
+  const directory = resolve(workspace, workingDirectory);
   debug(`Running in directory: ${directory}`);
 
   applyCredentials(pubCredentials);
