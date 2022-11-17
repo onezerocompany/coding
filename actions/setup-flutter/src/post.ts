@@ -7,6 +7,7 @@
 
 import { resolve } from 'path';
 import { existsSync } from 'fs';
+import { homedir } from 'os';
 import { getBooleanInput, getInput, getState, info } from '@actions/core';
 import { saveCache } from '@actions/cache';
 import { rmRF } from '@actions/io';
@@ -37,7 +38,8 @@ async function post(): Promise<void> {
   if (willCacheDependencies) {
     info('Caching dependencies...');
     const dependenciesCacheKey = getInput('dependencies-cache-key');
-    await saveCache([sdkCachePath, '~/.pub-cache'], dependenciesCacheKey);
+    const homeCache = resolve(homedir(), '.pub-cache');
+    await saveCache([sdkCachePath, homeCache], dependenciesCacheKey);
   }
 
   // Remove sdk cache to avoid caching it twice
