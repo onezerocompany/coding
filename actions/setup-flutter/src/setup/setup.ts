@@ -85,9 +85,4 @@ export async function setupSdk({
   }
   addPath(flutterBin);
   info(' done\n');
-
-  // Accept licenses by piping yes to the command
-  info('Accepting licenses...');
-  await exec('yes | flutter doctor --android-licenses');
-  info(' done\n');
 }
