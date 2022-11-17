@@ -6,13 +6,65 @@
  */
 
 import { resolve } from 'path';
+import { homedir } from 'os';
 import { addPath, debug, info, isDebug } from '@actions/core';
 import { exec } from '@actions/exec';
-import { find } from '@actions/tool-cache';
+import { restoreCache, saveCache } from '@actions/cache';
 import type { FlutterArch } from './determineArch';
 import type { FlutterPlatform } from './determinePlatform';
 import { determineVersion } from './determineVersion';
 import { fetchFromGoogle } from './fetchFromGoogle';
+
+/**
+ * Function that fetches the Flutter SDK from either the cache or from Google.
+ *
+ * @param input - Object containing the input parameters.
+ * @param input.version - The version of the SDK to fetch.
+ * @param input.channel - The channel of the SDK to fetch.
+ * @param input.platform - The platform of the SDK to fetch.
+ * @param input.arch - The architecture of the SDK to fetch.
+ * @param input.downloadUrl - The URL to download the SDK from.
+ * @example await setupFlutter({
+ *   version: '2.5.3',
+ *   channel: 'stable',
+ *   platform: 'linux',
+ *   arch: 'x64',
+ * });
+ */
+async function fetchSdk({
+  version,
+  channel,
+  platform,
+  arch,
+  downloadUrl,
+}: {
+  version: string;
+  channel: string;
+  platform: FlutterPlatform;
+  arch: FlutterArch;
+  downloadUrl: string;
+}): Promise<{
+  sdkPath: string;
+  cacheKey: string;
+}> {
+  info('Fetching Flutter SDK...');
+  info(' checking cache...');
+  const destinationFolder = resolve(homedir(), 'flutter');
+  const cacheVersion = `${version}-${channel}`;
+  const cachePlatform = `${platform}-${arch}`;
+  const cacheKey = `flutter-${cacheVersion}-${cachePlatform}`;
+  const restoredCache = await restoreCache([destinationFolder], cacheKey);
+  if (restoredCache ?? '') {
+    info(' found in cache.\n');
+    return { sdkPath: destinationFolder, cacheKey };
+  }
+  info(' not found in cache, downloading...');
+  await fetchFromGoogle({
+    downloadUrl,
+    destinationFolder,
+  });
+  return { sdkPath: resolve(destinationFolder, 'flutter'), cacheKey };
+}
 
 /**
  * Extracts the Flutter SDK in the correct location and adds it to the PATH.
@@ -58,25 +110,13 @@ export async function setupSdk({
     ` resolved to: ${resolvedVersion.version} (${resolvedVersion.channel}) for ${resolvedVersion.platform} (${resolvedVersion.arch})`,
   );
 
-  info('Fetching Flutter SDK...');
-  info(' checking cache...');
-  const cacheVersion = `${resolvedVersion.version}-${resolvedVersion.channel}`;
-  const cachePlatform = `${resolvedVersion.platform}-${resolvedVersion.arch}`;
-  let cachedFolder = find('flutter', cacheVersion, cachePlatform);
-  if (cachedFolder) {
-    info(' found in cache.\n');
-  } else {
-    info(' not found in cache, downloading...');
-    cachedFolder = await fetchFromGoogle({
-      downloadUrl: resolvedVersion.downloadUrl,
-      cacheVersion,
-      cachePlatform,
-    });
-  }
+  const { sdkPath, cacheKey } = await fetchSdk({
+    ...resolvedVersion,
+  });
 
   // Install flutter into profiles
   info('Installing...');
-  const flutterBin = resolve(cachedFolder, 'flutter', 'bin');
+  const flutterBin = resolve(sdkPath, 'bin');
   if (isDebug()) {
     // Show contents of flutter bin folder
     debug(`Adding ${flutterBin} to PATH`);
@@ -84,5 +124,10 @@ export async function setupSdk({
     await exec('ls', ['-l', flutterBin]);
   }
   addPath(flutterBin);
+  info(' done\n');
+
+  // Save to cache
+  info('Saving to cache...');
+  await saveCache([sdkPath], cacheKey);
   info(' done\n');
 }

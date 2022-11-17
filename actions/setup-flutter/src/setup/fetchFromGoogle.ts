@@ -7,7 +7,7 @@
 
 import { basename } from 'path';
 import { info } from '@actions/core';
-import { cacheDir, downloadTool } from '@actions/tool-cache';
+import { downloadTool } from '@actions/tool-cache';
 import { extract } from './extract';
 
 /**
@@ -15,8 +15,7 @@ import { extract } from './extract';
  *
  * @param input - Object containing the input parameters.
  * @param input.downloadUrl - The URL to download the SDK from.
- * @param input.cacheVersion - The version to use for caching.
- * @param input.cachePlatform - The platform to use for caching.
+ * @param input.destinationFolder - The folder to extract the SDK to.
  * @returns The path to the extracted folder.
  * @example
  * fetchFromGoogle({
@@ -27,13 +26,11 @@ import { extract } from './extract';
  */
 export async function fetchFromGoogle({
   downloadUrl,
-  cacheVersion,
-  cachePlatform,
+  destinationFolder,
 }: {
   downloadUrl: string;
-  cacheVersion: string;
-  cachePlatform: string;
-}): Promise<string> {
+  destinationFolder: string;
+}): Promise<void> {
   info(`Downloading...`);
   const downloadedPath = await downloadTool(downloadUrl);
   info(' done\n');
@@ -41,21 +38,10 @@ export async function fetchFromGoogle({
   // Decompress the file
   info('Decompressing...');
   const filename = basename(downloadUrl);
-  const extractedFolder = await extract({
+  await extract({
     path: downloadedPath,
     filename,
+    destinationFolder,
   });
   info(' done\n');
-
-  // Cache the folder
-  info('Caching...');
-  const cachedFolder = await cacheDir(
-    extractedFolder,
-    'flutter',
-    cacheVersion,
-    cachePlatform,
-  );
-  info(' done\n');
-
-  return cachedFolder;
 }
