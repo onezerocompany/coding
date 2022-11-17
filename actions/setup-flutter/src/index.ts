@@ -17,8 +17,8 @@ import { installDependencies } from './dependencies';
 
 // Inputs
 
-const workingDirectory = getInput('working_directory');
-const pubCredentials = getInput('pub_credentials');
+const workingDirectory = getInput('working-directory');
+const pubCredentials = getInput('pub-credentials');
 
 /**
  * Function that gets an action input but allows it to be undefined.

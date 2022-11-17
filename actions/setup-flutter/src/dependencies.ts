@@ -34,7 +34,7 @@ export async function installDependencies({
   if (recoverCache) {
     info('Restoring dependencies cache...');
     const sdkCache = resolve(sdkPath, '.pub-cache');
-    await restoreCache(['~/.pub-cache', sdkCache], cacheKey);
+    await restoreCache(['~/.pub-cache', sdkCache], cacheKey, ['pub-cache-']);
     info(' done');
   }
 

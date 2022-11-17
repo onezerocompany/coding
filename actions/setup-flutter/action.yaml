@@ -35,7 +35,7 @@ inputs:
   dependencies-cache-key:
     description: 'Cache key for dependencies'
     required: false
-    default: 'pub-cache'
+    default: pub-cache-${{ hashFiles('**/pubspec.lock') }}
 
   cache-sdk:
     description: 'Cache flutter'
