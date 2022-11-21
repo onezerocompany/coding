@@ -6,15 +6,17 @@
  */
 
 import { categoryForTag } from '../categories/categories';
+import { shortcodeForEmoji } from '../categories/emoji/emoji';
 import { ScopeValidator } from './validators/ScopeValidator';
 import { SubjectValidator } from './validators/SubjectValidator';
-import { parseMessage, firstLineRegex } from './parseMessage';
+import { parseMessage } from './parseMessage';
 import {
   ValidationError,
   ValidationErrorLevel,
 } from './validators/ValidationError';
 import { BodyValidator } from './validators/BodyValidator';
 import { AuthorsValidator } from './validators/AuthorsValidator';
+import { parseCommitLine } from './CommitLineRegex';
 
 /**
  * Validates an emoji in the first line of a commit message.
@@ -27,17 +29,43 @@ import { AuthorsValidator } from './validators/AuthorsValidator';
 function validateEmoji(message: string): ValidationError[] {
   const [firstLine] = message.split('\n');
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const match = firstLineRegex.exec(firstLine!);
-  const emoji = match?.groups?.['emoji'];
-  const category = categoryForTag(match?.groups?.['category']);
-  if (category.emoji === emoji) return [];
+  const {
+    emoji,
+    githubEmoji,
+    category: categoryTag,
+  } = parseCommitLine(firstLine ?? '');
 
-  return [
-    new ValidationError({
-      message: 'incorrect emoji for used category',
-      level: ValidationErrorLevel.fatal,
-    }),
-  ];
+  if (typeof categoryTag !== 'string')
+    return [
+      new ValidationError({
+        message: 'missing category',
+        level: ValidationErrorLevel.fatal,
+      }),
+    ];
+
+  const category = categoryForTag(categoryTag);
+  if (typeof emoji === 'string') {
+    const shortcode = shortcodeForEmoji(emoji);
+    if (shortcode !== category.emoji) {
+      return [
+        new ValidationError({
+          message: `invalid emoji for category ${category.tag}`,
+          level: ValidationErrorLevel.fatal,
+        }),
+      ];
+    }
+  } else if (typeof githubEmoji === 'string') {
+    if (category.emoji !== githubEmoji) {
+      return [
+        new ValidationError({
+          message: `invalid emoji for category ${category.tag}`,
+          level: ValidationErrorLevel.fatal,
+        }),
+      ];
+    }
+  }
+
+  return [];
 }
 
 /**
@@ -51,8 +79,8 @@ function validateEmoji(message: string): ValidationError[] {
 function validateCategory(message: string): ValidationError[] {
   const [firstLine] = message.split('\n');
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const match = firstLineRegex.exec(firstLine!);
-  const category = categoryForTag(match?.groups?.['category']);
+  const { category: categoryId } = parseCommitLine(firstLine!);
+  const category = categoryForTag(categoryId);
   if (category.tag !== 'unknown') return [];
   return [
     new ValidationError({
@@ -120,6 +148,17 @@ function findMessageErrors(message: string): {
 } {
   const errors: ValidationError[] = [];
   const parsed = parseMessage(message);
+
+  if (!parsed.formatted) {
+    errors.push(
+      new ValidationError({
+        message: 'message is formatted incorrectly',
+        level: ValidationErrorLevel.fatal,
+      }),
+    );
+    return { stoppedEarly: true, errors };
+  }
+
   errors.push(...validateCategory(message));
   if (errors.length > 0) return { stoppedEarly: true, errors };
   errors.push(...validateEmoji(message));
@@ -149,20 +188,18 @@ function findMessageErrors(message: string): {
  * @example
  *   validateMessage(':beetle: bug/fix(login) fix login');
  */
-export function validateMessage(inputs: { message: string }): {
+export function validateMessage({ message }: { message: string }): {
   valid: boolean;
   errors: ValidationError[];
 } {
   const errors: ValidationError[] = [];
-  if (inputs.message) {
-    if (inputs.message.toLowerCase().startsWith('merge')) {
+  if (message) {
+    if (message.toLowerCase().startsWith('merge')) {
       // Skipping validation for merge commits
       return { valid: true, errors };
     }
 
-    const { stoppedEarly, errors: messageErrors } = findMessageErrors(
-      inputs.message,
-    );
+    const { stoppedEarly, errors: messageErrors } = findMessageErrors(message);
     errors.push(...messageErrors);
     if (stoppedEarly) return { valid: false, errors };
   } else {

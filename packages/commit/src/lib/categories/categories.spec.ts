@@ -1,7 +1,7 @@
 import githubEmoji from './emoji/github.json';
 import type { CommitCategory } from './categories';
 import { categories } from './categories';
-import { emojiForShortcode } from './emoji/emoji';
+import { emojiForShortcode, shortcodeForEmoji } from './emoji/emoji';
 
 describe('categories', () => {
   for (const category of categories.reduce<CommitCategory[]>((acc, curr) => {
@@ -69,7 +69,12 @@ describe('categories', () => {
       });
       it('emoji shortcode resolves to unicode emoji', () => {
         expect.assertions(1);
-        expect(emojiForShortcode(category.emoji)).not.toBe('?');
+        expect(emojiForShortcode(category.emoji)).not.toBe(':question:');
+      });
+      it('unicode emoji resolves to emoji', () => {
+        expect.assertions(1);
+        const emoji = emojiForShortcode(category.emoji);
+        expect(shortcodeForEmoji(emoji)).toBe(category.emoji);
       });
     });
   }

@@ -12,6 +12,8 @@ import { tool as categories } from './cli/tools/categories';
 import { tool as commit } from './cli/tools/create';
 import { tool as parse } from './cli/tools/parse';
 import { tool as validate } from './cli/tools/validate';
+import { tool as commitsBetween } from './cli/tools/commitsBetween';
+import { tool as changelog } from './cli/tools/changelog';
 
 program
   .name('OneZero Commit')
@@ -53,5 +55,19 @@ program
   .option('-m, --markdown', 'Output as Markdown')
   .description('List all categories')
   .action(categories);
+
+// Commits
+program
+  .command('commits-between <beginHash> [endHash]')
+  .description('List commits between two hashes')
+  .action(commitsBetween);
+
+// Changelog
+program
+  .command('changelog <beginHash> [endHash]')
+  .option('--type <type>', 'Changelog type')
+  .option('-m, --markdown', 'Output as Markdown')
+  .description('Generate a changelog between two hashes')
+  .action(changelog);
 
 program.parse();

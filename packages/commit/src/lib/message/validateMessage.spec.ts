@@ -34,7 +34,7 @@ describe('mesage validation', () => {
     expect(validation.valid).toBe(false);
     expect(validation.errors).toEqual([
       new ValidationError({
-        message: 'incorrect emoji for used category',
+        message: 'invalid emoji for category docs',
         level: ValidationErrorLevel.fatal,
       }),
     ]);
@@ -46,7 +46,7 @@ describe('mesage validation', () => {
     expect(validation.valid).toBe(false);
     expect(validation.errors).toEqual([
       new ValidationError({
-        message: 'unknown category',
+        message: 'message is formatted incorrectly',
         level: ValidationErrorLevel.fatal,
       }),
     ]);
@@ -67,7 +67,7 @@ describe('mesage validation', () => {
     expect(validation.valid).toBe(false);
     expect(validation.errors).toEqual([
       new ValidationError({
-        message: 'scope must be at least 3 characters',
+        message: 'message is formatted incorrectly',
         level: ValidationErrorLevel.fatal,
       }),
     ]);
@@ -78,7 +78,7 @@ describe('mesage validation', () => {
     expect(validation.valid).toBe(false);
     expect(validation.errors).toEqual([
       new ValidationError({
-        message: 'subject must be at least 10 characters',
+        message: 'message is formatted incorrectly',
         level: ValidationErrorLevel.fatal,
       }),
     ]);

@@ -14,6 +14,9 @@ export {
 
 export { emojiForShortcode } from './lib/categories/emoji/emoji';
 
+export { listCommits } from './lib/commits/listCommits';
+export { Commit } from './lib/commits/Commit';
+export { getBumpForCommitList } from './lib/commits/commitListBump';
 export { AuthorsValidator } from './lib/message/validators/AuthorsValidator';
 export { BodyValidator } from './lib/message/validators/BodyValidator';
 export { IssuesValidator } from './lib/message/validators/IssuesValidator';
@@ -31,3 +34,5 @@ export { validateMessage } from './lib/message/validateMessage';
 
 export { VersionBump, versionBumpOrder } from './lib/versions/VersionBump';
 export { Version, VersionJSON } from './lib/versions/Version';
+
+export { ChangeLog } from './lib/changelogs/ChangeLog';

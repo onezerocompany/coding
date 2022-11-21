@@ -1,3 +1,5 @@
+release:
+  commit_url: https://github.com/onezerocompany/coding/commit/{{commit}}
 permissions:
   - username: lucasilverentand
     assignIssue: true

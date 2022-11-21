@@ -6,8 +6,6 @@
  */
 
 export * from './PermissionSettings';
-export * from './Platform';
+export * from './EnvironmentType';
 export * from './ProjectManifest';
-export * from './ReleaseTrack';
-export * from './ReleaseTrackSettings';
 export * from './loadManifestFile';

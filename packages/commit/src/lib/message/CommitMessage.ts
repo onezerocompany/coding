@@ -33,6 +33,9 @@ interface CommitMessageJSON {
 
 /** Commit message object. */
 export class CommitMessage {
+  /** Whether the commit has the correct format. */
+  public formatted: boolean;
+
   /** Files in the commit. */
   public files: string[];
 
@@ -106,6 +109,7 @@ export class CommitMessage {
     this.issues = input?.issues ?? [];
     this.coAuthors = input?.authors ?? [];
     this.signedOff = input?.signedOff ?? '';
+    this.formatted = this.category.tag !== 'unknown';
   }
 
   /**

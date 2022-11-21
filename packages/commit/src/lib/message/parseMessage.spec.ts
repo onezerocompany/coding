@@ -15,6 +15,7 @@ describe('message parsing', () => {
       coAuthors: [],
       files: [],
       signedOff: '',
+      formatted: true,
     });
   });
   it('should parse a breaking message with a single line', () => {
@@ -30,6 +31,7 @@ describe('message parsing', () => {
       coAuthors: [],
       files: [],
       signedOff: '',
+      formatted: true,
     });
   });
   it('should parse a message with multiple lines', () => {
@@ -65,6 +67,7 @@ describe('message parsing', () => {
       ],
       files: [],
       signedOff: 'Jane Doe <jane.doe@example.com>',
+      formatted: true,
     });
   });
   it('first line reader should handle empty line', () => {
@@ -79,6 +82,7 @@ describe('message parsing', () => {
       coAuthors: [],
       files: [],
       signedOff: '',
+      formatted: false,
     });
   });
   it('should parse multiple issues correctly', () => {
@@ -110,6 +114,7 @@ describe('message parsing', () => {
       coAuthors: [],
       files: [],
       signedOff: '',
+      formatted: true,
     });
   });
 });

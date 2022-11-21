@@ -5,6 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
+import { stdout } from 'process';
 import Table from 'cli-table';
 import { stringify as stringifyYAML } from 'yaml';
 import { categories } from '../../lib/categories/categories';
@@ -69,7 +70,7 @@ function markdownTableHeader(sizes: number[]): string[] {
 function printMarkdownTable(): void {
   const sizes = markdownTableColumSizes();
 
-  process.stdout.write(
+  stdout.write(
     `${[
       ...markdownTableHeader(sizes),
       ...categories.map((category) =>
@@ -112,9 +113,9 @@ export function tool(options: {
 }): void {
   if (options.json) {
     const indentSpaces = 2;
-    process.stdout.write(`${JSON.stringify(categories, null, indentSpaces)}\n`);
+    stdout.write(`${JSON.stringify(categories, null, indentSpaces)}\n`);
   } else if (options.yaml) {
-    process.stdout.write(`${stringifyYAML(categories)}\n`);
+    stdout.write(`${stringifyYAML(categories)}\n`);
   } else if (options.markdown) {
     printMarkdownTable();
   } else {
@@ -131,6 +132,6 @@ export function tool(options: {
         category.versioning.canBreak ? 'Yes' : 'No',
       ]);
     }
-    process.stdout.write(`${table.toString()}\n`);
+    stdout.write(`${table.toString()}\n`);
   }
 }

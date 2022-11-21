@@ -5,22 +5,26 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
+import type { EnvironmentSettings } from './EnvironmentSettings';
+import { parseEnvironmentSettingsArray } from './EnvironmentSettings';
 import type { PermissionSettings } from './PermissionSettings';
 import { parsePermissionArray } from './PermissionSettings';
-import type { ReleaseTrack } from './ReleaseTrack';
-import type { ReleaseTrackSettings } from './ReleaseTrackSettings';
-import { parseReleaseTracks } from './ReleaseTrackSettings';
+import type { ReleaseCreationSettings } from './ReleaseCreationSettings';
+import { parseReleaseCreationSettings } from './ReleaseCreationSettings';
 
 /** Project manifest containing all settings, references and instructions for a project. */
 export class ProjectManifest {
-  /** Name of the main branch */
-  public mainBranch: string;
+  /** Name of the main branch. */
+  public main_branch: string;
+
+  /** Gets the release tracks a project uses. */
+  public release: ReleaseCreationSettings;
 
   /** Permissions assigned to specific users. */
   public permissions: PermissionSettings[];
 
-  /** Release tracks a project uses. */
-  public releaseTracks: { [key in ReleaseTrack]?: ReleaseTrackSettings };
+  /** Environments to deploy the release to. */
+  public environments: EnvironmentSettings[];
 
   /**
    * Initializes a new project manifest.
@@ -31,42 +35,21 @@ export class ProjectManifest {
   public constructor(manifest?: unknown) {
     if (typeof manifest === 'object' && manifest !== null) {
       const parsed = manifest as Record<string, unknown>;
-      this.mainBranch = (parsed['mainBranch'] ?? 'main') as string;
+      this.main_branch = (parsed['main_branch'] ?? 'main') as string;
+      this.release = parseReleaseCreationSettings(parsed['release']);
       this.permissions = parsePermissionArray(parsed['permissions'] ?? []);
-      this.releaseTracks = parseReleaseTracks(parsed['releaseTracks']);
+      this.environments = parseEnvironmentSettingsArray(
+        parsed['environments'] ?? [],
+      );
     } else {
-      this.mainBranch = 'main';
+      this.main_branch = 'main';
+      this.release = {
+        tag_template: '{major}.{minor}.{patch}',
+        commit_url: '',
+        changelog_fallback: '- Minor bug fixes and improvements.',
+      };
       this.permissions = [];
-      this.releaseTracks = {};
+      this.environments = [];
     }
-  }
-
-  /**
-   * Gets the release track settings for a specific release track.
-   *
-   * @param track - Release track to get the settings for.
-   * @returns The release track settings for the specified release track.
-   * @example manifest.getReleaseTrackSettings('stable');
-   */
-  public releaseTrackSettings(track: ReleaseTrack): ReleaseTrackSettings {
-    return (
-      this.releaseTracks[track] ?? {
-        enabled: false,
-        changelog: {
-          fallbackMessage: 'Minor changes and bug fixes.',
-          autoApproval: false,
-          footers: [],
-          headers: [],
-          includeInternal: false,
-        },
-        release: {
-          autoRelease: false,
-          tagTemplate: '{{version}}',
-          versionTemplate: '{{version}}',
-        },
-        platforms: [],
-        waitForTracks: [],
-      }
-    );
   }
 }

@@ -5,18 +5,62 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import type { ReleaseTrack } from './ReleaseTrack';
+import { EnvironmentType } from './EnvironmentType';
+
+/** Settings for an environment. */
+export interface UserEnvironmentSettings {
+  /** Whether the user is allowed to edit the changelog. */
+  edit_changelog: boolean;
+  /** Whether the user is allowed to release. */
+  release: boolean;
+}
 
 /** Permission for a person in relation to this project. */
 export interface PermissionSettings {
   /** GitHub username of this person. */
   username: string;
   /** Whether to assign the release issue to this person. */
-  assignIssue: boolean;
-  /** Whether this person can edit changelogs. */
-  canEditChangelog: boolean;
-  /** Person can release the specified tracks. */
-  canReleaseTracks: ReleaseTrack[];
+  assign_issue: boolean;
+  /** List of environments and what the user is allowed to do with them. */
+  environments: Record<EnvironmentType, UserEnvironmentSettings>;
+}
+
+/**
+ * Parse an object to an environment object.
+ *
+ * @param object - Object to parse.
+ * @returns Environment object.
+ * @example parseEnvironments({ 'google-play': { edit_changelog: true, release: true } });
+ */
+export function parseEnvironments(
+  object: unknown,
+): Record<EnvironmentType, UserEnvironmentSettings> {
+  const objectMap = object as Record<string, unknown>;
+  const environments = {} as Record<EnvironmentType, UserEnvironmentSettings>;
+  for (const environment of Object.keys(objectMap)) {
+    const environmentSettings = objectMap[environment];
+    if (typeof environmentSettings === 'object') {
+      const environmentSettingsMap = environmentSettings as Record<
+        string,
+        unknown
+      >;
+      if (
+        Object.values(EnvironmentType).includes(environment as EnvironmentType)
+      ) {
+        environments[environment as EnvironmentType] = {
+          edit_changelog:
+            typeof environmentSettingsMap['edit_changelog'] === 'boolean'
+              ? environmentSettingsMap['edit_changelog']
+              : false,
+          release:
+            typeof environmentSettingsMap['release'] === 'boolean'
+              ? environmentSettingsMap['release']
+              : false,
+        };
+      }
+    }
+  }
+  return environments;
 }
 
 /**
@@ -36,17 +80,14 @@ export function parsePermission(
    */
   return {
     username: typeof object['username'] === 'string' ? object['username'] : '',
-    assignIssue:
-      typeof object['assignIssue'] === 'boolean'
-        ? object['assignIssue']
+    assign_issue:
+      typeof object['assign_issue'] === 'boolean'
+        ? object['assign_issue']
         : false,
-    canEditChangelog:
-      typeof object['canEditChangelog'] === 'boolean'
-        ? object['canEditChangelog']
-        : false,
-    canReleaseTracks: Array.isArray(object['canReleaseTracks'])
-      ? (object['canReleaseTracks'] as ReleaseTrack[])
-      : ([] as ReleaseTrack[]),
+    environments:
+      typeof object['environments'] === 'object'
+        ? parseEnvironments(object['environments'])
+        : ({} as Record<EnvironmentType, UserEnvironmentSettings>),
   };
 }
 

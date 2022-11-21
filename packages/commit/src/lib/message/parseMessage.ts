@@ -6,12 +6,10 @@
  */
 
 import { categoryForTag } from '../categories/categories';
+import { parseCommitLine } from './CommitLineRegex';
 import { CommitMessage } from './CommitMessage';
 
 const issueTags = ['close', 'closes', 'closed', 'fixes', 'fixed'];
-
-const firstLineRegex =
-  /^(?<emoji>:.*:)\s*(?<category>.*?)(?:\((?<scope>.*?)\))?(?<breaking>!)?:\s*(?<subject>.*)$/u;
 
 /**
  * Reads the first line of the commit message.
@@ -22,11 +20,12 @@ const firstLineRegex =
  *   readFirstLine(':bug: (core) Fix a bug', commitMessage);
  */
 function readFirstLine(line: string, commitMessage: CommitMessage): void {
-  const match = firstLineRegex.exec(line);
-  commitMessage.category = categoryForTag(match?.groups?.['category'] ?? '');
-  commitMessage.scope = match?.groups?.['scope'] ?? '';
-  commitMessage.subject = match?.groups?.['subject'] ?? '';
-  commitMessage.breaking = match?.groups?.['breaking'] === '!';
+  const { category, scope, subject, breaking } = parseCommitLine(line);
+  commitMessage.category = categoryForTag(category ?? '');
+  commitMessage.scope = scope ?? '';
+  commitMessage.subject = subject ?? '';
+  commitMessage.breaking = breaking;
+  commitMessage.formatted = commitMessage.category.tag !== 'unknown';
 }
 
 /**
@@ -52,7 +51,7 @@ function extractIssueNumber(line: string, commitMessage: CommitMessage): void {
  * @example
  *   const commitMessage = parseMessage('Fixes #123');
  */
-function parseMessage(message: string): CommitMessage {
+export function parseMessage(message: string): CommitMessage {
   const commitMessage = new CommitMessage();
   let reachedFooter = false;
   for (const [index, line] of message.split('\n').entries()) {
@@ -77,5 +76,3 @@ function parseMessage(message: string): CommitMessage {
 
   return commitMessage;
 }
-
-export { firstLineRegex, parseMessage };

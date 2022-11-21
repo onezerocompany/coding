@@ -37,7 +37,7 @@
     "packages/prettier-config",
     "packages/tsconfig",
     "actions/pr-commit-check",
-    "actions/release-issues",
+    "actions/release-tracker",
     "actions/setup-flutter"
   ],
   "eslint.codeAction.showDocumentation": {

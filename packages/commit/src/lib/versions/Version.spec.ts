@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { ReleaseTrack } from '@onezerocompany/project-manager';
 import { Version } from './Version';
 import { VersionBump } from './VersionBump';
 
@@ -10,51 +9,19 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(0);
     expect(version.patch).toBe(1);
-    expect(version.displayString()).toBe('0.0.1');
-  });
-  it('should create correct alpha version', () => {
-    const version = new Version({ track: ReleaseTrack.alpha });
-    expect(version.major).toBe(0);
-    expect(version.minor).toBe(0);
-    expect(version.patch).toBe(1);
-    expect(
-      version.displayString({
-        track: ReleaseTrack.alpha,
-        includeRelease: false,
-        includeTrack: true,
-      }),
-    ).toBe('0.0.1-alpha');
-  });
-  it('should create correct beta version', () => {
-    const version = new Version({ track: ReleaseTrack.beta });
-    expect(version.major).toBe(0);
-    expect(version.minor).toBe(0);
-    expect(version.patch).toBe(1);
-    expect(
-      version.displayString({
-        track: ReleaseTrack.beta,
-        includeRelease: false,
-        includeTrack: true,
-      }),
-    ).toBe('0.0.1-beta');
+    expect(version.displayString).toBe('0.0.1');
   });
   it('should work with other template', () => {
     const version = new Version({
       major: 1,
       minor: 0,
       patch: 0,
-      template: '{major}.{minor}.{patch} {track}',
+      template: '{major}.{minor}.{patch} stable',
     });
     expect(version.major).toBe(1);
     expect(version.minor).toBe(0);
     expect(version.patch).toBe(0);
-    expect(
-      version.displayString({
-        track: ReleaseTrack.stable,
-        includeRelease: true,
-        includeTrack: true,
-      }),
-    ).toBe('1.0.0 stable');
+    expect(version.displayString).toBe('1.0.0 stable');
   });
   it('major bump should work correctly', () => {
     const version = new Version({ major: 0, minor: 2, patch: 6 });
@@ -62,7 +29,7 @@ describe('version', () => {
     expect(version.major).toBe(1);
     expect(version.minor).toBe(0);
     expect(version.patch).toBe(0);
-    expect(version.displayString()).toBe('1.0.0');
+    expect(version.displayString).toBe('1.0.0');
   });
   it('minor bump should work correctly', () => {
     const version = new Version({ major: 0, minor: 2, patch: 6 });
@@ -70,7 +37,7 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(3);
     expect(version.patch).toBe(0);
-    expect(version.displayString()).toBe('0.3.0');
+    expect(version.displayString).toBe('0.3.0');
   });
   it('patch bump should work correctly', () => {
     const version = new Version({ major: 0, minor: 2, patch: 6 });
@@ -78,7 +45,7 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(2);
     expect(version.patch).toBe(7);
-    expect(version.displayString()).toBe('0.2.7');
+    expect(version.displayString).toBe('0.2.7');
   });
   it('none bump should work correctly', () => {
     const version = new Version({ major: 0, minor: 2, patch: 6 });
@@ -86,7 +53,7 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(2);
     expect(version.patch).toBe(6);
-    expect(version.displayString()).toBe('0.2.6');
+    expect(version.displayString).toBe('0.2.6');
   });
   it('should sort correctly', () => {
     const list = [
@@ -100,7 +67,7 @@ describe('version', () => {
       new Version({ major: 1, minor: 4, patch: 0 }),
     ]
       .sort(Version.sort)
-      .map((version) => version.displayString());
+      .map((version) => version.displayString);
     expect(list).toEqual([
       '0.2.1',
       '0.2.6',
@@ -118,7 +85,7 @@ describe('version', () => {
       major: 0,
       minor: 2,
       patch: 6,
-      template: '{major}.{minor}.{patch}-{track}',
+      template: '{major}.{minor}.{patch}',
     });
   });
   it('should create correct version from perfect string', () => {
@@ -126,68 +93,14 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(2);
     expect(version.patch).toBe(6);
-    expect(version.displayString()).toBe('0.2.6');
+    expect(version.displayString).toBe('0.2.6');
   });
   it('should create correct version from clobbered string', () => {
     const version = Version.fromString('!v0.2.6 alpha version');
     expect(version.major).toBe(0);
     expect(version.minor).toBe(2);
     expect(version.patch).toBe(6);
-    expect(version.displayString()).toBe('0.2.6');
-  });
-  it('should create version from json object', () => {
-    const version = Version.fromJson({
-      major: 0,
-      minor: 2,
-      patch: 6,
-      template: '{major}.{minor}.{patch}-{track}',
-    });
-    expect(version.major).toBe(0);
-    expect(version.minor).toBe(2);
-    expect(version.patch).toBe(6);
-    expect(
-      version.displayString({
-        track: ReleaseTrack.stable,
-        includeRelease: true,
-        includeTrack: true,
-      }),
-    ).toBe('0.2.6-stable');
-  });
-  it('should create alpha version', () => {
-    const version = Version.fromJson({
-      major: 0,
-      minor: 2,
-      patch: 6,
-      template: '{major}.{minor}.{patch}-{track}',
-    });
-    expect(version.major).toBe(0);
-    expect(version.minor).toBe(2);
-    expect(version.patch).toBe(6);
-    expect(
-      version.displayString({
-        track: ReleaseTrack.alpha,
-        includeRelease: true,
-        includeTrack: true,
-      }),
-    ).toBe('0.2.6-alpha');
-  });
-  it('should create beta version', () => {
-    const version = Version.fromJson({
-      major: 0,
-      minor: 2,
-      patch: 6,
-      template: '{major}.{minor}.{patch}-{track}',
-    });
-    expect(version.major).toBe(0);
-    expect(version.minor).toBe(2);
-    expect(version.patch).toBe(6);
-    expect(
-      version.displayString({
-        track: ReleaseTrack.beta,
-        includeTrack: true,
-        includeRelease: false,
-      }),
-    ).toBe('0.2.6-beta');
+    expect(version.displayString).toBe('0.2.6');
   });
   it('should create a release version by default', () => {
     const version = Version.fromJson({
@@ -199,6 +112,13 @@ describe('version', () => {
     expect(version.major).toBe(0);
     expect(version.minor).toBe(2);
     expect(version.patch).toBe(6);
-    expect(version.displayString()).toBe('0.2.6');
+    expect(version.displayString).toBe('0.2.6');
+  });
+  it('should work with an empty string', () => {
+    const version = Version.fromString('');
+    expect(version.major).toBe(0);
+    expect(version.minor).toBe(0);
+    expect(version.patch).toBe(0);
+    expect(version.displayString).toBe('0.0.0');
   });
 });

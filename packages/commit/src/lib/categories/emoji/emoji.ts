@@ -7,6 +7,11 @@
 
 import emoji from './emoji.json';
 
+const emojis = emoji.emojis as Array<{
+  emoji: string;
+  shortcode: string;
+}>;
+
 /**
  * Get an emoji from the list based on a shortcode.
  *
@@ -15,6 +20,20 @@ import emoji from './emoji.json';
  * @example getEmoji('bug')
  */
 export function emojiForShortcode(code: string): string {
-  const result = emoji.emojis.find((search) => search.shortname === code);
-  return result?.emoji ?? '?';
+  return emojis.find((search) => search.shortcode === code)?.emoji ?? '❓';
+}
+
+/**
+ * Get an emoji from the list based on the emoji.
+ *
+ * @param emojiToCheck - The emoji to check.
+ * @returns The shortcode.
+ * @example getShortcodeForEmoji('🐛');
+ */
+export function shortcodeForEmoji(emojiToCheck: string): string {
+  return (
+    emojis.find((item) =>
+      new RegExp(`^[bc${emojiToCheck}]$`, 'gu').exec(item.emoji),
+    )?.shortcode ?? ':question:'
+  );
 }

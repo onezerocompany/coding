@@ -5,7 +5,6 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { ReleaseTrack } from '@onezerocompany/project-manager';
 import { VersionBump } from './VersionBump';
 
 /** A JSON representation of a Version. */
@@ -41,10 +40,7 @@ export class Version {
    * @param inputs.major - The major digit of the version.
    * @param inputs.minor - The minor digit of the version.
    * @param inputs.patch - The patch digit of the version.
-   * @param inputs.track - The track of the version.
    * @param inputs.template - The template used to generate the displayString.
-   * @param inputs.includeTrack - Whether to include the track in the displayString.
-   * @param inputs.includeRelease - Whether to include the stable track in the displayString.
    * @example
    *   const version = new Version({
    *     major: 1,
@@ -60,15 +56,12 @@ export class Version {
     major?: number;
     minor?: number;
     patch?: number;
-    track?: ReleaseTrack;
     template?: string;
-    includeTrack?: boolean;
-    includeRelease?: boolean;
   }) {
     this.major = inputs?.major ?? 0;
     this.minor = inputs?.minor ?? 0;
     this.patch = inputs?.patch ?? 1;
-    this.template = inputs?.template ?? '{major}.{minor}.{patch}-{track}';
+    this.template = inputs?.template ?? '{major}.{minor}.{patch}';
   }
 
   /**
@@ -86,6 +79,25 @@ export class Version {
       patch: this.patch,
       template: this.template,
     };
+  }
+
+  /**
+   * String representation of the version.
+   *
+   * @returns The string representation of the version.
+   * @example const version = new Version().displayString();
+   */
+  public get displayString(): string {
+    let display = this.template;
+    display = display.replace(/\{major\}/gu, this.major.toString());
+    display = display.replace(/\{minor\}/gu, this.minor.toString());
+    display = display.replace(/\{patch\}/gu, this.patch.toString());
+
+    // Remove all non-alphanumeric characters leading and trailing
+    display = display.replace(/[^a-zA-Z0-9]*$/gu, '');
+    display = display.replace(/^[^a-zA-Z0-9]*/gu, '');
+
+    return display;
   }
 
   /**
@@ -142,56 +154,20 @@ export class Version {
     // Remove all non numbers and non dots
     const sanitizedString = string.replace(/[^0-9.]/gu, '');
     // Split the string into parts
-    const parts = sanitizedString.split('.');
-    const major = parseInt(parts[0] ?? '', 10);
-    const minor = parseInt(parts[1] ?? '', 10);
-    const patch = parseInt(parts[2] ?? '', 10);
+    const parts = sanitizedString.split('.').map((part) => {
+      const parsed = parseInt(part, 10);
+      if (isNaN(parsed)) return 0;
+      return parsed;
+    });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const major = parts[0]!;
+    const minor = parts[1] ?? 0;
+    const patch = parts[2] ?? 0;
     return new Version({
       major,
       minor,
       patch,
     });
-  }
-
-  /**
-   * String representation of the version.
-   *
-   * @param inputs - The inputs to use.
-   * @param inputs.includeTrack - Whether to include the track in the string.
-   * @param inputs.includeRelease - Whether to include the stable track in the string.
-   * @param inputs.track - The track to use.
-   * @returns The string representation of the version.
-   * @example const version = new Version().displayString();
-   */
-  public displayString(
-    inputs: {
-      includeTrack: boolean;
-      includeRelease: boolean;
-      track: ReleaseTrack;
-    } = {
-      includeTrack: false,
-      includeRelease: false,
-      track: ReleaseTrack.stable,
-    },
-  ): string {
-    let display = this.template;
-    display = display.replace(/\{major\}/gu, this.major.toString());
-    display = display.replace(/\{minor\}/gu, this.minor.toString());
-    display = display.replace(/\{patch\}/gu, this.patch.toString());
-    if (
-      (inputs.track === ReleaseTrack.stable && !inputs.includeRelease) ||
-      !inputs.includeTrack
-    ) {
-      display = display.replace(/\{track\}/gu, '');
-    } else {
-      display = display.replace(/\{track\}/gu, inputs.track.toString());
-    }
-
-    // Remove all non-alphanumeric characters leading and trailing
-    display = display.replace(/[^a-zA-Z0-9]*$/gu, '');
-    display = display.replace(/^[^a-zA-Z0-9]*/gu, '');
-
-    return display;
   }
 
   /**

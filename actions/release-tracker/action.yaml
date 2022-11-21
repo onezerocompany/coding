@@ -1,0 +1,14 @@
+name: 'Release Tracker Issues'
+description: 'Creates an issue for '
+inputs:
+  token:
+    description: 'GitHub token with repo scope'
+    required: true
+    default: ${{ github.token }}
+  project_manifest:
+    description: 'Path to the project manifest'
+    required: true
+    default: 'project-manifest.yaml'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
