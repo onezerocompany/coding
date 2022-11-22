@@ -37,8 +37,6 @@ export class ReleaseState {
    */
   public get nextAction(): ReleaseAction {
     if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
-    if (!isDefined(this.issueTrackerId))
-      return ReleaseAction.createTrackerIssue;
     return ReleaseAction.none;
   }
 
@@ -76,14 +74,13 @@ export class ReleaseState {
       case ReleaseAction.createRelease:
         await this.createRelease();
         break;
-      /** Trigger an issue creation. */
-      case ReleaseAction.createTrackerIssue:
-        break;
       /** Handle any other cases. */
       default:
         break;
     }
-    await this.executeNextAction();
+    if (this.nextAction !== ReleaseAction.none) {
+      await this.executeNextAction();
+    }
   }
 
   /**

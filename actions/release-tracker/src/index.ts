@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { Context } from './context/contexts';
+import { Context } from './context/Context';
 
 /**
  * Main entry point function for the action.
