@@ -21,7 +21,7 @@ function categoriesInCommitsList(commits: Commit[]): CommitCategory[] {
   return commits
     .reduce((categoriesList, commit) => {
       const { category } = commit.message;
-      if (!categories.includes(category) && category.tag !== 'unknown') {
+      if (!categoriesList.includes(category) && category.tag !== 'unknown') {
         categoriesList.push(category);
       }
       return categoriesList;
