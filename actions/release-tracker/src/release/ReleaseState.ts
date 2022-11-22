@@ -12,7 +12,9 @@ import {
   Version,
   getBumpForCommitList,
 } from '@onezerocompany/commit';
-import { createRelease, getLastestRelease } from '../utils/octokit';
+import { debug, info } from '@actions/core';
+import { getLastestRelease } from '../utils/octokit/getLastestRelease';
+import { createRelease } from '../utils/octokit/createRelease';
 import { isDefined } from '../utils/isDefined';
 import { ReleaseAction } from './ReleaseAction';
 import type { ReleaseEnvironment } from './ReleaseEnvironment';
@@ -69,6 +71,7 @@ export class ReleaseState {
    * @example await executeNextAction();
    */
   public async executeNextAction(): Promise<void> {
+    debug(`Running next action... ${this.nextAction}`);
     switch (this.nextAction) {
       /** Trigger a release creation. */
       case ReleaseAction.createRelease:
@@ -89,14 +92,18 @@ export class ReleaseState {
    * @example await this.createRelease()
    */
   private async createRelease(): Promise<void> {
+    info('Creating release...');
     // Fetch the latest release from GitHub.
     const previousRelease = await getLastestRelease();
     const previousVersion = Version.fromString(previousRelease.tag_name);
+    info(`Previous release: ${previousVersion.displayString}`);
 
     // Fetch commits since last release ref.
     const commits = listCommits({
       beginHash: previousRelease.tag_name,
     });
+    info(`Found ${commits.length} commits since last release.`);
+    debug(`Commits: ${JSON.stringify(commits)}`);
 
     // Generate changelog for release based on commits.
     const changelog = new ChangeLog({
@@ -104,10 +111,12 @@ export class ReleaseState {
       type: ChangeLogType.internal,
       markdown: true,
     }).text;
+    debug(`Changelog: ${changelog}`);
 
     // Determine the next version.
     const bump = getBumpForCommitList(commits);
     this.version = previousVersion.bump(bump);
+    info(`Next version: ${this.version.displayString}`);
 
     // Create release.
     await createRelease({

@@ -216,7 +216,21 @@ function getOptionalInput(e){const o=(0,t.getInput)(e);return o===""?null:o}
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-const n=getOptionalInput("token")??process.env["GITHUB_TOKEN"];if(typeof n!=="string"){(0,t.setFailed)("No token provided. Please provide a token in the 'token' input.");process.exit(1)}const i=(0,r.getOctokit)(n);const{graphql:a}=i;async function getLastestRelease(){const e=await i.rest.repos.getLatestRelease({owner:r.context.repo.owner,repo:r.context.repo.repo});return{tag_name:e.data.tag_name,node_id:e.data.node_id}}async function createRelease({releaseState:e,changelog:o}){if(typeof e.releaseId==="string"||typeof e.version!=="string"){throw new Error("Cannot create a release for a release state that already has a release ID or no version.")}const t=await i.rest.repos.createRelease({owner:r.context.repo.owner,repo:r.context.repo.repo,tag_name:e.version,name:r.context.ref,body:o,latest:true});return t.data.id}
+const n=getOptionalInput("token")??process.env["GITHUB_TOKEN"];if(typeof n!=="string"){(0,t.setFailed)("No github token provided. Please provide a token in the 'token' input.");process.exit(1)}const i=(0,r.getOctokit)(n);const{graphql:a}=i;
+/**
+ * @file Contains a function to get the latest release.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+async function getLastestRelease(){(0,t.info)("Fetching latest release...");try{const e=await i.rest.repos.getLatestRelease({owner:r.context.repo.owner,repo:r.context.repo.repo});(0,t.info)(` Found release ${e.data.tag_name}`);return{tag_name:e.data.tag_name,node_id:e.data.node_id}}catch(e){(0,t.error)(e);(0,t.setFailed)("Failed to fetch the latest release.");process.exit(1)}}
+/**
+ * @file Contains a function to create a new release.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+async function createRelease({releaseState:e,changelog:o}){if(typeof e.releaseId==="number"||typeof e.version!=="string"){(0,t.setFailed)("Cannot create a release when it already exists.");process.exit(1)}try{const t=await i.rest.repos.createRelease({owner:r.context.repo.owner,repo:r.context.repo.repo,tag_name:e.version,name:r.context.ref,body:o,latest:true});return t.data.id}catch(e){(0,t.error)(e);(0,t.setFailed)("Failed to create the release.");process.exit(1)}}
 /**
  * @file Contains a function that determines if a value is defined.
  * @copyright 2022 OneZero Company
@@ -251,7 +265,7 @@ class ReleaseEnvironment{environmentId;deployed=false;status=s.pending}function 
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class ReleaseState{environments=[];releaseId;issueTrackerId;version;get nextAction(){if(!isDefined(this.releaseId))return d.createRelease;return d.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="string")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}async executeNextAction(){switch(this.nextAction){case d.createRelease:await this.createRelease();break;default:break}if(this.nextAction!==d.none){await this.executeNextAction()}}async createRelease(){const e=await getLastestRelease();const t=o.Gf.fromString(e.tag_name);const r=(0,o.qF)({beginHash:e.tag_name});const n=new o.vv({commits:r,type:o.ac.internal,markdown:true}).text;const i=(0,o.Ng)(r);this.version=t.bump(i);await createRelease({releaseState:this,changelog:n})}}
+class ReleaseState{environments=[];releaseId;issueTrackerId;version;get nextAction(){if(!isDefined(this.releaseId))return d.createRelease;return d.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="string")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}async executeNextAction(){(0,t.debug)(`Running next action... ${this.nextAction}`);switch(this.nextAction){case d.createRelease:await this.createRelease();break;default:break}if(this.nextAction!==d.none){await this.executeNextAction()}}async createRelease(){(0,t.info)("Creating release...");const e=await getLastestRelease();const r=o.Gf.fromString(e.tag_name);(0,t.info)(`Previous release: ${r.displayString}`);const n=(0,o.qF)({beginHash:e.tag_name});(0,t.info)(`Found ${n.length} commits since last release.`);(0,t.debug)(`Commits: ${JSON.stringify(n)}`);const i=new o.vv({commits:n,type:o.ac.internal,markdown:true}).text;(0,t.debug)(`Changelog: ${i}`);const a=(0,o.Ng)(n);this.version=r.bump(a);(0,t.info)(`Next version: ${this.version.displayString}`);await createRelease({releaseState:this,changelog:i})}}
 /**
  * @file Functions for getting content between a beginning and ending tag.
  * @copyright 2022 OneZero Company
@@ -286,4 +300,4 @@ class Context{static default=new Context;static projectManifest=(0,e.loadManifes
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function main(){await Context["default"].initialize()}void main()})();module.exports=__webpack_exports__})();
+async function main(){await Context["default"].initialize();await Context["default"].curentState.executeNextAction()}void main()})();module.exports=__webpack_exports__})();
