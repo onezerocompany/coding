@@ -121,7 +121,7 @@ export class ReleaseState {
     info(`Next version: ${this.version.displayString}`);
 
     // Create release.
-    await createRelease({
+    this.releaseId = await createRelease({
       releaseState: this,
       changelog,
     });

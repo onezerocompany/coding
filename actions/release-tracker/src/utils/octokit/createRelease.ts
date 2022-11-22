@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { error as logError, setFailed } from '@actions/core';
+import { error as logError, info, setFailed } from '@actions/core';
 import { context } from '@actions/github';
 import type { ReleaseState } from '../../release/ReleaseState';
 import { octokit } from './octokit';
@@ -46,6 +46,7 @@ export async function createRelease({
       body: changelog,
       latest: true,
     });
+    info('Created release.');
     return release.data.id;
   } catch (createError: unknown) {
     logError(createError as string);
