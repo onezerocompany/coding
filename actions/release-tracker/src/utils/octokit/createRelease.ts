@@ -26,11 +26,13 @@ export async function createRelease({
   releaseState: ReleaseState;
   changelog: string;
 }): Promise<number> {
-  if (
-    typeof releaseState.releaseId === 'number' ||
-    typeof releaseState.version !== 'string'
-  ) {
+  if (typeof releaseState.releaseId === 'number') {
     setFailed('Cannot create a release when it already exists.');
+    process.exit(1);
+  }
+
+  if (typeof releaseState.version?.displayString !== 'string') {
+    setFailed('Cannot create a release without a defined version.');
     process.exit(1);
   }
 
@@ -38,7 +40,7 @@ export async function createRelease({
     const release = await octokit.rest.repos.createRelease({
       owner: context.repo.owner,
       repo: context.repo.repo,
-      tag_name: releaseState.version,
+      tag_name: releaseState.version.displayString,
       name: context.ref,
       // eslint-disable-next-line id-denylist
       body: changelog,

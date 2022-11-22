@@ -230,7 +230,7 @@ async function getLastestRelease(){(0,t.info)("Fetching latest release...");try{
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createRelease({releaseState:e,changelog:o}){if(typeof e.releaseId==="number"||typeof e.version!=="string"){(0,t.setFailed)("Cannot create a release when it already exists.");process.exit(1)}try{const t=await i.rest.repos.createRelease({owner:r.context.repo.owner,repo:r.context.repo.repo,tag_name:e.version,name:r.context.ref,body:o,latest:true});return t.data.id}catch(e){(0,t.error)(e);(0,t.setFailed)("Failed to create the release.");process.exit(1)}}
+async function createRelease({releaseState:e,changelog:o}){if(typeof e.releaseId==="number"){(0,t.setFailed)("Cannot create a release when it already exists.");process.exit(1)}if(typeof e.version?.displayString!=="string"){(0,t.setFailed)("Cannot create a release without a defined version.");process.exit(1)}try{const t=await i.rest.repos.createRelease({owner:r.context.repo.owner,repo:r.context.repo.repo,tag_name:e.version.displayString,name:r.context.ref,body:o,latest:true});return t.data.id}catch(e){(0,t.error)(e);(0,t.setFailed)("Failed to create the release.");process.exit(1)}}
 /**
  * @file Contains a function that determines if a value is defined.
  * @copyright 2022 OneZero Company
