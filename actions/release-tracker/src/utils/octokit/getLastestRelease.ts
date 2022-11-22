@@ -18,6 +18,7 @@ import { octokit } from './octokit';
 export async function getLastestRelease(): Promise<{
   node_id: string;
   tag_name: string;
+  target_commitish: string;
 } | null> {
   info('Fetching latest release...');
   try {
@@ -31,6 +32,7 @@ export async function getLastestRelease(): Promise<{
     return {
       tag_name: release.data.tag_name,
       node_id: release.data.node_id,
+      target_commitish: release.data.target_commitish,
     };
   } catch (fetchError: unknown) {
     if (fetchError instanceof Error && fetchError.message === 'Not Found') {

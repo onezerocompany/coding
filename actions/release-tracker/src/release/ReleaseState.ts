@@ -102,7 +102,7 @@ export class ReleaseState {
 
     // Fetch commits since last release ref.
     const commits = listCommits({
-      beginHash: previousRelease?.tag_name,
+      beginHash: previousRelease?.target_commitish,
     });
     info(`Found ${commits.length} commits since last release.`);
     debug(`Commits: ${JSON.stringify(commits)}`);
@@ -125,11 +125,5 @@ export class ReleaseState {
       releaseState: this,
       changelog,
     });
-
-    /*
-     * Generate changelog (internal GitHub changelog).
-     * Create release.
-     * Attach `manifest.json` to release.
-     */
   }
 }

@@ -41,7 +41,7 @@ export async function createRelease({
       owner: context.repo.owner,
       repo: context.repo.repo,
       tag_name: releaseState.version.displayString,
-      name: context.ref,
+      name: releaseState.version.displayString,
       // eslint-disable-next-line id-denylist
       body: changelog,
       latest: true,
