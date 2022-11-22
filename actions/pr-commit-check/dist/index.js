@@ -46,7 +46,7 @@
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
- */Object.defineProperty(o,"__esModule",{value:true});o.listCommits=void 0;const r=t(2081);const n=t(8424);function listCommits({beginHash:e,endHash:o}){const t=(0,r.execSync)(`git rev-list ${e}..${o??"HEAD"}`,{encoding:"utf-8"});const i=t.trim().split("\n");return i.map((e=>{const o=(0,r.execSync)(`git log -1 --format=%B ${e}`,{encoding:"utf-8"});return new n.Commit({hash:e,message:o})}))}o.listCommits=listCommits},3678:(e,o,t)=>{"use strict";
+ */Object.defineProperty(o,"__esModule",{value:true});o.listCommits=void 0;const r=t(2081);const n=t(8424);function listCommits({beginHash:e,endHash:o}){const t=e??"";const i=(0,r.execSync)(`git rev-list ${t?`${t}..`:""}${o??"HEAD"}`,{encoding:"utf-8"});const a=i.trim().split("\n");return a.map((e=>{const o=(0,r.execSync)(`git log -1 --format=%B ${e}`,{encoding:"utf-8"});return new n.Commit({hash:e,message:o})}))}o.listCommits=listCommits},3678:(e,o,t)=>{"use strict";
 /**
  * @file Globally available variables.
  * @copyright 2022 OneZero Company

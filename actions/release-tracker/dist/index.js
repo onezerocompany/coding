@@ -46,7 +46,7 @@
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
- */Object.defineProperty(o,"__esModule",{value:true});o.listCommits=void 0;const r=t(2081);const n=t(8424);function listCommits({beginHash:e,endHash:o}){const t=(0,r.execSync)(`git rev-list ${e}..${o??"HEAD"}`,{encoding:"utf-8"});const i=t.trim().split("\n");return i.map((e=>{const o=(0,r.execSync)(`git log -1 --format=%B ${e}`,{encoding:"utf-8"});return new n.Commit({hash:e,message:o})}))}o.listCommits=listCommits},3678:(e,o,t)=>{"use strict";
+ */Object.defineProperty(o,"__esModule",{value:true});o.listCommits=void 0;const r=t(2081);const n=t(8424);function listCommits({beginHash:e,endHash:o}){const t=e??"";const i=(0,r.execSync)(`git rev-list ${t?`${t}..`:""}${o??"HEAD"}`,{encoding:"utf-8"});const a=i.trim().split("\n");return a.map((e=>{const o=(0,r.execSync)(`git log -1 --format=%B ${e}`,{encoding:"utf-8"});return new n.Commit({hash:e,message:o})}))}o.listCommits=listCommits},3678:(e,o,t)=>{"use strict";
 /**
  * @file Globally available variables.
  * @copyright 2022 OneZero Company
@@ -223,7 +223,7 @@ const n=getOptionalInput("token")??process.env["GITHUB_TOKEN"];if(typeof n!=="st
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function getLastestRelease(){(0,t.info)("Fetching latest release...");try{const e=await i.rest.repos.getLatestRelease({owner:r.context.repo.owner,repo:r.context.repo.repo});(0,t.info)(` Found release ${e.data.tag_name}`);return{tag_name:e.data.tag_name,node_id:e.data.node_id}}catch(e){(0,t.error)(e);(0,t.setFailed)("Failed to fetch the latest release.");process.exit(1)}}
+async function getLastestRelease(){(0,t.info)("Fetching latest release...");try{const e=await i.rest.repos.getLatestRelease({owner:r.context.repo.owner,repo:r.context.repo.repo});(0,t.info)(` Found release ${e.data.tag_name}`);return{tag_name:e.data.tag_name,node_id:e.data.node_id}}catch(e){if(e instanceof Error&&e.message==="Not Found"){(0,t.info)(" No release found.");return null}(0,t.error)(e);(0,t.setFailed)("Failed to fetch the latest release.");process.exit(1)}}
 /**
  * @file Contains a function to create a new release.
  * @copyright 2022 OneZero Company
@@ -265,7 +265,7 @@ class ReleaseEnvironment{environmentId;deployed=false;status=s.pending}function 
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class ReleaseState{environments=[];releaseId;issueTrackerId;version;get nextAction(){if(!isDefined(this.releaseId))return d.createRelease;return d.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="string")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}async executeNextAction(){(0,t.debug)(`Running next action... ${this.nextAction}`);switch(this.nextAction){case d.createRelease:await this.createRelease();break;default:break}if(this.nextAction!==d.none){await this.executeNextAction()}}async createRelease(){(0,t.info)("Creating release...");const e=await getLastestRelease();const r=o.Gf.fromString(e.tag_name);(0,t.info)(`Previous release: ${r.displayString}`);const n=(0,o.qF)({beginHash:e.tag_name});(0,t.info)(`Found ${n.length} commits since last release.`);(0,t.debug)(`Commits: ${JSON.stringify(n)}`);const i=new o.vv({commits:n,type:o.ac.internal,markdown:true}).text;(0,t.debug)(`Changelog: ${i}`);const a=(0,o.Ng)(n);this.version=r.bump(a);(0,t.info)(`Next version: ${this.version.displayString}`);await createRelease({releaseState:this,changelog:i})}}
+class ReleaseState{environments=[];releaseId;issueTrackerId;version;get nextAction(){if(!isDefined(this.releaseId))return d.createRelease;return d.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="string")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}async executeNextAction(){(0,t.debug)(`Running next action... ${this.nextAction}`);switch(this.nextAction){case d.createRelease:await this.createRelease();break;default:break}if(this.nextAction!==d.none){await this.executeNextAction()}}async createRelease(){(0,t.info)("Creating release...");const e=await getLastestRelease();const r=o.Gf.fromString(e?.tag_name??"0.0.0");(0,t.info)(`Previous release: ${r.displayString}`);const n=(0,o.qF)({beginHash:e?.tag_name});(0,t.info)(`Found ${n.length} commits since last release.`);(0,t.debug)(`Commits: ${JSON.stringify(n)}`);const i=new o.vv({commits:n,type:o.ac.internal,markdown:true}).text;(0,t.debug)(`Changelog: ${i}`);const a=(0,o.Ng)(n);this.version=r.bump(a);(0,t.info)(`Next version: ${this.version.displayString}`);await createRelease({releaseState:this,changelog:i})}}
 /**
  * @file Functions for getting content between a beginning and ending tag.
  * @copyright 2022 OneZero Company

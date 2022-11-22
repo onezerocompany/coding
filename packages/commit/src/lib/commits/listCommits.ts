@@ -21,12 +21,16 @@ export function listCommits({
   beginHash,
   endHash,
 }: {
-  beginHash: string;
+  beginHash?: string | undefined;
   endHash?: string | undefined;
 }): Commit[] {
-  const output = execSync(`git rev-list ${beginHash}..${endHash ?? 'HEAD'}`, {
-    encoding: 'utf-8',
-  });
+  const begin = beginHash ?? '';
+  const output = execSync(
+    `git rev-list ${begin ? `${begin}..` : ''}${endHash ?? 'HEAD'}`,
+    {
+      encoding: 'utf-8',
+    },
+  );
   const hashes = output.trim().split('\n');
   return hashes.map((hash) => {
     const message = execSync(`git log -1 --format=%B ${hash}`, {

@@ -18,7 +18,7 @@ import { octokit } from './octokit';
 export async function getLastestRelease(): Promise<{
   node_id: string;
   tag_name: string;
-}> {
+} | null> {
   info('Fetching latest release...');
   try {
     const release = await octokit.rest.repos.getLatestRelease({
@@ -33,6 +33,10 @@ export async function getLastestRelease(): Promise<{
       node_id: release.data.node_id,
     };
   } catch (fetchError: unknown) {
+    if (fetchError instanceof Error && fetchError.message === 'Not Found') {
+      info(' No release found.');
+      return null;
+    }
     logError(fetchError as string);
     setFailed('Failed to fetch the latest release.');
     process.exit(1);

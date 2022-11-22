@@ -95,12 +95,14 @@ export class ReleaseState {
     info('Creating release...');
     // Fetch the latest release from GitHub.
     const previousRelease = await getLastestRelease();
-    const previousVersion = Version.fromString(previousRelease.tag_name);
+    const previousVersion = Version.fromString(
+      previousRelease?.tag_name ?? '0.0.0',
+    );
     info(`Previous release: ${previousVersion.displayString}`);
 
     // Fetch commits since last release ref.
     const commits = listCommits({
-      beginHash: previousRelease.tag_name,
+      beginHash: previousRelease?.tag_name,
     });
     info(`Found ${commits.length} commits since last release.`);
     debug(`Commits: ${JSON.stringify(commits)}`);
