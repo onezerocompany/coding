@@ -5,13 +5,15 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
+import { setFailed } from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import type { ReleaseState } from '../release/ReleaseState';
 import { getOptionalInput } from './getOptionalInput';
 
 const token = getOptionalInput('token') ?? process.env['GITHUB_TOKEN'];
 if (typeof token !== 'string') {
-  throw new Error('No GitHub token provided.');
+  setFailed("No token provided. Please provide a token in the 'token' input.");
+  process.exit(1);
 }
 export const octokit = getOctokit(token);
 export const { graphql } = octokit;
