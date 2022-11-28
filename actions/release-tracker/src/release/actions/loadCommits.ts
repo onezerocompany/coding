@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { debug, info, setFailed } from '@actions/core';
+import { info, setFailed } from '@actions/core';
 import { getBumpForCommitList, listCommits } from '@onezerocompany/commit';
 import type { ReleaseState } from '../ReleaseState';
 
@@ -36,10 +36,12 @@ export async function loadCommits({
     beginHash: state.previousRef,
   });
   info(`Found ${state.commits.length} commits since last release.`);
-  debug(`Commits: ${JSON.stringify(state.commits)}`);
+  for (const commit of state.commits) {
+    info(`- ${commit.message.displayString}`);
+  }
 
   // Determine the next version.
   state.bump = getBumpForCommitList(state.commits);
   state.version = state.previousVersion.bump(state.bump);
-  info(`Next version: ${state.version.displayString}`);
+  info(`Next version: ${state.version.displayString} (bumped: ${state.bump})`);
 }

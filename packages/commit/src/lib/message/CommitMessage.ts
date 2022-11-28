@@ -122,9 +122,7 @@ export class CommitMessage {
    */
   public get message(): string {
     const lines = [
-      `${this.category.emoji} ${this.category.tag}(${this.scope})${
-        this.breaking ? '!' : ''
-      }: ${this.subject}`,
+      this.mainLine,
       this.messageBody,
       [
         this.issues.map((issue) => `Closes #${issue}`).join('\n'),
@@ -136,6 +134,17 @@ export class CommitMessage {
       .filter((line) => line.length > 0)
       .join('\n\n')
       .trim();
+  }
+
+  /**
+   * Main information of the commit message.
+   *
+   * @returns The short commit message.
+   */
+  public get mainLine(): string {
+    return `${emojiForShortcode(this.category.emoji)} ${this.category.tag}(${
+      this.scope
+    })${this.breaking ? '!' : ''} ${this.subject}`;
   }
 
   /**

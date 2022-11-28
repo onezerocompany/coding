@@ -45,6 +45,7 @@ export class ReleaseState {
   public get nextAction(): ReleaseAction {
     if (!isDefined(this.version)) return ReleaseAction.loadVersion;
     if (!isDefined(this.commits)) return ReleaseAction.loadCommits;
+    if (this.bump === VersionBump.none) return ReleaseAction.none;
     if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
     if (!isDefined(this.issueTrackerId))
       return ReleaseAction.createTrackerIssue;
