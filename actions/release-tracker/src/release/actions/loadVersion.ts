@@ -30,5 +30,6 @@ export async function loadVersion({
   state.previousVersion = Version.fromString(
     previousRelease?.tag_name ?? '0.0.0',
   );
+  state.version = state.previousVersion;
   info(`Previous release: ${state.previousVersion.displayString}`);
 }

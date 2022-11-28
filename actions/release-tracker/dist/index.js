@@ -307,7 +307,7 @@ async function getLastestRelease(){(0,a.info)("Fetching latest release...");try{
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function loadVersion({state:e}){const o=await getLastestRelease();if(typeof o?.target_commitish==="string"){e.previousRef=o.target_commitish}e.previousVersion=r.Gf.fromString(o?.tag_name??"0.0.0");(0,a.info)(`Previous release: ${e.previousVersion.displayString}`)}
+async function loadVersion({state:e}){const o=await getLastestRelease();if(typeof o?.target_commitish==="string"){e.previousRef=o.target_commitish}e.previousVersion=r.Gf.fromString(o?.tag_name??"0.0.0");e.version=e.previousVersion;(0,a.info)(`Previous release: ${e.previousVersion.displayString}`)}
 /**
  * @file Router for release actions.
  * @copyright 2022 OneZero Company
