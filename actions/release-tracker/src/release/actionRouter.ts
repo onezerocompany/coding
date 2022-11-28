@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { debug } from '@actions/core';
+import { info } from '@actions/core';
 import { createReleaseAction } from './actions/createReleaseAction';
 import { createTrackerIssueAction } from './actions/createTrackerIssueAction';
 import { loadCommits } from './actions/loadCommits';
@@ -28,7 +28,7 @@ export async function actionRouter({
   state: ReleaseState;
   action: ReleaseAction;
 }): Promise<void> {
-  debug(`Running next action... ${action}`);
+  info(`Running next action... ${action}`);
   switch (action) {
     /** Loading version details. */
     case ReleaseAction.loadVersion:

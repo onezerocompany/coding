@@ -272,7 +272,7 @@ async function createRelease({version:e,changelog:t}){try{const r=await s.rest.r
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createReleaseAction({state:e}){if(Array.isArray(e.commits)&&e.commits.length>0){(0,a.setFailed)("Cannot create a release without commits.");process.exit(1)}if(typeof e.version?.displayString!=="string"){(0,a.setFailed)("Cannot create a release without a version.");process.exit(1)}const o=new r.vv({type:r.ac.internal,markdown:true,commits:e.commits??[]}).text;await createRelease({version:e.version.displayString,changelog:o})}
+async function createReleaseAction({state:e}){if(!(Array.isArray(e.commits)&&e.commits.length>0)){(0,a.setFailed)("Cannot create a release without commits.");process.exit(1)}if(typeof e.version?.displayString!=="string"){(0,a.setFailed)("Cannot create a release without a version.");process.exit(1)}const o=new r.vv({type:r.ac.internal,markdown:true,commits:e.commits}).text;await createRelease({version:e.version.displayString,changelog:o})}
 /**
  * @file Contains a function that creates an issue for a release.
  * @copyright 2022 OneZero Company
@@ -314,7 +314,7 @@ async function loadVersion({state:e}){const o=await getLastestRelease();if(typeo
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function actionRouter({state:e,action:o}){(0,a.debug)(`Running next action... ${o}`);switch(o){case n.loadVersion:await loadVersion({state:e});break;case n.loadCommits:await loadCommits({state:e});break;case n.createRelease:await createReleaseAction({state:e});break;case n.createTrackerIssue:await createTrackerIssueAction({state:e});break;default:break}}
+async function actionRouter({state:e,action:o}){(0,a.info)(`Running next action... ${o}`);switch(o){case n.loadVersion:await loadVersion({state:e});break;case n.loadCommits:await loadCommits({state:e});break;case n.createRelease:await createReleaseAction({state:e});break;case n.createTrackerIssue:await createTrackerIssueAction({state:e});break;default:break}}
 /**
  * @file Defines the Release class.
  * @copyright 2022 OneZero Company

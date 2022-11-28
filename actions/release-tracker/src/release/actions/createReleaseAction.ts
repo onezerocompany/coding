@@ -22,7 +22,7 @@ export async function createReleaseAction({
 }: {
   state: ReleaseState;
 }): Promise<void> {
-  if (Array.isArray(state.commits) && state.commits.length > 0) {
+  if (!(Array.isArray(state.commits) && state.commits.length > 0)) {
     setFailed('Cannot create a release without commits.');
     process.exit(1);
   }
@@ -35,7 +35,7 @@ export async function createReleaseAction({
   const changelog = new ChangeLog({
     type: ChangeLogType.internal,
     markdown: true,
-    commits: state.commits ?? [],
+    commits: state.commits,
   }).text;
 
   // Create release.
