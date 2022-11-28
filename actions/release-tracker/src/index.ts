@@ -14,7 +14,7 @@ import { Context } from './context/Context';
  */
 async function main(): Promise<void> {
   await Context.default.initialize();
-  await Context.default.curentState?.executeNextAction();
+  await Context.default.curentState?.runActions();
 }
 
 // eslint-disable-next-line no-void

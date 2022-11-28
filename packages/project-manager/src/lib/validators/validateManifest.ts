@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import type { PermissionSettings } from '../manifest';
+import type { UserSettings } from '../manifest';
 import type { ProjectManifest } from '../manifest/ProjectManifest';
 import { validateGitHubUsername } from './validateGitHubUsername';
 
@@ -16,9 +16,7 @@ import { validateGitHubUsername } from './validateGitHubUsername';
  * @returns A list of errors found in the permissions.
  * @example validatePermissions(permissions);
  */
-function validatePermissions(
-  permissions: PermissionSettings[],
-): ManifestError[] {
+function validatePermissions(permissions: UserSettings[]): ManifestError[] {
   const errors: ManifestError[] = [];
   for (const permission of permissions) {
     if (!validateGitHubUsername(permission.username)) {
@@ -55,7 +53,7 @@ export function validateManifest(manifest: ProjectManifest): {
 } {
   const errors: ManifestError[] = [];
 
-  errors.push(...validatePermissions(manifest.permissions));
+  errors.push(...validatePermissions(manifest.users));
 
   return { errors, valid: errors.length === 0 };
 }

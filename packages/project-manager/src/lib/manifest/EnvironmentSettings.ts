@@ -11,8 +11,6 @@ import { EnvironmentType } from './EnvironmentType';
 
 /** Settings for an environment. */
 export interface EnvironmentSettings {
-  /** Identifier of the environment. */
-  id: string;
   /** Type of the environment. */
   type: EnvironmentType;
   /** Environment name on GitHub. */
@@ -21,6 +19,8 @@ export interface EnvironmentSettings {
   changelog: ChangelogSettings;
   /** Version template. */
   version_template: string;
+  /** Auto release. */
+  auto_release: boolean;
 }
 
 /**
@@ -35,7 +35,6 @@ export function parseEnvironmentSettings(
 ): EnvironmentSettings {
   const parsed = settings as Record<string, unknown>;
   return {
-    id: typeof parsed['id'] === 'string' ? parsed['id'] : '',
     type:
       typeof parsed['type'] === 'string' &&
       Object.values(EnvironmentType).includes(parsed['type'] as EnvironmentType)
@@ -48,6 +47,10 @@ export function parseEnvironmentSettings(
       typeof parsed['version_template'] === 'string'
         ? parsed['version_template']
         : '{major}.{minor}.{patch}',
+    auto_release:
+      typeof parsed['auto_release'] === 'boolean'
+        ? parsed['auto_release']
+        : false,
   };
 }
 

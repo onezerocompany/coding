@@ -11,6 +11,8 @@ export interface ReleaseCreationSettings {
   tag_template: string;
   /** Url to a commit. */
   commit_url: string;
+  /** Url to a release. */
+  release_url: string;
   /** Changelog fallback message. */
   changelog_fallback: string;
 }
@@ -38,6 +40,8 @@ export function parseReleaseCreationSettings(
           : '{major}.{minor}.{patch}',
       commit_url:
         typeof parsed['commit_url'] === 'string' ? parsed['commit_url'] : '',
+      release_url:
+        typeof parsed['release_url'] === 'string' ? parsed['release_url'] : '',
       changelog_fallback:
         typeof parsed['changelog_fallback'] === 'string'
           ? parsed['changelog_fallback']
@@ -47,6 +51,7 @@ export function parseReleaseCreationSettings(
   return {
     tag_template: '{major}.{minor}.{patch}',
     commit_url: '',
+    release_url: '',
     changelog_fallback: '- Minor bug fixes and improvements.',
   };
 }

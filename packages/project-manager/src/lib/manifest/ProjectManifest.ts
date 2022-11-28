@@ -7,8 +7,8 @@
 
 import type { EnvironmentSettings } from './EnvironmentSettings';
 import { parseEnvironmentSettingsArray } from './EnvironmentSettings';
-import type { PermissionSettings } from './PermissionSettings';
-import { parsePermissionArray } from './PermissionSettings';
+import type { UserSettings } from './UserSettings';
+import { parsePermissionArray } from './UserSettings';
 import type { ReleaseCreationSettings } from './ReleaseCreationSettings';
 import { parseReleaseCreationSettings } from './ReleaseCreationSettings';
 
@@ -21,7 +21,7 @@ export class ProjectManifest {
   public release: ReleaseCreationSettings;
 
   /** Permissions assigned to specific users. */
-  public permissions: PermissionSettings[];
+  public users: UserSettings[];
 
   /** Environments to deploy the release to. */
   public environments: EnvironmentSettings[];
@@ -37,7 +37,7 @@ export class ProjectManifest {
       const parsed = manifest as Record<string, unknown>;
       this.main_branch = (parsed['main_branch'] ?? 'main') as string;
       this.release = parseReleaseCreationSettings(parsed['release']);
-      this.permissions = parsePermissionArray(parsed['permissions'] ?? []);
+      this.users = parsePermissionArray(parsed['permissions'] ?? []);
       this.environments = parseEnvironmentSettingsArray(
         parsed['environments'] ?? [],
       );
@@ -46,9 +46,10 @@ export class ProjectManifest {
       this.release = {
         tag_template: '{major}.{minor}.{patch}',
         commit_url: '',
+        release_url: '',
         changelog_fallback: '- Minor bug fixes and improvements.',
       };
-      this.permissions = [];
+      this.users = [];
       this.environments = [];
     }
   }

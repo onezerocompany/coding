@@ -13,4 +13,8 @@ export enum ReleaseAction {
   createRelease = 'createRelease',
   /** The issue should be created. */
   createTrackerIssue = 'createIssue',
+  /** Load commits for this release. */
+  loadCommits = 'loadCommits',
+  /** Load version. */
+  loadVersion = 'loadVersion',
 }

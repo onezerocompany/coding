@@ -1,7 +1,7 @@
 {
   "extends": "@onezerocompany/tsconfig/bases/node16.json",
   "exclude": ["dist/", "coverage/", "dist-reference/"],
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "spec/release/issueText.spec.ts"],
   "compilerOptions": {
     "moduleResolution": "Node",
     "declaration": false

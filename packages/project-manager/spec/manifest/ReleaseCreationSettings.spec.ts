@@ -5,11 +5,15 @@ describe('release creation settings', () => {
     const settings = parseReleaseCreationSettings({
       tag_template: '{major}.{minor}.{patch}',
       commit_url: 'http://github.com/onezero-company/coding/commit/{{commit}}',
+      release_url:
+        'http://github.com/onezero-company/coding/releases/tag/{{release}}',
       changelog_fallback: '- no changes',
     });
     expect(settings).toEqual({
       tag_template: '{major}.{minor}.{patch}',
       commit_url: 'http://github.com/onezero-company/coding/commit/{{commit}}',
+      release_url:
+        'http://github.com/onezero-company/coding/releases/tag/{{release}}',
       changelog_fallback: '- no changes',
     });
   });
@@ -18,6 +22,7 @@ describe('release creation settings', () => {
     expect(settings).toEqual({
       tag_template: '{major}.{minor}.{patch}',
       commit_url: '',
+      release_url: '',
       changelog_fallback: '- Minor bug fixes and improvements.',
     });
   });

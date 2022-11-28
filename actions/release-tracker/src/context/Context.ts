@@ -6,7 +6,7 @@
  */
 
 import { loadManifestFromProject } from '@onezerocompany/project-manager';
-import { ReleaseState } from '../release/ReleaseState';
+import type { ReleaseState } from '../release/ReleaseState';
 import { loadCurrentState } from './loadCurrentState';
 import { loadPreviousState } from './loadPreviousState';
 
@@ -30,9 +30,8 @@ export class Context {
    */
   public async initialize(): Promise<void> {
     this.previousState = loadPreviousState();
-    this.curentState = loadCurrentState();
+    this.curentState = loadCurrentState({
+      manifest: Context.projectManifest,
+    });
   }
 }
-
-export const currentState: ReleaseState | null = null;
-export const previousState = new ReleaseState();

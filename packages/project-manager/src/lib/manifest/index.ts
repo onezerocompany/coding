@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-export * from './PermissionSettings';
+export * from './UserSettings';
 export * from './EnvironmentType';
 export * from './ProjectManifest';
 export * from './loadManifestFile';

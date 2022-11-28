@@ -156,6 +156,6 @@ export class ChangeLog {
 
     if (typeof this.footer === 'string') content += this.footer;
 
-    return content;
+    return content.trim();
   }
 }

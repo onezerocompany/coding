@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { EnvironmentType } from './EnvironmentType';
+import type { EnvironmentType } from './EnvironmentType';
 
 /** Settings for an environment. */
 export interface UserEnvironmentSettings {
@@ -13,16 +13,18 @@ export interface UserEnvironmentSettings {
   edit_changelog: boolean;
   /** Whether the user is allowed to release. */
   release: boolean;
+  /** Type of environment. */
+  type: EnvironmentType;
 }
 
 /** Permission for a person in relation to this project. */
-export interface PermissionSettings {
+export interface UserSettings {
   /** GitHub username of this person. */
   username: string;
   /** Whether to assign the release issue to this person. */
   assign_issue: boolean;
   /** List of environments and what the user is allowed to do with them. */
-  environments: Record<EnvironmentType, UserEnvironmentSettings>;
+  environments: UserEnvironmentSettings[];
 }
 
 /**
@@ -32,35 +34,19 @@ export interface PermissionSettings {
  * @returns Environment object.
  * @example parseEnvironments({ 'google-play': { edit_changelog: true, release: true } });
  */
-export function parseEnvironments(
-  object: unknown,
-): Record<EnvironmentType, UserEnvironmentSettings> {
-  const objectMap = object as Record<string, unknown>;
-  const environments = {} as Record<EnvironmentType, UserEnvironmentSettings>;
-  for (const environment of Object.keys(objectMap)) {
-    const environmentSettings = objectMap[environment];
-    if (typeof environmentSettings === 'object') {
-      const environmentSettingsMap = environmentSettings as Record<
-        string,
-        unknown
-      >;
-      if (
-        Object.values(EnvironmentType).includes(environment as EnvironmentType)
-      ) {
-        environments[environment as EnvironmentType] = {
-          edit_changelog:
-            typeof environmentSettingsMap['edit_changelog'] === 'boolean'
-              ? environmentSettingsMap['edit_changelog']
-              : false,
-          release:
-            typeof environmentSettingsMap['release'] === 'boolean'
-              ? environmentSettingsMap['release']
-              : false,
-        };
-      }
-    }
-  }
-  return environments;
+export function parseEnvironments(object: unknown): UserEnvironmentSettings[] {
+  if (!Array.isArray(object)) return [];
+  return (object as Array<Record<string, unknown>>).map((environment) => ({
+    edit_changelog:
+      typeof environment['edit_changelog'] === 'boolean'
+        ? environment['edit_changelog']
+        : false,
+    release:
+      typeof environment['release'] === 'boolean'
+        ? environment['release']
+        : false,
+    type: environment['type'] as EnvironmentType,
+  }));
 }
 
 /**
@@ -70,9 +56,7 @@ export function parseEnvironments(
  * @returns Permission object.
  * @example parsePermission({ username: 'luca', assignIssue: true, canEditChangelog: true, canReleaseTracks: ['stable'] });
  */
-export function parsePermission(
-  object: Record<string, unknown>,
-): PermissionSettings {
+export function parsePermission(object: Record<string, unknown>): UserSettings {
   /*
    * Read values from object
    * if value is undefined, use default value
@@ -87,7 +71,7 @@ export function parsePermission(
     environments:
       typeof object['environments'] === 'object'
         ? parseEnvironments(object['environments'])
-        : ({} as Record<EnvironmentType, UserEnvironmentSettings>),
+        : [],
   };
 }
 
@@ -98,7 +82,7 @@ export function parsePermission(
  * @returns Array of permission objects.
  * @example parsePermissions([{ username: 'luca', assignIssue: true, canEditChangelog: true, canReleaseTracks: ['stable'] }]);
  */
-export function parsePermissionArray(array: unknown): PermissionSettings[] {
+export function parsePermissionArray(array: unknown): UserSettings[] {
   if (!Array.isArray(array)) return [];
   return array.map((item) => parsePermission(item as Record<string, unknown>));
 }

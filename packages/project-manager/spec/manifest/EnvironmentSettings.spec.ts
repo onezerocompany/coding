@@ -11,6 +11,7 @@ describe('environment settings', () => {
       id: 'test',
       type: 'firebase-hosting',
       github_name: 'github-test',
+      auto_release: true,
       changelog: {
         generate: true,
         type: 'github',
@@ -20,9 +21,9 @@ describe('environment settings', () => {
       version_template: '{major}.{minor}.{patch}',
     });
     expect(settings).toEqual({
-      id: 'test',
       type: EnvironmentType.firebaseHosting,
       github_name: 'github-test',
+      auto_release: true,
       changelog: {
         generate: true,
         type: ChangelogType.github,
@@ -35,9 +36,9 @@ describe('environment settings', () => {
   it('should parse an empty environment settings', () => {
     const settings = parseEnvironmentSettings({});
     expect(settings).toEqual({
-      id: '',
       type: EnvironmentType.firebaseHosting,
       github_name: '',
+      auto_release: false,
       changelog: {
         generate: false,
         type: ChangelogType.github,
@@ -50,9 +51,9 @@ describe('environment settings', () => {
   it('should parse an array correctly', () => {
     const settings = parseEnvironmentSettingsArray([
       {
-        id: 'test',
         type: 'firebase-hosting',
         github_name: 'github-test',
+        auto_release: true,
         changelog: {
           generate: true,
           type: 'github',
@@ -64,9 +65,9 @@ describe('environment settings', () => {
     ]);
     expect(settings).toEqual([
       {
-        id: 'test',
         type: EnvironmentType.firebaseHosting,
         github_name: 'github-test',
+        auto_release: true,
         changelog: {
           generate: true,
           type: ChangelogType.github,

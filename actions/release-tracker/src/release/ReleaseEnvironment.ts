@@ -5,6 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
+import type { EnvironmentType } from '@onezerocompany/project-manager';
 import { DeploymentStatus } from './DeploymentStatus';
 
 /** Environment to release to. */
@@ -12,11 +13,13 @@ import { DeploymentStatus } from './DeploymentStatus';
 /** Release environment. */
 export class ReleaseEnvironment {
   /** Environment ID. */
-  public environmentId?: string;
+  public github_name?: string;
   /** Whether the environment should be deployed. */
   public deployed = false;
   /** Status of the deployment. */
   public status = DeploymentStatus.pending;
+  /** Environment type. */
+  public type?: EnvironmentType;
 }
 
 /**
@@ -32,9 +35,10 @@ export function parseReleaseEnvironmentsArray(
   return environments.map((environment) => {
     const releaseEnvironment = new ReleaseEnvironment();
     const parsed = environment as Record<string, unknown>;
-    const { environmentId, deployed, status } = parsed;
-    if (typeof environmentId === 'string')
-      releaseEnvironment.environmentId = environmentId;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { github_name, deployed, status } = parsed;
+    if (typeof github_name === 'string')
+      releaseEnvironment.github_name = github_name;
     if (typeof deployed === 'boolean') releaseEnvironment.deployed = deployed;
     if (typeof status === 'string')
       releaseEnvironment.status = status as DeploymentStatus;

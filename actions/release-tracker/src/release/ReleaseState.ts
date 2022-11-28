@@ -5,20 +5,15 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import {
-  listCommits,
-  ChangeLog,
-  ChangeLogType,
-  Version,
-  getBumpForCommitList,
-} from '@onezerocompany/commit';
-import { debug, info } from '@actions/core';
-import { getLastestRelease } from '../utils/octokit/getLastestRelease';
-import { createRelease } from '../utils/octokit/createRelease';
+import { VersionBump } from '@onezerocompany/commit';
+import type { Commit, Version } from '@onezerocompany/commit';
+import type { ProjectManifest } from '@onezerocompany/project-manager';
 import { isDefined } from '../utils/isDefined';
 import { ReleaseAction } from './ReleaseAction';
 import type { ReleaseEnvironment } from './ReleaseEnvironment';
 import { parseReleaseEnvironmentsArray } from './ReleaseEnvironment';
+import { issueText } from './issueText';
+import { actionRouter } from './actionRouter';
 
 /** Represents a release and its associated issue. */
 export class ReleaseState {
@@ -30,6 +25,16 @@ export class ReleaseState {
   public issueTrackerId?: string;
   /** Version number of release. */
   public version?: Version;
+  /** Ref hash. */
+  public ref?: string;
+  /** Commits. */
+  public commits?: Commit[];
+  /** Previous `Version`. */
+  public previousVersion?: Version;
+  /** Previous ref hash. */
+  public previousRef?: string;
+  /** Bump from last version. */
+  public bump = VersionBump.none;
 
   /**
    * Determines the next action to take for this release.
@@ -38,7 +43,11 @@ export class ReleaseState {
    * @example await determineAction();
    */
   public get nextAction(): ReleaseAction {
+    if (!isDefined(this.version)) return ReleaseAction.loadVersion;
+    if (!isDefined(this.commits)) return ReleaseAction.loadCommits;
     if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
+    if (!isDefined(this.issueTrackerId))
+      return ReleaseAction.createTrackerIssue;
     return ReleaseAction.none;
   }
 
@@ -66,64 +75,29 @@ export class ReleaseState {
   }
 
   /**
+   * Text for an issue.
+   *
+   * @param parameters - Parameters for the issue text.
+   * @param parameters.manifest - The project manifest.
+   * @returns The issue text.
+   * @example const text = release.issueText({ manifest });
+   */
+  public issueText({ manifest }: { manifest: ProjectManifest }): string {
+    return issueText({ state: this, manifest });
+  }
+
+  /**
    * Executes the next action for this release.
    *
    * @example await executeNextAction();
    */
-  public async executeNextAction(): Promise<void> {
-    debug(`Running next action... ${this.nextAction}`);
-    switch (this.nextAction) {
-      /** Trigger a release creation. */
-      case ReleaseAction.createRelease:
-        await this.createRelease();
-        break;
-      /** Handle any other cases. */
-      default:
-        break;
-    }
+  public async runActions(): Promise<void> {
+    await actionRouter({
+      action: this.nextAction,
+      state: this,
+    });
     if (this.nextAction !== ReleaseAction.none) {
-      await this.executeNextAction();
+      await this.runActions();
     }
-  }
-
-  /**
-   * Creates a release for the current action.
-   *
-   * @example await this.createRelease()
-   */
-  private async createRelease(): Promise<void> {
-    info('Creating release...');
-    // Fetch the latest release from GitHub.
-    const previousRelease = await getLastestRelease();
-    const previousVersion = Version.fromString(
-      previousRelease?.tag_name ?? '0.0.0',
-    );
-    info(`Previous release: ${previousVersion.displayString}`);
-
-    // Fetch commits since last release ref.
-    const commits = listCommits({
-      beginHash: previousRelease?.target_commitish,
-    });
-    info(`Found ${commits.length} commits since last release.`);
-    debug(`Commits: ${JSON.stringify(commits)}`);
-
-    // Generate changelog for release based on commits.
-    const changelog = new ChangeLog({
-      commits,
-      type: ChangeLogType.internal,
-      markdown: true,
-    }).text;
-    debug(`Changelog: ${changelog}`);
-
-    // Determine the next version.
-    const bump = getBumpForCommitList(commits);
-    this.version = previousVersion.bump(bump);
-    info(`Next version: ${this.version.displayString}`);
-
-    // Create release.
-    this.releaseId = await createRelease({
-      releaseState: this,
-      changelog,
-    });
   }
 }
