@@ -122,13 +122,13 @@
           "description": "The URL template to use for the commit",
           "type": "string",
           "default": "https://github.com/onezerocompany/coding/commit/{{commit}}",
-          "pattern": "^https:\\/\\/github.com\\/([\\w/]{1,})\\/{{commit}}$"
+          "pattern": "^https:\\/\\/github.com\\/([\\w\\/\\-]{1,})\\/{{commit}}$"
         },
         "release_url": {
           "description": "The URL template to use for the release",
           "type": "string",
           "default": "https://github.com/onezerocompany/coding/releases/tag/1.25.2",
-          "pattern": "^https:\\/\\/github.com\\/([\\w/]{1,})\\/{{release}}$"
+          "pattern": "^https:\\/\\/github.com\\/([\\w\\/\\-]{1,})\\/{{release}}$"
         },
         "changelog_fallback": {
           "description": "Fallback message to use when there are no changes for the visible changelog",
