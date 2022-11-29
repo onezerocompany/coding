@@ -90,15 +90,24 @@ export class ReleaseState {
   /**
    * Executes the next action for this release.
    *
+   * @param parameters - Parameters of the function.
+   * @param parameters.manifest - The project manifest.
    * @example await executeNextAction();
    */
-  public async runActions(): Promise<void> {
+  public async runActions({
+    manifest,
+  }: {
+    manifest: ProjectManifest;
+  }): Promise<void> {
     await actionRouter({
       action: this.nextAction,
       state: this,
+      manifest,
     });
     if (this.nextAction !== ReleaseAction.none) {
-      await this.runActions();
+      await this.runActions({
+        manifest,
+      });
     }
   }
 }

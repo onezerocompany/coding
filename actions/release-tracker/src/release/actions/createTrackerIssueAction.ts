@@ -6,6 +6,7 @@
  */
 
 import { setFailed } from '@actions/core';
+import type { ProjectManifest } from '@onezerocompany/project-manager';
 import { createIssue } from '../../utils/octokit/createIssue';
 import type { ReleaseState } from '../ReleaseState';
 
@@ -14,12 +15,15 @@ import type { ReleaseState } from '../ReleaseState';
  *
  * @param parameters - The parameters for the action.
  * @param parameters.state - The release state.
+ * @param parameters.manifest - The project manifest.
  * @example await createTrackerIssueAction({ state });
  */
 export async function createTrackerIssueAction({
   state,
+  manifest,
 }: {
   state: ReleaseState;
+  manifest: ProjectManifest;
 }): Promise<void> {
   if (typeof state.issueTrackerId === 'string') {
     setFailed(
@@ -35,6 +39,8 @@ export async function createTrackerIssueAction({
 
   await createIssue({
     title: `🚀 Release ${state.version.displayString}`,
-    content: `This issue is used to track the release of version ${state.version.displayString}.`,
+    content: state.issueText({
+      manifest,
+    }),
   });
 }

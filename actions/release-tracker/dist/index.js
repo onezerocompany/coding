@@ -286,14 +286,14 @@ async function createIssue({title:e,content:t}){await s.rest.issues.create({...o
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createTrackerIssueAction({state:e}){if(typeof e.issueTrackerId==="string"){(0,a.setFailed)(`Cannot create a new issue tracker issue because one already exists.`);process.exit(1)}if(typeof e.version?.displayString!=="string"){(0,a.setFailed)("Cannot create a new issue tracker issue without a version.");process.exit(1)}await createIssue({title:`🚀 Release ${e.version.displayString}`,content:`This issue is used to track the release of version ${e.version.displayString}.`})}
+async function createTrackerIssueAction({state:e,manifest:o}){if(typeof e.issueTrackerId==="string"){(0,a.setFailed)(`Cannot create a new issue tracker issue because one already exists.`);process.exit(1)}if(typeof e.version?.displayString!=="string"){(0,a.setFailed)("Cannot create a new issue tracker issue without a version.");process.exit(1)}await createIssue({title:`🚀 Release ${e.version.displayString}`,content:e.issueText({manifest:o})})}
 /**
  * @file Contains a function to load commits into a release state.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function loadCommits({state:e}){if(typeof e.previousRef!=="string"){(0,a.setFailed)("Previous reference not set.");process.exit(1)}if(typeof e.previousVersion?.displayString!=="string"){(0,a.setFailed)("Previous version not set.");process.exit(1)}e.commits=(0,r.qF)({beginHash:e.previousRef});(0,a.info)(`Found ${e.commits.length} commits since last release.`);for(const o of e.commits){(0,a.info)(`- ${o.message.displayString}`)}e.bump=(0,r.Ng)(e.commits);e.version=e.previousVersion.bump(e.bump);(0,a.info)(`Next version: ${e.version.displayString} (bumped: ${e.bump})`)}
+async function loadCommits({state:e}){if(typeof e.previousRef!=="string"){(0,a.setFailed)("Previous reference not set.");process.exit(1)}if(typeof e.previousVersion?.displayString!=="string"){(0,a.setFailed)("Previous version not set.");process.exit(1)}e.commits=(0,r.qF)({beginHash:e.previousRef});(0,a.info)(`Found ${e.commits.length} commits since ${e.previousRef}.`);for(const o of e.commits){(0,a.info)(`- ${o.message.mainLine}`)}e.bump=(0,r.Ng)(e.commits);e.version=e.previousVersion.bump(e.bump);(0,a.info)(`Next version: ${e.version.displayString} (bumped: ${e.bump})`)}
 /**
  * @file Contains a function to get the latest release.
  * @copyright 2022 OneZero Company
@@ -307,21 +307,21 @@ async function getLastestRelease(){(0,a.info)("Fetching latest release...");try{
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function loadVersion({state:e}){const o=await getLastestRelease();if(typeof o?.target_commitish==="string"){e.previousRef=o.target_commitish}e.previousVersion=r.Gf.fromString(o?.tag_name??"0.0.0");e.version=e.previousVersion;(0,a.info)(`Previous release: ${e.previousVersion.displayString}`)}
+async function loadVersion({state:e}){const o=await getLastestRelease();if(typeof o?.target_commitish==="string"){e.previousRef=o.target_commitish}e.previousVersion=r.Gf.fromString(o?.tag_name??"0.0.0");e.version=e.previousVersion;(0,a.info)(`Previous release: ${e.previousVersion.displayString} (${e.previousRef??"unknown"})`)}
 /**
  * @file Router for release actions.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function actionRouter({state:e,action:o}){(0,a.info)(`Running next action... ${o}`);switch(o){case n.loadVersion:await loadVersion({state:e});break;case n.loadCommits:await loadCommits({state:e});break;case n.createRelease:await createReleaseAction({state:e});break;case n.createTrackerIssue:await createTrackerIssueAction({state:e});break;default:break}}
+async function actionRouter({state:e,action:o,manifest:t}){(0,a.info)(`Running next action... ${o}`);switch(o){case n.loadVersion:await loadVersion({state:e});break;case n.loadCommits:await loadCommits({state:e});break;case n.createRelease:await createReleaseAction({state:e});break;case n.createTrackerIssue:await createTrackerIssueAction({state:e,manifest:t});break;default:break}}
 /**
  * @file Defines the Release class.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class ReleaseState{environments=[];releaseId;issueTrackerId;version;ref;commits;previousVersion;previousRef;bump=r.ib.none;get nextAction(){if(!isDefined(this.version))return n.loadVersion;if(!isDefined(this.commits))return n.loadCommits;if(this.bump===r.ib.none)return n.none;if(!isDefined(this.releaseId))return n.createRelease;if(!isDefined(this.issueTrackerId))return n.createTrackerIssue;return n.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="string")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}issueText({manifest:e}){return issueText({state:this,manifest:e})}async runActions(){await actionRouter({action:this.nextAction,state:this});if(this.nextAction!==n.none){await this.runActions()}}}
+class ReleaseState{environments=[];releaseId;issueTrackerId;version;ref;commits;previousVersion;previousRef;bump=r.ib.none;get nextAction(){if(!isDefined(this.version))return n.loadVersion;if(!isDefined(this.commits))return n.loadCommits;if(this.bump===r.ib.none)return n.none;if(!isDefined(this.releaseId))return n.createRelease;if(!isDefined(this.issueTrackerId))return n.createTrackerIssue;return n.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="string")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}issueText({manifest:e}){return issueText({state:this,manifest:e})}async runActions({manifest:e}){await actionRouter({action:this.nextAction,state:this,manifest:e});if(this.nextAction!==n.none){await this.runActions({manifest:e})}}}
 /**
  * @file Functions for getting content between a beginning and ending tag.
  * @copyright 2022 OneZero Company
@@ -356,4 +356,4 @@ class Context{static default=new Context;static projectManifest=(0,e.loadManifes
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function main(){await Context["default"].initialize();await Context["default"].curentState.runActions()}void main()})();module.exports=__webpack_exports__})();
+async function main(){await Context["default"].initialize();await Context["default"].curentState.runActions({manifest:Context.projectManifest})}void main()})();module.exports=__webpack_exports__})();

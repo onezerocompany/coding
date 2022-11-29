@@ -31,5 +31,9 @@ export async function loadVersion({
     previousRelease?.tag_name ?? '0.0.0',
   );
   state.version = state.previousVersion;
-  info(`Previous release: ${state.previousVersion.displayString}`);
+  info(
+    `Previous release: ${state.previousVersion.displayString} (${
+      state.previousRef ?? 'unknown'
+    })`,
+  );
 }

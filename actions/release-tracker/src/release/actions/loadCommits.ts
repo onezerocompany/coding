@@ -35,9 +35,9 @@ export async function loadCommits({
   state.commits = listCommits({
     beginHash: state.previousRef,
   });
-  info(`Found ${state.commits.length} commits since last release.`);
+  info(`Found ${state.commits.length} commits since ${state.previousRef}.`);
   for (const commit of state.commits) {
-    info(`- ${commit.message.displayString}`);
+    info(`- ${commit.message.mainLine}`);
   }
 
   // Determine the next version.

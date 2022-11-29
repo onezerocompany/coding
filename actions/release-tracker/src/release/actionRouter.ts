@@ -6,6 +6,7 @@
  */
 
 import { info } from '@actions/core';
+import type { ProjectManifest } from '@onezerocompany/project-manager';
 import { createReleaseAction } from './actions/createReleaseAction';
 import { createTrackerIssueAction } from './actions/createTrackerIssueAction';
 import { loadCommits } from './actions/loadCommits';
@@ -16,17 +17,20 @@ import type { ReleaseState } from './ReleaseState';
 /**
  * Function that runs a `ReleaseAction`.
  *
- * @param paramters - Parameters for the function.
- * @param paramters.action - Action to run.
- * @param paramters.state - State to apply the loaded info to.
+ * @param parameters - Parameters for the function.
+ * @param parameters.action - Action to run.
+ * @param parameters.state - State to apply the loaded info to.
+ * @param parameters.manifest - The project manifest.
  * @example actionRouter({ action });
  */
 export async function actionRouter({
   state,
   action,
+  manifest,
 }: {
   state: ReleaseState;
   action: ReleaseAction;
+  manifest: ProjectManifest;
 }): Promise<void> {
   info(`Running next action... ${action}`);
   switch (action) {
@@ -44,7 +48,10 @@ export async function actionRouter({
       break;
     /** Trigger an issue creation. */
     case ReleaseAction.createTrackerIssue:
-      await createTrackerIssueAction({ state });
+      await createTrackerIssueAction({
+        state,
+        manifest,
+      });
       break;
     /** Fallback. */
     default:
