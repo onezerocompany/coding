@@ -99,9 +99,24 @@ describe('subject validator', () => {
       },
     ]);
   });
+  it('should report error when using non alphanumeric characters', () => {
+    const subjectValidator = new SubjectValidator({
+      subject: 'this, is an incorrect subject!',
+      maxLength: 48,
+    });
+    expect(subjectValidator.valid).toBe(
+      '❗️ fatal - subject must only contain alphanumeric characters',
+    );
+    expect(subjectValidator.errors).toEqual([
+      {
+        level: 'fatal',
+        message: 'subject must only contain alphanumeric characters',
+      },
+    ]);
+  });
   it('normalize should return lowercase without a dot at the end and no double whitespaces', () => {
     const subjectValidator = new SubjectValidator({
-      subject: 'This is an    incorrect subject.',
+      subject: 'This is an,    incorrect subject.',
       maxLength: 48,
     });
     expect(subjectValidator.normalized).toBe('this is an incorrect subject');

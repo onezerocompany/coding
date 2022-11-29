@@ -61,4 +61,15 @@ describe('commit line regex', () => {
     expect(parsed.subject).toBeUndefined();
     expect(parsed.breaking).toBe(false);
   });
+  it('should match commit message with number in subject', () => {
+    const line = '🤖 ci/cd(create-release): fetch depth 0';
+    const parsed = parseCommitLine(line);
+    expect(parsed.match).toBe(true);
+    expect(parsed.githubEmoji).toBeUndefined();
+    expect(parsed.emoji).toBe('🤖');
+    expect(parsed.category).toBe('ci/cd');
+    expect(parsed.scope).toBe('create-release');
+    expect(parsed.subject).toBe('fetch depth 0');
+    expect(parsed.breaking).toBe(false);
+  });
 });
