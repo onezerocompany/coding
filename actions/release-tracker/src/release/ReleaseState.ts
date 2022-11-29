@@ -25,8 +25,6 @@ export class ReleaseState {
   public issueTrackerId?: string;
   /** Version number of release. */
   public version?: Version;
-  /** Ref hash. */
-  public sha?: string;
   /** Commits. */
   public commits?: Commit[];
   /** Previous `Version`. */

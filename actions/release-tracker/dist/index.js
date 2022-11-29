@@ -272,7 +272,7 @@ async function createRelease({version:e,changelog:t}){try{const r=await s.rest.r
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createReleaseAction({state:e}){if(!(Array.isArray(e.commits)&&e.commits.length>0)){(0,a.setFailed)("Cannot create a release without commits.");process.exit(1)}if(typeof e.version?.displayString!=="string"){(0,a.setFailed)("Cannot create a release without a version.");process.exit(1)}const o=new r.vv({type:r.ac.internal,markdown:true,commits:e.commits}).text;await createRelease({version:e.version.displayString,changelog:o})}
+async function createReleaseAction({state:e}){if(!(Array.isArray(e.commits)&&e.commits.length>0)){(0,a.setFailed)("Cannot create a release without commits.");process.exit(1)}if(typeof e.version?.displayString!=="string"){(0,a.setFailed)("Cannot create a release without a version.");process.exit(1)}const o=new r.vv({type:r.ac.internal,markdown:true,commits:e.commits}).text;const t=await createRelease({version:e.version.displayString,changelog:o});if(e.releaseId!==t){e.releaseId=t}}
 /**
  * @file Contains a function that creates an issue for a release.
  * @copyright 2022 OneZero Company
@@ -321,7 +321,7 @@ async function actionRouter({state:e,action:o,manifest:t}){(0,a.info)(`Running n
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class ReleaseState{environments=[];releaseId;issueTrackerId;version;sha;commits;previousVersion;previousSha;bump=r.ib.none;get nextAction(){if(!isDefined(this.version))return n.loadVersion;if(!isDefined(this.commits))return n.loadCommits;if(this.bump===r.ib.none)return n.none;if(!isDefined(this.releaseId))return n.createRelease;if(!isDefined(this.issueTrackerId))return n.createTrackerIssue;return n.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="string")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}issueText({manifest:e}){return issueText({state:this,manifest:e})}async runActions({manifest:e}){await actionRouter({action:this.nextAction,state:this,manifest:e});if(this.nextAction!==n.none){await this.runActions({manifest:e})}}}
+class ReleaseState{environments=[];releaseId;issueTrackerId;version;commits;previousVersion;previousSha;bump=r.ib.none;get nextAction(){if(!isDefined(this.version))return n.loadVersion;if(!isDefined(this.commits))return n.loadCommits;if(this.bump===r.ib.none)return n.none;if(!isDefined(this.releaseId))return n.createRelease;if(!isDefined(this.issueTrackerId))return n.createTrackerIssue;return n.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="string")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}issueText({manifest:e}){return issueText({state:this,manifest:e})}async runActions({manifest:e}){await actionRouter({action:this.nextAction,state:this,manifest:e});if(this.nextAction!==n.none){await this.runActions({manifest:e})}}}
 /**
  * @file Functions for getting content between a beginning and ending tag.
  * @copyright 2022 OneZero Company

@@ -39,8 +39,11 @@ export async function createReleaseAction({
   }).text;
 
   // Create release.
-  await createRelease({
+  const releaseId = await createRelease({
     version: state.version.displayString,
     changelog,
   });
+  if (state.releaseId !== releaseId) {
+    state.releaseId = releaseId;
+  }
 }
