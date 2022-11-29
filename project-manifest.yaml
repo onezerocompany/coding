@@ -10,7 +10,6 @@ environments:
     version_template: '{major}.{minor}.{patch}'
     changelog:
       generate: true
-      type: store
       headers:
         - "Take a look at what's new in this version:"
       footers:

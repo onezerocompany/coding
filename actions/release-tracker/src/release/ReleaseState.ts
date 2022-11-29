@@ -51,6 +51,25 @@ export class ReleaseState {
   }
 
   /**
+   * Getter that converts this ReleaseState into a JSON object.
+   *
+   * @returns The JSON object.
+   * @example const json = release.json;
+   */
+  public get json(): string {
+    return JSON.stringify({
+      releaseId: this.releaseId,
+      issueTrackerId: this.issueTrackerId,
+      environments: this.environments.map((environment) => ({
+        github_name: environment.github_name,
+        deployed: environment.deployed,
+        status: environment.status,
+        type: environment.type?.toString(),
+      })),
+    });
+  }
+
+  /**
    * Converts a JSON string to a Release State.
    *
    * @param json - The JSON string to convert.

@@ -6,7 +6,7 @@
  */
 
 import { setFailed } from '@actions/core';
-import { ChangeLog, ChangeLogType } from '@onezerocompany/commit';
+import { ChangeLog, ChangelogDomain } from '@onezerocompany/commit';
 import { createRelease } from '../../utils/octokit/createRelease';
 import type { ReleaseState } from '../ReleaseState';
 
@@ -33,7 +33,7 @@ export async function createReleaseAction({
   }
 
   const changelog = new ChangeLog({
-    type: ChangeLogType.internal,
+    type: ChangelogDomain.internal,
     markdown: true,
     commits: state.commits,
   }).text;

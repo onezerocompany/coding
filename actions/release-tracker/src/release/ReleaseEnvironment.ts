@@ -20,6 +20,15 @@ export class ReleaseEnvironment {
   public status = DeploymentStatus.pending;
   /** Environment type. */
   public type?: EnvironmentType;
+  /** Changelog related settings */
+  public changelog?: {
+    /** Whether to include the changelog in the release. */
+    generate: boolean;
+    /** Headers to put above the changelog. */
+    headers: string[];
+    /** Footers to put below the changelog. */
+    footers: string[];
+  };
 }
 
 /**

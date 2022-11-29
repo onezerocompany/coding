@@ -85,12 +85,6 @@
           "description": "Whether to generate a changelog",
           "default": true
         },
-        "type": {
-          "type": "string",
-          "description": "Type of changelog to generate",
-          "enum": ["github", "store", "external-testing", "internal-testing"],
-          "default": "github"
-        },
         "headers": {
           "type": "array",
           "description": "Header messages to use for the changelog, they will be used randomly",
@@ -108,7 +102,7 @@
           }
         }
       },
-      "required": ["generate", "type"],
+      "required": ["generate"],
       "additionalProperties": false
     },
     "ReleaseSettings": {

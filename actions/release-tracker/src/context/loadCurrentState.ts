@@ -32,6 +32,11 @@ export function loadCurrentState({
       deployed: false,
       type: environment.type,
       status: DeploymentStatus.pending,
+      changelog: {
+        generate: environment.changelog.generate,
+        headers: environment.changelog.headers,
+        footers: environment.changelog.footers,
+      },
     }));
   }
   if (context.eventName === 'issues') {

@@ -5,20 +5,11 @@ exports[`release issue text should generate issue text 1`] = `
 
 ###### Edit the changelogs below and tick the checkboxes to release to each individual environment.
 
-#### New Features
-- project: [new feature](https://github.com/onezerocompany/coding/commit/1234567890)
-
 ---
 
 <!-- section_begin:firebase -->
 ### Firebase Hosting
 
-<!-- changelog_begin -->
-\`\`\`
-New Features:
- - new feature
-\`\`\`
-<!-- changelog_end -->
 <!-- release_item_start -->
 - [ ] Release to Firebase
 <!-- release_item_end -->
@@ -26,5 +17,12 @@ New Features:
 
 ---
 
-Created from release: [0.0.1](https://github.com/onezerocompany/coding/releases/tag/0.0.1)"
+Full Changelog:
+
+#### New Features
+- [new feature](https://github.com/onezerocompany/coding/commit/1234567890) (project)
+
+Created from release: [0.0.1](https://github.com/onezerocompany/coding/releases/tag/0.0.1)
+
+<!-- JSON BEGIN{\\"environments\\":[{\\"github_name\\":\\"Firebase\\",\\"deployed\\":false,\\"status\\":\\"pending\\",\\"type\\":\\"firebase-hosting\\"}]}JSON END -->"
 `;

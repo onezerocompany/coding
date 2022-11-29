@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { categories, ChangeLogType } from '../categories/categories';
+import { categories, ChangelogDomain } from '../categories/categories';
 import type { Commit } from '../commits/Commit';
 import type { CommitCategory } from '../categories/categories';
 import { projectManifest } from '../global';
@@ -48,25 +48,25 @@ function itemFromCommit({
   markdown,
 }: {
   commit: Commit;
-  type: ChangeLogType;
+  type: ChangelogDomain;
   markdown: boolean;
 }): string {
   const { scope, subject } = commit.message;
   if (markdown) {
     if (
-      type === ChangeLogType.internal &&
+      type === ChangelogDomain.internal &&
       projectManifest.release.commit_url.includes('{{commit}}')
     ) {
       const link = projectManifest.release.commit_url.replace(
         '{{commit}}',
         commit.hash,
       );
-      return `- ${scope}: [${subject}](${link})\n`;
+      return `- [${subject}](${link}) (${scope})\n`;
     }
     return `- ${subject}\n`;
   }
-  if (type === ChangeLogType.internal) {
-    return `- ${scope}: ${subject}\n`;
+  if (type === ChangelogDomain.internal) {
+    return `- ${subject} (${scope})\n`;
   }
   return ` - ${subject}\n`;
 }
@@ -74,7 +74,7 @@ function itemFromCommit({
 /** Defines a changelog.  */
 export class ChangeLog {
   /** Type of changelog. */
-  public type: ChangeLogType;
+  public type: ChangelogDomain;
   /** List of commits in this changelog. */
   public commits: Commit[];
   /** Whether the changelog should be output in markdown. */
@@ -102,7 +102,7 @@ export class ChangeLog {
     header,
     footer,
   }: {
-    type: ChangeLogType;
+    type: ChangelogDomain;
     markdown?: boolean;
     commits: Commit[];
     header?: string;
@@ -126,9 +126,9 @@ export class ChangeLog {
     if (typeof this.header === 'string') content += this.header;
 
     const allowedTypes =
-      this.type === ChangeLogType.internal
-        ? [ChangeLogType.internal, ChangeLogType.external]
-        : [ChangeLogType.external];
+      this.type === ChangelogDomain.internal
+        ? [ChangelogDomain.internal, ChangelogDomain.external]
+        : [ChangelogDomain.external];
 
     const filteredCommits = this.commits.filter((commit) =>
       allowedTypes.includes(commit.message.category.changelog.type),

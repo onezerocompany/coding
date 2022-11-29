@@ -1,5 +1,4 @@
 import { EnvironmentType } from '../../src';
-import { ChangelogType } from '../../src/lib/manifest/ChangelogSettings';
 import {
   parseEnvironmentSettings,
   parseEnvironmentSettingsArray,
@@ -26,7 +25,6 @@ describe('environment settings', () => {
       auto_release: true,
       changelog: {
         generate: true,
-        type: ChangelogType.github,
         headers: ['header1', 'header2'],
         footers: ['footer1', 'footer2'],
       },
@@ -41,7 +39,6 @@ describe('environment settings', () => {
       auto_release: false,
       changelog: {
         generate: false,
-        type: ChangelogType.github,
         headers: [],
         footers: [],
       },
@@ -56,7 +53,6 @@ describe('environment settings', () => {
         auto_release: true,
         changelog: {
           generate: true,
-          type: 'github',
           headers: ['header1', 'header2'],
           footers: ['footer1', 'footer2'],
         },
@@ -70,7 +66,6 @@ describe('environment settings', () => {
         auto_release: true,
         changelog: {
           generate: true,
-          type: ChangelogType.github,
           headers: ['header1', 'header2'],
           footers: ['footer1', 'footer2'],
         },

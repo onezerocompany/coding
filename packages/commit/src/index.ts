@@ -8,7 +8,7 @@
 /* eslint-disable import/max-dependencies */
 export {
   categories,
-  ChangeLogType,
+  ChangelogDomain,
   CommitCategory,
 } from './lib/categories/categories';
 
