@@ -24,8 +24,8 @@ export async function loadVersion({
 }): Promise<void> {
   // Fetch the latest release from GitHub.
   const previousRelease = await getLastestRelease();
-  if (typeof previousRelease?.target_commitish === 'string') {
-    state.previousRef = previousRelease.target_commitish;
+  if (typeof previousRelease?.sha === 'string') {
+    state.previousSha = previousRelease.sha;
   }
   state.previousVersion = Version.fromString(
     previousRelease?.tag_name ?? '0.0.0',
@@ -33,7 +33,7 @@ export async function loadVersion({
   state.version = state.previousVersion;
   info(
     `Previous release: ${state.previousVersion.displayString} (${
-      state.previousRef ?? 'unknown'
+      state.previousSha ?? 'unknown'
     })`,
   );
 }

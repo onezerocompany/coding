@@ -26,13 +26,13 @@ export class ReleaseState {
   /** Version number of release. */
   public version?: Version;
   /** Ref hash. */
-  public ref?: string;
+  public sha?: string;
   /** Commits. */
   public commits?: Commit[];
   /** Previous `Version`. */
   public previousVersion?: Version;
   /** Previous ref hash. */
-  public previousRef?: string;
+  public previousSha?: string;
   /** Bump from last version. */
   public bump = VersionBump.none;
 

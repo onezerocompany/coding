@@ -21,7 +21,7 @@ export async function loadCommits({
 }: {
   state: ReleaseState;
 }): Promise<void> {
-  if (typeof state.previousRef !== 'string') {
+  if (typeof state.previousSha !== 'string') {
     setFailed('Previous reference not set.');
     process.exit(1);
   }
@@ -33,9 +33,9 @@ export async function loadCommits({
 
   // Fetch commits since last release ref.
   state.commits = listCommits({
-    beginHash: state.previousRef,
+    beginHash: state.previousSha,
   });
-  info(`Found ${state.commits.length} commits since ${state.previousRef}.`);
+  info(`Found ${state.commits.length} commits since ${state.previousSha}.`);
   for (const commit of state.commits) {
     info(`- ${commit.message.mainLine}`);
   }
