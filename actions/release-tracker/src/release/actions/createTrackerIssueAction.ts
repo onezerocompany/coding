@@ -37,10 +37,13 @@ export async function createTrackerIssueAction({
     process.exit(1);
   }
 
-  await createIssue({
+  const issueId = await createIssue({
     title: `🚀 Release ${state.version.displayString}`,
     content: state.issueText({
       manifest,
     }),
   });
+  if (state.issueTrackerId !== issueId) {
+    state.issueTrackerId = issueId;
+  }
 }

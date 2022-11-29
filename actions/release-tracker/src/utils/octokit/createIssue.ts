@@ -23,11 +23,12 @@ export async function createIssue({
 }: {
   title: string;
   content: string;
-}): Promise<void> {
-  await octokit.rest.issues.create({
+}): Promise<number> {
+  const issue = await octokit.rest.issues.create({
     ...context.repo,
     title,
     // eslint-disable-next-line id-denylist
     body: content,
   });
+  return issue.data.id;
 }

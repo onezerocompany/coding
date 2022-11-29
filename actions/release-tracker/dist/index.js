@@ -279,14 +279,14 @@ async function createReleaseAction({state:e}){if(!(Array.isArray(e.commits)&&e.c
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createIssue({title:e,content:t}){await s.rest.issues.create({...o.context.repo,title:e,body:t})}
+async function createIssue({title:e,content:t}){const r=await s.rest.issues.create({...o.context.repo,title:e,body:t});return r.data.id}
 /**
  * @file
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createTrackerIssueAction({state:e,manifest:o}){if(typeof e.issueTrackerId==="string"){(0,a.setFailed)(`Cannot create a new issue tracker issue because one already exists.`);process.exit(1)}if(typeof e.version?.displayString!=="string"){(0,a.setFailed)("Cannot create a new issue tracker issue without a version.");process.exit(1)}await createIssue({title:`🚀 Release ${e.version.displayString}`,content:e.issueText({manifest:o})})}
+async function createTrackerIssueAction({state:e,manifest:o}){if(typeof e.issueTrackerId==="string"){(0,a.setFailed)(`Cannot create a new issue tracker issue because one already exists.`);process.exit(1)}if(typeof e.version?.displayString!=="string"){(0,a.setFailed)("Cannot create a new issue tracker issue without a version.");process.exit(1)}const t=await createIssue({title:`🚀 Release ${e.version.displayString}`,content:e.issueText({manifest:o})});if(e.issueTrackerId!==t){e.issueTrackerId=t}}
 /**
  * @file Contains a function to load commits into a release state.
  * @copyright 2022 OneZero Company
@@ -321,7 +321,7 @@ async function actionRouter({state:e,action:o,manifest:t}){(0,a.info)(`Running n
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class ReleaseState{environments=[];releaseId;issueTrackerId;version;commits;previousVersion;previousSha;bump=r.ib.none;get nextAction(){if(!isDefined(this.version))return n.loadVersion;if(!isDefined(this.commits))return n.loadCommits;if(this.bump===r.ib.none)return n.none;if(!isDefined(this.releaseId))return n.createRelease;if(!isDefined(this.issueTrackerId))return n.createTrackerIssue;return n.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="string")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}issueText({manifest:e}){return issueText({state:this,manifest:e})}async runActions({manifest:e}){await actionRouter({action:this.nextAction,state:this,manifest:e});if(this.nextAction!==n.none){await this.runActions({manifest:e})}}}
+class ReleaseState{environments=[];releaseId;issueTrackerId;version;commits;previousVersion;previousSha;bump=r.ib.none;get nextAction(){if(!isDefined(this.version))return n.loadVersion;if(!isDefined(this.commits))return n.loadCommits;if(this.bump===r.ib.none)return n.none;if(!isDefined(this.releaseId))return n.createRelease;if(!isDefined(this.issueTrackerId))return n.createTrackerIssue;return n.none}static fromJson(e){try{const o=new ReleaseState;const t=JSON.parse(e);const{releaseId:r,issueTrackerId:n,environments:i}=t;if(typeof r==="number")o.releaseId=r;if(typeof n==="number")o.issueTrackerId=n;if(Array.isArray(i))o.environments=parseReleaseEnvironmentsArray(i);return o}catch{return null}}issueText({manifest:e}){return issueText({state:this,manifest:e})}async runActions({manifest:e}){await actionRouter({action:this.nextAction,state:this,manifest:e});if(this.nextAction!==n.none){await this.runActions({manifest:e})}}}
 /**
  * @file Functions for getting content between a beginning and ending tag.
  * @copyright 2022 OneZero Company

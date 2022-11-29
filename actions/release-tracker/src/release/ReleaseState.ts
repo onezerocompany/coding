@@ -22,7 +22,7 @@ export class ReleaseState {
   /** ID of the release object. */
   public releaseId?: number;
   /** ID of the related issue tracker. */
-  public issueTrackerId?: string;
+  public issueTrackerId?: number;
   /** Version number of release. */
   public version?: Version;
   /** Commits. */
@@ -63,7 +63,7 @@ export class ReleaseState {
       const parsed = JSON.parse(json) as Record<string, unknown>;
       const { releaseId, issueTrackerId, environments } = parsed;
       if (typeof releaseId === 'number') release.releaseId = releaseId;
-      if (typeof issueTrackerId === 'string')
+      if (typeof issueTrackerId === 'number')
         release.issueTrackerId = issueTrackerId;
       if (Array.isArray(environments))
         release.environments = parseReleaseEnvironmentsArray(environments);
