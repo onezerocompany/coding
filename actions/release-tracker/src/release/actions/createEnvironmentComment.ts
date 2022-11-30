@@ -76,12 +76,16 @@ export async function createEnvironmentComment({
     environment.github_name ?? 'unknown'
   }<!-- RELEASE_ITEM:${sectionId} -->\n\n`;
 
-  const comment = await octokit.rest.issues.createComment({
-    ...context.repo,
-    issue_number: state.issueTrackerId,
-    // eslint-disable-next-line id-denylist
-    body: content,
-  });
-
-  environment.issueCommentId = comment.data.id;
+  try {
+    const comment = await octokit.rest.issues.createComment({
+      ...context.repo,
+      issue_number: state.issueTrackerId,
+      // eslint-disable-next-line id-denylist
+      body: content,
+    });
+    environment.issueCommentId = comment.data.id;
+  } catch {
+    setFailed(`Failed to create environment comment`);
+    process.exit(1);
+  }
 }
