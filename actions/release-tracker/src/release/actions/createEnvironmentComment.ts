@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { setFailed } from '@actions/core';
+import { info, setFailed } from '@actions/core';
 import { context } from '@actions/github';
 import { ChangeLog, ChangelogDomain } from '@onezerocompany/commit';
 import { EnvironmentType } from '@onezerocompany/project-manager';
@@ -96,6 +96,12 @@ export async function createEnvironmentComment({
   content += `- [ ] Release to ${
     environment.github_name ?? 'unknown'
   }<!-- RELEASE_ITEM:${sectionId} -->\n\n`;
+
+  info(
+    `Creating comment for ${environment.github_name ?? 'unknown'} on issue #${
+      state.issueTrackerId
+    }.`,
+  );
 
   try {
     const comment = await octokit.rest.issues.createComment({
