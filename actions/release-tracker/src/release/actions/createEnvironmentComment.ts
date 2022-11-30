@@ -28,6 +28,35 @@ const environmentNames: Record<EnvironmentType, string> = {
 };
 
 /**
+ * Creates the changelog text.
+ *
+ * @param parameters - The parameters for the function.
+ * @param parameters.state - The release state.
+ * @param parameters.sectionId - The section ID.
+ * @returns The changelog text.
+ * @example const changelogText = createChangelogText({ state, sectionId });
+ */
+function changelogText({
+  sectionId,
+  state,
+}: {
+  sectionId: string;
+  state: ReleaseState;
+}): string {
+  let content = '';
+  content += `<!-- CHANGELOG_BEGIN:${sectionId} -->\n\`\`\`\n`;
+  content += `${
+    new ChangeLog({
+      type: ChangelogDomain.external,
+      markdown: false,
+      commits: state.commits ?? [],
+    }).text
+  }\n`;
+  content += `\`\`\`\n<!-- CHANGELOG_END:${sectionId} -->\n`;
+  return content;
+}
+
+/**
  * Create the comments for the release environments.
  *
  * @param parameters - Parameters of the function.
@@ -61,15 +90,7 @@ export async function createEnvironmentComment({
   }\n\n`;
 
   if (environment.changelog?.generate === true) {
-    content += `<!-- CHANGELOG_BEGIN:${sectionId} -->\n\`\`\`\n`;
-    content += `${
-      new ChangeLog({
-        type: ChangelogDomain.external,
-        markdown: false,
-        commits: state.commits ?? [],
-      }).text
-    }\n`;
-    content += `\`\`\`\n<!-- CHANGELOG_END:${sectionId} -->\n`;
+    content += changelogText({ sectionId, state });
   }
 
   content += `- [ ] Release to ${
@@ -84,8 +105,12 @@ export async function createEnvironmentComment({
       body: content,
     });
     environment.issueCommentId = comment.data.id;
-  } catch {
-    setFailed(`Failed to create environment comment`);
+  } catch (createError: unknown) {
+    setFailed(
+      createError instanceof Error
+        ? createError.message
+        : `Failed to create issue comment for environment: ${sectionId}`,
+    );
     process.exit(1);
   }
 }
