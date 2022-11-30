@@ -58,7 +58,7 @@
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
- */Object.defineProperty(o,"__esModule",{value:true});o.parseCommitLine=o.commitLineRegex=void 0;o.commitLineRegex=/^(?:(?:(?<githubEmoji>:[a-z_]{1,}:)|(?<emoji>[^a-zA-Z\d$&+,:;=?@#|'<>.^*()%!{}\s-]{1,}))\s)?(?<category>[a-z/]{1,})\((?<scope>[a-z-]{1,})\)(?<breaking>!)?(?::)?\s(?<subject>(?:[a-z0-9-/]{1,}\s?){1,})$/gu;function parseCommitLine(e){const t=new RegExp(o.commitLineRegex,"gu").exec(e);if(!t){return{match:false,breaking:false}}return{match:true,githubEmoji:t.groups?.["githubEmoji"],emoji:t.groups?.["emoji"],category:t.groups?.["category"],scope:t.groups?.["scope"],breaking:t.groups?.["breaking"]==="!",subject:t.groups?.["subject"]}}o.parseCommitLine=parseCommitLine},3921:(e,o,t)=>{"use strict";
+ */Object.defineProperty(o,"__esModule",{value:true});o.parseCommitLine=o.commitLineRegex=void 0;o.commitLineRegex=/^(?:(?:(?<githubEmoji>:[a-z0-9_]{1,}:)|(?<emoji>[^a-zA-Z\d$&+,:;=?@#|'<>.^*()%!{}\s-]{1,}))\s)?(?<category>[a-z/]{1,})\((?<scope>[a-z-]{1,})\)(?<breaking>!)?(?::)?\s(?<subject>(?:[a-z0-9-/]{1,}\s?){1,})$/gu;function parseCommitLine(e){const t=new RegExp(o.commitLineRegex,"gu").exec(e);if(!t){return{match:false,breaking:false}}return{match:true,githubEmoji:t.groups?.["githubEmoji"],emoji:t.groups?.["emoji"],category:t.groups?.["category"],scope:t.groups?.["scope"],breaking:t.groups?.["breaking"]==="!",subject:t.groups?.["subject"]}}o.parseCommitLine=parseCommitLine},3921:(e,o,t)=>{"use strict";
 /**
  * @file Contains the commit message object definition.
  * @copyright 2022 OneZero Company
