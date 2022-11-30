@@ -23,6 +23,8 @@ export class ReleaseState {
   public releaseId?: number;
   /** ID of the related issue tracker. */
   public issueTrackerId?: number;
+  /** Tracker label id. */
+  public trackerLabelId?: number;
   /** Version number of release. */
   public version?: Version;
   /** Commits. */
@@ -33,6 +35,8 @@ export class ReleaseState {
   public previousSha?: string;
   /** Bump from last version. */
   public bump = VersionBump.none;
+  /** Last saved json. */
+  public lastSavedJson = '';
 
   /**
    * Determines the next action to take for this release.
@@ -47,6 +51,12 @@ export class ReleaseState {
     if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
     if (!isDefined(this.issueTrackerId))
       return ReleaseAction.createTrackerIssue;
+    if (this.environments.some((environment) => !environment.deployed))
+      return ReleaseAction.createEnvironmentComment;
+    if (!isDefined(this.trackerLabelId))
+      return ReleaseAction.attachTrackerLabel;
+    if (this.lastSavedJson.length > 0 && this.lastSavedJson !== this.json)
+      return ReleaseAction.updateIssue;
     return ReleaseAction.none;
   }
 

@@ -17,4 +17,10 @@ export enum ReleaseAction {
   loadCommits = 'loadCommits',
   /** Load version. */
   loadVersion = 'loadVersion',
+  /** Attach the tracker label. */
+  attachTrackerLabel = 'attachTrackerLabel',
+  /** Create environment comment. */
+  createEnvironmentComment = 'createEnvironmentComment',
+  /** Update issue. */
+  updateIssue = 'updateIssue',
 }

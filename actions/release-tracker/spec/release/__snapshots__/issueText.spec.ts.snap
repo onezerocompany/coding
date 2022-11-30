@@ -3,21 +3,9 @@
 exports[`release issue text should generate issue text 1`] = `
 "## Release Details
 
-###### Edit the changelogs below and tick the checkboxes to release to each individual environment.
+###### Edit the changelogs in the comments below and tick the checkboxes to release to each individual environment.
 
----
 
-<!-- section_begin:firebase -->
-### Firebase Hosting
-
-<!-- release_item_start -->
-- [ ] Release to Firebase
-<!-- release_item_end -->
-<!-- section_end:firebase -->
-
----
-
-Full Changelog:
 
 #### New Features
 - [new feature](https://github.com/onezerocompany/coding/commit/1234567890) (project)

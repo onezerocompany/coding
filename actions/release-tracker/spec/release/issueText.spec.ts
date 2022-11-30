@@ -13,6 +13,11 @@ describe('release issue text', () => {
         deployed: false,
         status: DeploymentStatus.pending,
         github_name: 'Firebase',
+        changelog: {
+          generate: true,
+          headers: [],
+          footers: [],
+        },
       },
     ];
     state.commits = [

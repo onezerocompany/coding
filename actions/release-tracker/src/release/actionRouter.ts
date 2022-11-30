@@ -7,6 +7,8 @@
 
 import { info } from '@actions/core';
 import type { ProjectManifest } from '@onezerocompany/project-manager';
+import { attachTrackerLabelAction } from './actions/attachTrackerLabel';
+import { createEnvironmentComment } from './actions/createEnvironmentComment';
 import { createReleaseAction } from './actions/createReleaseAction';
 import { createTrackerIssueAction } from './actions/createTrackerIssueAction';
 import { loadCommits } from './actions/loadCommits';
@@ -51,6 +53,18 @@ export async function actionRouter({
       await createTrackerIssueAction({
         state,
         manifest,
+      });
+      break;
+    /** Create environment comment. */
+    case ReleaseAction.createEnvironmentComment:
+      await createEnvironmentComment({
+        state,
+      });
+      break;
+    /** Attaching the label to the issue. */
+    case ReleaseAction.attachTrackerLabel:
+      await attachTrackerLabelAction({
+        state,
       });
       break;
     /** Fallback. */

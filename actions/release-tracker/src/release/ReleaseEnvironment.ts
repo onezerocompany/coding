@@ -8,8 +8,6 @@
 import type { EnvironmentType } from '@onezerocompany/project-manager';
 import { DeploymentStatus } from './DeploymentStatus';
 
-/** Environment to release to. */
-
 /** Release environment. */
 export class ReleaseEnvironment {
   /** Environment ID. */
@@ -20,7 +18,9 @@ export class ReleaseEnvironment {
   public status = DeploymentStatus.pending;
   /** Environment type. */
   public type?: EnvironmentType;
-  /** Changelog related settings */
+  /** Issue comment id. */
+  public issueCommentId?: number;
+  /** Changelog related settings. */
   public changelog?: {
     /** Whether to include the changelog in the release. */
     generate: boolean;

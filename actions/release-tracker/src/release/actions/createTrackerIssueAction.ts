@@ -37,13 +37,19 @@ export async function createTrackerIssueAction({
     process.exit(1);
   }
 
-  const issueId = await createIssue({
-    title: `🚀 Release ${state.version.displayString}`,
-    content: state.issueText({
-      manifest,
-    }),
-  });
-  if (state.issueTrackerId !== issueId) {
-    state.issueTrackerId = issueId;
+  try {
+    const issueId = await createIssue({
+      title: `🚀 Release ${state.version.displayString}`,
+      content: state.issueText({
+        manifest,
+      }),
+    });
+    if (state.issueTrackerId !== issueId) {
+      state.issueTrackerId = issueId;
+      state.lastSavedJson = state.json;
+    }
+  } catch {
+    setFailed('Failed to create issue tracker issue.');
+    process.exit(1);
   }
 }
