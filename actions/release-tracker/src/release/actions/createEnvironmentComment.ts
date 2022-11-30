@@ -84,8 +84,7 @@ export async function createEnvironmentComment({
 
   let content = '';
   const sectionId = slugify(environment.github_name ?? 'unknown');
-  content += '---\n\n';
-  content += `## ${
+  content += `### ${
     environmentNames[environment.type ?? EnvironmentType.firebaseHosting]
   }\n\n`;
 

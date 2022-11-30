@@ -51,7 +51,11 @@ export class ReleaseState {
     if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
     if (!isDefined(this.issueTrackerNumber))
       return ReleaseAction.createTrackerIssue;
-    if (this.environments.some((environment) => !environment.deployed))
+    if (
+      this.environments.some(
+        (environment) => !isDefined(environment.issueCommentId),
+      )
+    )
       return ReleaseAction.createEnvironmentComment;
     if (!isDefined(this.trackerLabelId))
       return ReleaseAction.attachTrackerLabel;
