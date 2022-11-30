@@ -16,7 +16,7 @@ import type { ReleaseState } from '../ReleaseState';
  *
  * @param parameters - The parameters for the function.
  * @param parameters.state - The release state.
- * @param parameters.manifest
+ * @param parameters.manifest - The project manifest.
  * @example await updateIssueAction({ state });
  */
 export async function updateIssueAction({
