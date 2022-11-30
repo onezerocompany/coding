@@ -26,7 +26,7 @@ export async function updateIssueAction({
   state: ReleaseState;
   manifest: ProjectManifest;
 }): Promise<void> {
-  if (typeof state.issueTrackerId !== 'number') {
+  if (typeof state.issueTrackerNumber !== 'number') {
     setFailed('Cannot update issue without an existing tracker issue.');
     process.exit(1);
   }
@@ -34,7 +34,7 @@ export async function updateIssueAction({
   try {
     await octokit.rest.issues.update({
       ...context.repo,
-      issue_number: state.issueTrackerId,
+      issue_number: state.issueTrackerNumber,
       // eslint-disable-next-line id-denylist
       body: state.issueText({ manifest }),
     });

@@ -22,7 +22,7 @@ export class ReleaseState {
   /** ID of the release object. */
   public releaseId?: number;
   /** ID of the related issue tracker. */
-  public issueTrackerId?: number;
+  public issueTrackerNumber?: number;
   /** Tracker label id. */
   public trackerLabelId?: number;
   /** Version number of release. */
@@ -49,7 +49,7 @@ export class ReleaseState {
     if (!isDefined(this.commits)) return ReleaseAction.loadCommits;
     if (this.bump === VersionBump.none) return ReleaseAction.none;
     if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
-    if (!isDefined(this.issueTrackerId))
+    if (!isDefined(this.issueTrackerNumber))
       return ReleaseAction.createTrackerIssue;
     if (this.environments.some((environment) => !environment.deployed))
       return ReleaseAction.createEnvironmentComment;
@@ -69,7 +69,7 @@ export class ReleaseState {
   public get json(): string {
     return JSON.stringify({
       releaseId: this.releaseId,
-      issueTrackerId: this.issueTrackerId,
+      issueTrackerId: this.issueTrackerNumber,
       environments: this.environments.map((environment) => ({
         github_name: environment.github_name,
         deployed: environment.deployed,
@@ -93,7 +93,7 @@ export class ReleaseState {
       const { releaseId, issueTrackerId, environments } = parsed;
       if (typeof releaseId === 'number') release.releaseId = releaseId;
       if (typeof issueTrackerId === 'number')
-        release.issueTrackerId = issueTrackerId;
+        release.issueTrackerNumber = issueTrackerId;
       if (Array.isArray(environments))
         release.environments = parseReleaseEnvironmentsArray(environments);
       return release;

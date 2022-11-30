@@ -22,7 +22,7 @@ export async function attachTrackerLabelAction({
 }: {
   state: ReleaseState;
 }): Promise<void> {
-  if (typeof state.issueTrackerId !== 'number') {
+  if (typeof state.issueTrackerNumber !== 'number') {
     throw new Error(
       'Cannot attach tracker label without an existing tracker issue.',
     );
@@ -63,7 +63,7 @@ export async function attachTrackerLabelAction({
 
   await octokit.rest.issues.addLabels({
     ...context.repo,
-    issue_number: state.issueTrackerId,
+    issue_number: state.issueTrackerNumber,
     labels: [labelName],
   });
 

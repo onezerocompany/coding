@@ -30,5 +30,5 @@ export async function createIssue({
     // eslint-disable-next-line id-denylist
     body: content,
   });
-  return issue.data.id;
+  return issue.data.number;
 }

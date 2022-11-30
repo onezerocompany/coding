@@ -25,7 +25,7 @@ export async function createTrackerIssueAction({
   state: ReleaseState;
   manifest: ProjectManifest;
 }): Promise<void> {
-  if (typeof state.issueTrackerId === 'string') {
+  if (typeof state.issueTrackerNumber === 'string') {
     setFailed(
       `Cannot create a new issue tracker issue because one already exists.`,
     );
@@ -38,14 +38,14 @@ export async function createTrackerIssueAction({
   }
 
   try {
-    const issueId = await createIssue({
+    const issueNumber = await createIssue({
       title: `🚀 Release ${state.version.displayString}`,
       content: state.issueText({
         manifest,
       }),
     });
-    if (state.issueTrackerId !== issueId) {
-      state.issueTrackerId = issueId;
+    if (state.issueTrackerNumber !== issueNumber) {
+      state.issueTrackerNumber = issueNumber;
       state.lastSavedJson = state.json;
     }
   } catch {

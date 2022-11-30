@@ -68,7 +68,7 @@ export async function createEnvironmentComment({
 }: {
   state: ReleaseState;
 }): Promise<void> {
-  if (typeof state.issueTrackerId !== 'number') {
+  if (typeof state.issueTrackerNumber !== 'number') {
     setFailed('Cannot create environment comments without an issue.');
     process.exit(1);
   }
@@ -99,14 +99,14 @@ export async function createEnvironmentComment({
 
   info(
     `Creating comment for ${environment.github_name ?? 'unknown'} on issue #${
-      state.issueTrackerId
+      state.issueTrackerNumber
     }.`,
   );
 
   try {
     const comment = await octokit.rest.issues.createComment({
       ...context.repo,
-      issue_number: state.issueTrackerId,
+      issue_number: state.issueTrackerNumber,
       // eslint-disable-next-line id-denylist
       body: content,
     });
