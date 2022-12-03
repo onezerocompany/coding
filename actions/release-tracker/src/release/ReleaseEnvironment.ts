@@ -7,6 +7,7 @@
 
 import type { ChangelogSettings } from '@onezerocompany/project-manager';
 import { EnvironmentType } from '@onezerocompany/project-manager';
+import { isDefined } from '../utils/isDefined';
 import type { ReleaseState } from './ReleaseState';
 
 /** Json definition of release environment. */
@@ -54,6 +55,7 @@ export class ReleaseEnvironment {
    * @param parameters.deployed - Whether the environment should be deployed.
    * @param parameters.githubName - Name of the environment on GitHub.
    * @param parameters.changelog - Changelog related settings.
+   * @param parameters.issueCommentId - Issue comment id.
    * @returns New release environment.
    * @example const releaseEnvironment = new ReleaseEnvironment({ id: 'staging' });
    */
@@ -64,6 +66,7 @@ export class ReleaseEnvironment {
     githubName,
     deployed,
     changelog,
+    issueCommentId,
   }: {
     id: string;
     type: EnvironmentType;
@@ -71,6 +74,7 @@ export class ReleaseEnvironment {
     githubName: string;
     deployed: boolean;
     changelog: ChangelogSettings;
+    issueCommentId?: number | undefined;
   }) {
     this.id = id;
     this.type = type;
@@ -78,6 +82,9 @@ export class ReleaseEnvironment {
     this.githubName = githubName;
     this.deployed = deployed;
     this.changelog = changelog;
+    if (isDefined(issueCommentId)) {
+      this.issueCommentId = issueCommentId;
+    }
   }
 
   /**
@@ -117,6 +124,7 @@ export class ReleaseEnvironment {
       githubName: json.github_name,
       deployed: json.deployed,
       changelog: json.changelog,
+      issueCommentId: json.issue_comment_id,
     });
   }
 
