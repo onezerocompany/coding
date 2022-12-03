@@ -63,7 +63,7 @@ export function environmentCommentText({
         markdown: false,
       }).text
     }\n`;
-    content += '<!-- changelog_end -->\n';
+    content += '```\n<!-- changelog_end -->\n';
   }
 
   if (!waiting && !environment.deployed) {

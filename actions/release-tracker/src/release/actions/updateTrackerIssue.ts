@@ -30,8 +30,8 @@ export async function updateTrackerIssue({
     process.exit(1);
   }
 
-  if (typeof state.issueTrackerNumber !== 'string') {
-    setFailed('Cannot update an tracker issue without an issue number.');
+  if (typeof state.issueTrackerNumber !== 'number') {
+    setFailed('Cannot update the tracker issue without an issue number.');
     process.exit(1);
   }
 

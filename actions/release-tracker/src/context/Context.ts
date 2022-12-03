@@ -5,6 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
+import { debug } from '@actions/core';
 import { loadManifestFromProject } from '@onezerocompany/project-manager';
 import type { ReleaseState } from '../release/ReleaseState';
 import { loadCurrentState } from './loadCurrentState';
@@ -40,5 +41,6 @@ export class Context {
       manifest: this.projectManifest,
       previousState: this.previousState,
     });
+    debug(`Initialized context:\n${JSON.stringify(this)}`);
   }
 }

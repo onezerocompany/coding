@@ -11,5 +11,4 @@ export * from './createRelease';
 export * from './createTrackerIssue';
 export * from './loadCommits';
 export * from './loadVersion';
-export * from './updateIssue';
 export * from './updateTrackerIssue';
