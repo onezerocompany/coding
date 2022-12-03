@@ -9,6 +9,7 @@ import type { VersionJSON } from '@onezerocompany/commit';
 import { Version, Commit } from '@onezerocompany/commit';
 import type { ProjectManifest } from '@onezerocompany/project-manager';
 import type { CommitMessageJSON } from '@onezerocompany/commit/dist/lib/message/CommitMessage';
+import { error as logError } from '@actions/core';
 import { isDefined } from '../utils/isDefined';
 import type { Context } from '../context/Context';
 import { ReleaseAction } from './ReleaseAction';
@@ -97,6 +98,7 @@ export class ReleaseState {
       state.commits =
         json.commits?.map((commit) => Commit.fromJson(commit)) ?? [];
     } catch {
+      logError('Failed to parse release state from json.');
       return null;
     }
     return null;
