@@ -11,6 +11,7 @@ import type {
   IssueCommentEvent,
   IssuesEvent,
 } from '@octokit/webhooks-definitions/schema';
+import type { ReleaseStateJson } from '../release/ReleaseState';
 import { ReleaseState } from '../release/ReleaseState';
 import { getContentBetweenTags } from '../utils/getContentBetweenTags';
 
@@ -43,8 +44,9 @@ export function loadPreviousState(): {
       'JSON END -->',
       content,
     );
+    debug(`Loaded JSON:\n${json}`);
     return {
-      state: ReleaseState.fromJson(json),
+      state: ReleaseState.fromJson(JSON.parse(json) as ReleaseStateJson),
       currentIssueText: content,
     };
   }

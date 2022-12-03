@@ -27,7 +27,8 @@ export function loadCurrentState({
   manifest: ProjectManifest;
   previousState: ReleaseState | null;
 }): ReleaseState {
-  const state = ReleaseState.fromJson(JSON.stringify(previousState?.json));
+  const state =
+    previousState === null ? null : ReleaseState.fromJson(previousState.json);
   if (state === null) {
     const newState = new ReleaseState();
     newState.environments = manifest.environments.map(

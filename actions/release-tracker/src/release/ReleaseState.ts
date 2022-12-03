@@ -79,24 +79,23 @@ export class ReleaseState {
    * @returns The release state.
    * @example const release = ReleaseState.fromJson(json);
    */
-  public static fromJson(json: string): ReleaseState | null {
+  public static fromJson(json: ReleaseStateJson): ReleaseState | null {
     try {
       const state = new ReleaseState();
-      const parsed = JSON.parse(json) as ReleaseStateJson;
-      state.environments = parsed.environments.map((environment) =>
+      state.environments = json.environments.map((environment) =>
         ReleaseEnvironment.fromJson({
           json: environment,
         }),
       );
-      if (isDefined(parsed.release_id)) state.releaseId = parsed.release_id;
-      if (isDefined(parsed.issue_tracker_number))
-        state.issueTrackerNumber = parsed.issue_tracker_number;
-      if (isDefined(parsed.tracker_label_id))
-        state.trackerLabelId = parsed.tracker_label_id;
-      if (isDefined(parsed.version))
-        state.version = Version.fromJson(parsed.version);
+      if (isDefined(json.release_id)) state.releaseId = json.release_id;
+      if (isDefined(json.issue_tracker_number))
+        state.issueTrackerNumber = json.issue_tracker_number;
+      if (isDefined(json.tracker_label_id))
+        state.trackerLabelId = json.tracker_label_id;
+      if (isDefined(json.version))
+        state.version = Version.fromJson(json.version);
       state.commits =
-        parsed.commits?.map((commit) => Commit.fromJson(commit)) ?? [];
+        json.commits?.map((commit) => Commit.fromJson(commit)) ?? [];
     } catch {
       return null;
     }
