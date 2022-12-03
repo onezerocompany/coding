@@ -74,7 +74,7 @@ export async function actionRouter({
     case ReleaseAction.updateIssue:
       await updateTrackerIssue({
         state,
-        manifest: context.projectManifest,
+        context,
       });
       break;
     /** Fallback when action is not known. */

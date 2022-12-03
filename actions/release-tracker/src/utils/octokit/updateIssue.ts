@@ -29,7 +29,7 @@ export async function updateIssue({
   content: string;
 }): Promise<number> {
   try {
-    const issue = await octokit.rest.issues.create({
+    const issue = await octokit.rest.issues.update({
       ...context.repo,
       issue_number: issueNumber,
       title,

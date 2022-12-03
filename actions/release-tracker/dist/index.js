@@ -335,21 +335,21 @@ async function loadVersion({state:o,context:t}){const r=await getLastestRelease(
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function updateIssue({issueNumber:o,title:r,content:n}){try{const e=await a.rest.issues.create({...t.context.repo,issue_number:o,title:r,body:n});return e.data.number}catch(o){(0,e.error)(o);(0,e.setFailed)("Failed to create the release.");process.exit(1)}}
+async function updateIssue({issueNumber:o,title:r,content:n}){try{const e=await a.rest.issues.update({...t.context.repo,issue_number:o,title:r,body:n});return e.data.number}catch(o){(0,e.error)(o);(0,e.setFailed)("Failed to create the release.");process.exit(1)}}
 /**
  * @file Contains a function to update the content of a release tracker issue.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function updateTrackerIssue({state:o,manifest:t}){if(typeof o.version?.displayString!=="string"){(0,e.setFailed)("Cannot update the tracker issue without a version.");process.exit(1)}if(typeof o.issueTrackerNumber!=="number"){(0,e.setFailed)("Cannot update the tracker issue without an issue number.");process.exit(1)}try{const e=o.issueText({manifest:t});await updateIssue({issueNumber:o.issueTrackerNumber,title:`🚀 Release ${o.version.displayString}`,content:e});return{currentIssueText:e}}catch{(0,e.setFailed)("Failed to create issue tracker issue.");process.exit(1)}}
+async function updateTrackerIssue({state:o,context:t}){if(typeof o.version?.displayString!=="string"){(0,e.setFailed)("Cannot update the tracker issue without a version.");process.exit(1)}if(typeof o.issueTrackerNumber!=="number"){(0,e.setFailed)("Cannot update the tracker issue without an issue number.");process.exit(1)}try{const e=o.issueText({manifest:t.projectManifest});await updateIssue({issueNumber:o.issueTrackerNumber,title:`🚀 Release ${o.version.displayString}`,content:e});if(t.currentIssueText!==e){t.currentIssueText=e}}catch{(0,e.setFailed)("Failed to create issue tracker issue.");process.exit(1)}}
 /**
  * @file Router for release actions.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function actionRouter({state:o,action:t,context:n}){(0,e.info)(`Running next action... ${t}`);switch(t){case r.loadVersion:await loadVersion({state:o,context:n});break;case r.loadCommits:await loadCommits({state:o,context:n});break;case r.createRelease:await createRelease_createRelease({state:o});break;case r.createTrackerIssue:await createTrackerIssue({state:o,context:n});break;case r.createEnvironmentComment:await createEnvironmentComment({state:o});break;case r.attachTrackerLabel:await attachTrackerLabel({state:o});break;case r.updateIssue:await updateTrackerIssue({state:o,manifest:n.projectManifest});break;default:(0,e.setFailed)(`Unknown action: ${t}`);process.exit(1)}}
+async function actionRouter({state:o,action:t,context:n}){(0,e.info)(`Running next action... ${t}`);switch(t){case r.loadVersion:await loadVersion({state:o,context:n});break;case r.loadCommits:await loadCommits({state:o,context:n});break;case r.createRelease:await createRelease_createRelease({state:o});break;case r.createTrackerIssue:await createTrackerIssue({state:o,context:n});break;case r.createEnvironmentComment:await createEnvironmentComment({state:o});break;case r.attachTrackerLabel:await attachTrackerLabel({state:o});break;case r.updateIssue:await updateTrackerIssue({state:o,context:n});break;default:(0,e.setFailed)(`Unknown action: ${t}`);process.exit(1)}}
 /**
  * @file Defines the Release class.
  * @copyright 2022 OneZero Company

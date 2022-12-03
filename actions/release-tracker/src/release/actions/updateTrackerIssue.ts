@@ -6,7 +6,7 @@
  */
 
 import { setFailed } from '@actions/core';
-import type { ProjectManifest } from '@onezerocompany/project-manager';
+import type { Context } from '../../context/Context';
 import { updateIssue } from '../../utils/octokit/updateIssue';
 import type { ReleaseState } from '../ReleaseState';
 
@@ -15,16 +15,16 @@ import type { ReleaseState } from '../ReleaseState';
  *
  * @param parameters - The parameters for the action.
  * @param parameters.state - The release state.
- * @param parameters.manifest - The project manifest.
+ * @param parameters.context - The GitHub context.
  * @example await createTrackerIssueAction({ state });
  */
 export async function updateTrackerIssue({
   state,
-  manifest,
+  context,
 }: {
   state: ReleaseState;
-  manifest: ProjectManifest;
-}): Promise<{ currentIssueText: string }> {
+  context: Context;
+}): Promise<void> {
   if (typeof state.version?.displayString !== 'string') {
     setFailed('Cannot update the tracker issue without a version.');
     process.exit(1);
@@ -37,14 +37,16 @@ export async function updateTrackerIssue({
 
   try {
     const issueText = state.issueText({
-      manifest,
+      manifest: context.projectManifest,
     });
     await updateIssue({
       issueNumber: state.issueTrackerNumber,
       title: `🚀 Release ${state.version.displayString}`,
       content: issueText,
     });
-    return { currentIssueText: issueText };
+    if (context.currentIssueText !== issueText) {
+      context.currentIssueText = issueText;
+    }
   } catch {
     setFailed('Failed to create issue tracker issue.');
     process.exit(1);
