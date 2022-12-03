@@ -98,6 +98,29 @@ export class ReleaseEnvironment {
   }
 
   /**
+   * Convert a json object to a release environment.
+   *
+   * @param parameters - Convert a json object to a release environment parameters.
+   * @param parameters.json - JSON object.
+   * @returns Release environment.
+   * @example const releaseEnvironment = ReleaseEnvironment.fromJson({ json });
+   */
+  public static fromJson({
+    json,
+  }: {
+    json: ReleaseEnvironmentJson;
+  }): ReleaseEnvironment {
+    return new ReleaseEnvironment({
+      id: json.id,
+      type: json.type as EnvironmentType,
+      needs: json.needs,
+      githubName: json.github_name,
+      deployed: json.deployed,
+      changelog: json.changelog,
+    });
+  }
+
+  /**
    * Waiting for other environments.
    *
    * @param parameters - Waiting for other environments parameters.

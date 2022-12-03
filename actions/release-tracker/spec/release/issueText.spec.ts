@@ -22,7 +22,7 @@ describe('release issue text', () => {
       }),
     ];
     state.commits = [
-      new Commit({
+      Commit.fromString({
         hash: '1234567890',
         message: '⭐️ feat/new(project) new feature',
       }),

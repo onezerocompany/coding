@@ -5,17 +5,15 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import type { Commit, Version, VersionJSON } from '@onezerocompany/commit';
+import type { VersionJSON } from '@onezerocompany/commit';
+import { Version, Commit } from '@onezerocompany/commit';
 import type { ProjectManifest } from '@onezerocompany/project-manager';
 import type { CommitMessageJSON } from '@onezerocompany/commit/dist/lib/message/CommitMessage';
 import { isDefined } from '../utils/isDefined';
 import type { Context } from '../context/Context';
 import { ReleaseAction } from './ReleaseAction';
-import type {
-  ReleaseEnvironment,
-  ReleaseEnvironmentJson,
-} from './ReleaseEnvironment';
-import { parseReleaseEnvironmentsArray } from './ReleaseEnvironment';
+import type { ReleaseEnvironmentJson } from './ReleaseEnvironment';
+import { ReleaseEnvironment } from './ReleaseEnvironment';
 import { issueText } from './issueText';
 import { actionRouter } from './actionRouter';
 
@@ -70,10 +68,7 @@ export class ReleaseState {
       issue_tracker_number: this.issueTrackerNumber,
       tracker_label_id: this.trackerLabelId,
       version: this.version?.json,
-      commits: this.commits?.map((commit) => ({
-        hash: commit.hash,
-        message: commit.message.json,
-      })),
+      commits: this.commits?.map((commit) => commit.json),
     };
   }
 
@@ -86,20 +81,26 @@ export class ReleaseState {
    */
   public static fromJson(json: string): ReleaseState | null {
     try {
-      const release = new ReleaseState();
-      const parsed = JSON.parse(json) as Record<string, unknown>;
-      const { releaseId, issueTrackerId, environments } = parsed;
-      if (typeof releaseId === 'number') release.releaseId = releaseId;
-      if (typeof issueTrackerId === 'number')
-        release.issueTrackerNumber = issueTrackerId;
-      if (Array.isArray(environments))
-        release.environments = parseReleaseEnvironmentsArray(
-          environments as Array<Record<string, unknown>>,
-        );
-      return release;
+      const state = new ReleaseState();
+      const parsed = JSON.parse(json) as ReleaseStateJson;
+      state.environments = parsed.environments.map((environment) =>
+        ReleaseEnvironment.fromJson({
+          json: environment,
+        }),
+      );
+      if (isDefined(parsed.release_id)) state.releaseId = parsed.release_id;
+      if (isDefined(parsed.issue_tracker_number))
+        state.issueTrackerNumber = parsed.issue_tracker_number;
+      if (isDefined(parsed.tracker_label_id))
+        state.trackerLabelId = parsed.tracker_label_id;
+      if (isDefined(parsed.version))
+        state.version = Version.fromJson(parsed.version);
+      state.commits =
+        parsed.commits?.map((commit) => Commit.fromJson(commit)) ?? [];
     } catch {
       return null;
     }
+    return null;
   }
 
   /**
@@ -167,16 +168,15 @@ export class ReleaseState {
       context,
       manifest,
     });
+    if (action === ReleaseAction.none) return;
     await actionRouter({
       action,
       state: this,
       context,
     });
-    if (action !== ReleaseAction.none) {
-      await this.runActions({
-        manifest,
-        context,
-      });
-    }
+    await this.runActions({
+      manifest,
+      context,
+    });
   }
 }

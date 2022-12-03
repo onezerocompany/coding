@@ -34,7 +34,7 @@
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
- */Object.defineProperty(o,"__esModule",{value:true});o.Commit=void 0;const r=t(6198);class Commit{constructor({hash:e,message:o}){this.hash=e;this.message=(0,r.parseMessage)(o)}}o.Commit=Commit},3715:(e,o,t)=>{"use strict";
+ */Object.defineProperty(o,"__esModule",{value:true});o.Commit=void 0;const r=t(3921);const n=t(6198);class Commit{constructor({hash:e,message:o}){this.hash=e;this.message=o}get json(){return{hash:this.hash,message:this.message.json}}static fromString({hash:e,message:o}){return new Commit({hash:e,message:(0,n.parseMessage)(o)})}static fromJson(e){return new Commit({hash:e.hash,message:r.CommitMessage.fromJson(e.message)})}}o.Commit=Commit},3715:(e,o,t)=>{"use strict";
 /**
  * @file Function for determining the version bump out of a list of commits.
  * @copyright 2022 OneZero Company
@@ -46,7 +46,7 @@
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
- */Object.defineProperty(o,"__esModule",{value:true});o.listCommits=void 0;const r=t(2081);const n=t(8424);function listCommits({beginHash:e,endHash:o}){const t=e??"";const i=(0,r.execSync)(`git rev-list ${t?`${t}..`:""}${o??"HEAD"}`,{encoding:"utf-8"});const a=i.trim().split("\n");return a.map((e=>{const o=(0,r.execSync)(`git log -1 --format=%B ${e}`,{encoding:"utf-8"});return new n.Commit({hash:e,message:o})}))}o.listCommits=listCommits},3678:(e,o,t)=>{"use strict";
+ */Object.defineProperty(o,"__esModule",{value:true});o.listCommits=void 0;const r=t(2081);const n=t(8424);function listCommits({beginHash:e,endHash:o}){const t=e??"";const i=(0,r.execSync)(`git rev-list ${t?`${t}..`:""}${o??"HEAD"}`,{encoding:"utf-8"});const a=i.trim().split("\n");return a.map((e=>{const o=(0,r.execSync)(`git log -1 --format=%B ${e}`,{encoding:"utf-8"});return n.Commit.fromString({hash:e,message:o})}))}o.listCommits=listCommits},3678:(e,o,t)=>{"use strict";
 /**
  * @file Globally available variables.
  * @copyright 2022 OneZero Company

@@ -5,6 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
+import { info } from '@actions/core';
 import { sharedContext } from './context/sharedContext';
 
 /**
@@ -18,6 +19,7 @@ async function main(): Promise<void> {
     manifest: sharedContext.projectManifest,
     context: sharedContext,
   });
+  info('Done.');
 }
 
 // eslint-disable-next-line no-void
