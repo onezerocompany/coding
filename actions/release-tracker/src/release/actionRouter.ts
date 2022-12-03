@@ -49,7 +49,7 @@ export async function actionRouter({
       break;
     /** Trigger a release creation. */
     case ReleaseAction.createRelease:
-      await createRelease({ state });
+      await createRelease({ state, context });
       break;
     /** Trigger an issue creation. */
     case ReleaseAction.createTrackerIssue:

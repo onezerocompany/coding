@@ -293,7 +293,7 @@ async function createRelease({version:o,changelog:r}){try{const n=await a.rest.r
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createRelease_createRelease({state:o}){if(!(Array.isArray(o.commits)&&o.commits.length>0)){(0,e.setFailed)("Cannot create a release without commits.");process.exit(1)}if(typeof o.version?.displayString!=="string"){(0,e.setFailed)("Cannot create a release without a version.");process.exit(1)}const t=new r.vv({domain:r.fG.internal,markdown:true,commits:o.commits}).text;const n=await createRelease({version:o.version.displayString,changelog:t});if(o.releaseId!==n){o.releaseId=n}}
+async function createRelease_createRelease({state:o,context:t}){if(!(Array.isArray(o.commits)&&o.commits.length>0)){(0,e.setFailed)("Cannot create a release without commits.");process.exit(1)}if(typeof o.version?.displayString!=="string"){(0,e.setFailed)("Cannot create a release without a version.");process.exit(1)}if(o.commits.length===1&&o.commits[0]?.hash===t.previousRelease.sha){(0,e.setFailed)("Cannot create a release for the same commit.");process.exit(1)}const n=new r.vv({domain:r.fG.internal,markdown:true,commits:o.commits}).text;const i=await createRelease({version:o.version.displayString,changelog:n});if(o.releaseId!==i){o.releaseId=i}}
 /**
  * @file Contains a function that creates an issue for a release.
  * @copyright 2022 OneZero Company
@@ -349,7 +349,7 @@ async function updateTrackerIssue({state:o,context:t}){if(typeof o.version?.disp
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function actionRouter({state:o,action:t,context:r}){(0,e.info)(`Running next action... ${t}`);switch(t){case n.loadVersion:await loadVersion({state:o,context:r});break;case n.loadCommits:await loadCommits({state:o,context:r});break;case n.createRelease:await createRelease_createRelease({state:o});break;case n.createTrackerIssue:await createTrackerIssue({state:o,context:r});break;case n.createEnvironmentComment:await createEnvironmentComment({state:o});break;case n.attachTrackerLabel:await attachTrackerLabel({state:o});break;case n.updateIssue:await updateTrackerIssue({state:o,context:r});break;default:(0,e.setFailed)(`Unknown action: ${t}`);process.exit(1)}}
+async function actionRouter({state:o,action:t,context:r}){(0,e.info)(`Running next action... ${t}`);switch(t){case n.loadVersion:await loadVersion({state:o,context:r});break;case n.loadCommits:await loadCommits({state:o,context:r});break;case n.createRelease:await createRelease_createRelease({state:o,context:r});break;case n.createTrackerIssue:await createTrackerIssue({state:o,context:r});break;case n.createEnvironmentComment:await createEnvironmentComment({state:o});break;case n.attachTrackerLabel:await attachTrackerLabel({state:o});break;case n.updateIssue:await updateTrackerIssue({state:o,context:r});break;default:(0,e.setFailed)(`Unknown action: ${t}`);process.exit(1)}}
 /**
  * @file Defines the Release class.
  * @copyright 2022 OneZero Company
