@@ -384,7 +384,7 @@ function loadPreviousState(){let e="";if(t.context.eventName==="issues"){e=t.con
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class Context{projectManifest=(0,o.loadManifestFromProject)();previousState=null;curentState=null;currentIssueText="";previousRelease={};async initialize(){const{state:o,currentIssueText:t}=loadPreviousState();this.previousState=o;this.currentIssueText=t;this.curentState=loadCurrentState({manifest:this.projectManifest,previousState:this.previousState});(0,e.debug)(`Initialized context:\n${JSON.stringify(this)}`)}}
+class Context{projectManifest=(0,o.loadManifestFromProject)();previousState=null;curentState=null;currentIssueText="";previousRelease={};async initialize(){const{state:o,currentIssueText:t}=loadPreviousState();this.previousState=o;this.currentIssueText=t;this.curentState=loadCurrentState({manifest:this.projectManifest,previousState:this.previousState});const r=2;(0,e.debug)(`Initialized context:\n${JSON.stringify(this,null,r)}`)}}
 /**
  * @file Contains the shared context for the release tracker action.
  * @copyright 2022 OneZero Company

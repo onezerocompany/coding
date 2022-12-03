@@ -41,6 +41,9 @@ export class Context {
       manifest: this.projectManifest,
       previousState: this.previousState,
     });
-    debug(`Initialized context:\n${JSON.stringify(this)}`);
+    const jsonIndentation = 2;
+    debug(
+      `Initialized context:\n${JSON.stringify(this, null, jsonIndentation)}`,
+    );
   }
 }
