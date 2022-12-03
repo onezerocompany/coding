@@ -363,7 +363,7 @@ class ReleaseState{environments=[];releaseId;issueTrackerNumber;trackerLabelId;v
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function loadCurrentState({manifest:e,previousState:o}){const r=ReleaseState.fromJson(JSON.stringify(o?.json));if(r===null){const o=new ReleaseState;o.environments=e.environments.map((e=>new ReleaseEnvironment({id:e.id,needs:e.needs,githubName:e.github_name,deployed:false,type:e.type,changelog:{generate:e.changelog.generate,headers:e.changelog.headers,footers:e.changelog.footers}})));return o}if(t.context.eventName==="issues"){const e=t.context.payload;const o=e.action==="edited"&&e.issue.body!==e.changes.body?.from;if(o){}}if(t.context.eventName==="issue_comment"){const e=t.context.payload;const o=e.action==="edited"&&e.comment.body!==e.changes.body?.from;if(o){}}return r}
+function loadCurrentState({manifest:e,previousState:o}){const r=ReleaseState.fromJson(JSON.stringify(o?.json));if(r===null){const o=new ReleaseState;o.environments=e.environments.map((e=>new ReleaseEnvironment({id:e.id,needs:e.needs,githubName:e.github_name,deployed:false,type:e.type,changelog:{generate:e.changelog.generate,headers:e.changelog.headers,footers:e.changelog.footers}})));return o}if(t.context.eventName==="issue_comment"){const e=t.context.payload;const o=e.action==="edited"&&e.comment.body!==e.changes.body?.from;if(o){}}return r}
 /**
  * @file Functions for getting content between a beginning and ending tag.
  * @copyright 2022 OneZero Company
@@ -377,7 +377,7 @@ function getContentBetweenTags(e,o,t){const r=t.indexOf(e);const n=t.indexOf(o);
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function loadPreviousState(){let e="";if(t.context.eventName==="issues"){e=t.context.payload.issue.body}if(t.context.eventName==="issue_comment"){e=t.context.payload.issue.body}if(e.includes("\x3c!-- JSON BEGIN")&&e.includes("JSON END --\x3e")){const o=getContentBetweenTags("\x3c!-- JSON BEGIN","JSON END --\x3e",e);return{state:ReleaseState.fromJson(o),currentIssueText:e}}return{state:null,currentIssueText:e}}
+function loadPreviousState(){(0,e.info)("Loading previous state of the release...");(0,e.info)(`event: ${t.context.eventName}`);let o="";if(t.context.eventName==="issues"){o=t.context.payload.issue.body}if(t.context.eventName==="issue_comment"){o=t.context.payload.issue.body}(0,e.debug)(`Loaded issue content:\n${o}`);if(o.includes("\x3c!-- JSON BEGIN")&&o.includes("JSON END --\x3e")){const e=getContentBetweenTags("\x3c!-- JSON BEGIN","JSON END --\x3e",o);return{state:ReleaseState.fromJson(e),currentIssueText:o}}return{state:null,currentIssueText:o}}
 /**
  * @file Contains the context for the release tracker action.
  * @copyright 2022 OneZero Company

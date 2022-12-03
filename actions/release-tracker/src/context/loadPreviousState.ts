@@ -5,6 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
+import { debug, info } from '@actions/core';
 import { context } from '@actions/github';
 import type {
   IssueCommentEvent,
@@ -23,6 +24,9 @@ export function loadPreviousState(): {
   state: ReleaseState | null;
   currentIssueText: string;
 } {
+  info('Loading previous state of the release...');
+  info(`event: ${context.eventName}`);
+
   let content = '';
   if (context.eventName === 'issues') {
     content = (context.payload as IssuesEvent).issue.body;
@@ -30,6 +34,8 @@ export function loadPreviousState(): {
   if (context.eventName === 'issue_comment') {
     content = (context.payload as IssueCommentEvent).issue.body;
   }
+
+  debug(`Loaded issue content:\n${content}`);
 
   if (content.includes('<!-- JSON BEGIN') && content.includes('JSON END -->')) {
     const json = getContentBetweenTags(

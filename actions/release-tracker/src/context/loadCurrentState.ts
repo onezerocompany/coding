@@ -6,10 +6,7 @@
  */
 
 import { context } from '@actions/github';
-import type {
-  IssueCommentEvent,
-  IssuesEvent,
-} from '@octokit/webhooks-definitions/schema';
+import type { IssueCommentEvent } from '@octokit/webhooks-definitions/schema';
 import type { ProjectManifest } from '@onezerocompany/project-manager';
 import { ReleaseEnvironment } from '../release/ReleaseEnvironment';
 import { ReleaseState } from '../release/ReleaseState';
@@ -49,16 +46,6 @@ export function loadCurrentState({
         }),
     );
     return newState;
-  }
-
-  if (context.eventName === 'issues') {
-    const event = context.payload as IssuesEvent;
-    const didUpdate =
-      event.action === 'edited' &&
-      event.issue.body !== event.changes.body?.from;
-    if (didUpdate) {
-      // UpdateIssue
-    }
   }
 
   if (context.eventName === 'issue_comment') {
