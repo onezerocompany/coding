@@ -7,7 +7,7 @@
 
 import { setFailed } from '@actions/core';
 import { getOctokit } from '@actions/github';
-import { getOptionalInput } from '../getOptionalInput';
+import { getOptionalInput } from './getOptionalInput';
 
 const token = getOptionalInput('token') ?? process.env['GITHUB_TOKEN'];
 if (

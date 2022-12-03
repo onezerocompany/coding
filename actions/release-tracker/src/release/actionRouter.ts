@@ -5,14 +5,17 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { info } from '@actions/core';
-import type { ProjectManifest } from '@onezerocompany/project-manager';
-import { attachTrackerLabelAction } from './actions/attachTrackerLabel';
-import { createEnvironmentComment } from './actions/createEnvironmentComment';
-import { createReleaseAction } from './actions/createReleaseAction';
-import { createTrackerIssueAction } from './actions/createTrackerIssueAction';
-import { loadCommits } from './actions/loadCommits';
-import { loadVersion } from './actions/loadVersion';
+import { info, setFailed } from '@actions/core';
+import type { Context } from '../context/Context';
+import {
+  attachTrackerLabel,
+  createEnvironmentComment,
+  createRelease,
+  createTrackerIssue,
+  loadCommits,
+  loadVersion,
+  updateTrackerIssue,
+} from './actions';
 import { ReleaseAction } from './ReleaseAction';
 import type { ReleaseState } from './ReleaseState';
 
@@ -22,37 +25,37 @@ import type { ReleaseState } from './ReleaseState';
  * @param parameters - Parameters for the function.
  * @param parameters.action - Action to run.
  * @param parameters.state - State to apply the loaded info to.
- * @param parameters.manifest - The project manifest.
+ * @param parameters.context - The shared context.
  * @example actionRouter({ action });
  */
 export async function actionRouter({
   state,
   action,
-  manifest,
+  context,
 }: {
-  state: ReleaseState;
   action: ReleaseAction;
-  manifest: ProjectManifest;
+  state: ReleaseState;
+  context: Context;
 }): Promise<void> {
   info(`Running next action... ${action}`);
   switch (action) {
     /** Loading version details. */
     case ReleaseAction.loadVersion:
-      await loadVersion({ state });
+      await loadVersion({ state, context });
       break;
     /** Loading commits. */
     case ReleaseAction.loadCommits:
-      await loadCommits({ state });
+      await loadCommits({ state, context });
       break;
     /** Trigger a release creation. */
     case ReleaseAction.createRelease:
-      await createReleaseAction({ state });
+      await createRelease({ state });
       break;
     /** Trigger an issue creation. */
     case ReleaseAction.createTrackerIssue:
-      await createTrackerIssueAction({
+      await createTrackerIssue({
         state,
-        manifest,
+        context,
       });
       break;
     /** Create environment comment. */
@@ -63,12 +66,20 @@ export async function actionRouter({
       break;
     /** Attaching the label to the issue. */
     case ReleaseAction.attachTrackerLabel:
-      await attachTrackerLabelAction({
+      await attachTrackerLabel({
         state,
       });
       break;
-    /** Fallback. */
-    default:
+    /** Update the issue.  */
+    case ReleaseAction.updateIssue:
+      await updateTrackerIssue({
+        state,
+        manifest: context.projectManifest,
+      });
       break;
+    /** Fallback when action is not known. */
+    default:
+      setFailed(`Unknown action: ${action}`);
+      process.exit(1);
   }
 }

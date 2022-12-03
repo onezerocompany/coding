@@ -7,7 +7,7 @@
 
 import { setFailed } from '@actions/core';
 import { ChangeLog, ChangelogDomain } from '@onezerocompany/commit';
-import { createRelease } from '../../utils/octokit/createRelease';
+import { createRelease as githubCreateRelease } from '../../utils/octokit/createRelease';
 import type { ReleaseState } from '../ReleaseState';
 
 /**
@@ -17,7 +17,7 @@ import type { ReleaseState } from '../ReleaseState';
  * @param parameters.state - The release state to create a release for.
  * @example await this.createRelease()
  */
-export async function createReleaseAction({
+export async function createRelease({
   state,
 }: {
   state: ReleaseState;
@@ -33,13 +33,13 @@ export async function createReleaseAction({
   }
 
   const changelog = new ChangeLog({
-    type: ChangelogDomain.internal,
+    domain: ChangelogDomain.internal,
     markdown: true,
     commits: state.commits,
   }).text;
 
   // Create release.
-  const releaseId = await createRelease({
+  const releaseId = await githubCreateRelease({
     version: state.version.displayString,
     changelog,
   });

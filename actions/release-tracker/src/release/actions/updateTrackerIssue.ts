@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file Contains a function to update the content of a release tracker issue.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
@@ -7,7 +7,7 @@
 
 import { setFailed } from '@actions/core';
 import type { ProjectManifest } from '@onezerocompany/project-manager';
-import { createIssue } from '../../utils/octokit/createIssue';
+import { updateIssue } from '../../utils/octokit/updateIssue';
 import type { ReleaseState } from '../ReleaseState';
 
 /**
@@ -18,36 +18,33 @@ import type { ReleaseState } from '../ReleaseState';
  * @param parameters.manifest - The project manifest.
  * @example await createTrackerIssueAction({ state });
  */
-export async function createTrackerIssueAction({
+export async function updateTrackerIssue({
   state,
   manifest,
 }: {
   state: ReleaseState;
   manifest: ProjectManifest;
-}): Promise<void> {
-  if (typeof state.issueTrackerNumber === 'string') {
-    setFailed(
-      `Cannot create a new issue tracker issue because one already exists.`,
-    );
+}): Promise<{ currentIssueText: string }> {
+  if (typeof state.version?.displayString !== 'string') {
+    setFailed('Cannot update the tracker issue without a version.');
     process.exit(1);
   }
 
-  if (typeof state.version?.displayString !== 'string') {
-    setFailed('Cannot create a new issue tracker issue without a version.');
+  if (typeof state.issueTrackerNumber !== 'string') {
+    setFailed('Cannot update an tracker issue without an issue number.');
     process.exit(1);
   }
 
   try {
-    const issueNumber = await createIssue({
-      title: `🚀 Release ${state.version.displayString}`,
-      content: state.issueText({
-        manifest,
-      }),
+    const issueText = state.issueText({
+      manifest,
     });
-    if (state.issueTrackerNumber !== issueNumber) {
-      state.issueTrackerNumber = issueNumber;
-      state.lastSavedJson = state.json;
-    }
+    await updateIssue({
+      issueNumber: state.issueTrackerNumber,
+      title: `🚀 Release ${state.version.displayString}`,
+      content: issueText,
+    });
+    return { currentIssueText: issueText };
   } catch {
     setFailed('Failed to create issue tracker issue.');
     process.exit(1);

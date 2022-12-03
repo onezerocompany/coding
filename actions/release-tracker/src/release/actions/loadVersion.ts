@@ -7,6 +7,7 @@
 
 import { info } from '@actions/core';
 import { Version } from '@onezerocompany/commit';
+import type { Context } from '../../context/Context';
 import { getLastestRelease } from '../../utils/octokit/getLastestRelease';
 import type { ReleaseState } from '../ReleaseState';
 
@@ -15,25 +16,30 @@ import type { ReleaseState } from '../ReleaseState';
  *
  * @param parameters - Parameters of the function.
  * @param parameters.state - State to apply the loaded info to.
+ * @param parameters.context - The shared context.
  * @example await loadVersion({ state });
  */
 export async function loadVersion({
   state,
+  context,
 }: {
   state: ReleaseState;
+  context: Context;
 }): Promise<void> {
   // Fetch the latest release from GitHub.
-  const previousRelease = await getLastestRelease();
-  if (typeof previousRelease?.sha === 'string') {
-    state.previousSha = previousRelease.sha;
+  const githubRelease = await getLastestRelease();
+  if (typeof githubRelease?.sha === 'string') {
+    context.previousRelease.sha = githubRelease.sha;
   }
-  state.previousVersion = Version.fromString(
-    previousRelease?.tag_name ?? '0.0.0',
-  );
-  state.version = state.previousVersion;
+
+  const version = Version.fromString(githubRelease?.tag_name ?? '0.0.0');
+  context.previousRelease.version = version;
+
+  state.version = version;
+
   info(
-    `Previous release: ${state.previousVersion.displayString} (${
-      state.previousSha ?? 'unknown'
+    `Previous release: ${version.displayString} (${
+      githubRelease?.sha ?? 'unknown'
     })`,
   );
 }

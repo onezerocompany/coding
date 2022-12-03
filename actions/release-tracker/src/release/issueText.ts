@@ -29,9 +29,9 @@ export function issueText({
   content +=
     '###### Edit the changelogs in the comments below and tick the checkboxes to release to each individual environment.\n\n';
 
-  content += `\n\n${
+  content += `${
     new ChangeLog({
-      type: ChangelogDomain.internal,
+      domain: ChangelogDomain.internal,
       commits: state.commits ?? [],
       markdown: true,
     }).text
@@ -43,7 +43,7 @@ export function issueText({
     version,
   )})\n\n`;
 
-  content += `<!-- JSON BEGIN${state.json}JSON END -->`;
+  content += `<!-- JSON BEGIN${JSON.stringify(state.json)}JSON END -->`;
 
   return content;
 }

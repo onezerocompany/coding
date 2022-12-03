@@ -37,24 +37,24 @@ function categoriesInCommitsList(commits: Commit[]): CommitCategory[] {
  *
  * @param parameters - The parameters to create the list item from.
  * @param parameters.commit - The commit to create the list item from.
- * @param parameters.type - The type of changelog this item is for.
  * @param parameters.markdown - Whether to use markdown.
+ * @param parameters.domain - The domain of the changelog.
  * @returns The list item.
  * @example const item = listItemFromCommitMessage(message);
  */
 function itemFromCommit({
   commit,
-  type,
+  domain,
   markdown,
 }: {
   commit: Commit;
-  type: ChangelogDomain;
+  domain: ChangelogDomain;
   markdown: boolean;
 }): string {
   const { scope, subject } = commit.message;
   if (markdown) {
     if (
-      type === ChangelogDomain.internal &&
+      domain === ChangelogDomain.internal &&
       projectManifest.release.commit_url.includes('{{commit}}')
     ) {
       const link = projectManifest.release.commit_url.replace(
@@ -65,7 +65,7 @@ function itemFromCommit({
     }
     return `- ${subject}\n`;
   }
-  if (type === ChangelogDomain.internal) {
+  if (domain === ChangelogDomain.internal) {
     return `- ${subject} (${scope})\n`;
   }
   return ` - ${subject}\n`;
@@ -74,7 +74,7 @@ function itemFromCommit({
 /** Defines a changelog.  */
 export class ChangeLog {
   /** Type of changelog. */
-  public type: ChangelogDomain;
+  public domain: ChangelogDomain;
   /** List of commits in this changelog. */
   public commits: Commit[];
   /** Whether the changelog should be output in markdown. */
@@ -88,7 +88,7 @@ export class ChangeLog {
    * Creates a new changelog.
    *
    * @param parameters - The changelog parameters.
-   * @param parameters.type - The changelog type.
+   * @param parameters.domain - The changelog type.
    * @param parameters.markdown - Whether the changelog should be in markdown format.
    * @param parameters.commits - The commits to include in the changelog.
    * @param parameters.header - The header to include in the changelog.
@@ -96,19 +96,19 @@ export class ChangeLog {
    * @example new Changelog(ChangeLogType.internal, commits, true, 'header', 'footer');
    */
   public constructor({
-    type,
+    domain,
     markdown,
     commits,
     header,
     footer,
   }: {
-    type: ChangelogDomain;
+    domain: ChangelogDomain;
     markdown?: boolean;
     commits: Commit[];
-    header?: string;
-    footer?: string;
+    header?: string | undefined;
+    footer?: string | undefined;
   }) {
-    this.type = type;
+    this.domain = domain;
     this.commits = commits;
     this.header = header;
     this.footer = footer;
@@ -126,7 +126,7 @@ export class ChangeLog {
     if (typeof this.header === 'string') content += this.header;
 
     const allowedTypes =
-      this.type === ChangelogDomain.internal
+      this.domain === ChangelogDomain.internal
         ? [ChangelogDomain.internal, ChangelogDomain.external]
         : [ChangelogDomain.external];
 

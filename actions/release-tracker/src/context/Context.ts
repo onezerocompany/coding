@@ -9,19 +9,23 @@ import { loadManifestFromProject } from '@onezerocompany/project-manager';
 import type { ReleaseState } from '../release/ReleaseState';
 import { loadCurrentState } from './loadCurrentState';
 import { loadPreviousState } from './loadPreviousState';
+import type { PreviousRelease } from './PreviousRelease';
 
 /** Context for the action. */
 export class Context {
-  /** Static version of the context. */
-  public static default = new Context();
-
   /** Manifest of the project with all the settings. */
-  public static readonly projectManifest = loadManifestFromProject();
+  public readonly projectManifest = loadManifestFromProject();
 
   /** Previous state of the release to compare to. */
   public previousState: ReleaseState | null = null;
   /** Current state of the release. */
   public curentState: ReleaseState | null = null;
+
+  /** Last published issue text. */
+  public currentIssueText = '';
+
+  /** SHA of the previous release. */
+  public previousRelease: PreviousRelease = {};
 
   /**
    * Initializes the context for the action.
@@ -29,9 +33,12 @@ export class Context {
    * @example await Context.default.initialize();
    */
   public async initialize(): Promise<void> {
-    this.previousState = loadPreviousState();
+    const { state: previousState, currentIssueText } = loadPreviousState();
+    this.previousState = previousState;
+    this.currentIssueText = currentIssueText;
     this.curentState = loadCurrentState({
-      manifest: Context.projectManifest,
+      manifest: this.projectManifest,
+      previousState: this.previousState,
     });
   }
 }

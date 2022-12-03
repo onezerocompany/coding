@@ -7,54 +7,9 @@
 
 import { info, setFailed } from '@actions/core';
 import { context } from '@actions/github';
-import { ChangeLog, ChangelogDomain } from '@onezerocompany/commit';
-import { EnvironmentType } from '@onezerocompany/project-manager';
-import { octokit } from '../../utils/octokit/octokit';
-import { slugify } from '../../utils/slugify';
+import { octokit } from '../../utils/octokit';
+import { environmentCommentText } from '../environmentCommentText';
 import type { ReleaseState } from '../ReleaseState';
-
-/** Environment to release to. */
-const environmentNames: Record<EnvironmentType, string> = {
-  [EnvironmentType.appleAppStore]: 'App Store',
-  [EnvironmentType.appleTestFlightExternal]: 'TestFlight (External)',
-  [EnvironmentType.appleTestFlightInternal]: 'TestFlight (Internal)',
-  [EnvironmentType.firebaseHosting]: 'Firebase Hosting',
-  [EnvironmentType.githubContainerRegistry]: 'GitHub Container Registry',
-  [EnvironmentType.githubNpmRegistry]: 'GitHub NPM Registry',
-  [EnvironmentType.googlePlay]: 'Google Play',
-  [EnvironmentType.googlePlayTestingClosed]: 'Google Play Testing (Closed)',
-  [EnvironmentType.googlePlayTestingExternal]: 'Google Play Testing (External)',
-  [EnvironmentType.googlePlayTestingInternal]: 'Google Play Testing (Internal)',
-};
-
-/**
- * Creates the changelog text.
- *
- * @param parameters - The parameters for the function.
- * @param parameters.state - The release state.
- * @param parameters.sectionId - The section ID.
- * @returns The changelog text.
- * @example const changelogText = createChangelogText({ state, sectionId });
- */
-function changelogText({
-  sectionId,
-  state,
-}: {
-  sectionId: string;
-  state: ReleaseState;
-}): string {
-  let content = '';
-  content += `<!-- CHANGELOG_BEGIN:${sectionId} -->\n\`\`\`\n`;
-  content += `${
-    new ChangeLog({
-      type: ChangelogDomain.external,
-      markdown: false,
-      commits: state.commits ?? [],
-    }).text
-  }\n`;
-  content += `\`\`\`\n<!-- CHANGELOG_END:${sectionId} -->\n`;
-  return content;
-}
 
 /**
  * Create the comments for the release environments.
@@ -82,24 +37,8 @@ export async function createEnvironmentComment({
     process.exit(1);
   }
 
-  let content = '';
-  const sectionId = slugify(environment.github_name ?? 'unknown');
-  content += `### ${
-    environmentNames[environment.type ?? EnvironmentType.firebaseHosting]
-  }\n\n`;
-
-  if (environment.changelog?.generate === true) {
-    content += changelogText({ sectionId, state });
-  }
-
-  content += `- [ ] Release to ${
-    environment.github_name ?? 'unknown'
-  }<!-- RELEASE_ITEM:${sectionId} -->\n\n`;
-
   info(
-    `Creating comment for ${environment.github_name ?? 'unknown'} on issue #${
-      state.issueTrackerNumber
-    }.`,
+    `Creating comment for ${environment.id} on issue #${state.issueTrackerNumber}.`,
   );
 
   try {
@@ -107,14 +46,17 @@ export async function createEnvironmentComment({
       ...context.repo,
       issue_number: state.issueTrackerNumber,
       // eslint-disable-next-line id-denylist
-      body: content,
+      body: environmentCommentText({
+        environment,
+        state,
+      }),
     });
     environment.issueCommentId = comment.data.id;
   } catch (createError: unknown) {
     setFailed(
       createError instanceof Error
         ? createError.message
-        : `Failed to create issue comment for environment: ${sectionId}`,
+        : `Failed to create issue comment for environment: ${environment.id}`,
     );
     process.exit(1);
   }

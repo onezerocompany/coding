@@ -5,15 +5,42 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { VersionBump } from '@onezerocompany/commit';
-import type { Commit, Version } from '@onezerocompany/commit';
+import type { Commit, Version, VersionJSON } from '@onezerocompany/commit';
 import type { ProjectManifest } from '@onezerocompany/project-manager';
+import type { CommitMessageJSON } from '@onezerocompany/commit/dist/lib/message/CommitMessage';
 import { isDefined } from '../utils/isDefined';
+import type { Context } from '../context/Context';
 import { ReleaseAction } from './ReleaseAction';
-import type { ReleaseEnvironment } from './ReleaseEnvironment';
+import type {
+  ReleaseEnvironment,
+  ReleaseEnvironmentJson,
+} from './ReleaseEnvironment';
 import { parseReleaseEnvironmentsArray } from './ReleaseEnvironment';
 import { issueText } from './issueText';
 import { actionRouter } from './actionRouter';
+
+/** JSON definition of release state. */
+export interface ReleaseStateJson {
+  /** Environments. */
+  environments: ReleaseEnvironmentJson[];
+  /** ID of the release object. */
+  release_id?: number | undefined;
+  /** ID of the related issue tracker. */
+  issue_tracker_number?: number | undefined;
+  /** Tracker label id. */
+  tracker_label_id?: number | undefined;
+  /** Version number of release. */
+  version?: VersionJSON | undefined;
+  /** List of commits. */
+  commits?:
+    | Array<{
+        /** Hash of the commit. */
+        hash: string;
+        /** Commit message. */
+        message: CommitMessageJSON;
+      }>
+    | undefined;
+}
 
 /** Represents a release and its associated issue. */
 export class ReleaseState {
@@ -27,42 +54,8 @@ export class ReleaseState {
   public trackerLabelId?: number;
   /** Version number of release. */
   public version?: Version;
-  /** Commits. */
+  /** List of commits. */
   public commits?: Commit[];
-  /** Previous `Version`. */
-  public previousVersion?: Version;
-  /** Previous ref hash. */
-  public previousSha?: string;
-  /** Bump from last version. */
-  public bump = VersionBump.none;
-  /** Last saved json. */
-  public lastSavedJson = '';
-
-  /**
-   * Determines the next action to take for this release.
-   *
-   * @returns The next action to take.
-   * @example await determineAction();
-   */
-  public get nextAction(): ReleaseAction {
-    if (!isDefined(this.version)) return ReleaseAction.loadVersion;
-    if (!isDefined(this.commits)) return ReleaseAction.loadCommits;
-    if (this.bump === VersionBump.none) return ReleaseAction.none;
-    if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
-    if (!isDefined(this.issueTrackerNumber))
-      return ReleaseAction.createTrackerIssue;
-    if (
-      this.environments.some(
-        (environment) => !isDefined(environment.issueCommentId),
-      )
-    )
-      return ReleaseAction.createEnvironmentComment;
-    if (!isDefined(this.trackerLabelId))
-      return ReleaseAction.attachTrackerLabel;
-    if (this.lastSavedJson.length > 0 && this.lastSavedJson !== this.json)
-      return ReleaseAction.updateIssue;
-    return ReleaseAction.none;
-  }
 
   /**
    * Getter that converts this ReleaseState into a JSON object.
@@ -70,17 +63,18 @@ export class ReleaseState {
    * @returns The JSON object.
    * @example const json = release.json;
    */
-  public get json(): string {
-    return JSON.stringify({
-      releaseId: this.releaseId,
-      issueTrackerId: this.issueTrackerNumber,
-      environments: this.environments.map((environment) => ({
-        github_name: environment.github_name,
-        deployed: environment.deployed,
-        status: environment.status,
-        type: environment.type?.toString(),
+  public get json(): ReleaseStateJson {
+    return {
+      environments: this.environments.map((environment) => environment.json),
+      release_id: this.releaseId,
+      issue_tracker_number: this.issueTrackerNumber,
+      tracker_label_id: this.trackerLabelId,
+      version: this.version?.json,
+      commits: this.commits?.map((commit) => ({
+        hash: commit.hash,
+        message: commit.message.json,
       })),
-    });
+    };
   }
 
   /**
@@ -99,11 +93,47 @@ export class ReleaseState {
       if (typeof issueTrackerId === 'number')
         release.issueTrackerNumber = issueTrackerId;
       if (Array.isArray(environments))
-        release.environments = parseReleaseEnvironmentsArray(environments);
+        release.environments = parseReleaseEnvironmentsArray(
+          environments as Array<Record<string, unknown>>,
+        );
       return release;
     } catch {
       return null;
     }
+  }
+
+  /**
+   * Determines the next action to take for this release.
+   *
+   * @param parameters - The parameters for the function.
+   * @param parameters.manifest - The project manifest.
+   * @param parameters.context - The context.
+   * @returns The next action to take.
+   * @example await determineAction();
+   */
+  public nextAction({
+    manifest,
+    context,
+  }: {
+    manifest: ProjectManifest;
+    context: Context;
+  }): ReleaseAction {
+    if (!isDefined(this.version)) return ReleaseAction.loadVersion;
+    if (!isDefined(this.commits)) return ReleaseAction.loadCommits;
+    if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
+    if (!isDefined(this.issueTrackerNumber))
+      return ReleaseAction.createTrackerIssue;
+    if (
+      this.environments.some(
+        (environment) => !isDefined(environment.issueCommentId),
+      )
+    )
+      return ReleaseAction.createEnvironmentComment;
+    if (!isDefined(this.trackerLabelId))
+      return ReleaseAction.attachTrackerLabel;
+    if (context.currentIssueText !== this.issueText({ manifest }))
+      return ReleaseAction.updateIssue;
+    return ReleaseAction.none;
   }
 
   /**
@@ -123,21 +153,29 @@ export class ReleaseState {
    *
    * @param parameters - Parameters of the function.
    * @param parameters.manifest - The project manifest.
+   * @param parameters.context - The context.
    * @example await executeNextAction();
    */
   public async runActions({
     manifest,
+    context,
   }: {
     manifest: ProjectManifest;
+    context: Context;
   }): Promise<void> {
-    await actionRouter({
-      action: this.nextAction,
-      state: this,
+    const action = this.nextAction({
+      context,
       manifest,
     });
-    if (this.nextAction !== ReleaseAction.none) {
+    await actionRouter({
+      action,
+      state: this,
+      context,
+    });
+    if (action !== ReleaseAction.none) {
       await this.runActions({
         manifest,
+        context,
       });
     }
   }

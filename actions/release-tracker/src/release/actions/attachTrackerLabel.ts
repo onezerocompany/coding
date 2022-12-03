@@ -7,7 +7,7 @@
 
 import { setFailed } from '@actions/core';
 import { context } from '@actions/github';
-import { octokit } from '../../utils/octokit/octokit';
+import { octokit } from '../../utils/octokit';
 import type { ReleaseState } from '../ReleaseState';
 
 /**
@@ -17,7 +17,7 @@ import type { ReleaseState } from '../ReleaseState';
  * @param parameters.state - The release state.
  * @example await attachTrackerLabel({state})
  */
-export async function attachTrackerLabelAction({
+export async function attachTrackerLabel({
   state,
 }: {
   state: ReleaseState;

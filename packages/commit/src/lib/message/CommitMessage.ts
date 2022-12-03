@@ -10,7 +10,7 @@ import { categoryForTag } from '../categories/categories';
 import { emojiForShortcode } from '../categories/emoji/emoji';
 
 /** JSON version of a commit message object. */
-interface CommitMessageJSON {
+export interface CommitMessageJSON {
   /** List of files in the commit. */
   files: string[];
   /** Category of the commit. */

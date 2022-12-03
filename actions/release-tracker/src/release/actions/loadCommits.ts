@@ -6,7 +6,12 @@
  */
 
 import { info, setFailed } from '@actions/core';
-import { getBumpForCommitList, listCommits } from '@onezerocompany/commit';
+import {
+  getBumpForCommitList,
+  listCommits,
+  VersionBump,
+} from '@onezerocompany/commit';
+import type { Context } from '../../context/Context';
 import type { ReleaseState } from '../ReleaseState';
 
 /**
@@ -14,34 +19,45 @@ import type { ReleaseState } from '../ReleaseState';
  *
  * @param parameters - Parameters of the function.
  * @param parameters.state - State to apply the loaded info to.
+ * @param parameters.context - The shared context.
  * @example await loadCommits();
  */
 export async function loadCommits({
   state,
+  context,
 }: {
   state: ReleaseState;
+  context: Context;
 }): Promise<void> {
-  if (typeof state.previousSha !== 'string') {
+  if (typeof context.previousRelease.sha !== 'string') {
     setFailed('Previous reference not set.');
     process.exit(1);
   }
 
-  if (typeof state.previousVersion?.displayString !== 'string') {
+  if (typeof context.previousRelease.version?.displayString !== 'string') {
     setFailed('Previous version not set.');
     process.exit(1);
   }
 
   // Fetch commits since last release ref.
   state.commits = listCommits({
-    beginHash: state.previousSha,
+    beginHash: context.previousRelease.sha,
   });
-  info(`Found ${state.commits.length} commits since ${state.previousSha}.`);
+  info(
+    `Found ${state.commits.length} commits since ${context.previousRelease.sha}.`,
+  );
   for (const commit of state.commits) {
     info(`- ${commit.message.mainLine}`);
   }
 
   // Determine the next version.
-  state.bump = getBumpForCommitList(state.commits);
-  state.version = state.previousVersion.bump(state.bump);
-  info(`Next version: ${state.version.displayString} (bumped: ${state.bump})`);
+  const bump = getBumpForCommitList(state.commits);
+
+  if (bump === VersionBump.none) {
+    info('No version bump required.');
+    process.exit(0);
+  }
+
+  state.version = context.previousRelease.version.bump(bump);
+  info(`Next version: ${state.version.displayString} (bumped: ${bump})`);
 }

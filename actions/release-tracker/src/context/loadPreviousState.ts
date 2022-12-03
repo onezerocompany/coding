@@ -6,7 +6,10 @@
  */
 
 import { context } from '@actions/github';
-import type { IssuesEvent } from '@octokit/webhooks-definitions/schema';
+import type {
+  IssueCommentEvent,
+  IssuesEvent,
+} from '@octokit/webhooks-definitions/schema';
 import { ReleaseState } from '../release/ReleaseState';
 import { getContentBetweenTags } from '../utils/getContentBetweenTags';
 
@@ -16,24 +19,31 @@ import { getContentBetweenTags } from '../utils/getContentBetweenTags';
  * @returns The previous state of the release.
  * @example const previousState = loadPreviousState();
  */
-export function loadPreviousState(): ReleaseState | null {
-  if (context.eventName !== 'issues') {
-    const event = context.payload as IssuesEvent;
+export function loadPreviousState(): {
+  state: ReleaseState | null;
+  currentIssueText: string;
+} {
+  let content = '';
+  if (context.eventName === 'issues') {
+    content = (context.payload as IssuesEvent).issue.body;
+  }
+  if (context.eventName === 'issue_comment') {
+    content = (context.payload as IssueCommentEvent).issue.body;
+  }
 
-    if (
-      event.action !== 'edited' ||
-      event.issue.body === event.changes.body?.from
-    ) {
-      return null;
-    }
-
-    const content = getContentBetweenTags(
+  if (content.includes('<!-- JSON BEGIN') && content.includes('JSON END -->')) {
+    const json = getContentBetweenTags(
       '<!-- JSON BEGIN',
       'JSON END -->',
-      event.issue.body,
+      content,
     );
-
-    return ReleaseState.fromJson(content);
+    return {
+      state: ReleaseState.fromJson(json),
+      currentIssueText: content,
+    };
   }
-  return null;
+  return {
+    state: null,
+    currentIssueText: content,
+  };
 }

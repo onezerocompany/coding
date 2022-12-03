@@ -1,24 +1,25 @@
 import { EnvironmentType } from '@onezerocompany/project-manager';
 import { Commit } from '@onezerocompany/commit';
-import { DeploymentStatus } from '../../src/release/DeploymentStatus';
 import { ReleaseState } from '../../src/release/ReleaseState';
-import { Context } from '../../src/context/Context';
+import { ReleaseEnvironment } from '../../src/release/ReleaseEnvironment';
+import { sharedContext } from '../../src/context/sharedContext';
 
 describe('release issue text', () => {
   it('should generate issue text', () => {
     const state = new ReleaseState();
     state.environments = [
-      {
+      new ReleaseEnvironment({
+        id: 'firebase',
         type: EnvironmentType.firebaseHosting,
         deployed: false,
-        status: DeploymentStatus.pending,
-        github_name: 'Firebase',
+        githubName: 'Firebase',
+        needs: [],
         changelog: {
           generate: true,
           headers: [],
           footers: [],
         },
-      },
+      }),
     ];
     state.commits = [
       new Commit({
@@ -28,7 +29,7 @@ describe('release issue text', () => {
     ];
     expect(
       state.issueText({
-        manifest: Context.projectManifest,
+        manifest: sharedContext.projectManifest,
       }),
     ).toMatchSnapshot();
   });

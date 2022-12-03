@@ -7,7 +7,7 @@
 
 import { info, setFailed, error as logError } from '@actions/core';
 import { context } from '@actions/github';
-import { octokit } from './octokit';
+import { octokit } from '../octokit';
 
 /**
  * Fetches the latest release for the current repo.

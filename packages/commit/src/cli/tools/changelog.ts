@@ -32,7 +32,7 @@ export function tool(
   stdout.write(
     new ChangeLog({
       markdown: options?.markdown ?? false,
-      type:
+      domain:
         options?.type === 'internal'
           ? ChangelogDomain.internal
           : ChangelogDomain.external,

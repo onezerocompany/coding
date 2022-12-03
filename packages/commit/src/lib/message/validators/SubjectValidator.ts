@@ -42,7 +42,7 @@ export class SubjectValidator extends Validator {
         .toLowerCase()
         // Remove dot at the end
         .replace(/\.$/u, '')
-        // remove all non alphanumeric characters
+        // Remove all non alphanumeric characters
         .replace(/[^a-z0-9/-]/gu, ' ')
         // Split into words
         .split(' ')

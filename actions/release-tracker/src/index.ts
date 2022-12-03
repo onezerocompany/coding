@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { Context } from './context/Context';
+import { sharedContext } from './context/sharedContext';
 
 /**
  * Main entry point function for the action.
@@ -13,9 +13,10 @@ import { Context } from './context/Context';
  * @example await main();
  */
 async function main(): Promise<void> {
-  await Context.default.initialize();
-  await Context.default.curentState?.runActions({
-    manifest: Context.projectManifest,
+  await sharedContext.initialize();
+  await sharedContext.curentState?.runActions({
+    manifest: sharedContext.projectManifest,
+    context: sharedContext,
   });
 }
 

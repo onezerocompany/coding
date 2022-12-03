@@ -5,12 +5,10 @@ exports[`release issue text should generate issue text 1`] = `
 
 ###### Edit the changelogs in the comments below and tick the checkboxes to release to each individual environment.
 
-
-
 #### New Features
 - [new feature](https://github.com/onezerocompany/coding/commit/1234567890) (project)
 
 Created from release: [0.0.1](https://github.com/onezerocompany/coding/releases/tag/0.0.1)
 
-<!-- JSON BEGIN{\\"environments\\":[{\\"github_name\\":\\"Firebase\\",\\"deployed\\":false,\\"status\\":\\"pending\\",\\"type\\":\\"firebase-hosting\\"}]}JSON END -->"
+<!-- JSON BEGIN{\\"environments\\":[{\\"id\\":\\"firebase\\",\\"needs\\":[],\\"github_name\\":\\"Firebase\\",\\"deployed\\":false,\\"type\\":\\"firebase-hosting\\",\\"changelog\\":{\\"generate\\":true,\\"headers\\":[],\\"footers\\":[]}}],\\"commits\\":[{\\"hash\\":\\"1234567890\\",\\"message\\":{\\"files\\":[],\\"category\\":\\"feat/new\\",\\"scope\\":\\"project\\",\\"subject\\":\\"new feature\\",\\"messageBody\\":\\"\\",\\"breaking\\":false,\\"issues\\":[],\\"coAuthors\\":[],\\"signedOff\\":\\"\\"}}]}JSON END -->"
 `;

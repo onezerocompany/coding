@@ -6,9 +6,9 @@
  */
 
 import { setFailed } from '@actions/core';
-import { context } from '@actions/github';
-import type { ProjectManifest } from '@onezerocompany/project-manager';
-import { octokit } from '../../utils/octokit/octokit';
+import { context as githubContext } from '@actions/github';
+import type { Context } from '../../context/Context';
+import { octokit } from '../../utils/octokit';
 import type { ReleaseState } from '../ReleaseState';
 
 /**
@@ -16,15 +16,15 @@ import type { ReleaseState } from '../ReleaseState';
  *
  * @param parameters - The parameters for the function.
  * @param parameters.state - The release state.
- * @param parameters.manifest - The project manifest.
+ * @param parameters.context - The action context.
  * @example await updateIssueAction({ state });
  */
-export async function updateIssueAction({
+export async function updateIssue({
   state,
-  manifest,
+  context,
 }: {
   state: ReleaseState;
-  manifest: ProjectManifest;
+  context: Context;
 }): Promise<void> {
   if (typeof state.issueTrackerNumber !== 'number') {
     setFailed('Cannot update issue without an existing tracker issue.');
@@ -32,13 +32,16 @@ export async function updateIssueAction({
   }
 
   try {
+    const issueText = state.issueText({ manifest: context.projectManifest });
     await octokit.rest.issues.update({
-      ...context.repo,
+      ...githubContext.repo,
       issue_number: state.issueTrackerNumber,
       // eslint-disable-next-line id-denylist
-      body: state.issueText({ manifest }),
+      body: issueText,
     });
-    state.lastSavedJson = state.json;
+    if (context.currentIssueText !== issueText) {
+      context.currentIssueText = issueText;
+    }
   } catch {
     setFailed('Failed to update issue content');
     process.exit(1);
