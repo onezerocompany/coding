@@ -97,11 +97,11 @@ export class ReleaseState {
         state.version = Version.fromJson(json.version);
       state.commits =
         json.commits?.map((commit) => Commit.fromJson(commit)) ?? [];
+      return state;
     } catch {
       logError('Failed to parse release state from json.');
       return null;
     }
-    return null;
   }
 
   /**
