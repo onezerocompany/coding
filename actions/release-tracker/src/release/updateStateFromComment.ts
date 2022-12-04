@@ -57,7 +57,7 @@ export function updateStateFromComment({
   manifest: ProjectManifest;
   username: string;
 }): void {
-  info('Updating state from comment...');
+  info(`Updating state from comment with user: ${username}`);
 
   const id = environmentIdRegex.exec(comment)?.groups?.['id'];
   debug(`environment id: ${id ?? '-'}`);
@@ -71,18 +71,13 @@ export function updateStateFromComment({
     process.exit(1);
   }
 
-  const userSettings = manifest.users.find(
-    (item) => item.username === username,
-  );
+  const settings = manifest.users
+    .find((item) => item.username === username)
+    ?.environments.find((item) => item.id === environment.id);
 
-  const userEnvironmentSettings = userSettings?.environments.find(
-    (item) => item.type === environment.type,
-  );
+  debug(`user settings: ${JSON.stringify(settings)}`);
 
-  debug(`user settings: ${JSON.stringify(userEnvironmentSettings)}`);
-
-  const userAllowedDeploy = userEnvironmentSettings?.deploy === true;
-
+  const userAllowedDeploy = settings?.deploy === true;
   if (!environment.deployed && userAllowedDeploy) {
     const checkmark = releaseItemRegex.exec(comment)?.groups?.['checkmark'];
     if (checkmark === '[x]' || checkmark === '✅') {
@@ -91,12 +86,7 @@ export function updateStateFromComment({
     }
   }
 
-  const userAllowedChangelogEdit =
-    userEnvironmentSettings?.edit_changelog === true;
-  debug(
-    `user allowed changelog edit: ${userAllowedChangelogEdit ? 'yes' : 'no'}`,
-  );
-
+  const userAllowedChangelogEdit = settings?.edit_changelog === true;
   if (userAllowedChangelogEdit) {
     const changelog = changelogRegex.exec(comment)?.groups?.['changelog'];
     debug(`new changelog: ${changelog ?? '-'}`);

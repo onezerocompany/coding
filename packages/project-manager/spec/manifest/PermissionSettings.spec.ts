@@ -2,7 +2,6 @@ import {
   parsePermission,
   parsePermissionArray,
 } from '../../src/lib/manifest/UserSettings';
-import { EnvironmentType } from '../../src/lib/manifest/EnvironmentType';
 
 describe('permission object', () => {
   it('should parse a permission correctly', () => {
@@ -11,7 +10,7 @@ describe('permission object', () => {
       assign_issue: true,
       environments: [
         {
-          type: 'firebase-hosting',
+          id: 'firebase',
           deploy: true,
           edit_changelog: true,
         },
@@ -22,7 +21,7 @@ describe('permission object', () => {
       assign_issue: true,
       environments: [
         {
-          type: EnvironmentType.firebaseHosting,
+          id: 'firebase',
           edit_changelog: true,
           deploy: true,
         },
@@ -56,7 +55,7 @@ describe('permission object', () => {
         assign_issue: true,
         environments: [
           {
-            type: 'firebase-hosting',
+            id: 'firebase-hosting',
             edit_changelog: true,
             deploy: true,
           },
@@ -67,7 +66,7 @@ describe('permission object', () => {
         assign_issue: true,
         environments: [
           {
-            type: 'apple-app-store',
+            id: 'apple-app-store',
             edit_changelog: true,
             deploy: true,
           },
@@ -80,7 +79,7 @@ describe('permission object', () => {
         assign_issue: true,
         environments: [
           {
-            type: EnvironmentType.firebaseHosting,
+            id: 'firebase-hosting',
             edit_changelog: true,
             deploy: true,
           },
@@ -91,7 +90,7 @@ describe('permission object', () => {
         assign_issue: true,
         environments: [
           {
-            type: EnvironmentType.appleAppStore,
+            id: 'apple-app-store',
             edit_changelog: true,
             deploy: true,
           },

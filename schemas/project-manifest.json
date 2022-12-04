@@ -37,6 +37,11 @@
         "github-npm-registry"
       ]
     },
+    "environmentIdentifier": {
+      "type": "string",
+      "description": "The unique ID of the environment",
+      "pattern": "^[a-z0-9\\-]{1,}$"
+    },
     "UserSettings": {
       "type": "array",
       "items": {
@@ -55,8 +60,8 @@
             "items": {
               "type": "object",
               "properties": {
-                "type": {
-                  "$ref": "#/definitions/EnvironmentType"
+                "id": {
+                  "$ref": "#/definitions/environmentIdentifier"
                 },
                 "deploy": {
                   "type": "boolean",
@@ -69,7 +74,8 @@
                   "description": "Whether the user can edit the changelog"
                 }
               },
-              "required": ["type", "deploy", "edit_changelog"]
+              "required": ["id", "deploy", "edit_changelog"],
+              "additionalProperties": false
             },
             "uniqueItems": true
           }
@@ -142,8 +148,18 @@
     "EnvironmentSettings": {
       "type": "array",
       "items": {
-        "required": ["type", "github_name", "changelog", "version_template"],
+        "required": [
+          "type",
+          "github_name",
+          "changelog",
+          "version_template",
+          "id"
+        ],
+        "additionalProperties": false,
         "properties": {
+          "id": {
+            "$ref": "#/definitions/environmentIdentifier"
+          },
           "type": {
             "$ref": "#/definitions/EnvironmentType"
           },

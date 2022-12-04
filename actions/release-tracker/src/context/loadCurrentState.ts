@@ -92,7 +92,7 @@ export function loadCurrentState({
         state,
         comment: event.comment.body,
         manifest,
-        username: event.comment.user.login,
+        username: event.sender.login,
       });
     }
   }

@@ -5,8 +5,6 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import type { EnvironmentType } from './EnvironmentType';
-
 /** Settings for an environment. */
 export interface UserEnvironmentSettings {
   /** Whether the user is allowed to edit the changelog. */
@@ -14,7 +12,7 @@ export interface UserEnvironmentSettings {
   /** Whether the user is allowed to release. */
   deploy: boolean;
   /** Type of environment. */
-  type: EnvironmentType;
+  id: string;
 }
 
 /** Permission for a person in relation to this project. */
@@ -45,7 +43,7 @@ export function parseEnvironments(object: unknown): UserEnvironmentSettings[] {
       typeof environment['deploy'] === 'boolean'
         ? environment['deploy']
         : false,
-    type: environment['type'] as EnvironmentType,
+    id: typeof environment['id'] === 'string' ? environment['id'] : '',
   }));
 }
 
