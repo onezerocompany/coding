@@ -31,7 +31,9 @@ export async function updateEnvironmentComment({
   }
 
   const [environment] = state.environments.filter(
-    (environmentItem) => typeof environmentItem.issueCommentId !== 'number',
+    (environmentItem) =>
+      environmentItem.issueCommentId === context.currentCommentId &&
+      environmentItem.commentText({ state }) !== context.currentCommentText,
   );
 
   if (typeof environment === 'undefined') {
