@@ -13,7 +13,7 @@ import type { ReleaseState } from './ReleaseState';
  * Regex for extracting the id from the following:
  * <!-- environment_id:2a1cf3df-d5ee-48d1-9435-0db42ae86008 -->
  */
-const environmentIdRegex = /<!-- environment_id:(?<id>[a-f0-9-]+) -->/gu;
+const environmentIdRegex = /<!-- environment_id:(?<id>[a-z0-9-]+) -->/gu;
 
 /*
  * Regex for extracting the checkmark or emoji from the following:
