@@ -12,7 +12,7 @@ describe('permission object', () => {
       environments: [
         {
           type: 'firebase-hosting',
-          release: true,
+          deploy: true,
           edit_changelog: true,
         },
       ],
@@ -24,7 +24,7 @@ describe('permission object', () => {
         {
           type: EnvironmentType.firebaseHosting,
           edit_changelog: true,
-          release: true,
+          deploy: true,
         },
       ],
     });
@@ -58,7 +58,7 @@ describe('permission object', () => {
           {
             type: 'firebase-hosting',
             edit_changelog: true,
-            release: true,
+            deploy: true,
           },
         ],
       },
@@ -69,7 +69,7 @@ describe('permission object', () => {
           {
             type: 'apple-app-store',
             edit_changelog: true,
-            release: true,
+            deploy: true,
           },
         ],
       },
@@ -82,7 +82,7 @@ describe('permission object', () => {
           {
             type: EnvironmentType.firebaseHosting,
             edit_changelog: true,
-            release: true,
+            deploy: true,
           },
         ],
       },
@@ -93,7 +93,7 @@ describe('permission object', () => {
           {
             type: EnvironmentType.appleAppStore,
             edit_changelog: true,
-            release: true,
+            deploy: true,
           },
         ],
       },

@@ -5,9 +5,12 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
+import { ChangeLog } from '@onezerocompany/commit';
 import type { ChangelogSettings } from '@onezerocompany/project-manager';
 import { EnvironmentType } from '@onezerocompany/project-manager';
 import { isDefined } from '../utils/isDefined';
+import { randomItem } from '../utils/randomItem';
+import { environmentChangelogs } from './environmentChangelogs';
 import { environmentCommentText } from './environmentCommentText';
 import type { ReleaseState } from './ReleaseState';
 
@@ -27,6 +30,8 @@ export interface ReleaseEnvironmentJson {
   issue_comment_id?: number | undefined;
   /** Changelog related settings. */
   changelog: ChangelogSettings;
+  /** Text of the changelog. */
+  changelog_text: string;
 }
 
 /** Release environment. */
@@ -45,6 +50,8 @@ export class ReleaseEnvironment {
   public issueCommentId?: number;
   /** Changelog related settings. */
   public changelog: ChangelogSettings;
+  /** Edited changelog text. */
+  public changelogText: string;
 
   /**
    * Creates a new release environment.
@@ -57,6 +64,8 @@ export class ReleaseEnvironment {
    * @param parameters.githubName - Name of the environment on GitHub.
    * @param parameters.changelog - Changelog related settings.
    * @param parameters.issueCommentId - Issue comment id.
+   * @param parameters.state - Release state.
+   * @param parameters.changelogText - Edited changelog text.
    * @returns New release environment.
    * @example const releaseEnvironment = new ReleaseEnvironment({ id: 'staging' });
    */
@@ -67,7 +76,9 @@ export class ReleaseEnvironment {
     githubName,
     deployed,
     changelog,
+    changelogText,
     issueCommentId,
+    state,
   }: {
     id: string;
     type: EnvironmentType;
@@ -75,7 +86,9 @@ export class ReleaseEnvironment {
     githubName: string;
     deployed: boolean;
     changelog: ChangelogSettings;
+    changelogText?: string;
     issueCommentId?: number | undefined;
+    state?: ReleaseState;
   }) {
     this.id = id;
     this.type = type;
@@ -85,6 +98,11 @@ export class ReleaseEnvironment {
     this.changelog = changelog;
     if (isDefined(issueCommentId)) {
       this.issueCommentId = issueCommentId;
+    }
+    if (isDefined(state)) {
+      this.changelogText = this.originalChangelogText({ state });
+    } else {
+      this.changelogText = changelogText ?? '';
     }
   }
 
@@ -102,6 +120,7 @@ export class ReleaseEnvironment {
       type: this.type as string,
       issue_comment_id: this.issueCommentId,
       changelog: this.changelog,
+      changelog_text: this.changelogText,
     };
   }
 
@@ -125,8 +144,28 @@ export class ReleaseEnvironment {
       githubName: json.github_name,
       deployed: json.deployed,
       changelog: json.changelog,
+      changelogText: json.changelog_text,
       issueCommentId: json.issue_comment_id,
     });
+  }
+
+  /**
+   * Generated changelog text for this environment.
+   *
+   * @param parameters - Parameters for generating changelog text.
+   * @param parameters.state - State.
+   * @returns Changelog text.
+   * @example releaseEnvironment.changelogText({ releaseState, release, state });
+   */
+  public originalChangelogText({ state }: { state: ReleaseState }): string {
+    const { domain } = environmentChangelogs[this.type];
+    return new ChangeLog({
+      commits: state.commits ?? [],
+      domain,
+      header: randomItem(this.changelog.headers),
+      footer: randomItem(this.changelog.footers),
+      markdown: false,
+    }).text;
   }
 
   /**

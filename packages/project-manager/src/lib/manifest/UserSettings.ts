@@ -12,7 +12,7 @@ export interface UserEnvironmentSettings {
   /** Whether the user is allowed to edit the changelog. */
   edit_changelog: boolean;
   /** Whether the user is allowed to release. */
-  release: boolean;
+  deploy: boolean;
   /** Type of environment. */
   type: EnvironmentType;
 }
@@ -41,9 +41,9 @@ export function parseEnvironments(object: unknown): UserEnvironmentSettings[] {
       typeof environment['edit_changelog'] === 'boolean'
         ? environment['edit_changelog']
         : false,
-    release:
-      typeof environment['release'] === 'boolean'
-        ? environment['release']
+    deploy:
+      typeof environment['deploy'] === 'boolean'
+        ? environment['deploy']
         : false,
     type: environment['type'] as EnvironmentType,
   }));
@@ -80,7 +80,7 @@ export function parsePermission(object: Record<string, unknown>): UserSettings {
  *
  * @param array - Array to convert.
  * @returns Array of permission objects.
- * @example parsePermissions([{ username: 'luca', assignIssue: true, canEditChangelog: true, canReleaseTracks: ['stable'] }]);
+ * @example parsePermissions([ ...permissions ]);
  */
 export function parsePermissionArray(array: unknown): UserSettings[] {
   if (!Array.isArray(array)) return [];

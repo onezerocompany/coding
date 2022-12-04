@@ -50,6 +50,7 @@ export class Context {
     } = loadCurrentState({
       manifest: this.projectManifest,
       previousState: this.previousState,
+      context: this,
     });
     this.curentState = currentState;
     this.currentCommentText = currentCommentText;

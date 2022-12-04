@@ -5,10 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { ChangeLog } from '@onezerocompany/commit';
 import { EnvironmentType } from '@onezerocompany/project-manager';
-import { randomItem } from '../utils/randomItem';
-import { environmentChangelogs } from './environmentChangelogs';
 import type { ReleaseEnvironment } from './ReleaseEnvironment';
 import type { ReleaseState } from './ReleaseState';
 
@@ -52,16 +49,7 @@ export function environmentCommentText({
 
   if (environment.changelog.generate) {
     content += '***Changelog***\n<!-- changelog_begin -->\n```\n';
-    const { domain } = environmentChangelogs[environment.type];
-    content += `${
-      new ChangeLog({
-        commits: state.commits ?? [],
-        domain,
-        header: randomItem(environment.changelog.headers),
-        footer: randomItem(environment.changelog.footers),
-        markdown: false,
-      }).text
-    }\n`;
+    content += `${environment.changelogText}\n`;
     content += '```\n<!-- changelog_end -->\n';
   }
 

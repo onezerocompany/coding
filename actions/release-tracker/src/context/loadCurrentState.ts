@@ -11,6 +11,39 @@ import type { ProjectManifest } from '@onezerocompany/project-manager';
 import { ReleaseEnvironment } from '../release/ReleaseEnvironment';
 import { ReleaseState } from '../release/ReleaseState';
 import { updateStateFromComment } from '../release/updateStateFromComment';
+import type { Context } from './Context';
+
+/**
+ * Creates a new release state.
+ *
+ * @param parameters - The parameters.
+ * @param parameters.manifest - The project manifest.
+ * @returns The release state.
+ * @example const state = createReleaseState({ manifest });
+ */
+function newReleaseState({
+  manifest,
+}: {
+  manifest: ProjectManifest;
+}): ReleaseState {
+  const newState = new ReleaseState();
+  newState.environments = manifest.environments.map(
+    (environment) =>
+      new ReleaseEnvironment({
+        id: environment.id,
+        needs: environment.needs,
+        githubName: environment.github_name,
+        deployed: false,
+        type: environment.type,
+        changelog: {
+          generate: environment.changelog.generate,
+          headers: environment.changelog.headers,
+          footers: environment.changelog.footers,
+        },
+      }),
+  );
+  return newState;
+}
 
 /**
  * Load the current release from an issue.
@@ -18,6 +51,7 @@ import { updateStateFromComment } from '../release/updateStateFromComment';
  * @param parameters - The parameters for the function.
  * @param parameters.manifest - The manifest of the project.
  * @param parameters.previousState - The previous state of the release.
+ * @param parameters.context - The GitHub context.
  * @returns The current release.
  * @example const release = loadCurrentRelease();
  */
@@ -27,6 +61,7 @@ export function loadCurrentState({
 }: {
   manifest: ProjectManifest;
   previousState: ReleaseState | null;
+  context: Context;
 }): {
   state: ReleaseState;
   currentCommentText: string | null;
@@ -37,23 +72,11 @@ export function loadCurrentState({
   const state =
     previousState === null ? null : ReleaseState.fromJson(previousState.json);
   if (state === null) {
-    const newState = new ReleaseState();
-    newState.environments = manifest.environments.map(
-      (environment) =>
-        new ReleaseEnvironment({
-          id: environment.id,
-          needs: environment.needs,
-          githubName: environment.github_name,
-          deployed: false,
-          type: environment.type,
-          changelog: {
-            generate: environment.changelog.generate,
-            headers: environment.changelog.headers,
-            footers: environment.changelog.footers,
-          },
-        }),
-    );
-    return { state: newState, currentCommentText, currentCommentId };
+    return {
+      state: newReleaseState({ manifest }),
+      currentCommentText,
+      currentCommentId,
+    };
   }
 
   if (githubContext.eventName === 'issue_comment') {
@@ -68,6 +91,8 @@ export function loadCurrentState({
       updateStateFromComment({
         state,
         comment: event.comment.body,
+        manifest,
+        username: event.comment.user.login,
       });
     }
   }
