@@ -39,6 +39,9 @@ export async function createEnvironmentComment({
     `Creating comment for ${environment.id} on issue #${state.issueTrackerNumber}.`,
   );
 
+  // Generate the changelog
+  environment.changelogText = environment.originalChangelogText({ state });
+
   try {
     const content = environment.commentText({ state });
     const { commentId } = await createComment({

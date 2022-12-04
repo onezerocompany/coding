@@ -64,7 +64,6 @@ export class ReleaseEnvironment {
    * @param parameters.githubName - Name of the environment on GitHub.
    * @param parameters.changelog - Changelog related settings.
    * @param parameters.issueCommentId - Issue comment id.
-   * @param parameters.state - Release state.
    * @param parameters.changelogText - Edited changelog text.
    * @returns New release environment.
    * @example const releaseEnvironment = new ReleaseEnvironment({ id: 'staging' });
@@ -78,7 +77,6 @@ export class ReleaseEnvironment {
     changelog,
     changelogText,
     issueCommentId,
-    state,
   }: {
     id: string;
     type: EnvironmentType;
@@ -88,7 +86,6 @@ export class ReleaseEnvironment {
     changelog: ChangelogSettings;
     changelogText?: string;
     issueCommentId?: number | undefined;
-    state?: ReleaseState;
   }) {
     this.id = id;
     this.type = type;
@@ -99,11 +96,7 @@ export class ReleaseEnvironment {
     if (isDefined(issueCommentId)) {
       this.issueCommentId = issueCommentId;
     }
-    if (isDefined(state)) {
-      this.changelogText = this.originalChangelogText({ state });
-    } else {
-      this.changelogText = changelogText ?? '';
-    }
+    this.changelogText = changelogText ?? '';
   }
 
   /**
