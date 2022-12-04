@@ -23,4 +23,6 @@ export enum ReleaseAction {
   createEnvironmentComment = 'createEnvironmentComment',
   /** Update issue. */
   updateIssue = 'updateIssue',
+  /** Update environment comment. */
+  updateEnvironmentComment = 'updateEnvironmentComment',
 }

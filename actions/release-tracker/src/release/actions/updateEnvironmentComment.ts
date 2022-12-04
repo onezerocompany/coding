@@ -6,7 +6,8 @@
  */
 
 import { info, setFailed } from '@actions/core';
-import { createComment } from '../../utils/octokit/createComment';
+import type { Context } from '../../context/Context';
+import { updateComment } from '../../utils/octokit/updateComment';
 import type { ReleaseState } from '../ReleaseState';
 
 /**
@@ -14,15 +15,18 @@ import type { ReleaseState } from '../ReleaseState';
  *
  * @param parameters - Parameters of the function.
  * @param parameters.state - The release state.
+ * @param parameters.context - The context.
  * @example await createEnvironmentComments({state});
  */
-export async function createEnvironmentComment({
+export async function updateEnvironmentComment({
   state,
+  context,
 }: {
   state: ReleaseState;
+  context: Context;
 }): Promise<void> {
   if (typeof state.issueTrackerNumber !== 'number') {
-    setFailed('Cannot create environment comments without an issue.');
+    setFailed('Cannot update environment comments without an issue.');
     process.exit(1);
   }
 
@@ -31,21 +35,30 @@ export async function createEnvironmentComment({
   );
 
   if (typeof environment === 'undefined') {
-    setFailed('Cannot create environment comments without an environment.');
+    setFailed('Cannot update environment comments without an environment.');
     process.exit(1);
   }
 
   info(
-    `Creating comment for ${environment.id} on issue #${state.issueTrackerNumber}.`,
+    `Updating comment for ${environment.id} on issue #${state.issueTrackerNumber}.`,
   );
+
+  if (typeof environment.issueCommentId !== 'number') {
+    setFailed(
+      `Cannot update environment comment for ${environment.id} without a comment ID.`,
+    );
+    process.exit(1);
+  }
 
   try {
     const content = environment.commentText({ state });
-    const { commentId } = await createComment({
-      issueNumber: state.issueTrackerNumber,
+    await updateComment({
       content,
+      issueNumber: state.issueTrackerNumber,
+      commentId: environment.issueCommentId,
     });
-    environment.issueCommentId = commentId;
+    context.currentCommentId = environment.issueCommentId;
+    context.currentCommentText = content;
   } catch (createError: unknown) {
     setFailed(
       createError instanceof Error

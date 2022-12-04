@@ -16,7 +16,6 @@ import { sharedContext } from './context/sharedContext';
 async function main(): Promise<void> {
   await sharedContext.initialize();
   await sharedContext.curentState?.runActions({
-    manifest: sharedContext.projectManifest,
     context: sharedContext,
   });
   info('Done.');

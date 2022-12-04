@@ -43,9 +43,8 @@ export function environmentCommentText({
   state: ReleaseState;
 }): string {
   const waiting = environment.waiting({ state });
-  let content = `<!-- environment_id:${environment.id} -->\n# ${
-    environmentNames[environment.type]
-  }\n`;
+  const name = environmentNames[environment.type];
+  let content = `<!-- environment_id:${environment.id} -->\n# ${name}\n`;
 
   if (waiting) {
     content += '```\n⏸️ Waiting for Firebase Hosting to be deployed.\n```\n\n';
@@ -67,11 +66,9 @@ export function environmentCommentText({
   }
 
   if (!waiting && !environment.deployed) {
-    content +=
-      '- [ ] Release to TestFlight Internal<!-- RELEASE_ITEM:testflight-internal -->\n';
+    content += `- [ ] Release to ${name}<!-- release_item -->\n`;
   } else if (!waiting && environment.deployed) {
-    content +=
-      '✅ Released to TestFlight Internal<!-- RELEASE_ITEM:testflight-internal -->\n';
+    content += `✅ Released to ${name}<!-- release_item -->\n`;
   }
 
   return content;

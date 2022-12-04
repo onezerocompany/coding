@@ -108,18 +108,11 @@ export class ReleaseState {
    * Determines the next action to take for this release.
    *
    * @param parameters - The parameters for the function.
-   * @param parameters.manifest - The project manifest.
    * @param parameters.context - The context.
    * @returns The next action to take.
    * @example await determineAction();
    */
-  public nextAction({
-    manifest,
-    context,
-  }: {
-    manifest: ProjectManifest;
-    context: Context;
-  }): ReleaseAction {
+  public nextAction({ context }: { context: Context }): ReleaseAction {
     if (!isDefined(this.version)) return ReleaseAction.loadVersion;
     if (!isDefined(this.commits)) return ReleaseAction.loadCommits;
     if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
@@ -133,9 +126,31 @@ export class ReleaseState {
       return ReleaseAction.createEnvironmentComment;
     if (!isDefined(this.trackerLabelId))
       return ReleaseAction.attachTrackerLabel;
-    if (context.currentIssueText !== this.issueText({ manifest }))
+    if (
+      context.currentIssueText !==
+      this.issueText({ manifest: context.projectManifest })
+    )
       return ReleaseAction.updateIssue;
+    if (this.commentNeedsUpdate({ context }))
+      return ReleaseAction.updateEnvironmentComment;
     return ReleaseAction.none;
+  }
+
+  /**
+   * Whether the current issue comment needs an update.
+   *
+   * @param parameters - The parameters for the function.
+   * @param parameters.context - The context.
+   * @returns Whether the current issue comment needs an update.
+   * @example const needsUpdate = commentNeedsUpdate();
+   */
+  public commentNeedsUpdate({ context }: { context: Context }): boolean {
+    const environment = this.environments.find(
+      (item) => item.issueCommentId === context.currentCommentId,
+    );
+    return (
+      environment?.commentText({ state: this }) !== context.currentCommentText
+    );
   }
 
   /**
@@ -154,20 +169,12 @@ export class ReleaseState {
    * Executes the next action for this release.
    *
    * @param parameters - Parameters of the function.
-   * @param parameters.manifest - The project manifest.
    * @param parameters.context - The context.
    * @example await executeNextAction();
    */
-  public async runActions({
-    manifest,
-    context,
-  }: {
-    manifest: ProjectManifest;
-    context: Context;
-  }): Promise<void> {
+  public async runActions({ context }: { context: Context }): Promise<void> {
     const action = this.nextAction({
       context,
-      manifest,
     });
     if (action === ReleaseAction.none) return;
     await actionRouter({
@@ -176,7 +183,6 @@ export class ReleaseState {
       context,
     });
     await this.runActions({
-      manifest,
       context,
     });
   }

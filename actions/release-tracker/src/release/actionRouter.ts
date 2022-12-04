@@ -16,6 +16,7 @@ import {
   loadVersion,
   updateTrackerIssue,
 } from './actions';
+import { updateEnvironmentComment } from './actions/updateEnvironmentComment';
 import { ReleaseAction } from './ReleaseAction';
 import type { ReleaseState } from './ReleaseState';
 
@@ -28,6 +29,7 @@ import type { ReleaseState } from './ReleaseState';
  * @param parameters.context - The shared context.
  * @example actionRouter({ action });
  */
+// eslint-disable-next-line max-lines-per-function
 export async function actionRouter({
   state,
   action,
@@ -73,6 +75,13 @@ export async function actionRouter({
     /** Update the issue.  */
     case ReleaseAction.updateIssue:
       await updateTrackerIssue({
+        state,
+        context,
+      });
+      break;
+    /** Update an environment comment. */
+    case ReleaseAction.updateEnvironmentComment:
+      await updateEnvironmentComment({
         state,
         context,
       });

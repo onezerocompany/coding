@@ -8,6 +8,7 @@
 import type { ChangelogSettings } from '@onezerocompany/project-manager';
 import { EnvironmentType } from '@onezerocompany/project-manager';
 import { isDefined } from '../utils/isDefined';
+import { environmentCommentText } from './environmentCommentText';
 import type { ReleaseState } from './ReleaseState';
 
 /** Json definition of release environment. */
@@ -125,6 +126,21 @@ export class ReleaseEnvironment {
       deployed: json.deployed,
       changelog: json.changelog,
       issueCommentId: json.issue_comment_id,
+    });
+  }
+
+  /**
+   * Text used for creating the comment.
+   *
+   * @param parameters - Parameters.
+   * @param parameters.state - Release state.
+   * @returns Comment text.
+   * @example const text = releaseEnvironment.commentText({ state });
+   */
+  public commentText({ state }: { state: ReleaseState }): string {
+    return environmentCommentText({
+      environment: this,
+      state,
     });
   }
 
