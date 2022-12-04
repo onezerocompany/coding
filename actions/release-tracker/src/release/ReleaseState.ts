@@ -148,8 +148,9 @@ export class ReleaseState {
     const environment = this.environments.find(
       (item) => item.issueCommentId === context.currentCommentId,
     );
+    if (!isDefined(environment)) return false;
     return (
-      environment?.commentText({ state: this }) !== context.currentCommentText
+      environment.commentText({ state: this }) !== context.currentCommentText
     );
   }
 

@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { setFailed } from '@actions/core';
+import { debug, info, setFailed } from '@actions/core';
 import type { ProjectManifest } from '@onezerocompany/project-manager';
 import type { ReleaseState } from './ReleaseState';
 
@@ -57,7 +57,10 @@ export function updateStateFromComment({
   manifest: ProjectManifest;
   username: string;
 }): void {
+  info('Updating state from comment...');
+
   const id = environmentIdRegex.exec(comment)?.groups?.['id'];
+  debug(`environment id: ${id ?? '-'}`);
   const environment = state.environments.find(
     (environmentItem) => environmentItem.id === id,
   );
@@ -76,6 +79,8 @@ export function updateStateFromComment({
     (item) => item.type === environment.type,
   );
 
+  debug(`user settings: ${JSON.stringify(userEnvironmentSettings)}`);
+
   const userAllowedDeploy = userEnvironmentSettings?.deploy === true;
 
   if (!environment.deployed && userAllowedDeploy) {
@@ -88,9 +93,13 @@ export function updateStateFromComment({
 
   const userAllowedChangelogEdit =
     userEnvironmentSettings?.edit_changelog === true;
+  debug(
+    `user allowed changelog edit: ${userAllowedChangelogEdit ? 'yes' : 'no'}`,
+  );
 
   if (userAllowedChangelogEdit) {
     const changelog = changelogRegex.exec(comment)?.groups?.['changelog'];
+    debug(`new changelog: ${changelog ?? '-'}`);
     if (typeof changelog === 'string') {
       environment.changelogText = changelog;
     }
