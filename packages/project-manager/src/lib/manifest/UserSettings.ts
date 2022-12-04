@@ -52,9 +52,9 @@ export function parseEnvironments(object: unknown): UserEnvironmentSettings[] {
  *
  * @param object - Object to convert.
  * @returns Permission object.
- * @example parsePermission({ username: 'luca', assignIssue: true, canEditChangelog: true, canReleaseTracks: ['stable'] });
+ * @example parseUser({ username: 'luca', assignIssue: true, canEditChangelog: true, canReleaseTracks: ['stable'] });
  */
-export function parsePermission(object: Record<string, unknown>): UserSettings {
+export function parseUser(object: Record<string, unknown>): UserSettings {
   /*
    * Read values from object
    * if value is undefined, use default value
@@ -78,9 +78,9 @@ export function parsePermission(object: Record<string, unknown>): UserSettings {
  *
  * @param array - Array to convert.
  * @returns Array of permission objects.
- * @example parsePermissions([ ...permissions ]);
+ * @example parseUsersArray([ ...permissions ]);
  */
-export function parsePermissionArray(array: unknown): UserSettings[] {
+export function parseUsersArray(array: unknown): UserSettings[] {
   if (!Array.isArray(array)) return [];
-  return array.map((item) => parsePermission(item as Record<string, unknown>));
+  return array.map((item) => parseUser(item as Record<string, unknown>));
 }

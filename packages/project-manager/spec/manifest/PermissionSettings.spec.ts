@@ -1,11 +1,11 @@
 import {
-  parsePermission,
-  parsePermissionArray,
+  parseUser,
+  parseUsersArray,
 } from '../../src/lib/manifest/UserSettings';
 
 describe('permission object', () => {
   it('should parse a permission correctly', () => {
-    const permission = parsePermission({
+    const permission = parseUser({
       username: 'luca',
       assign_issue: true,
       environments: [
@@ -29,7 +29,7 @@ describe('permission object', () => {
     });
   });
   it('should parse an empty object correctly', () => {
-    const permission = parsePermission({});
+    const permission = parseUser({});
     expect(permission).toEqual({
       username: '',
       assign_issue: false,
@@ -37,7 +37,7 @@ describe('permission object', () => {
     });
   });
   it('should parse an object with incorrect values correctly', () => {
-    const permission = parsePermission({
+    const permission = parseUser({
       username: 123,
       assign_issue: 'true',
       environments: {},
@@ -49,7 +49,7 @@ describe('permission object', () => {
     });
   });
   it('should parse permission array correctly', () => {
-    const permission = parsePermissionArray([
+    const permission = parseUsersArray([
       {
         username: 'luca',
         assign_issue: true,
@@ -99,11 +99,11 @@ describe('permission object', () => {
     ]);
   });
   it('should parse an empty array correctly', () => {
-    const permission = parsePermissionArray([]);
+    const permission = parseUsersArray([]);
     expect(permission).toEqual([]);
   });
   it('should parse an array that is not an array', () => {
-    const permission = parsePermissionArray({});
+    const permission = parseUsersArray({});
     expect(permission).toEqual([]);
   });
 });

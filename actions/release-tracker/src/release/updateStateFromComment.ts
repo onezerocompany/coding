@@ -73,7 +73,7 @@ export function updateStateFromComment({
 
   const settings = manifest.users
     .find((item) => item.username === username)
-    ?.environments.find((item) => item.id === environment.id);
+    ?.environments.find((item) => item.id === id);
 
   debug(`user settings: ${JSON.stringify(settings)}`);
 

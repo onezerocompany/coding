@@ -8,7 +8,7 @@
 import type { EnvironmentSettings } from './EnvironmentSettings';
 import { parseEnvironmentSettingsArray } from './EnvironmentSettings';
 import type { UserSettings } from './UserSettings';
-import { parsePermissionArray } from './UserSettings';
+import { parseUsersArray } from './UserSettings';
 import type { ReleaseCreationSettings } from './ReleaseCreationSettings';
 import { parseReleaseCreationSettings } from './ReleaseCreationSettings';
 
@@ -30,14 +30,14 @@ export class ProjectManifest {
    * Initializes a new project manifest.
    *
    * @param manifest - Manifest to initialize the manifest from.
-   * @example new ProjectManifest({ permissions: [], releaseTracks: {} });
+   * @example new ProjectManifest({ users: [], releaseTracks: {} });
    */
   public constructor(manifest?: unknown) {
     if (typeof manifest === 'object' && manifest !== null) {
       const parsed = manifest as Record<string, unknown>;
       this.main_branch = (parsed['main_branch'] ?? 'main') as string;
       this.release = parseReleaseCreationSettings(parsed['release']);
-      this.users = parsePermissionArray(parsed['permissions'] ?? []);
+      this.users = parseUsersArray(parsed['users'] ?? []);
       this.environments = parseEnvironmentSettingsArray(
         parsed['environments'] ?? [],
       );
