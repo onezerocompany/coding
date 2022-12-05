@@ -74,6 +74,38 @@ export class ReleaseState {
   }
 
   /**
+   * Whether the current issue comment needs an update.
+   *
+   * @returns Whether the current issue comment needs an update.
+   * @example const needsUpdate = commentNeedsUpdate();
+   */
+  public get commentNeedsUpdate(): boolean {
+    /*
+     * If any comment's commentContent does not match the commentText, then
+     * the comment needs an update.
+     */
+    return this.environments.some(
+      (environment) =>
+        environment.commentContent !==
+        environment.commentText({
+          state: this,
+        }),
+    );
+  }
+
+  /**
+   * Whether an issue comment needs to be created.
+   *
+   * @returns Whether an issue comment needs to be created.
+   * @example const needsComment = release.needsComment;
+   */
+  public get needsCommentCreation(): boolean {
+    return this.environments.some(
+      (environment) => typeof environment.issueCommentId !== 'number',
+    );
+  }
+
+  /**
    * Converts a JSON string to a Release State.
    *
    * @param json - The JSON string to convert.
@@ -118,11 +150,7 @@ export class ReleaseState {
     if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
     if (!isDefined(this.issueTrackerNumber))
       return ReleaseAction.createTrackerIssue;
-    if (
-      this.environments.some(
-        (environment) => !isDefined(environment.issueCommentId),
-      )
-    )
+    if (this.needsCommentCreation)
       return ReleaseAction.createEnvironmentComment;
     if (!isDefined(this.trackerLabelId))
       return ReleaseAction.attachTrackerLabel;
@@ -131,27 +159,8 @@ export class ReleaseState {
       this.issueText({ manifest: context.projectManifest })
     )
       return ReleaseAction.updateIssue;
-    if (this.commentNeedsUpdate({ context }))
-      return ReleaseAction.updateEnvironmentComment;
+    if (this.commentNeedsUpdate) return ReleaseAction.updateEnvironmentComment;
     return ReleaseAction.none;
-  }
-
-  /**
-   * Whether the current issue comment needs an update.
-   *
-   * @param parameters - The parameters for the function.
-   * @param parameters.context - The context.
-   * @returns Whether the current issue comment needs an update.
-   * @example const needsUpdate = commentNeedsUpdate();
-   */
-  public commentNeedsUpdate({ context }: { context: Context }): boolean {
-    const environment = this.environments.find(
-      (item) => item.issueCommentId === context.currentCommentId,
-    );
-    if (!isDefined(environment)) return false;
-    return (
-      environment.commentText({ state: this }) !== context.currentCommentText
-    );
   }
 
   /**

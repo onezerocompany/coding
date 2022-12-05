@@ -49,6 +49,7 @@ export async function createEnvironmentComment({
       content,
     });
     environment.issueCommentId = commentId;
+    environment.commentContent = content;
   } catch (createError: unknown) {
     setFailed(
       createError instanceof Error

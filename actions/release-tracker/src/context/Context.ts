@@ -28,12 +28,6 @@ export class Context {
   /** SHA of the previous release. */
   public previousRelease: PreviousRelease = {};
 
-  /** Current comment text. */
-  public currentCommentText: string | null = null;
-
-  /** Current comment id. */
-  public currentCommentId: number | null = null;
-
   /**
    * Initializes the context for the action.
    *
@@ -43,18 +37,12 @@ export class Context {
     const { state: previousState, currentIssueText } = loadPreviousState();
     this.previousState = previousState;
     this.currentIssueText = currentIssueText;
-    const {
-      state: currentState,
-      currentCommentText,
-      currentCommentId,
-    } = loadCurrentState({
+    const { state: currentState } = loadCurrentState({
       manifest: this.projectManifest,
       previousState: this.previousState,
       context: this,
     });
     this.curentState = currentState;
-    this.currentCommentText = currentCommentText;
-    this.currentCommentId = currentCommentId;
     const jsonIndentation = 2;
     debug(
       `Initialized context:\n${JSON.stringify(this, null, jsonIndentation)}`,

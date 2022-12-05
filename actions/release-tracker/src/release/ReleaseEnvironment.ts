@@ -32,6 +32,8 @@ export interface ReleaseEnvironmentJson {
   changelog: ChangelogSettings;
   /** Text of the changelog. */
   changelog_text: string;
+  /** Content of the comment. */
+  comment_content: string;
 }
 
 /** Release environment. */
@@ -52,6 +54,8 @@ export class ReleaseEnvironment {
   public changelog: ChangelogSettings;
   /** Edited changelog text. */
   public changelogText: string;
+  /** Content of the comment. */
+  public commentContent: string;
 
   /**
    * Creates a new release environment.
@@ -65,6 +69,7 @@ export class ReleaseEnvironment {
    * @param parameters.changelog - Changelog related settings.
    * @param parameters.issueCommentId - Issue comment id.
    * @param parameters.changelogText - Edited changelog text.
+   * @param parameters.commentContent - Content of the comment.
    * @returns New release environment.
    * @example const releaseEnvironment = new ReleaseEnvironment({ id: 'staging' });
    */
@@ -77,6 +82,7 @@ export class ReleaseEnvironment {
     changelog,
     changelogText,
     issueCommentId,
+    commentContent,
   }: {
     id: string;
     type: EnvironmentType;
@@ -86,6 +92,7 @@ export class ReleaseEnvironment {
     changelog: ChangelogSettings;
     changelogText?: string;
     issueCommentId?: number | undefined;
+    commentContent: string;
   }) {
     this.id = id;
     this.type = type;
@@ -97,6 +104,7 @@ export class ReleaseEnvironment {
       this.issueCommentId = issueCommentId;
     }
     this.changelogText = changelogText ?? '';
+    this.commentContent = commentContent;
   }
 
   /**
@@ -114,6 +122,7 @@ export class ReleaseEnvironment {
       issue_comment_id: this.issueCommentId,
       changelog: this.changelog,
       changelog_text: this.changelogText,
+      comment_content: this.commentContent,
     };
   }
 
@@ -139,6 +148,7 @@ export class ReleaseEnvironment {
       changelog: json.changelog,
       changelogText: json.changelog_text,
       issueCommentId: json.issue_comment_id,
+      commentContent: json.comment_content,
     });
   }
 
@@ -190,7 +200,7 @@ export class ReleaseEnvironment {
         (environmentId) =>
           state.environments.find(
             (environment) => environment.id === environmentId,
-          )?.deployed === true,
+          )?.deployed !== true,
       )
       .some((waiting) => waiting);
   }
@@ -227,6 +237,10 @@ export function parseReleaseEnvironmentsArray(
           typeof environment['deployed'] === 'boolean'
             ? environment['deployed']
             : false,
+        commentContent:
+          typeof environment['comment_content'] === 'string'
+            ? environment['comment_content']
+            : '',
         changelog: {
           generate: environment['changelog'] === true,
           headers:

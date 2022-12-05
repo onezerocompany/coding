@@ -6,7 +6,6 @@
  */
 
 import { info, setFailed } from '@actions/core';
-import type { Context } from '../../context/Context';
 import { updateComment } from '../../utils/octokit/updateComment';
 import type { ReleaseState } from '../ReleaseState';
 
@@ -15,15 +14,12 @@ import type { ReleaseState } from '../ReleaseState';
  *
  * @param parameters - Parameters of the function.
  * @param parameters.state - The release state.
- * @param parameters.context - The context.
  * @example await createEnvironmentComments({state});
  */
 export async function updateEnvironmentComment({
   state,
-  context,
 }: {
   state: ReleaseState;
-  context: Context;
 }): Promise<void> {
   if (typeof state.issueTrackerNumber !== 'number') {
     setFailed('Cannot update environment comments without an issue.');
@@ -32,8 +28,7 @@ export async function updateEnvironmentComment({
 
   const [environment] = state.environments.filter(
     (environmentItem) =>
-      environmentItem.issueCommentId === context.currentCommentId &&
-      environmentItem.commentText({ state }) !== context.currentCommentText,
+      environmentItem.commentText({ state }) !== environmentItem.commentContent,
   );
 
   if (typeof environment === 'undefined') {
@@ -59,8 +54,7 @@ export async function updateEnvironmentComment({
       issueNumber: state.issueTrackerNumber,
       commentId: environment.issueCommentId,
     });
-    context.currentCommentId = environment.issueCommentId;
-    context.currentCommentText = content;
+    environment.commentContent = content;
   } catch (createError: unknown) {
     setFailed(
       createError instanceof Error

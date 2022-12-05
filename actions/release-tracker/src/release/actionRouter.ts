@@ -83,7 +83,6 @@ export async function actionRouter({
     case ReleaseAction.updateEnvironmentComment:
       await updateEnvironmentComment({
         state,
-        context,
       });
       break;
     /** Fallback when action is not known. */

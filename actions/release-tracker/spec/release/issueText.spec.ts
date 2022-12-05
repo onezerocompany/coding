@@ -19,6 +19,7 @@ describe('release issue text', () => {
           headers: [],
           footers: [],
         },
+        commentContent: '',
       }),
     ];
     state.commits = [

@@ -40,6 +40,7 @@ function newReleaseState({
           headers: environment.changelog.headers,
           footers: environment.changelog.footers,
         },
+        commentContent: '',
       }),
   );
   return newState;
@@ -64,18 +65,12 @@ export function loadCurrentState({
   context: Context;
 }): {
   state: ReleaseState;
-  currentCommentText: string | null;
-  currentCommentId: number | null;
 } {
-  let currentCommentText: string | null = null;
-  let currentCommentId: number | null = null;
   const state =
     previousState === null ? null : ReleaseState.fromJson(previousState.json);
   if (state === null) {
     return {
       state: newReleaseState({ manifest }),
-      currentCommentText,
-      currentCommentId,
     };
   }
 
@@ -86,8 +81,6 @@ export function loadCurrentState({
       event.comment.body !== event.changes.body?.from;
     if (didUpdate) {
       // Update the state based on the comment
-      currentCommentText = event.comment.body;
-      currentCommentId = event.comment.id;
       updateStateFromComment({
         state,
         comment: event.comment.body,
@@ -97,5 +90,5 @@ export function loadCurrentState({
     }
   }
 
-  return { state, currentCommentText, currentCommentId };
+  return { state };
 }

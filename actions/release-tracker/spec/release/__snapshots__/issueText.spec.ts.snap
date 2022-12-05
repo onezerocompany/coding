@@ -10,5 +10,5 @@ exports[`release issue text should generate issue text 1`] = `
 
 Created from release: [0.0.1](https://github.com/onezerocompany/coding/releases/tag/0.0.1)
 
-<!-- JSON BEGIN{\\"environments\\":[{\\"id\\":\\"firebase\\",\\"needs\\":[],\\"github_name\\":\\"Firebase\\",\\"deployed\\":false,\\"type\\":\\"firebase-hosting\\",\\"changelog\\":{\\"generate\\":true,\\"headers\\":[],\\"footers\\":[]},\\"changelog_text\\":\\"\\"}],\\"commits\\":[{\\"hash\\":\\"1234567890\\",\\"message\\":{\\"files\\":[],\\"category\\":\\"feat/new\\",\\"scope\\":\\"project\\",\\"subject\\":\\"new feature\\",\\"messageBody\\":\\"\\",\\"breaking\\":false,\\"issues\\":[],\\"coAuthors\\":[],\\"signedOff\\":\\"\\"}}]}JSON END -->"
+<!-- JSON BEGIN{\\"environments\\":[{\\"id\\":\\"firebase\\",\\"needs\\":[],\\"github_name\\":\\"Firebase\\",\\"deployed\\":false,\\"type\\":\\"firebase-hosting\\",\\"changelog\\":{\\"generate\\":true,\\"headers\\":[],\\"footers\\":[]},\\"changelog_text\\":\\"\\",\\"comment_content\\":\\"\\"}],\\"commits\\":[{\\"hash\\":\\"1234567890\\",\\"message\\":{\\"files\\":[],\\"category\\":\\"feat/new\\",\\"scope\\":\\"project\\",\\"subject\\":\\"new feature\\",\\"messageBody\\":\\"\\",\\"breaking\\":false,\\"issues\\":[],\\"coAuthors\\":[],\\"signedOff\\":\\"\\"}}]}JSON END -->"
 `;

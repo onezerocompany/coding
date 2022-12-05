@@ -71,6 +71,8 @@ export function updateStateFromComment({
     process.exit(1);
   }
 
+  environment.commentContent = comment;
+
   const settings = manifest.users
     .find((item) => item.username === username)
     ?.environments.find((item) => item.id === id);
@@ -91,7 +93,7 @@ export function updateStateFromComment({
     const changelog = changelogRegex.exec(comment)?.groups?.['changelog'];
     debug(`new changelog: ${changelog ?? '-'}`);
     if (typeof changelog === 'string') {
-      environment.changelogText = changelog;
+      environment.changelogText = changelog.trim();
     }
   }
 }
