@@ -23,7 +23,7 @@ export interface EnvironmentSettings {
   /** Version template. */
   version_template: string;
   /** Auto release. */
-  auto_release: boolean;
+  auto_deploy: boolean;
   /** List of other environment ids that need to be deployed first. */
   needs: string[];
 }
@@ -53,9 +53,9 @@ export function parseEnvironmentSettings(
       typeof parsed['version_template'] === 'string'
         ? parsed['version_template']
         : '{major}.{minor}.{patch}',
-    auto_release:
-      typeof parsed['auto_release'] === 'boolean'
-        ? parsed['auto_release']
+    auto_deploy:
+      typeof parsed['auto_deploy'] === 'boolean'
+        ? parsed['auto_deploy']
         : false,
     needs:
       Array.isArray(parsed['needs']) &&

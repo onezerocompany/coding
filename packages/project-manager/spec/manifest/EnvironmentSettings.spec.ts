@@ -17,7 +17,7 @@ describe('environment settings', () => {
       needs: ['required-environment'],
       type: 'firebase-hosting',
       github_name: 'github-test',
-      auto_release: true,
+      auto_deploy: true,
       changelog: {
         generate: true,
         type: 'github',
@@ -31,7 +31,7 @@ describe('environment settings', () => {
       needs: ['required-environment'],
       type: EnvironmentType.firebaseHosting,
       github_name: 'github-test',
-      auto_release: true,
+      auto_deploy: true,
       changelog: {
         generate: true,
         headers: ['header1', 'header2'],
@@ -47,7 +47,7 @@ describe('environment settings', () => {
       needs: [],
       type: EnvironmentType.firebaseHosting,
       github_name: '',
-      auto_release: false,
+      auto_deploy: false,
       changelog: {
         generate: false,
         headers: [],
@@ -63,7 +63,7 @@ describe('environment settings', () => {
         needs: ['firebase-functions'],
         type: 'firebase-hosting',
         github_name: 'github-test',
-        auto_release: true,
+        auto_deploy: true,
         changelog: {
           generate: true,
           headers: ['header1', 'header2'],
@@ -78,7 +78,7 @@ describe('environment settings', () => {
         type: EnvironmentType.firebaseHosting,
         needs: ['firebase-functions'],
         github_name: 'github-test',
-        auto_release: true,
+        auto_deploy: true,
         changelog: {
           generate: true,
           headers: ['header1', 'header2'],

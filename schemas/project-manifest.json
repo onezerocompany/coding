@@ -173,9 +173,9 @@
           "version_template": {
             "$ref": "#/definitions/VersionTemplate"
           },
-          "auto_release": {
+          "auto_deploy": {
             "type": "boolean",
-            "description": "Whether to automatically release this environment",
+            "description": "Whether to automatically deploy this environment",
             "default": false
           },
           "needs": {

@@ -33,7 +33,8 @@ function newReleaseState({
         id: environment.id,
         needs: environment.needs,
         githubName: environment.github_name,
-        deployed: false,
+        // Check if the environemnt auto-deploys
+        deployed: environment.auto_deploy === true,
         type: environment.type,
         changelog: {
           generate: environment.changelog.generate,
