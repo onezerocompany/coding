@@ -30,6 +30,7 @@ export async function deployToEnvironment({
     ...context.repo,
     ref: version,
     environment,
+    required_contexts: [],
     payload: {
       changelog,
     },

@@ -356,7 +356,7 @@ async function updateTrackerIssue({state:o,context:t}){if(typeof o.version?.disp
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function deployToEnvironment({environment:e,version:o,changelog:r}){await s.rest.repos.createDeployment({...t.context.repo,ref:o,environment:e,payload:{changelog:r}})}
+async function deployToEnvironment({environment:e,version:o,changelog:r}){await s.rest.repos.createDeployment({...t.context.repo,ref:o,environment:e,required_contexts:[],payload:{changelog:r}})}
 /**
  * @file Deploy action.
  * @copyright 2022 OneZero Company
