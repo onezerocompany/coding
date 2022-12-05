@@ -43,7 +43,11 @@ export function issueText({
     version,
   )})\n\n`;
 
-  content += `<!-- JSON BEGIN${JSON.stringify(state.json)}JSON END -->`;
+  // Convert json to base64
+  const json = JSON.stringify(state.json);
+  const base64 = Buffer.from(json).toString('base64');
+
+  content += `<!-- JSON BEGIN${base64}JSON END -->`;
 
   return content;
 }

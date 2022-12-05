@@ -39,11 +39,12 @@ export function loadPreviousState(): {
   debug(`Loaded issue content:\n${content}`);
 
   if (content.includes('<!-- JSON BEGIN') && content.includes('JSON END -->')) {
-    const json = getContentBetweenTags(
+    const base64 = getContentBetweenTags(
       '<!-- JSON BEGIN',
       'JSON END -->',
       content,
     );
+    const json = Buffer.from(base64, 'base64').toString('utf8');
     debug(`Loaded JSON:\n${json}`);
     return {
       state: ReleaseState.fromJson(JSON.parse(json) as ReleaseStateJson),

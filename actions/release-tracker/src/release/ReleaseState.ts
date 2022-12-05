@@ -154,12 +154,13 @@ export class ReleaseState {
       return ReleaseAction.createEnvironmentComment;
     if (!isDefined(this.trackerLabelId))
       return ReleaseAction.attachTrackerLabel;
+    if (this.commentNeedsUpdate) return ReleaseAction.updateEnvironmentComment;
+    // Update issue must be last, to not cause too many writes.
     if (
       context.currentIssueText !==
       this.issueText({ manifest: context.projectManifest })
     )
       return ReleaseAction.updateIssue;
-    if (this.commentNeedsUpdate) return ReleaseAction.updateEnvironmentComment;
     return ReleaseAction.none;
   }
 
