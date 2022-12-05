@@ -41,6 +41,7 @@ export async function deploy({
       version: state.version.displayString,
       changelog: environment.changelogText,
     });
+    environment.didDeploy = true;
   } catch (deployError: unknown) {
     if (deployError instanceof Error) {
       setFailed(deployError.message);

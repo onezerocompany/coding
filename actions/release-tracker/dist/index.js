@@ -363,7 +363,7 @@ async function deployToEnvironment({environment:e,version:o,changelog:r}){await 
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function deploy({state:o}){const t=o.environments.find((e=>e.deployed&&!e.didDeploy));if(typeof t==="undefined"){(0,e.setFailed)("No environment to deploy.");process.exit(1)}if(typeof o.version?.displayString!=="string"){(0,e.setFailed)("Cannot deploy without a version.");process.exit(1)}try{await deployToEnvironment({environment:t.githubName,version:o.version.displayString,changelog:t.changelogText})}catch(o){if(o instanceof Error){(0,e.setFailed)(o.message)}else{(0,e.setFailed)(`Failed to deploy to ${t.githubName}.`)}process.exit(1)}}
+async function deploy({state:o}){const t=o.environments.find((e=>e.deployed&&!e.didDeploy));if(typeof t==="undefined"){(0,e.setFailed)("No environment to deploy.");process.exit(1)}if(typeof o.version?.displayString!=="string"){(0,e.setFailed)("Cannot deploy without a version.");process.exit(1)}try{await deployToEnvironment({environment:t.githubName,version:o.version.displayString,changelog:t.changelogText});t.didDeploy=true}catch(o){if(o instanceof Error){(0,e.setFailed)(o.message)}else{(0,e.setFailed)(`Failed to deploy to ${t.githubName}.`)}process.exit(1)}}
 /**
  * @file Function for creating a comment on an issue.
  * @copyright 2022 OneZero Company
