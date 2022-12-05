@@ -34,7 +34,7 @@ const releaseItemRegex =
  * <!-- changelog_end -->
  */
 const changelogRegex =
-  /<!-- changelog_begin -->\n```\n(?<changelog>(?:.*(?:[\n\r]))*)```\n<!-- changelog_end -->/gu;
+  /<!-- changelog_begin -->\r?\n```\r?\n(?<changelog>(?:.*(?:[\n\r]))*)```\r?\n<!-- changelog_end -->/gu;
 
 /**
  * Update a state from a comment.
