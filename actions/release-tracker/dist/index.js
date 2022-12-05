@@ -251,7 +251,7 @@ var a;(function(e){e["none"]="none";e["createRelease"]="createRelease";e["create
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function issueText({state:e,manifest:o}){let t="## Release Details\n\n";t+="###### Edit the changelogs in the comments below and tick the checkboxes to release to each individual environment.\n\n";t+=`${new r.vv({domain:r.fG.internal,commits:e.commits??[],markdown:true}).text}\n\n`;const n=e.version?.displayString??"0.0.1";t+=`Created from release: [${n}](${o.release.release_url.replace("{{release}}",n)})\n\n`;const i=JSON.stringify(e.json);const a=Buffer.from(i).toString("base64");t+=`\x3c!-- JSON BEGIN${a}JSON END --\x3e`;return t}
+function issueText({state:e,manifest:o}){let t="## Release Details\n\n";t+="###### Edit the changelogs in the comments below and tick the checkboxes to release to each individual environment.\n\n";t+=`${new r.vv({domain:r.fG.internal,commits:e.commits??[],markdown:true}).text}\n\n`;const n=e.version?.displayString??"0.0.1";t+=`Created from release: [${n}](${o.release.release_url.replace("{{release}}",n)})\n\n`;const i=JSON.stringify(e.json);const a=Buffer.from(i).toString("base64");t+=`\x3c!-- JSON BEGIN::${a}::JSON END --\x3e`;return t}
 /**
  * @file Get an optional input.
  * @copyright 2022 OneZero Company
@@ -363,7 +363,7 @@ async function deployToEnvironment({environment:e,version:o,changelog:r}){await 
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function deploy({state:o}){const t=o.environments.find((e=>e.deployed&&!e.didDeploy));if(typeof t==="undefined"){(0,e.setFailed)("No environment to deploy.");process.exit(1)}if(typeof o.version?.displayString!=="string"){(0,e.setFailed)("Cannot deploy without a version.");process.exit(1)}try{await deployToEnvironment({environment:t.githubName,version:o.version.displayString,changelog:t.changelogText})}catch{(0,e.setFailed)("Failed to deploy.");process.exit(1)}}
+async function deploy({state:o}){const t=o.environments.find((e=>e.deployed&&!e.didDeploy));if(typeof t==="undefined"){(0,e.setFailed)("No environment to deploy.");process.exit(1)}if(typeof o.version?.displayString!=="string"){(0,e.setFailed)("Cannot deploy without a version.");process.exit(1)}try{await deployToEnvironment({environment:t.githubName,version:o.version.displayString,changelog:t.changelogText})}catch(o){if(o instanceof Error){(0,e.setFailed)(o.message)}else{(0,e.setFailed)(`Failed to deploy to ${t.githubName}.`)}process.exit(1)}}
 /**
  * @file Function for creating a comment on an issue.
  * @copyright 2022 OneZero Company
@@ -419,7 +419,7 @@ function getContentBetweenTags(e,o,t){const r=t.indexOf(e);const n=t.indexOf(o);
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function loadPreviousState(){(0,e.info)("Loading previous state of the release...");(0,e.info)(`event: ${t.context.eventName}`);let o="";if(t.context.eventName==="issues"){o=t.context.payload.issue.body}if(t.context.eventName==="issue_comment"){o=t.context.payload.issue.body}(0,e.debug)(`Loaded issue content:\n${o}`);if(o.includes("\x3c!-- JSON BEGIN")&&o.includes("JSON END --\x3e")){const t=getContentBetweenTags("\x3c!-- JSON BEGIN","JSON END --\x3e",o);const r=Buffer.from(t,"base64").toString("utf8");(0,e.debug)(`Loaded JSON:\n${r}`);return{state:ReleaseState.fromJson(JSON.parse(r)),currentIssueText:o}}return{state:null,currentIssueText:o}}
+function loadPreviousState(){(0,e.info)("Loading previous state of the release...");(0,e.info)(`event: ${t.context.eventName}`);let o="";if(t.context.eventName==="issues"){o=t.context.payload.issue.body}if(t.context.eventName==="issue_comment"){o=t.context.payload.issue.body}(0,e.debug)(`Loaded issue content:\n${o}`);if(o.includes("\x3c!-- JSON BEGIN::")&&o.includes("::JSON END --\x3e")){const t=getContentBetweenTags("\x3c!-- JSON BEGIN::","::JSON END --\x3e",o);const r=Buffer.from(t,"base64").toString("utf8");(0,e.debug)(`Loaded JSON:\n${r}`);return{state:ReleaseState.fromJson(JSON.parse(r)),currentIssueText:o}}return{state:null,currentIssueText:o}}
 /**
  * @file Contains the context for the release tracker action.
  * @copyright 2022 OneZero Company

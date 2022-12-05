@@ -41,8 +41,12 @@ export async function deploy({
       version: state.version.displayString,
       changelog: environment.changelogText,
     });
-  } catch {
-    setFailed('Failed to deploy.');
+  } catch (deployError: unknown) {
+    if (deployError instanceof Error) {
+      setFailed(deployError.message);
+    } else {
+      setFailed(`Failed to deploy to ${environment.githubName}.`);
+    }
     process.exit(1);
   }
 }

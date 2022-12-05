@@ -47,7 +47,7 @@ export function issueText({
   const json = JSON.stringify(state.json);
   const base64 = Buffer.from(json).toString('base64');
 
-  content += `<!-- JSON BEGIN${base64}JSON END -->`;
+  content += `<!-- JSON BEGIN::${base64}::JSON END -->`;
 
   return content;
 }
