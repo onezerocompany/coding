@@ -16,6 +16,7 @@ import {
   loadVersion,
   updateTrackerIssue,
 } from './actions';
+import { deploy } from './actions/deploy';
 import { updateEnvironmentComment } from './actions/updateEnvironmentComment';
 import { ReleaseAction } from './ReleaseAction';
 import type { ReleaseState } from './ReleaseState';
@@ -82,6 +83,12 @@ export async function actionRouter({
     /** Update an environment comment. */
     case ReleaseAction.updateEnvironmentComment:
       await updateEnvironmentComment({
+        state,
+      });
+      break;
+    /** Deploy environments. */
+    case ReleaseAction.deploy:
+      await deploy({
         state,
       });
       break;
