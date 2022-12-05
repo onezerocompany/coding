@@ -12,6 +12,7 @@ describe('release issue text', () => {
         id: 'firebase',
         type: EnvironmentType.firebaseHosting,
         deployed: false,
+        didDeploy: false,
         githubName: 'Firebase',
         needs: [],
         changelog: {

@@ -106,6 +106,18 @@ export class ReleaseState {
   }
 
   /**
+   * Whether any environment needs to be deployed.
+   *
+   * @returns Whether any environment needs to be deployed.
+   * @example const needsDeploy = release.needsDeploy;
+   */
+  public get needsDeploy(): boolean {
+    return this.environments.some(
+      (environment) => environment.deployed && !environment.didDeploy,
+    );
+  }
+
+  /**
    * Converts a JSON string to a Release State.
    *
    * @param json - The JSON string to convert.
@@ -155,6 +167,7 @@ export class ReleaseState {
     if (!isDefined(this.trackerLabelId))
       return ReleaseAction.attachTrackerLabel;
     if (this.commentNeedsUpdate) return ReleaseAction.updateEnvironmentComment;
+    if (this.needsDeploy) return ReleaseAction.deploy;
     // Update issue must be last, to not cause too many writes.
     if (
       context.currentIssueText !==

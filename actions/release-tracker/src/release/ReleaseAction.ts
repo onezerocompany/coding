@@ -25,4 +25,6 @@ export enum ReleaseAction {
   updateIssue = 'updateIssue',
   /** Update environment comment. */
   updateEnvironmentComment = 'updateEnvironmentComment',
+  /** Perform the deploy itself. */
+  deploy = 'deploy',
 }

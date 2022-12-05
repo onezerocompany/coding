@@ -24,6 +24,8 @@ export interface ReleaseEnvironmentJson {
   github_name: string;
   /** Whether the environment should be deployed. */
   deployed: boolean;
+  /** Whether the deploy was performed. */
+  did_deploy: boolean;
   /** Environment type. */
   type: string;
   /** Issue comment id. */
@@ -46,6 +48,8 @@ export class ReleaseEnvironment {
   public githubName: string;
   /** Whether the environment should be deployed. */
   public deployed: boolean;
+  /** Whether the deploy was performed. */
+  public didDeploy: boolean;
   /** Environment type. */
   public type: EnvironmentType;
   /** Issue comment id. */
@@ -70,6 +74,7 @@ export class ReleaseEnvironment {
    * @param parameters.issueCommentId - Issue comment id.
    * @param parameters.changelogText - Edited changelog text.
    * @param parameters.commentContent - Content of the comment.
+   * @param parameters.didDeploy - Whether the deploy was performed.
    * @returns New release environment.
    * @example const releaseEnvironment = new ReleaseEnvironment({ id: 'staging' });
    */
@@ -79,6 +84,7 @@ export class ReleaseEnvironment {
     needs,
     githubName,
     deployed,
+    didDeploy,
     changelog,
     changelogText,
     issueCommentId,
@@ -89,6 +95,7 @@ export class ReleaseEnvironment {
     needs: string[];
     githubName: string;
     deployed: boolean;
+    didDeploy: boolean;
     changelog: ChangelogSettings;
     changelogText?: string;
     issueCommentId?: number | undefined;
@@ -99,6 +106,7 @@ export class ReleaseEnvironment {
     this.needs = needs;
     this.githubName = githubName;
     this.deployed = deployed;
+    this.didDeploy = didDeploy;
     this.changelog = changelog;
     if (isDefined(issueCommentId)) {
       this.issueCommentId = issueCommentId;
@@ -118,6 +126,7 @@ export class ReleaseEnvironment {
       needs: this.needs,
       github_name: this.githubName,
       deployed: this.deployed,
+      did_deploy: this.didDeploy,
       type: this.type as string,
       issue_comment_id: this.issueCommentId,
       changelog: this.changelog,
@@ -145,6 +154,7 @@ export class ReleaseEnvironment {
       needs: json.needs,
       githubName: json.github_name,
       deployed: json.deployed,
+      didDeploy: json.did_deploy,
       changelog: json.changelog,
       changelogText: json.changelog_text,
       issueCommentId: json.issue_comment_id,
@@ -213,6 +223,7 @@ export class ReleaseEnvironment {
  * @returns The ReleaseEnvironment array.
  * @example const environments = parseReleaseEnvironmentsArray(environments);
  */
+// eslint-disable-next-line max-lines-per-function
 export function parseReleaseEnvironmentsArray(
   environments: Array<Record<string, unknown>>,
 ): ReleaseEnvironment[] {
@@ -236,6 +247,10 @@ export function parseReleaseEnvironmentsArray(
         deployed:
           typeof environment['deployed'] === 'boolean'
             ? environment['deployed']
+            : false,
+        didDeploy:
+          typeof environment['did_deploy'] === 'boolean'
+            ? environment['did_deploy']
             : false,
         commentContent:
           typeof environment['comment_content'] === 'string'
