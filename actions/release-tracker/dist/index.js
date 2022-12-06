@@ -363,7 +363,7 @@ async function assignIssue({issueNumber:e,assignees:o}){await s.rest.issues.addA
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function assignIssue_assignIssue({state:o,context:t}){if(typeof o.issueTrackerNumber!=="string"){(0,e.setFailed)("Cannot assign issue without a tracker issue.");process.exit(1)}const r=t.projectManifest.users.filter((e=>e.assign_issue&&!o.assignees.includes(e.username))).map((e=>e.username));if(r.length===0){(0,e.setFailed)("No users to assign issue to.");process.exit(1)}try{await assignIssue({issueNumber:o.issueTrackerNumber,assignees:r});for(const e of r){o.assignees.push(e)}}catch{(0,e.setFailed)("Failed to assign issue.");process.exit(1)}}
+async function assignIssue_assignIssue({state:o,context:t}){if(typeof o.issueTrackerNumber!=="number"){(0,e.setFailed)("Cannot assign issue without a tracker issue.");process.exit(1)}const r=t.projectManifest.users.filter((e=>e.assign_issue&&!o.assignees.includes(e.username))).map((e=>e.username));if(r.length===0){(0,e.setFailed)("No users to assign issue to.");process.exit(1)}try{await assignIssue({issueNumber:o.issueTrackerNumber,assignees:r});for(const e of r){o.assignees.push(e)}}catch{(0,e.setFailed)("Failed to assign issue.");process.exit(1)}}
 /**
  * @file Function to deploy to an environment on GitHub.
  * @copyright 2022 OneZero Company

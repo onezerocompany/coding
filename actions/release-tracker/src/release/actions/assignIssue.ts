@@ -25,7 +25,7 @@ export async function assignIssue({
   state: ReleaseState;
   context: Context;
 }): Promise<void> {
-  if (typeof state.issueTrackerNumber !== 'string') {
+  if (typeof state.issueTrackerNumber !== 'number') {
     setFailed('Cannot assign issue without a tracker issue.');
     process.exit(1);
   }
