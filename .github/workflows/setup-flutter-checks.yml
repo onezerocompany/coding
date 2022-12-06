@@ -21,6 +21,8 @@ jobs:
 
       - name: Setup Flutter
         uses: ./actions/setup-flutter
+        with:
+          install-dependencies: false
 
       - name: Check Dart
         run: |
