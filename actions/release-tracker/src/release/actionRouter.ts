@@ -16,6 +16,7 @@ import {
   loadVersion,
   updateTrackerIssue,
 } from './actions';
+import { assignIssue } from './actions/assignIssue';
 import { deploy } from './actions/deploy';
 import { updateEnvironmentComment } from './actions/updateEnvironmentComment';
 import { ReleaseAction } from './ReleaseAction';
@@ -56,42 +57,33 @@ export async function actionRouter({
       break;
     /** Trigger an issue creation. */
     case ReleaseAction.createTrackerIssue:
-      await createTrackerIssue({
-        state,
-        context,
-      });
+      await createTrackerIssue({ state, context });
       break;
     /** Create environment comment. */
     case ReleaseAction.createEnvironmentComment:
-      await createEnvironmentComment({
-        state,
-      });
+      await createEnvironmentComment({ state });
       break;
     /** Attaching the label to the issue. */
     case ReleaseAction.attachTrackerLabel:
-      await attachTrackerLabel({
-        state,
-      });
+      await attachTrackerLabel({ state });
       break;
     /** Update the issue.  */
     case ReleaseAction.updateIssue:
-      await updateTrackerIssue({
-        state,
-        context,
-      });
+      await updateTrackerIssue({ state, context });
       break;
     /** Update an environment comment. */
     case ReleaseAction.updateEnvironmentComment:
-      await updateEnvironmentComment({
-        state,
-      });
+      await updateEnvironmentComment({ state });
       break;
     /** Deploy environments. */
     case ReleaseAction.deploy:
-      await deploy({
-        state,
-      });
+      await deploy({ state });
       break;
+    /** Assign the issue to a user. */
+    case ReleaseAction.assignIssue:
+      await assignIssue({ state, context });
+      break;
+
     /** Fallback when action is not known. */
     default:
       setFailed(`Unknown action: ${action}`);

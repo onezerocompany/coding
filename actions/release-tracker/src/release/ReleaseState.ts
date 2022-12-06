@@ -55,6 +55,8 @@ export class ReleaseState {
   public version?: Version;
   /** List of commits. */
   public commits?: Commit[];
+  /** Assignees. */
+  public assignees: string[] = [];
 
   /**
    * Getter that converts this ReleaseState into a JSON object.
@@ -149,6 +151,25 @@ export class ReleaseState {
   }
 
   /**
+   * Needs to assign the issue to a user.
+   *
+   * @param parameters - The parameters.
+   * @param parameters.manifest - The project manifest.
+   * @returns Whether the issue needs to be assigned.
+   * @example const needsAssign = release.needsAssign;
+   */
+  public needsAssign({ manifest }: { manifest: ProjectManifest }): boolean {
+    const actualAssignees = manifest.users
+      .filter((user) => user.assign_issue)
+      .map((user) => user.username);
+
+    // In ase assignees is missing any of the actual assignees, then we need to assign
+    return !this.assignees.every((assignee) =>
+      actualAssignees.includes(assignee),
+    );
+  }
+
+  /**
    * Determines the next action to take for this release.
    *
    * @param parameters - The parameters for the function.
@@ -166,6 +187,8 @@ export class ReleaseState {
       return ReleaseAction.createEnvironmentComment;
     if (!isDefined(this.trackerLabelId))
       return ReleaseAction.attachTrackerLabel;
+    if (this.needsAssign({ manifest: context.projectManifest }))
+      return ReleaseAction.assignIssue;
     if (this.commentNeedsUpdate) return ReleaseAction.updateEnvironmentComment;
     if (this.needsDeploy) return ReleaseAction.deploy;
     // Update issue must be last, to not cause too many writes.

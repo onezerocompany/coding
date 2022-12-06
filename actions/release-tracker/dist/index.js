@@ -244,7 +244,7 @@ class ReleaseEnvironment{id;needs;githubName;deployed;didDeploy;type;issueCommen
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-var a;(function(e){e["none"]="none";e["createRelease"]="createRelease";e["createTrackerIssue"]="createIssue";e["loadCommits"]="loadCommits";e["loadVersion"]="loadVersion";e["attachTrackerLabel"]="attachTrackerLabel";e["createEnvironmentComment"]="createEnvironmentComment";e["updateIssue"]="updateIssue";e["updateEnvironmentComment"]="updateEnvironmentComment";e["deploy"]="deploy"})(a||(a={}));
+var a;(function(e){e["none"]="none";e["createRelease"]="createRelease";e["createTrackerIssue"]="createIssue";e["loadCommits"]="loadCommits";e["loadVersion"]="loadVersion";e["attachTrackerLabel"]="attachTrackerLabel";e["createEnvironmentComment"]="createEnvironmentComment";e["updateIssue"]="updateIssue";e["updateEnvironmentComment"]="updateEnvironmentComment";e["deploy"]="deploy";e["assignIssue"]="assignIssue"})(a||(a={}));
 /**
  * @file Contains a function to generate issue text.
  * @copyright 2022 OneZero Company
@@ -351,6 +351,20 @@ async function updateIssue({issueNumber:o,title:r,content:n}){try{const e=await 
  */
 async function updateTrackerIssue({state:o,context:t}){if(typeof o.version?.displayString!=="string"){(0,e.setFailed)("Cannot update the tracker issue without a version.");process.exit(1)}if(typeof o.issueTrackerNumber!=="number"){(0,e.setFailed)("Cannot update the tracker issue without an issue number.");process.exit(1)}try{const e=o.issueText({manifest:t.projectManifest});await updateIssue({issueNumber:o.issueTrackerNumber,title:`🚀 Release ${o.version.displayString}`,content:e});if(t.currentIssueText!==e){t.currentIssueText=e}}catch{(0,e.setFailed)("Failed to create issue tracker issue.");process.exit(1)}}
 /**
+ * @file Function to assign an issue to a user on GitHub.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+async function assignIssue({issueNumber:e,assignees:o}){await s.rest.issues.addAssignees({...t.context.repo,issue_number:e,assignees:o})}
+/**
+ * @file Assign issue action.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+async function assignIssue_assignIssue({state:o,context:t}){if(typeof o.issueTrackerNumber!=="string"){(0,e.setFailed)("Cannot assign issue without a tracker issue.");process.exit(1)}const r=t.projectManifest.users.filter((e=>e.assign_issue&&!o.assignees.includes(e.username))).map((e=>e.username));if(r.length===0){(0,e.setFailed)("No users to assign issue to.");process.exit(1)}try{await assignIssue({issueNumber:o.issueTrackerNumber,assignees:r});for(const e of r){o.assignees.push(e)}}catch{(0,e.setFailed)("Failed to assign issue.");process.exit(1)}}
+/**
  * @file Function to deploy to an environment on GitHub.
  * @copyright 2022 OneZero Company
  * @license MIT
@@ -384,14 +398,14 @@ async function updateEnvironmentComment({state:o}){if(typeof o.issueTrackerNumbe
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function actionRouter({state:o,action:t,context:r}){(0,e.info)(`Running next action... ${t}`);switch(t){case a.loadVersion:await loadVersion({state:o,context:r});break;case a.loadCommits:await loadCommits({state:o,context:r});break;case a.createRelease:await createRelease_createRelease({state:o,context:r});break;case a.createTrackerIssue:await createTrackerIssue({state:o,context:r});break;case a.createEnvironmentComment:await createEnvironmentComment({state:o});break;case a.attachTrackerLabel:await attachTrackerLabel({state:o});break;case a.updateIssue:await updateTrackerIssue({state:o,context:r});break;case a.updateEnvironmentComment:await updateEnvironmentComment({state:o});break;case a.deploy:await deploy({state:o});break;default:(0,e.setFailed)(`Unknown action: ${t}`);process.exit(1)}}
+async function actionRouter({state:o,action:t,context:r}){(0,e.info)(`Running next action... ${t}`);switch(t){case a.loadVersion:await loadVersion({state:o,context:r});break;case a.loadCommits:await loadCommits({state:o,context:r});break;case a.createRelease:await createRelease_createRelease({state:o,context:r});break;case a.createTrackerIssue:await createTrackerIssue({state:o,context:r});break;case a.createEnvironmentComment:await createEnvironmentComment({state:o});break;case a.attachTrackerLabel:await attachTrackerLabel({state:o});break;case a.updateIssue:await updateTrackerIssue({state:o,context:r});break;case a.updateEnvironmentComment:await updateEnvironmentComment({state:o});break;case a.deploy:await deploy({state:o});break;case a.assignIssue:await assignIssue_assignIssue({state:o,context:r});break;default:(0,e.setFailed)(`Unknown action: ${t}`);process.exit(1)}}
 /**
  * @file Defines the Release class.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class ReleaseState{environments=[];releaseId;issueTrackerNumber;trackerLabelId;version;commits;get json(){return{environments:this.environments.map((e=>e.json)),release_id:this.releaseId,issue_tracker_number:this.issueTrackerNumber,tracker_label_id:this.trackerLabelId,version:this.version?.json,commits:this.commits?.map((e=>e.json))}}get commentNeedsUpdate(){return this.environments.some((e=>e.commentContent!==e.commentText({state:this})))}get needsCommentCreation(){return this.environments.some((e=>typeof e.issueCommentId!=="number"))}get needsDeploy(){return this.environments.some((e=>e.deployed&&!e.didDeploy))}static fromJson(o){try{const e=new ReleaseState;e.environments=o.environments.map((e=>ReleaseEnvironment.fromJson({json:e})));if(isDefined(o.release_id))e.releaseId=o.release_id;if(isDefined(o.issue_tracker_number))e.issueTrackerNumber=o.issue_tracker_number;if(isDefined(o.tracker_label_id))e.trackerLabelId=o.tracker_label_id;if(isDefined(o.version))e.version=r.Gf.fromJson(o.version);e.commits=o.commits?.map((e=>r.HL.fromJson(e)))??[];return e}catch{(0,e.error)("Failed to parse release state from json.");return null}}nextAction({context:e}){if(!isDefined(this.version))return a.loadVersion;if(!isDefined(this.commits))return a.loadCommits;if(!isDefined(this.releaseId))return a.createRelease;if(!isDefined(this.issueTrackerNumber))return a.createTrackerIssue;if(this.needsCommentCreation)return a.createEnvironmentComment;if(!isDefined(this.trackerLabelId))return a.attachTrackerLabel;if(this.commentNeedsUpdate)return a.updateEnvironmentComment;if(this.needsDeploy)return a.deploy;if(e.currentIssueText!==this.issueText({manifest:e.projectManifest}))return a.updateIssue;return a.none}issueText({manifest:e}){return issueText({state:this,manifest:e})}async runActions({context:e}){const o=this.nextAction({context:e});if(o===a.none)return;await actionRouter({action:o,state:this,context:e});await this.runActions({context:e})}}
+class ReleaseState{environments=[];releaseId;issueTrackerNumber;trackerLabelId;version;commits;assignees=[];get json(){return{environments:this.environments.map((e=>e.json)),release_id:this.releaseId,issue_tracker_number:this.issueTrackerNumber,tracker_label_id:this.trackerLabelId,version:this.version?.json,commits:this.commits?.map((e=>e.json))}}get commentNeedsUpdate(){return this.environments.some((e=>e.commentContent!==e.commentText({state:this})))}get needsCommentCreation(){return this.environments.some((e=>typeof e.issueCommentId!=="number"))}get needsDeploy(){return this.environments.some((e=>e.deployed&&!e.didDeploy))}static fromJson(o){try{const e=new ReleaseState;e.environments=o.environments.map((e=>ReleaseEnvironment.fromJson({json:e})));if(isDefined(o.release_id))e.releaseId=o.release_id;if(isDefined(o.issue_tracker_number))e.issueTrackerNumber=o.issue_tracker_number;if(isDefined(o.tracker_label_id))e.trackerLabelId=o.tracker_label_id;if(isDefined(o.version))e.version=r.Gf.fromJson(o.version);e.commits=o.commits?.map((e=>r.HL.fromJson(e)))??[];return e}catch{(0,e.error)("Failed to parse release state from json.");return null}}needsAssign({manifest:e}){const o=e.users.filter((e=>e.assign_issue)).map((e=>e.username));return!this.assignees.every((e=>o.includes(e)))}nextAction({context:e}){if(!isDefined(this.version))return a.loadVersion;if(!isDefined(this.commits))return a.loadCommits;if(!isDefined(this.releaseId))return a.createRelease;if(!isDefined(this.issueTrackerNumber))return a.createTrackerIssue;if(this.needsCommentCreation)return a.createEnvironmentComment;if(!isDefined(this.trackerLabelId))return a.attachTrackerLabel;if(this.needsAssign({manifest:e.projectManifest}))return a.assignIssue;if(this.commentNeedsUpdate)return a.updateEnvironmentComment;if(this.needsDeploy)return a.deploy;if(e.currentIssueText!==this.issueText({manifest:e.projectManifest}))return a.updateIssue;return a.none}issueText({manifest:e}){return issueText({state:this,manifest:e})}async runActions({context:e}){const o=this.nextAction({context:e});if(o===a.none)return;await actionRouter({action:o,state:this,context:e});await this.runActions({context:e})}}
 /**
  * @file Contains a function to update the state of an environment from its comment.
  * @copyright 2022 OneZero Company
