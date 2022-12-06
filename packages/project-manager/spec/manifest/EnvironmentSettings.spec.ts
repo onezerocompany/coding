@@ -1,17 +1,23 @@
 import { EnvironmentType } from '../../src';
-import { ChangelogType } from '../../src/lib/manifest/ChangelogSettings';
 import {
   parseEnvironmentSettings,
   parseEnvironmentSettingsArray,
 } from '../../src/lib/manifest/EnvironmentSettings';
 
+// Mock uuid.
+jest.mock('uuid', () => ({
+  // eslint-disable-next-line id-length
+  v4: (): string => 'uuid',
+}));
+
 describe('environment settings', () => {
   it('should parse environment settings', () => {
     const settings = parseEnvironmentSettings({
       id: 'test',
+      needs: ['required-environment'],
       type: 'firebase-hosting',
       github_name: 'github-test',
-      auto_release: true,
+      auto_deploy: true,
       changelog: {
         generate: true,
         type: 'github',
@@ -21,12 +27,13 @@ describe('environment settings', () => {
       version_template: '{major}.{minor}.{patch}',
     });
     expect(settings).toEqual({
+      id: 'test',
+      needs: ['required-environment'],
       type: EnvironmentType.firebaseHosting,
       github_name: 'github-test',
-      auto_release: true,
+      auto_deploy: true,
       changelog: {
         generate: true,
-        type: ChangelogType.github,
         headers: ['header1', 'header2'],
         footers: ['footer1', 'footer2'],
       },
@@ -36,12 +43,13 @@ describe('environment settings', () => {
   it('should parse an empty environment settings', () => {
     const settings = parseEnvironmentSettings({});
     expect(settings).toEqual({
+      id: 'uuid',
+      needs: [],
       type: EnvironmentType.firebaseHosting,
       github_name: '',
-      auto_release: false,
+      auto_deploy: false,
       changelog: {
         generate: false,
-        type: ChangelogType.github,
         headers: [],
         footers: [],
       },
@@ -51,12 +59,13 @@ describe('environment settings', () => {
   it('should parse an array correctly', () => {
     const settings = parseEnvironmentSettingsArray([
       {
+        id: 'firebase-hosting',
+        needs: ['firebase-functions'],
         type: 'firebase-hosting',
         github_name: 'github-test',
-        auto_release: true,
+        auto_deploy: true,
         changelog: {
           generate: true,
-          type: 'github',
           headers: ['header1', 'header2'],
           footers: ['footer1', 'footer2'],
         },
@@ -65,12 +74,13 @@ describe('environment settings', () => {
     ]);
     expect(settings).toEqual([
       {
+        id: 'firebase-hosting',
         type: EnvironmentType.firebaseHosting,
+        needs: ['firebase-functions'],
         github_name: 'github-test',
-        auto_release: true,
+        auto_deploy: true,
         changelog: {
           generate: true,
-          type: ChangelogType.github,
           headers: ['header1', 'header2'],
           footers: ['footer1', 'footer2'],
         },

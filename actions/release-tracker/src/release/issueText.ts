@@ -5,24 +5,9 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { ChangeLog, ChangeLogType } from '@onezerocompany/commit';
+import { ChangeLog, ChangelogDomain } from '@onezerocompany/commit';
 import type { ProjectManifest } from '@onezerocompany/project-manager';
-import { EnvironmentType } from '@onezerocompany/project-manager';
-import { slugify } from '../utils/slugify';
 import type { ReleaseState } from './ReleaseState';
-
-const environmentNames: Record<EnvironmentType, string> = {
-  [EnvironmentType.appleAppStore]: 'App Store',
-  [EnvironmentType.appleTestFlightExternal]: 'TestFlight (External)',
-  [EnvironmentType.appleTestFlightInternal]: 'TestFlight (Internal)',
-  [EnvironmentType.firebaseHosting]: 'Firebase Hosting',
-  [EnvironmentType.githubContainerRegistry]: 'GitHub Container Registry',
-  [EnvironmentType.githubNpmRegistry]: 'GitHub NPM Registry',
-  [EnvironmentType.googlePlay]: 'Google Play',
-  [EnvironmentType.googlePlayTestingClosed]: 'Google Play Testing (Closed)',
-  [EnvironmentType.googlePlayTestingExternal]: 'Google Play Testing (External)',
-  [EnvironmentType.googlePlayTestingInternal]: 'Google Play Testing (Internal)',
-};
 
 /**
  * Generates a textual representation of a Release State.
@@ -42,48 +27,27 @@ export function issueText({
 }): string {
   let content = '## Release Details\n\n';
   content +=
-    '###### Edit the changelogs below and tick the checkboxes to release to each individual environment.\n\n';
+    '###### Edit the changelogs in the comments below and tick the checkboxes to release to each individual environment.\n\n';
 
   content += `${
     new ChangeLog({
-      type: ChangeLogType.internal,
+      domain: ChangelogDomain.internal,
       commits: state.commits ?? [],
       markdown: true,
     }).text
   }\n\n`;
 
-  for (const environment of state.environments) {
-    content += '---\n\n';
-    content += `<!-- section_begin:${slugify(
-      environment.github_name ?? 'unknown',
-    )} -->\n`;
-    content += `### ${
-      environmentNames[environment.type ?? EnvironmentType.firebaseHosting]
-    }\n\n`;
-    content += '<!-- changelog_begin -->\n```\n';
-    content += `${
-      new ChangeLog({
-        type: ChangeLogType.external,
-        markdown: false,
-        commits: state.commits ?? [],
-      }).text
-    }\n`;
-    content += '```\n<!-- changelog_end -->\n';
-    content += '<!-- release_item_start -->\n';
-    content += `- [ ] Release to ${environment.github_name ?? 'unknown'}\n`;
-    content += '<!-- release_item_end -->\n';
-    content += `<!-- section_end:${slugify(
-      environment.github_name ?? 'unknown',
-    )} -->\n\n`;
-  }
-
-  content += '---\n\n';
-
   const version = state.version?.displayString ?? '0.0.1';
   content += `Created from release: [${version}](${manifest.release.release_url.replace(
     '{{release}}',
     version,
-  )})`;
+  )})\n\n`;
+
+  // Convert json to base64
+  const json = JSON.stringify(state.json);
+  const base64 = Buffer.from(json).toString('base64');
+
+  content += `<!-- JSON BEGIN::${base64}::JSON END -->`;
 
   return content;
 }

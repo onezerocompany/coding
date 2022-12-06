@@ -10,6 +10,7 @@ import type { ChildProcessWithoutNullStreams } from 'child_process';
 import { exec, execSync, spawn } from 'child_process';
 import { createWriteStream, rmSync, writeFileSync } from 'fs';
 import { resolve as resolvePath } from 'path';
+import { stderr } from 'process';
 import type { ListrTask } from 'listr2';
 import { Listr } from 'listr2';
 import type { PromptObject } from 'prompts';
@@ -107,6 +108,9 @@ function validateCommitTask(commitMessage: CommitMessage): ListrTask {
         if (validation.valid) {
           resolve();
         } else {
+          for (const validationError of validation.errors) {
+            stderr.write(validationError.displayString);
+          }
           reject(new Error('Failed to validate commit message'));
         }
       });

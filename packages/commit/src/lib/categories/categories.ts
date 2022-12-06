@@ -8,7 +8,7 @@
 import { VersionBump } from '../versions/VersionBump';
 
 /** Types of changelogs. */
-export enum ChangeLogType {
+export enum ChangelogDomain {
   /** Changelog for internal usage. */
   internal = 'internal',
   /** Changelog for external publication. */
@@ -30,7 +30,7 @@ export interface CommitCategory {
     /** The title of the category in a changelog. */
     title: string;
     /** What type of changelogs this category shows up in. */
-    type: ChangeLogType;
+    type: ChangelogDomain;
   };
   /** Details for versioning related to this category. */
   versioning: {
@@ -51,7 +51,7 @@ export const categories: CommitCategory[] = [
     description: 'Introduce new functionality',
     changelog: {
       title: 'New Features',
-      type: ChangeLogType.external,
+      type: ChangelogDomain.external,
     },
     versioning: {
       bump: VersionBump.minor,
@@ -66,7 +66,7 @@ export const categories: CommitCategory[] = [
     description: 'Improve existing functionality',
     changelog: {
       title: 'Feature Improvements',
-      type: ChangeLogType.external,
+      type: ChangelogDomain.external,
     },
     versioning: {
       bump: VersionBump.minor,
@@ -81,7 +81,7 @@ export const categories: CommitCategory[] = [
     description: 'Deprecate existing functionality',
     changelog: {
       title: 'Deprecated Features',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -96,7 +96,7 @@ export const categories: CommitCategory[] = [
     description: 'Remove existing functionality',
     changelog: {
       title: 'Removed Features',
-      type: ChangeLogType.external,
+      type: ChangelogDomain.external,
     },
     versioning: {
       bump: VersionBump.minor,
@@ -111,7 +111,7 @@ export const categories: CommitCategory[] = [
     description: 'Fix broken functionality or code',
     changelog: {
       title: 'Bug Fixes',
-      type: ChangeLogType.external,
+      type: ChangelogDomain.external,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -126,7 +126,7 @@ export const categories: CommitCategory[] = [
     description: 'Fix a critical bug and release immediately',
     changelog: {
       title: 'Bug Fixes',
-      type: ChangeLogType.external,
+      type: ChangelogDomain.external,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -141,7 +141,7 @@ export const categories: CommitCategory[] = [
     description: 'Fix a minor bug with a small impact',
     changelog: {
       title: 'Minor Bug Fixes',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -156,7 +156,7 @@ export const categories: CommitCategory[] = [
     description: 'Add new tests or fix existing tests',
     changelog: {
       title: 'Tests',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -171,7 +171,7 @@ export const categories: CommitCategory[] = [
     description: "Misc. changes that don't change functionality",
     changelog: {
       title: 'Chores',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -186,7 +186,7 @@ export const categories: CommitCategory[] = [
     description: 'Changes to supporting scripts',
     changelog: {
       title: 'Scripts',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -201,7 +201,7 @@ export const categories: CommitCategory[] = [
     description: 'Changes to IDE or editor settings',
     changelog: {
       title: 'IDE / Editor',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -216,7 +216,7 @@ export const categories: CommitCategory[] = [
     description: 'Updates the documentation',
     changelog: {
       title: 'Documentation',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -231,7 +231,7 @@ export const categories: CommitCategory[] = [
     description: 'Update the CI/CD pipeline',
     changelog: {
       title: 'CI/CD',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -246,7 +246,7 @@ export const categories: CommitCategory[] = [
     description: 'Update deployment scripts or configuration',
     changelog: {
       title: 'Deployment',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -261,7 +261,7 @@ export const categories: CommitCategory[] = [
     description: 'Unfinished work or ongoing development',
     changelog: {
       title: 'Work in Progress',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -276,7 +276,7 @@ export const categories: CommitCategory[] = [
     description: 'Add, remove, or update dependencies',
     changelog: {
       title: 'Dependencies',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -291,7 +291,7 @@ export const categories: CommitCategory[] = [
     description: 'Change metadata files of the project',
     changelog: {
       title: 'Metadata',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -306,7 +306,7 @@ export const categories: CommitCategory[] = [
     description: 'Change the license',
     changelog: {
       title: 'License',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -321,7 +321,7 @@ export const categories: CommitCategory[] = [
     description: 'Fix a typo in the code itself',
     changelog: {
       title: 'Code Typos',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -336,7 +336,7 @@ export const categories: CommitCategory[] = [
     description: 'Remove code that is no longer needed',
     changelog: {
       title: 'Code Cleanup',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -351,7 +351,7 @@ export const categories: CommitCategory[] = [
     description: 'Improve comments in the code',
     changelog: {
       title: 'Code Comments',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -366,7 +366,7 @@ export const categories: CommitCategory[] = [
     description: 'Change how the code looks, for readability',
     changelog: {
       title: 'Style',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -381,7 +381,7 @@ export const categories: CommitCategory[] = [
     description: 'Change the code without affecting functionality',
     changelog: {
       title: 'Refactor',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -396,7 +396,7 @@ export const categories: CommitCategory[] = [
     description: 'Change the code to make it perform better',
     changelog: {
       title: 'Performance',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -411,7 +411,7 @@ export const categories: CommitCategory[] = [
     description: 'Fix security issues, of existing functionality',
     changelog: {
       title: 'Security Fixes',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -426,7 +426,7 @@ export const categories: CommitCategory[] = [
     description: 'Improve security design and implementation',
     changelog: {
       title: 'Security Improvements',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.minor,
@@ -441,7 +441,7 @@ export const categories: CommitCategory[] = [
     description: 'Change infrastructure definitions',
     changelog: {
       title: 'Infrastructure',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.none,
@@ -456,7 +456,7 @@ export const categories: CommitCategory[] = [
     description: 'Add, update, or remove localization',
     changelog: {
       title: 'Localization',
-      type: ChangeLogType.external,
+      type: ChangelogDomain.external,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -471,7 +471,7 @@ export const categories: CommitCategory[] = [
     description: 'Add, update or remove assets (images, fonts, etc.)',
     changelog: {
       title: 'Assets',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -486,7 +486,7 @@ export const categories: CommitCategory[] = [
     description: 'Improve accessibility of the app',
     changelog: {
       title: 'Accessibility',
-      type: ChangeLogType.external,
+      type: ChangelogDomain.external,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -501,7 +501,7 @@ export const categories: CommitCategory[] = [
     description: 'Improve discoverability of the project',
     changelog: {
       title: 'SEO',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -516,7 +516,7 @@ export const categories: CommitCategory[] = [
     description: 'Change the logging implementation',
     changelog: {
       title: 'Logging',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -531,7 +531,7 @@ export const categories: CommitCategory[] = [
     description: 'Add, update or remove healthchecks',
     changelog: {
       title: 'Healthchecks',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -546,7 +546,7 @@ export const categories: CommitCategory[] = [
     description: 'Add, update or remove business logic',
     changelog: {
       title: 'Business Logic',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -561,7 +561,7 @@ export const categories: CommitCategory[] = [
     description: 'Change authentication implementation',
     changelog: {
       title: 'Authentication',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -576,7 +576,7 @@ export const categories: CommitCategory[] = [
     description: 'Add, update or remove data models',
     changelog: {
       title: 'Data Models',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -591,7 +591,7 @@ export const categories: CommitCategory[] = [
     description: 'Change database implementation',
     changelog: {
       title: 'Database',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -606,7 +606,7 @@ export const categories: CommitCategory[] = [
     description: 'Change cache implementation',
     changelog: {
       title: 'Cache',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -621,7 +621,7 @@ export const categories: CommitCategory[] = [
     description: 'Change storage implementation',
     changelog: {
       title: 'Storage',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -636,7 +636,7 @@ export const categories: CommitCategory[] = [
     description: 'Add, update or remove an easter egg',
     changelog: {
       title: 'Easter Egg',
-      type: ChangeLogType.internal,
+      type: ChangelogDomain.internal,
     },
     versioning: {
       bump: VersionBump.patch,
@@ -664,7 +664,7 @@ export function categoryForTag(tag?: string): CommitCategory {
       description: 'Unknown change',
       changelog: {
         title: 'Unknown',
-        type: ChangeLogType.internal,
+        type: ChangelogDomain.internal,
       },
       versioning: {
         bump: VersionBump.none,

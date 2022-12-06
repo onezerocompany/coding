@@ -15,7 +15,7 @@ describe('commit message', () => {
       signedOff: 'John Doe <john.doe@example.com>',
     });
     expect(commitMessage.message).toBe(
-      `:open_book: docs(readme): add readme to the project
+      `📖 docs(readme) add readme to the project
       
       This is a longer message body.
       This is a second line.
@@ -38,7 +38,7 @@ describe('commit message', () => {
       authors: [],
     });
     expect(commitMessage.message).toBe(
-      `:open_book: docs(readme): add readme to the project`,
+      `📖 docs(readme) add readme to the project`,
     );
   });
   it('breaking commit should add exclaimation mark', () => {
@@ -51,7 +51,7 @@ describe('commit message', () => {
       authors: [],
     });
     expect(commitMessage.message).toBe(
-      `:open_book: docs(readme)!: add readme to the project`,
+      `📖 docs(readme)! add readme to the project`,
     );
   });
   it('display string should be correct', () => {
@@ -68,7 +68,7 @@ describe('commit message', () => {
       `
       ╭─────────────────────────────────────────────────────╮
       │                                                     │
-      │   📖 docs(readme): add readme to the project        │
+      │   📖 docs(readme) add readme to the project         │
       │                                                     │
       │   Closes #1                                         │
       │   Co-authored-by: Jane Doe <jane.doe@example.com>   │
@@ -79,6 +79,20 @@ describe('commit message', () => {
         .map((line) => line.trim())
         .join('\n')
         .trim(),
+    );
+  });
+  it('short string should be correct', () => {
+    const commitMessage = new CommitMessage({
+      files: ['README.md'],
+      category: 'docs',
+      scope: 'readme',
+      subject: 'add readme to the project',
+      breaking: false,
+      authors: ['Jane Doe <john.doe@example.com>'],
+      issues: [1],
+    });
+    expect(commitMessage.mainLine).toBe(
+      '📖 docs(readme) add readme to the project',
     );
   });
 });

@@ -7,7 +7,7 @@
 
 import { info, setFailed, error as logError } from '@actions/core';
 import { context } from '@actions/github';
-import { octokit } from './octokit';
+import { octokit } from '../octokit';
 
 /**
  * Fetches the latest release for the current repo.
@@ -18,7 +18,7 @@ import { octokit } from './octokit';
 export async function getLastestRelease(): Promise<{
   node_id: string;
   tag_name: string;
-  target_commitish: string;
+  sha: string;
 } | null> {
   info('Fetching latest release...');
   try {
@@ -29,10 +29,17 @@ export async function getLastestRelease(): Promise<{
 
     info(` Found release ${release.data.tag_name}`);
 
+    // Get the sha of the tag
+    const tag = await octokit.rest.git.getRef({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      ref: `tags/${release.data.tag_name}`,
+    });
+
     return {
       tag_name: release.data.tag_name,
       node_id: release.data.node_id,
-      target_commitish: release.data.target_commitish,
+      sha: tag.data.object.sha,
     };
   } catch (fetchError: unknown) {
     if (fetchError instanceof Error && fetchError.message === 'Not Found') {

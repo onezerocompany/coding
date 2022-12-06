@@ -42,6 +42,8 @@ export class SubjectValidator extends Validator {
         .toLowerCase()
         // Remove dot at the end
         .replace(/\.$/u, '')
+        // Remove all non alphanumeric characters
+        .replace(/[^a-z0-9/-]/gu, ' ')
         // Split into words
         .split(' ')
         // Remove empty words
@@ -63,8 +65,10 @@ export class SubjectValidator extends Validator {
     const errors: ValidationError[] = [];
     this.checkLength(errors);
 
+    let skipAlphanumericCheck = false;
     // Subject must be all lowercase
     if (this.content !== this.content.toLowerCase()) {
+      skipAlphanumericCheck = true;
       errors.push(
         new ValidationError({
           level: ValidationErrorLevel.fatal,
@@ -75,6 +79,7 @@ export class SubjectValidator extends Validator {
 
     // Subject must not contain parantheses or colons
     if (/[():]/u.test(this.content)) {
+      skipAlphanumericCheck = true;
       errors.push(
         new ValidationError({
           level: ValidationErrorLevel.fatal,
@@ -85,10 +90,21 @@ export class SubjectValidator extends Validator {
 
     // Subject must not end with a dot
     if (this.content.endsWith('.')) {
+      skipAlphanumericCheck = true;
       errors.push(
         new ValidationError({
           level: ValidationErrorLevel.fatal,
           message: 'subject must not end with a dot',
+        }),
+      );
+    }
+
+    // Subject must only contain alphanumeric characters
+    if (!/^[a-z0-9 ]+$/u.test(this.content) && !skipAlphanumericCheck) {
+      errors.push(
+        new ValidationError({
+          level: ValidationErrorLevel.fatal,
+          message: 'subject must only contain alphanumeric characters',
         }),
       );
     }

@@ -36,6 +36,6 @@ export function listCommits({
     const message = execSync(`git log -1 --format=%B ${hash}`, {
       encoding: 'utf-8',
     });
-    return new Commit({ hash, message });
+    return Commit.fromString({ hash, message });
   });
 }

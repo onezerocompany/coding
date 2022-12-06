@@ -16,7 +16,7 @@
  * <emoji> <category>(<scope>)<breaking><:> <subject>
  */
 export const commitLineRegex =
-  /^(?:(?:(?<githubEmoji>:[a-z_]{1,}:)|(?<emoji>[^a-zA-Z\d$&+,:;=?@#|'<>.^*()%!{}\s-]{1,}))\s)?(?<category>[a-z/]{1,})\((?<scope>[a-z-]{1,})\)(?<breaking>!)?(?::)?\s(?<subject>(?:[a-z]{1,}\s?){1,})$/gu;
+  /^(?:(?:(?<githubEmoji>:[a-z0-9_]{1,}:)|(?<emoji>[^a-zA-Z\d$&+,:;=?@#|'<>.^*()%!{}\s-]{1,}))\s)?(?<category>[a-z/]{1,})\((?<scope>[a-z-]{1,})\)(?<breaking>!)?(?::)?\s(?<subject>(?:[a-z0-9-/]{1,}\s?){1,})$/gu;
 
 /**
  * Parses the first line of a commit message.
