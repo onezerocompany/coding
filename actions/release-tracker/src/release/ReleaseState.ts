@@ -159,14 +159,10 @@ export class ReleaseState {
    * @example const needsAssign = release.needsAssign;
    */
   public needsAssign({ manifest }: { manifest: ProjectManifest }): boolean {
-    const actualAssignees = manifest.users
-      .filter((user) => user.assign_issue)
-      .map((user) => user.username);
-
-    // In ase assignees is missing any of the actual assignees, then we need to assign
-    return !this.assignees.every((assignee) =>
-      actualAssignees.includes(assignee),
-    );
+    const missingAssignees = manifest.users.filter(
+      (user) => user.assign_issue && !this.assignees.includes(user.username),
+    ).length;
+    return missingAssignees > 0;
   }
 
   /**
