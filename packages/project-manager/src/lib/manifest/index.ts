@@ -9,3 +9,6 @@ export * from './UserSettings';
 export * from './EnvironmentType';
 export * from './ProjectManifest';
 export * from './loadManifestFile';
+export * from './ChangelogSettings';
+export * from './EnvironmentSettings';
+export * from './ReleaseCreationSettings';

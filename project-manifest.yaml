@@ -5,12 +5,12 @@ release:
   release_url: https://github.com/onezerocompany/coding/releases/tag/{{release}}
   changelog_fallback: This update contains minor improvements and fixes.
 environments:
-  - type: apple-app-store
+  - id: firebase
+    type: firebase-hosting
     github_name: App Store
     version_template: '{major}.{minor}.{patch}'
     changelog:
       generate: true
-      type: store
       headers:
         - "Take a look at what's new in this version:"
       footers:
@@ -19,6 +19,6 @@ users:
   - username: lucasilverentand
     assign_issue: true
     environments:
-      - type: apple-app-store
+      - id: firebase
         edit_changelog: true
         release: true

@@ -7,7 +7,7 @@
 
 import { error as logError, info, setFailed } from '@actions/core';
 import { context } from '@actions/github';
-import { octokit } from './octokit';
+import { octokit } from '../octokit';
 
 /**
  * Creates a release for a `ReleaseState`.

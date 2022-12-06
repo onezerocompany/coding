@@ -6,7 +6,7 @@
  */
 
 import { stdout } from 'process';
-import { ChangeLogType } from '../../lib/categories/categories';
+import { ChangelogDomain } from '../../lib/categories/categories';
 import { ChangeLog } from '../../lib/changelogs/ChangeLog';
 import { listCommits } from '../../lib/commits/listCommits';
 
@@ -32,10 +32,10 @@ export function tool(
   stdout.write(
     new ChangeLog({
       markdown: options?.markdown ?? false,
-      type:
+      domain:
         options?.type === 'internal'
-          ? ChangeLogType.internal
-          : ChangeLogType.external,
+          ? ChangelogDomain.internal
+          : ChangelogDomain.external,
       commits,
     }).text,
   );

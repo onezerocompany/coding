@@ -1,18 +1,17 @@
 import {
-  parsePermission,
-  parsePermissionArray,
+  parseUser,
+  parseUsersArray,
 } from '../../src/lib/manifest/UserSettings';
-import { EnvironmentType } from '../../src/lib/manifest/EnvironmentType';
 
 describe('permission object', () => {
   it('should parse a permission correctly', () => {
-    const permission = parsePermission({
+    const permission = parseUser({
       username: 'luca',
       assign_issue: true,
       environments: [
         {
-          type: 'firebase-hosting',
-          release: true,
+          id: 'firebase',
+          deploy: true,
           edit_changelog: true,
         },
       ],
@@ -22,15 +21,15 @@ describe('permission object', () => {
       assign_issue: true,
       environments: [
         {
-          type: EnvironmentType.firebaseHosting,
+          id: 'firebase',
           edit_changelog: true,
-          release: true,
+          deploy: true,
         },
       ],
     });
   });
   it('should parse an empty object correctly', () => {
-    const permission = parsePermission({});
+    const permission = parseUser({});
     expect(permission).toEqual({
       username: '',
       assign_issue: false,
@@ -38,7 +37,7 @@ describe('permission object', () => {
     });
   });
   it('should parse an object with incorrect values correctly', () => {
-    const permission = parsePermission({
+    const permission = parseUser({
       username: 123,
       assign_issue: 'true',
       environments: {},
@@ -50,15 +49,15 @@ describe('permission object', () => {
     });
   });
   it('should parse permission array correctly', () => {
-    const permission = parsePermissionArray([
+    const permission = parseUsersArray([
       {
         username: 'luca',
         assign_issue: true,
         environments: [
           {
-            type: 'firebase-hosting',
+            id: 'firebase-hosting',
             edit_changelog: true,
-            release: true,
+            deploy: true,
           },
         ],
       },
@@ -67,9 +66,9 @@ describe('permission object', () => {
         assign_issue: true,
         environments: [
           {
-            type: 'apple-app-store',
+            id: 'apple-app-store',
             edit_changelog: true,
-            release: true,
+            deploy: true,
           },
         ],
       },
@@ -80,9 +79,9 @@ describe('permission object', () => {
         assign_issue: true,
         environments: [
           {
-            type: EnvironmentType.firebaseHosting,
+            id: 'firebase-hosting',
             edit_changelog: true,
-            release: true,
+            deploy: true,
           },
         ],
       },
@@ -91,20 +90,20 @@ describe('permission object', () => {
         assign_issue: true,
         environments: [
           {
-            type: EnvironmentType.appleAppStore,
+            id: 'apple-app-store',
             edit_changelog: true,
-            release: true,
+            deploy: true,
           },
         ],
       },
     ]);
   });
   it('should parse an empty array correctly', () => {
-    const permission = parsePermissionArray([]);
+    const permission = parseUsersArray([]);
     expect(permission).toEqual([]);
   });
   it('should parse an array that is not an array', () => {
-    const permission = parsePermissionArray({});
+    const permission = parseUsersArray({});
     expect(permission).toEqual([]);
   });
 });

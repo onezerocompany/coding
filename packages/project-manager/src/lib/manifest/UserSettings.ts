@@ -5,16 +5,14 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import type { EnvironmentType } from './EnvironmentType';
-
 /** Settings for an environment. */
 export interface UserEnvironmentSettings {
   /** Whether the user is allowed to edit the changelog. */
   edit_changelog: boolean;
   /** Whether the user is allowed to release. */
-  release: boolean;
+  deploy: boolean;
   /** Type of environment. */
-  type: EnvironmentType;
+  id: string;
 }
 
 /** Permission for a person in relation to this project. */
@@ -41,11 +39,11 @@ export function parseEnvironments(object: unknown): UserEnvironmentSettings[] {
       typeof environment['edit_changelog'] === 'boolean'
         ? environment['edit_changelog']
         : false,
-    release:
-      typeof environment['release'] === 'boolean'
-        ? environment['release']
+    deploy:
+      typeof environment['deploy'] === 'boolean'
+        ? environment['deploy']
         : false,
-    type: environment['type'] as EnvironmentType,
+    id: typeof environment['id'] === 'string' ? environment['id'] : '',
   }));
 }
 
@@ -54,9 +52,9 @@ export function parseEnvironments(object: unknown): UserEnvironmentSettings[] {
  *
  * @param object - Object to convert.
  * @returns Permission object.
- * @example parsePermission({ username: 'luca', assignIssue: true, canEditChangelog: true, canReleaseTracks: ['stable'] });
+ * @example parseUser({ username: 'luca', assignIssue: true, canEditChangelog: true, canReleaseTracks: ['stable'] });
  */
-export function parsePermission(object: Record<string, unknown>): UserSettings {
+export function parseUser(object: Record<string, unknown>): UserSettings {
   /*
    * Read values from object
    * if value is undefined, use default value
@@ -80,9 +78,9 @@ export function parsePermission(object: Record<string, unknown>): UserSettings {
  *
  * @param array - Array to convert.
  * @returns Array of permission objects.
- * @example parsePermissions([{ username: 'luca', assignIssue: true, canEditChangelog: true, canReleaseTracks: ['stable'] }]);
+ * @example parseUsersArray([ ...permissions ]);
  */
-export function parsePermissionArray(array: unknown): UserSettings[] {
+export function parseUsersArray(array: unknown): UserSettings[] {
   if (!Array.isArray(array)) return [];
-  return array.map((item) => parsePermission(item as Record<string, unknown>));
+  return array.map((item) => parseUser(item as Record<string, unknown>));
 }

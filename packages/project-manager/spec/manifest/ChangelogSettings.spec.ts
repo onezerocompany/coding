@@ -1,19 +1,14 @@
-import {
-  ChangelogType,
-  parseChangelogSettings,
-} from '../../src/lib/manifest/ChangelogSettings';
+import { parseChangelogSettings } from '../../src/lib/manifest/ChangelogSettings';
 
 describe('changelog settings', () => {
   it('should parse a changelog setting correctly', () => {
     const changelogSetting = parseChangelogSettings({
       generate: true,
-      type: 'github',
       headers: ['This is a header'],
       footers: ['This is a footer'],
     });
     expect(changelogSetting).toEqual({
       generate: true,
-      type: ChangelogType.github,
       headers: ['This is a header'],
       footers: ['This is a footer'],
     });
@@ -22,7 +17,6 @@ describe('changelog settings', () => {
     const changelogSetting = parseChangelogSettings({});
     expect(changelogSetting).toEqual({
       generate: false,
-      type: ChangelogType.github,
       headers: [],
       footers: [],
     });
@@ -36,7 +30,6 @@ describe('changelog settings', () => {
     });
     expect(changelogSetting).toEqual({
       generate: false,
-      type: ChangelogType.github,
       headers: [],
       footers: [],
     });
@@ -45,7 +38,6 @@ describe('changelog settings', () => {
     const changelogSetting = parseChangelogSettings([]);
     expect(changelogSetting).toEqual({
       generate: false,
-      type: ChangelogType.github,
       headers: [],
       footers: [],
     });
