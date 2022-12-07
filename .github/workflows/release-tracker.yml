@@ -27,4 +27,6 @@ jobs:
 
       # run the release-tracker action, it auto detects what to do
       - name: Release Tracker
-        uses: ./actions/release-tracker
+        uses: ./actions/release-tracke
+        with:
+          publish_token: ${{ secrets.RELEASE_TOKEN }}

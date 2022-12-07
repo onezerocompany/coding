@@ -19,5 +19,18 @@ if (
   );
   process.exit(1);
 }
+
+const publishToken = getOptionalInput('publish_token');
+if (
+  typeof publishToken !== 'string' &&
+  typeof process.env['JEST_WORKER_ID'] === 'undefined'
+) {
+  setFailed(
+    "No github token provided. Please provide a token in the 'publish_token' input.",
+  );
+  process.exit(1);
+}
+
 export const octokit = getOctokit(token ?? 'token');
+export const publishOctokit = getOctokit(publishToken ?? 'token');
 export const { graphql } = octokit;

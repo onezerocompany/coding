@@ -6,7 +6,7 @@
  */
 
 import { context } from '@actions/github';
-import { octokit } from '../octokit';
+import { publishOctokit } from '../octokit';
 
 /**
  * Function to deploy to an environment on GitHub.
@@ -26,7 +26,7 @@ export async function deployToEnvironment({
   version: string;
   changelog: string;
 }): Promise<void> {
-  await octokit.rest.repos.createDeployment({
+  await publishOctokit.rest.repos.createDeployment({
     ...context.repo,
     ref: version,
     environment,

@@ -5,7 +5,17 @@ release:
   release_url: https://github.com/onezerocompany/coding/releases/tag/{{release}}
   changelog_fallback: This update contains minor improvements and fixes.
 environments:
+  - id: packages
+    github_name: Packages
+    type: github-npm-registry
+    auto_deploy: true
+    version_template: '{major}.{minor}.{patch}'
+    changelog:
+      generate: false
 users:
   - username: lucasilverentand
     assign_issue: true
     environments:
+      - id: packages
+        deploy: true
+        edit_changelog: true

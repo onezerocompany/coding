@@ -7,7 +7,7 @@
 
 import { error as logError, info, setFailed } from '@actions/core';
 import { context } from '@actions/github';
-import { octokit } from '../octokit';
+import { publishOctokit } from '../octokit';
 
 /**
  * Creates a release for a `ReleaseState`.
@@ -26,7 +26,7 @@ export async function createRelease({
   changelog: string;
 }): Promise<number> {
   try {
-    const release = await octokit.rest.repos.createRelease({
+    const release = await publishOctokit.rest.repos.createRelease({
       owner: context.repo.owner,
       repo: context.repo.repo,
       tag_name: version,

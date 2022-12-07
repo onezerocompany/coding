@@ -265,21 +265,21 @@ function getOptionalInput(o){const t=(0,e.getInput)(o);return t===""?null:t}
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-const d=getOptionalInput("token")??process.env["GITHUB_TOKEN"];if(typeof d!=="string"&&typeof process.env["JEST_WORKER_ID"]==="undefined"){(0,e.setFailed)("No github token provided. Please provide a token in the 'token' input.");process.exit(1)}const s=(0,t.getOctokit)(d??"token");const{graphql:m}=s;
+const d=getOptionalInput("token")??process.env["GITHUB_TOKEN"];if(typeof d!=="string"&&typeof process.env["JEST_WORKER_ID"]==="undefined"){(0,e.setFailed)("No github token provided. Please provide a token in the 'token' input.");process.exit(1)}const s=getOptionalInput("publish_token");if(typeof s!=="string"&&typeof process.env["JEST_WORKER_ID"]==="undefined"){(0,e.setFailed)("No github token provided. Please provide a token in the 'publish_token' input.");process.exit(1)}const m=(0,t.getOctokit)(d??"token");const l=(0,t.getOctokit)(s??"token");const{graphql:c}=m;
 /**
  * @file Release label attach action.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function attachTrackerLabel({state:o}){if(typeof o.issueTrackerNumber!=="number"){throw new Error("Cannot attach tracker label without an existing tracker issue.")}const r="release-tracker";let n=null;try{const e=await s.rest.issues.getLabel({...t.context.repo,name:r});n=e.data.id}catch{try{const e=await s.rest.issues.createLabel({...t.context.repo,name:r,color:"bcf5db"});n=e.data.id}catch{(0,e.setFailed)(`Failed to create '${r}' label`);process.exit(1)}}if(typeof n!=="number"){(0,e.setFailed)(`Failed to find '${r}' label`);process.exit(1)}await s.rest.issues.addLabels({...t.context.repo,issue_number:o.issueTrackerNumber,labels:[r]});if(o.trackerLabelId!==n){o.trackerLabelId=n}}
+async function attachTrackerLabel({state:o}){if(typeof o.issueTrackerNumber!=="number"){throw new Error("Cannot attach tracker label without an existing tracker issue.")}const r="release-tracker";let n=null;try{const e=await m.rest.issues.getLabel({...t.context.repo,name:r});n=e.data.id}catch{try{const e=await m.rest.issues.createLabel({...t.context.repo,name:r,color:"bcf5db"});n=e.data.id}catch{(0,e.setFailed)(`Failed to create '${r}' label`);process.exit(1)}}if(typeof n!=="number"){(0,e.setFailed)(`Failed to find '${r}' label`);process.exit(1)}await m.rest.issues.addLabels({...t.context.repo,issue_number:o.issueTrackerNumber,labels:[r]});if(o.trackerLabelId!==n){o.trackerLabelId=n}}
 /**
  * @file Function for creating a comment on an issue.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createComment({issueNumber:e,content:o}){const r=await s.rest.issues.createComment({...t.context.repo,issue_number:e,body:o});return{commentId:r.data.id}}
+async function createComment({issueNumber:e,content:o}){const r=await m.rest.issues.createComment({...t.context.repo,issue_number:e,body:o});return{commentId:r.data.id}}
 /**
  * @file Action to create release environment comments.
  * @copyright 2022 OneZero Company
@@ -293,7 +293,7 @@ async function createEnvironmentComment({state:o}){if(typeof o.issueTrackerNumbe
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createRelease({version:o,changelog:r}){try{const n=await s.rest.repos.createRelease({owner:t.context.repo.owner,repo:t.context.repo.repo,tag_name:o,name:o,body:r,latest:true});(0,e.info)("Created release.");return n.data.id}catch(o){(0,e.error)(o);(0,e.setFailed)("Failed to create the release.");process.exit(1)}}
+async function createRelease({version:o,changelog:r}){try{const n=await l.rest.repos.createRelease({owner:t.context.repo.owner,repo:t.context.repo.repo,tag_name:o,name:o,body:r,latest:true});(0,e.info)("Created release.");return n.data.id}catch(o){(0,e.error)(o);(0,e.setFailed)("Failed to create the release.");process.exit(1)}}
 /**
  * @file Function to create a release.
  * @copyright 2022 OneZero Company
@@ -307,7 +307,7 @@ async function createRelease_createRelease({state:o,context:t}){if(!(Array.isArr
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function createIssue({title:o,content:r}){try{const e=await s.rest.issues.create({...t.context.repo,title:o,body:r});return e.data.number}catch(o){(0,e.error)(o);(0,e.setFailed)("Failed to create the release.");process.exit(1)}}
+async function createIssue({title:o,content:r}){try{const e=await m.rest.issues.create({...t.context.repo,title:o,body:r});return e.data.number}catch(o){(0,e.error)(o);(0,e.setFailed)("Failed to create the release.");process.exit(1)}}
 /**
  * @file Contains a function to create a release tracker issue.
  * @copyright 2022 OneZero Company
@@ -328,7 +328,7 @@ async function loadCommits({state:o,context:t}){if(typeof t.previousRelease.sha!
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function getLastestRelease(){(0,e.info)("Fetching latest release...");try{const o=await s.rest.repos.getLatestRelease({owner:t.context.repo.owner,repo:t.context.repo.repo});(0,e.info)(` Found release ${o.data.tag_name}`);const r=await s.rest.git.getRef({owner:t.context.repo.owner,repo:t.context.repo.repo,ref:`tags/${o.data.tag_name}`});return{tag_name:o.data.tag_name,node_id:o.data.node_id,sha:r.data.object.sha}}catch(o){if(o instanceof Error&&o.message==="Not Found"){(0,e.info)(" No release found.");return null}(0,e.error)(o);(0,e.setFailed)("Failed to fetch the latest release.");process.exit(1)}}
+async function getLastestRelease(){(0,e.info)("Fetching latest release...");try{const o=await m.rest.repos.getLatestRelease({owner:t.context.repo.owner,repo:t.context.repo.repo});(0,e.info)(` Found release ${o.data.tag_name}`);const r=await m.rest.git.getRef({owner:t.context.repo.owner,repo:t.context.repo.repo,ref:`tags/${o.data.tag_name}`});return{tag_name:o.data.tag_name,node_id:o.data.node_id,sha:r.data.object.sha}}catch(o){if(o instanceof Error&&o.message==="Not Found"){(0,e.info)(" No release found.");return null}(0,e.error)(o);(0,e.setFailed)("Failed to fetch the latest release.");process.exit(1)}}
 /**
  * @file Contains functions for loading versioning details.
  * @copyright 2022 OneZero Company
@@ -342,7 +342,7 @@ async function loadVersion({state:o,context:t}){const n=await getLastestRelease(
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function updateIssue({issueNumber:o,title:r,content:n}){try{const e=await s.rest.issues.update({...t.context.repo,issue_number:o,title:r,body:n});return e.data.number}catch(o){(0,e.error)(o);(0,e.setFailed)("Failed to create the release.");process.exit(1)}}
+async function updateIssue({issueNumber:o,title:r,content:n}){try{const e=await m.rest.issues.update({...t.context.repo,issue_number:o,title:r,body:n});return e.data.number}catch(o){(0,e.error)(o);(0,e.setFailed)("Failed to create the release.");process.exit(1)}}
 /**
  * @file Contains a function to update the content of a release tracker issue.
  * @copyright 2022 OneZero Company
@@ -356,7 +356,7 @@ async function updateTrackerIssue({state:o,context:t}){if(typeof o.version?.disp
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function assignIssue({issueNumber:e,assignees:o}){await s.rest.issues.addAssignees({...t.context.repo,issue_number:e,assignees:o})}
+async function assignIssue({issueNumber:e,assignees:o}){await m.rest.issues.addAssignees({...t.context.repo,issue_number:e,assignees:o})}
 /**
  * @file Assign issue action.
  * @copyright 2022 OneZero Company
@@ -370,7 +370,7 @@ async function assignIssue_assignIssue({state:o,context:t}){if(typeof o.issueTra
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function deployToEnvironment({environment:e,version:o,changelog:r}){await s.rest.repos.createDeployment({...t.context.repo,ref:o,environment:e,required_contexts:[],payload:{changelog:r}})}
+async function deployToEnvironment({environment:e,version:o,changelog:r}){await l.rest.repos.createDeployment({...t.context.repo,ref:o,environment:e,required_contexts:[],payload:{changelog:r}})}
 /**
  * @file Deploy action.
  * @copyright 2022 OneZero Company
@@ -384,7 +384,7 @@ async function deploy({state:o}){const t=o.environments.find((e=>e.deployed&&!e.
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function updateComment({issueNumber:e,commentId:o,content:r}){await s.rest.issues.updateComment({...t.context.repo,issue_number:e,comment_id:o,body:r})}
+async function updateComment({issueNumber:e,commentId:o,content:r}){await m.rest.issues.updateComment({...t.context.repo,issue_number:e,comment_id:o,body:r})}
 /**
  * @file Action to create release environment comments.
  * @copyright 2022 OneZero Company
@@ -412,7 +412,7 @@ class ReleaseState{environments=[];releaseId;issueTrackerNumber;trackerLabelId;v
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-const l=/<!-- environment_id:(?<id>[a-z0-9-]+) -->/gu;const c=/(?<checkmark>\[x\]|\[ \]|\u2705) (?<name>.+?)<!-- release_item -->/gu;const p=/<!-- changelog_begin -->\r?\n```\r?\n(?<changelog>(?:.*(?:[\n\r]))*)```\r?\n<!-- changelog_end -->/gu;function updateStateFromComment({comment:o,state:t,manifest:r,username:n}){(0,e.info)(`Updating state from comment with user: ${n}`);const i=l.exec(o)?.groups?.["id"];(0,e.debug)(`environment id: ${i??"-"}`);const a=t.environments.find((e=>e.id===i));if(!a){(0,e.setFailed)("Cannot update environment state from comment for which the environment cannot be found.");process.exit(1)}a.commentContent=o;const d=r.users.find((e=>e.username===n))?.environments.find((e=>e.id===i));(0,e.debug)(`user settings: ${JSON.stringify(d)}`);const s=d?.deploy===true;if(!a.deployed&&s){const e=c.exec(o)?.groups?.["checkmark"];if(e==="[x]"||e==="✅"){a.deployed=true}}const m=d?.edit_changelog===true;if(m){const t=p.exec(o)?.groups?.["changelog"];(0,e.debug)(`new changelog: ${t??"-"}`);if(typeof t==="string"){a.changelogText=t.trim()}}}
+const p=/<!-- environment_id:(?<id>[a-z0-9-]+) -->/gu;const u=/(?<checkmark>\[x\]|\[ \]|\u2705) (?<name>.+?)<!-- release_item -->/gu;const F=/<!-- changelog_begin -->\r?\n```\r?\n(?<changelog>(?:.*(?:[\n\r]))*)```\r?\n<!-- changelog_end -->/gu;function updateStateFromComment({comment:o,state:t,manifest:r,username:n}){(0,e.info)(`Updating state from comment with user: ${n}`);const i=p.exec(o)?.groups?.["id"];(0,e.debug)(`environment id: ${i??"-"}`);const a=t.environments.find((e=>e.id===i));if(!a){(0,e.setFailed)("Cannot update environment state from comment for which the environment cannot be found.");process.exit(1)}a.commentContent=o;const d=r.users.find((e=>e.username===n))?.environments.find((e=>e.id===i));(0,e.debug)(`user settings: ${JSON.stringify(d)}`);const s=d?.deploy===true;if(!a.deployed&&s){const e=u.exec(o)?.groups?.["checkmark"];if(e==="[x]"||e==="✅"){a.deployed=true}}const m=d?.edit_changelog===true;if(m){const t=F.exec(o)?.groups?.["changelog"];(0,e.debug)(`new changelog: ${t??"-"}`);if(typeof t==="string"){a.changelogText=t.trim()}}}
 /**
  * @file Load the current release from an issue.
  * @copyright 2022 OneZero Company
@@ -447,11 +447,11 @@ class Context{projectManifest=(0,o.loadManifestFromProject)();previousState=null
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-const u=new Context;
+const h=new Context;
 /**
  * @file Main entry point for the action.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function main(){await u.initialize();await u.curentState.runActions({context:u});(0,e.info)("Done.")}void main()})();module.exports=__webpack_exports__})();
+async function main(){await h.initialize();await h.curentState.runActions({context:h});(0,e.info)("Done.")}void main()})();module.exports=__webpack_exports__})();

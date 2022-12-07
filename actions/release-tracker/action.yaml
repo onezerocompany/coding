@@ -5,6 +5,10 @@ inputs:
     description: 'GitHub token with repo scope'
     required: true
     default: ${{ github.token }}
+  publish_token:
+    description: 'GitHub token for publishing the release and deployment'
+    required: true
+    default: ${{ github.token }}
   project_manifest:
     description: 'Path to the project manifest'
     required: true
