@@ -18,7 +18,6 @@ jobs:
   sync_release_tracker:
     name: Sync Release Tracker
     runs-on: ubuntu-latest
-    needs: [release]
     steps:
       # make sure the git information is available for the release-tracker action
       - name: Checkout
