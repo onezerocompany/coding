@@ -1,8 +1,9 @@
 name: Publish Package
 
 on:
-  release:
-    types: [released]
+  deployment:
+    environments:
+      - Packages
 
 jobs:
   publish_extensions:
