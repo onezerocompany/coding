@@ -34,7 +34,7 @@ function newReleaseState({
         needs: environment.needs,
         githubName: environment.github_name,
         // Check if the environemnt auto-deploys
-        deployed: environment.auto_deploy === true,
+        deployed: environment.auto_deploy,
         didDeploy: false,
         type: environment.type,
         changelog: {

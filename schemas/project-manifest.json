@@ -46,6 +46,8 @@
       "type": "array",
       "items": {
         "type": "object",
+        "required": ["username", "assign_issue", "environments"],
+        "additionalProperties": false,
         "properties": {
           "username": {
             "$ref": "#/definitions/GitHubUsername"

@@ -1,0 +1,31 @@
+name: Release & Tracker Issue
+
+on:
+  push:
+    branches:
+      - main
+  issue_comment:
+    types: [edited]
+  issues:
+    types: [edited]
+
+concurrency:
+  # group by sha of pushed commit or issue number
+  group: release-tracker-${{ github.event.issue.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  sync_release_tracker:
+    name: Sync Release Tracker
+    runs-on: ubuntu-latest
+    needs: [release]
+    steps:
+      # make sure the git information is available for the release-tracker action
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # run the release-tracker action, it auto detects what to do
+      - name: Release Tracker
+        uses: ./actions/release-tracker
