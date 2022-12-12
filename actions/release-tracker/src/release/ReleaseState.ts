@@ -5,41 +5,18 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import type { VersionJSON } from '@onezerocompany/commit';
 import { Version, Commit } from '@onezerocompany/commit';
 import type { ProjectManifest } from '@onezerocompany/project-manager';
-import type { CommitMessageJSON } from '@onezerocompany/commit/dist/lib/message/CommitMessage';
 import { error as logError } from '@actions/core';
 import { isDefined } from '../utils/isDefined';
 import type { Context } from '../context/Context';
+import type { ReleaseFile } from '../context/loadReleaseFiles';
 import { ReleaseAction } from './ReleaseAction';
-import type { ReleaseEnvironmentJson } from './ReleaseEnvironment';
 import { ReleaseEnvironment } from './ReleaseEnvironment';
 import { issueText } from './issueText';
 import { actionRouter } from './actionRouter';
-
-/** JSON definition of release state. */
-export interface ReleaseStateJson {
-  /** Environments. */
-  environments: ReleaseEnvironmentJson[];
-  /** ID of the release object. */
-  release_id?: number | undefined;
-  /** ID of the related issue tracker. */
-  issue_tracker_number?: number | undefined;
-  /** Tracker label id. */
-  tracker_label_id?: number | undefined;
-  /** Version number of release. */
-  version?: VersionJSON | undefined;
-  /** List of commits. */
-  commits?:
-    | Array<{
-        /** Hash of the commit. */
-        hash: string;
-        /** Commit message. */
-        message: CommitMessageJSON;
-      }>
-    | undefined;
-}
+import { nextAction } from './nextAction';
+import type { ReleaseStateJson } from './ReleaseStateJson';
 
 /** Represents a release and its associated issue. */
 export class ReleaseState {
@@ -57,6 +34,8 @@ export class ReleaseState {
   public commits?: Commit[];
   /** Assignees. */
   public assignees: string[] = [];
+  /** Files attached to the release. */
+  public files: ReleaseFile[] = [];
 
   /**
    * Getter that converts this ReleaseState into a JSON object.
@@ -105,6 +84,16 @@ export class ReleaseState {
     return this.environments.some(
       (environment) => typeof environment.issueCommentId !== 'number',
     );
+  }
+
+  /**
+   * Whether a file needs to be attached.
+   *
+   * @returns Whether a file needs to be attached.
+   * @example const needsFile = release.needsFileAttach;
+   */
+  public get needsFileAttach(): boolean {
+    return this.files.some((file) => !file.attached);
   }
 
   /**
@@ -166,37 +155,6 @@ export class ReleaseState {
   }
 
   /**
-   * Determines the next action to take for this release.
-   *
-   * @param parameters - The parameters for the function.
-   * @param parameters.context - The context.
-   * @returns The next action to take.
-   * @example await determineAction();
-   */
-  public nextAction({ context }: { context: Context }): ReleaseAction {
-    if (!isDefined(this.version)) return ReleaseAction.loadVersion;
-    if (!isDefined(this.commits)) return ReleaseAction.loadCommits;
-    if (!isDefined(this.releaseId)) return ReleaseAction.createRelease;
-    if (!isDefined(this.issueTrackerNumber))
-      return ReleaseAction.createTrackerIssue;
-    if (this.needsCommentCreation)
-      return ReleaseAction.createEnvironmentComment;
-    if (!isDefined(this.trackerLabelId))
-      return ReleaseAction.attachTrackerLabel;
-    if (this.needsAssign({ manifest: context.projectManifest }))
-      return ReleaseAction.assignIssue;
-    if (this.commentNeedsUpdate) return ReleaseAction.updateEnvironmentComment;
-    if (this.needsDeploy) return ReleaseAction.deploy;
-    // Update issue must be last, to not cause too many writes.
-    if (
-      context.currentIssueText !==
-      this.issueText({ manifest: context.projectManifest })
-    )
-      return ReleaseAction.updateIssue;
-    return ReleaseAction.none;
-  }
-
-  /**
    * Text for an issue.
    *
    * @param parameters - Parameters for the issue text.
@@ -216,9 +174,7 @@ export class ReleaseState {
    * @example await executeNextAction();
    */
   public async runActions({ context }: { context: Context }): Promise<void> {
-    const action = this.nextAction({
-      context,
-    });
+    const action = nextAction({ context, state: this });
     if (action === ReleaseAction.none) return;
     await actionRouter({
       action,

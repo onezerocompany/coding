@@ -39,7 +39,13 @@ module.exports = {
     'import/imports-first': ['error'],
 
     // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/max-dependencies.md
-    'import/max-dependencies': ['error'],
+    'import/max-dependencies': [
+      'error',
+      {
+        max: 10,
+        ignoreTypeImports: true,
+      },
+    ],
 
     // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/named.md
     'import/named': ['error'],
