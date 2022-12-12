@@ -17,6 +17,7 @@ import {
   updateTrackerIssue,
 } from './actions';
 import { assignIssue } from './actions/assignIssue';
+import { attachFile } from './actions/attachFile';
 import { deploy } from './actions/deploy';
 import { updateEnvironmentComment } from './actions/updateEnvironmentComment';
 import { ReleaseAction } from './ReleaseAction';
@@ -83,7 +84,10 @@ export async function actionRouter({
     case ReleaseAction.assignIssue:
       await assignIssue({ state, context });
       break;
-
+    /** Attach a file to the release. */
+    case ReleaseAction.attachFile:
+      await attachFile({ state });
+      break;
     /** Fallback when action is not known. */
     default:
       setFailed(`Unknown action: ${action}`);

@@ -7,6 +7,7 @@
 
 import { info } from '@actions/core';
 import { sharedContext } from './context/sharedContext';
+import { setOutputs } from './utils/setOutputs';
 
 /**
  * Main entry point function for the action.
@@ -18,6 +19,8 @@ async function main(): Promise<void> {
   await sharedContext.curentState?.runActions({
     context: sharedContext,
   });
+  if (sharedContext.curentState)
+    setOutputs({ release: sharedContext.curentState });
   info('Done.');
 }
 

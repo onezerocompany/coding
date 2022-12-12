@@ -11,7 +11,7 @@ import type {
   IssueCommentEvent,
   IssuesEvent,
 } from '@octokit/webhooks-definitions/schema';
-import type { ReleaseStateJson } from '../release/ReleaseState';
+import type { ReleaseStateJson } from '../release/ReleaseStateJson';
 import { ReleaseState } from '../release/ReleaseState';
 import { getContentBetweenTags } from '../utils/getContentBetweenTags';
 

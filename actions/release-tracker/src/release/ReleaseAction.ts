@@ -29,4 +29,6 @@ export enum ReleaseAction {
   deploy = 'deploy',
   /** Assign issue to user. */
   assignIssue = 'assignIssue',
+  /** Attaching a file to the release. */
+  attachFile = 'attachFile',
 }

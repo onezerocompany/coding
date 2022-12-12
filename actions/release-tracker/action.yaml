@@ -13,6 +13,9 @@ inputs:
     description: 'Path to the project manifest'
     required: true
     default: 'project-manifest.yaml'
+  files:
+    description: 'List of files or globs to attach to the release'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'

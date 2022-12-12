@@ -12,6 +12,7 @@ import { ReleaseEnvironment } from '../release/ReleaseEnvironment';
 import { ReleaseState } from '../release/ReleaseState';
 import { updateStateFromComment } from '../release/updateStateFromComment';
 import type { Context } from './Context';
+import { loadReleaseFiles } from './loadReleaseFiles';
 
 /**
  * Creates a new release state.
@@ -27,6 +28,7 @@ function newReleaseState({
   manifest: ProjectManifest;
 }): ReleaseState {
   const newState = new ReleaseState();
+  newState.files = loadReleaseFiles();
   newState.environments = manifest.environments.map(
     (environment) =>
       new ReleaseEnvironment({
