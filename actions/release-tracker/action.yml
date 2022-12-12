@@ -12,7 +12,7 @@ inputs:
   project_manifest:
     description: 'Path to the project manifest'
     required: true
-    default: 'project-manifest.yaml'
+    default: 'project-manifest.yml'
   files:
     description: 'List of files or globs to attach to the release'
     required: false

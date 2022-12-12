@@ -6,7 +6,10 @@
 
   "yaml.validate": true,
   "yaml.schemas": {
-    "schemas/project-manifest.json": ["project-manifest.yaml"]
+    "schemas/project-manifest.json": [
+      "project-manifest.yml",
+      "project-manifest.yaml"
+    ]
   },
 
   "files.exclude": {
