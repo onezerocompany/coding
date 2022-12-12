@@ -32,10 +32,12 @@ export function listCommits({
     },
   );
   const hashes = output.trim().split('\n');
-  return hashes.map((hash) => {
-    const message = execSync(`git log -1 --format=%B ${hash}`, {
-      encoding: 'utf-8',
+  return hashes
+    .filter((hash) => hash.length > 0)
+    .map((hash) => {
+      const message = execSync(`git log -1 --format=%B ${hash}`, {
+        encoding: 'utf-8',
+      });
+      return Commit.fromString({ hash, message });
     });
-    return Commit.fromString({ hash, message });
-  });
 }
