@@ -321,7 +321,7 @@ async function createTrackerIssue({state:o,context:t}){if(typeof o.issueTrackerN
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function loadCommits({state:o,context:t}){if(typeof t.previousRelease.sha!=="string"){(0,e.setFailed)("Previous reference not set.");process.exit(1)}if(typeof t.previousRelease.version?.displayString!=="string"){(0,e.setFailed)("Previous version not set.");process.exit(1)}o.commits=(0,r.qF)({beginHash:t.previousRelease.sha});(0,e.info)(`Found ${o.commits.length} commits since ${t.previousRelease.sha}.`);for(const t of o.commits){(0,e.info)(`- ${t.message.mainLine}`)}const n=(0,r.Ng)(o.commits);if(n===r.ib.none){(0,e.info)("No version bump required.");process.exit(0)}o.version=t.previousRelease.version.bump(n);(0,e.info)(`Next version: ${o.version.displayString} (bumped: ${n})`)}
+async function loadCommits({state:o,context:t}){const n=t.previousRelease.version??new r.Gf({major:0,minor:0,patch:0});o.commits=(0,r.qF)({beginHash:t.previousRelease.sha});(0,e.info)(`Found ${o.commits.length} commits since ${t.previousRelease.sha??"-"}.`);for(const t of o.commits){(0,e.info)(`- ${t.message.mainLine}`)}const i=(0,r.Ng)(o.commits);if(i===r.ib.none){(0,e.info)("No version bump required.");process.exit(0)}o.version=n.bump(i);(0,e.info)(`Next version: ${o.version.displayString} (bumped: ${i})`)}
 /**
  * @file Contains a function to get the latest release.
  * @copyright 2022 OneZero Company
