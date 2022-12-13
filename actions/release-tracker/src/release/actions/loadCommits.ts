@@ -5,10 +5,11 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { info, setFailed } from '@actions/core';
+import { info } from '@actions/core';
 import {
   getBumpForCommitList,
   listCommits,
+  Version,
   VersionBump,
 } from '@onezerocompany/commit';
 import type { Context } from '../../context/Context';
@@ -29,22 +30,22 @@ export async function loadCommits({
   state: ReleaseState;
   context: Context;
 }): Promise<void> {
-  if (typeof context.previousRelease.sha !== 'string') {
-    setFailed('Previous reference not set.');
-    process.exit(1);
-  }
-
-  if (typeof context.previousRelease.version?.displayString !== 'string') {
-    setFailed('Previous version not set.');
-    process.exit(1);
-  }
+  const previousVersion =
+    context.previousRelease.version ??
+    new Version({
+      major: 0,
+      minor: 0,
+      patch: 0,
+    });
 
   // Fetch commits since last release ref.
   state.commits = listCommits({
     beginHash: context.previousRelease.sha,
   });
   info(
-    `Found ${state.commits.length} commits since ${context.previousRelease.sha}.`,
+    `Found ${state.commits.length} commits since ${
+      context.previousRelease.sha ?? '-'
+    }.`,
   );
   for (const commit of state.commits) {
     info(`- ${commit.message.mainLine}`);
@@ -58,6 +59,6 @@ export async function loadCommits({
     process.exit(0);
   }
 
-  state.version = context.previousRelease.version.bump(bump);
+  state.version = previousVersion.bump(bump);
   info(`Next version: ${state.version.displayString} (bumped: ${bump})`);
 }
