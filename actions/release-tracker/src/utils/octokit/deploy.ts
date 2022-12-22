@@ -33,6 +33,7 @@ export async function deployToEnvironment({
     required_contexts: [],
     payload: {
       changelog,
+      version,
     },
   });
 }

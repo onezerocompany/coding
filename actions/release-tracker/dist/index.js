@@ -384,7 +384,7 @@ async function attachFile({state:o}){if(typeof o.releaseId!=="number"){(0,e.setF
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function deployToEnvironment({environment:e,version:o,changelog:r}){await c.rest.repos.createDeployment({...t.context.repo,ref:o,environment:e,required_contexts:[],payload:{changelog:r}})}
+async function deployToEnvironment({environment:e,version:o,changelog:r}){await c.rest.repos.createDeployment({...t.context.repo,ref:o,environment:e,required_contexts:[],payload:{changelog:r,version:o}})}
 /**
  * @file Deploy action.
  * @copyright 2022 OneZero Company
