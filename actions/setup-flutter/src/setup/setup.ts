@@ -60,8 +60,11 @@ async function fetchSdk({
   const cachePlatform = `${platform}-${arch}`;
   const cacheKey = `flutter-${cacheVersion}-${cachePlatform}`;
   saveState('sdk-cache-key', cacheKey);
-  const restoredCache = await restoreCache([destinationFolder], cacheKey);
-  if (restoredCache ?? '') {
+  const restoredCache = await restoreCache([destinationFolder], cacheKey, [
+    cacheKey,
+  ]);
+  debug(`Restored cache: ${restoredCache ?? '-'}`);
+  if ((restoredCache ?? '').length > 0) {
     info(' found in cache.\n');
     setOutput('cache-hit', 'true');
     return {
