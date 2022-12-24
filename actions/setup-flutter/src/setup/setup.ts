@@ -63,9 +63,8 @@ async function fetchSdk({
   const restoredCache = await restoreCache([destinationFolder], cacheKey, [
     cacheKey,
   ]);
-  debug(`Restored cache: ${restoredCache ?? '-'}`);
-  if ((restoredCache ?? '').length > 0) {
-    info(' found in cache.\n');
+  info(` cache: ${restoredCache ?? 'not found'}`);
+  if (typeof restoredCache !== 'undefined') {
     setOutput('cache-hit', 'true');
     return {
       sdkPath: resolve(destinationFolder, 'flutter'),
@@ -90,6 +89,7 @@ async function fetchSdk({
  * @param input.channel - The channel of the SDK to download.
  * @param input.platform - The platform to download the SDK for.
  * @param input.arch - The architecture to download the SDK for.
+ * @param input.podsDirectory - The directory to install the pods in.
  * @example
  * setup({
  *   version: 'latest',
@@ -106,11 +106,13 @@ export async function setupSdk({
   channel,
   platform,
   arch,
+  podsDirectory,
 }: {
   version: string;
   channel: string;
   platform: FlutterPlatform;
   arch: FlutterArch;
+  podsDirectory: string;
 }): Promise<string> {
   // Download the sdk
 
@@ -148,6 +150,7 @@ export async function setupSdk({
   setOutput('arch', resolvedVersion.arch);
   setOutput('sdk-path', sdkPath);
   saveState('sdk-path', sdkPath);
+  saveState('pods-path', podsDirectory);
   setOutput('flutter-bin-path', resolve(flutterBin, 'flutter'));
 
   return sdkPath;

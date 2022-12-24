@@ -18,16 +18,17 @@ import { rmRF } from '@actions/io';
  * @example post();
  */
 async function post(): Promise<void> {
-  const cacheDependencies = getBooleanInput('cache-dependencies');
-  const cacheSdk = getBooleanInput('cache-sdk');
-  const shouldCacheSdk = getState('should-cache-sdk') === 'true';
-  const shouldCacheDependencies =
+  const willCacheSdk =
+    getBooleanInput('cache-sdk') && getState('should-cache-sdk') === 'true';
+
+  const willCacheDependencies =
+    getBooleanInput('cache-dependencies') &&
     getState('should-cache-dependencies') === 'true';
 
-  const willCacheSdk = cacheSdk && shouldCacheSdk;
-  const willCacheDependencies = cacheDependencies && shouldCacheDependencies;
+  const willCachePods =
+    getBooleanInput('cache-pods') && getState('should-cache-pods') === 'true';
 
-  if (!willCacheDependencies && !willCacheSdk) {
+  if (!willCacheDependencies && !willCacheSdk && !willCachePods) {
     info('No cache specified, skipping...');
     return;
   }
@@ -39,6 +40,7 @@ async function post(): Promise<void> {
     info('Caching dependencies...');
     const dependenciesCacheKey = getInput('dependencies-cache-key');
     const homeCache = resolve(homedir(), '.pub-cache');
+
     await saveCache([sdkCachePath, homeCache], dependenciesCacheKey);
   }
 
@@ -51,6 +53,13 @@ async function post(): Promise<void> {
     info('Caching SDK...');
     const sdkCacheKey = getState('sdk-cache-key');
     await saveCache([sdkPath], sdkCacheKey);
+  }
+
+  const podsPath = getState('pods-path');
+  if (willCachePods) {
+    info('Caching pods...');
+    const podsCacheKey = getState('pods-cache-key');
+    await saveCache([podsPath], podsCacheKey);
   }
 }
 

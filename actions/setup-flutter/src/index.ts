@@ -45,6 +45,7 @@ function getOptionalInput(name: string): string | undefined {
 async function run(): Promise<void> {
   const workspace = process.env['GITHUB_WORKSPACE'] ?? cwd();
   const directory = resolve(workspace, workingDirectory);
+  const podsDirectory = resolve(directory, 'ios/Pods');
   debug(`Running in directory: ${directory}`);
 
   applyCredentials(pubCredentials);
@@ -58,6 +59,7 @@ async function run(): Promise<void> {
     arch: determineArch({
       arch: getOptionalInput('arch'),
     }),
+    podsDirectory,
   };
 
   const sdkPath = await setupSdk({ ...normalized });
@@ -69,6 +71,8 @@ async function run(): Promise<void> {
       workingDirectory: directory,
       recoverCache: getBooleanInput('cache-dependencies'),
       cacheKey: getInput('dependencies-cache-key'),
+      recoverPods: getBooleanInput('cache-pods'),
+      podsKey: getInput('pods-cache-key'),
       sdkPath,
     });
   }

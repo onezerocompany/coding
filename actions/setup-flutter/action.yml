@@ -37,6 +37,15 @@ inputs:
     required: false
     default: pub-cache-${{ hashFiles('**/pubspec.lock') }}
 
+  cache-pods:
+    description: 'Whether to cache pods'
+    required: false
+    default: 'true'
+  pods-cache-key:
+    description: 'Cache key for pods'
+    required: false
+    default: pods-cache-${{ hashFiles('**/ios/Podfile.lock') }}
+
   cache-sdk:
     description: 'Cache flutter'
     required: false
