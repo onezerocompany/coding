@@ -63,7 +63,8 @@ async function post(): Promise<void> {
   }
 
   const podsPath = getState('pods-path');
-  if (willCachePods) {
+  const podsExists = existsSync(podsPath);
+  if (willCachePods && podsExists) {
     info('Caching pods...');
     const podsCacheKey = getInput('pods-cache-key');
     debug(` cache key: ${podsCacheKey}`);
