@@ -44,7 +44,7 @@ inputs:
   pods-cache-key:
     description: 'Cache key for pods'
     required: false
-    default: pods-cache-${{ hashFiles('**/ios/Podfile.lock') }}
+    default: pods-cache-${{ hashFiles('**/Podfile.lock') }}
 
   cache-sdk:
     description: 'Cache flutter'

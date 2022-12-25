@@ -8,7 +8,13 @@
 import { resolve } from 'path';
 import { existsSync } from 'fs';
 import { homedir } from 'os';
-import { getBooleanInput, getInput, getState, info } from '@actions/core';
+import {
+  debug,
+  getBooleanInput,
+  getInput,
+  getState,
+  info,
+} from '@actions/core';
 import { saveCache } from '@actions/cache';
 import { rmRF } from '@actions/io';
 
@@ -39,8 +45,8 @@ async function post(): Promise<void> {
   if (willCacheDependencies) {
     info('Caching dependencies...');
     const dependenciesCacheKey = getInput('dependencies-cache-key');
+    debug(` cache key: ${dependenciesCacheKey}`);
     const homeCache = resolve(homedir(), '.pub-cache');
-
     await saveCache([sdkCachePath, homeCache], dependenciesCacheKey);
   }
 
@@ -52,6 +58,7 @@ async function post(): Promise<void> {
   if (willCacheSdk) {
     info('Caching SDK...');
     const sdkCacheKey = getState('sdk-cache-key');
+    debug(` cache key: ${sdkCacheKey}`);
     await saveCache([sdkPath], sdkCacheKey);
   }
 
@@ -59,6 +66,7 @@ async function post(): Promise<void> {
   if (willCachePods) {
     info('Caching pods...');
     const podsCacheKey = getState('pods-cache-key');
+    debug(` cache key: ${podsCacheKey}`);
     await saveCache([podsPath], podsCacheKey);
   }
 }
