@@ -65,7 +65,7 @@ async function post(): Promise<void> {
   const podsPath = getState('pods-path');
   if (willCachePods) {
     info('Caching pods...');
-    const podsCacheKey = getState('pods-cache-key');
+    const podsCacheKey = getInput('pods-cache-key');
     debug(` cache key: ${podsCacheKey}`);
     await saveCache([podsPath], podsCacheKey);
   }
