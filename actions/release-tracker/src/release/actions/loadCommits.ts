@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { info } from '@actions/core';
+import { info, setOutput } from '@actions/core';
 import {
   getBumpForCommitList,
   listCommits,
@@ -53,6 +53,7 @@ export async function loadCommits({
 
   // Determine the next version.
   const bump = getBumpForCommitList(state.commits);
+  setOutput('bump', bump);
 
   if (bump === VersionBump.none) {
     info('No version bump required.');
@@ -60,5 +61,6 @@ export async function loadCommits({
   }
 
   state.version = previousVersion.bump(bump);
+  setOutput('version', state.version.displayString);
   info(`Next version: ${state.version.displayString} (bumped: ${bump})`);
 }

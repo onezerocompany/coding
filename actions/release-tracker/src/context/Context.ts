@@ -5,7 +5,7 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { debug } from '@actions/core';
+import { debug, getBooleanInput } from '@actions/core';
 import { loadManifestFromProject } from '@onezerocompany/project-manager';
 import type { ReleaseState } from '../release/ReleaseState';
 import { loadCurrentState } from './loadCurrentState';
@@ -33,6 +33,9 @@ export class Context {
   /** Files to attach to the release. */
   public releaseFiles: ReleaseFile[] = [];
 
+  /** Whether the action is running dry. */
+  public dryRun = false;
+
   /**
    * Initializes the context for the action.
    *
@@ -49,6 +52,7 @@ export class Context {
     });
     this.curentState = currentState;
     this.releaseFiles = loadReleaseFiles();
+    this.dryRun = getBooleanInput('dry_run');
     const jsonIndentation = 2;
     debug(
       `Initialized context:\n${JSON.stringify(this, null, jsonIndentation)}`,

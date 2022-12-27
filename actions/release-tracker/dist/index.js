@@ -321,7 +321,7 @@ async function createTrackerIssue({state:o,context:t}){if(typeof o.issueTrackerN
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function loadCommits({state:o,context:t}){const n=t.previousRelease.version??new r.Gf({major:0,minor:0,patch:0});o.commits=(0,r.qF)({beginHash:t.previousRelease.sha});(0,e.info)(`Found ${o.commits.length} commits since ${t.previousRelease.sha??"-"}.`);for(const t of o.commits){(0,e.info)(`- ${t.message.mainLine}`)}const i=(0,r.Ng)(o.commits);if(i===r.ib.none){(0,e.info)("No version bump required.");process.exit(0)}o.version=n.bump(i);(0,e.info)(`Next version: ${o.version.displayString} (bumped: ${i})`)}
+async function loadCommits({state:o,context:t}){const n=t.previousRelease.version??new r.Gf({major:0,minor:0,patch:0});o.commits=(0,r.qF)({beginHash:t.previousRelease.sha});(0,e.info)(`Found ${o.commits.length} commits since ${t.previousRelease.sha??"-"}.`);for(const t of o.commits){(0,e.info)(`- ${t.message.mainLine}`)}const i=(0,r.Ng)(o.commits);(0,e.setOutput)("bump",i);if(i===r.ib.none){(0,e.info)("No version bump required.");process.exit(0)}o.version=n.bump(i);(0,e.setOutput)("version",o.version.displayString);(0,e.info)(`Next version: ${o.version.displayString} (bumped: ${i})`)}
 /**
  * @file Contains a function to get the latest release.
  * @copyright 2022 OneZero Company
@@ -419,7 +419,7 @@ async function actionRouter({state:o,action:t,context:r}){(0,e.info)(`Running ne
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function nextAction({context:e,state:o}){if(!isDefined(o.version))return a.loadVersion;if(!isDefined(o.commits))return a.loadCommits;if(!isDefined(o.releaseId))return a.createRelease;if(o.needsFileAttach)return a.attachFile;if(!isDefined(o.issueTrackerNumber))return a.createTrackerIssue;if(o.needsCommentCreation)return a.createEnvironmentComment;if(!isDefined(o.trackerLabelId))return a.attachTrackerLabel;if(o.needsAssign({manifest:e.projectManifest}))return a.assignIssue;if(o.commentNeedsUpdate)return a.updateEnvironmentComment;if(o.needsDeploy)return a.deploy;if(e.currentIssueText!==o.issueText({manifest:e.projectManifest}))return a.updateIssue;return a.none}
+function nextAction({context:e,state:o}){if(!isDefined(o.version))return a.loadVersion;if(!isDefined(o.commits))return a.loadCommits;if(e.dryRun)return a.none;if(!isDefined(o.releaseId))return a.createRelease;if(o.needsFileAttach)return a.attachFile;if(!isDefined(o.issueTrackerNumber))return a.createTrackerIssue;if(o.needsCommentCreation)return a.createEnvironmentComment;if(!isDefined(o.trackerLabelId))return a.attachTrackerLabel;if(o.needsAssign({manifest:e.projectManifest}))return a.assignIssue;if(o.commentNeedsUpdate)return a.updateEnvironmentComment;if(o.needsDeploy)return a.deploy;if(e.currentIssueText!==o.issueText({manifest:e.projectManifest}))return a.updateIssue;return a.none}
 /**
  * @file Defines the Release class.
  * @copyright 2022 OneZero Company
@@ -468,7 +468,7 @@ function loadPreviousState(){(0,e.info)("Loading previous state of the release..
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-class Context{projectManifest=(0,o.loadManifestFromProject)();previousState=null;curentState=null;currentIssueText="";previousRelease={};releaseFiles=[];async initialize(){const{state:o,currentIssueText:t}=loadPreviousState();this.previousState=o;this.currentIssueText=t;const{state:r}=loadCurrentState({manifest:this.projectManifest,previousState:this.previousState,context:this});this.curentState=r;this.releaseFiles=loadReleaseFiles();const n=2;(0,e.debug)(`Initialized context:\n${JSON.stringify(this,null,n)}`)}}
+class Context{projectManifest=(0,o.loadManifestFromProject)();previousState=null;curentState=null;currentIssueText="";previousRelease={};releaseFiles=[];dryRun=false;async initialize(){const{state:o,currentIssueText:t}=loadPreviousState();this.previousState=o;this.currentIssueText=t;const{state:r}=loadCurrentState({manifest:this.projectManifest,previousState:this.previousState,context:this});this.curentState=r;this.releaseFiles=loadReleaseFiles();this.dryRun=(0,e.getBooleanInput)("dry_run");const n=2;(0,e.debug)(`Initialized context:\n${JSON.stringify(this,null,n)}`)}}
 /**
  * @file Contains the shared context for the release tracker action.
  * @copyright 2022 OneZero Company
