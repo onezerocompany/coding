@@ -34,7 +34,6 @@ export async function loadVersion({
 
   const version = Version.fromString(githubRelease?.tag_name ?? '0.0.0');
   context.previousRelease.version = version;
-
   state.version = version;
 
   info(

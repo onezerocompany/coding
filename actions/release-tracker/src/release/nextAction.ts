@@ -28,6 +28,7 @@ export function nextAction({
 }): ReleaseAction {
   if (!isDefined(state.version)) return ReleaseAction.loadVersion;
   if (!isDefined(state.commits)) return ReleaseAction.loadCommits;
+  if (context.dryRun) return ReleaseAction.none;
   if (!isDefined(state.releaseId)) return ReleaseAction.createRelease;
   if (state.needsFileAttach) return ReleaseAction.attachFile;
   if (!isDefined(state.issueTrackerNumber))
