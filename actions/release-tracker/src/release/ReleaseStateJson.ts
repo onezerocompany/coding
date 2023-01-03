@@ -21,6 +21,8 @@ export interface ReleaseStateJson {
   tracker_label_id?: number | undefined;
   /** Version number of release. */
   version?: VersionJSON | undefined;
+  /** Build number. */
+  build_number?: number | undefined;
   /** List of commits. */
   commits?:
     | Array<{
