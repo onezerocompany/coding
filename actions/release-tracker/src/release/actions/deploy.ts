@@ -35,11 +35,17 @@ export async function deploy({
     process.exit(1);
   }
 
+  if (typeof state.buildNumber !== 'number') {
+    setFailed('Cannot deploy without a build number.');
+    process.exit(1);
+  }
+
   try {
     await deployToEnvironment({
       environment: environment.githubName,
       version: state.version.displayString,
       changelog: environment.changelogText,
+      buildNumber: state.buildNumber,
     });
     environment.didDeploy = true;
   } catch (deployError: unknown) {

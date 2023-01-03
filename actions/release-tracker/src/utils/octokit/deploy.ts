@@ -15,15 +15,18 @@ import { publishOctokit } from '../octokit';
  * @param parameters.environment - Environment to deploy to.
  * @param parameters.version - Version to deploy.
  * @param parameters.changelog - Changelog to deploy.
+ * @param parameters.buildNumber - Build number to deploy.
  * @example await deployToEnvironment({ environment, version });
  */
 export async function deployToEnvironment({
   environment,
   version,
+  buildNumber,
   changelog,
 }: {
   environment: string;
   version: string;
+  buildNumber: number;
   changelog: string;
 }): Promise<void> {
   await publishOctokit.rest.repos.createDeployment({
@@ -33,6 +36,7 @@ export async function deployToEnvironment({
     required_contexts: [],
     payload: {
       changelog,
+      build_number: buildNumber,
       version,
     },
   });

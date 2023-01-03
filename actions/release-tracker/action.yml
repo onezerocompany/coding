@@ -16,6 +16,10 @@ inputs:
   files:
     description: 'List of files or globs to attach to the release'
     required: false
+  build_number:
+    description: 'Build number'
+    default: ${{ github.run_number }}
+    required: true
   dry_run:
     description: 'Dry run mode'
     required: false

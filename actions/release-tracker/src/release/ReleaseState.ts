@@ -30,6 +30,8 @@ export class ReleaseState {
   public trackerLabelId?: number;
   /** Version number of release. */
   public version?: Version;
+  /** Build number. */
+  public buildNumber?: number;
   /** List of commits. */
   public commits?: Commit[];
   /** Assignees. */
@@ -50,6 +52,7 @@ export class ReleaseState {
       issue_tracker_number: this.issueTrackerNumber,
       tracker_label_id: this.trackerLabelId,
       version: this.version?.json,
+      build_number: this.buildNumber,
       commits: this.commits?.map((commit) => commit.json),
     };
   }
@@ -130,6 +133,7 @@ export class ReleaseState {
         state.trackerLabelId = json.tracker_label_id;
       if (isDefined(json.version))
         state.version = Version.fromJson(json.version);
+      if (isDefined(json.build_number)) state.buildNumber = json.build_number;
       state.commits =
         json.commits?.map((commit) => Commit.fromJson(commit)) ?? [];
       return state;
