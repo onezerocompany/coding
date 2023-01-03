@@ -11,6 +11,7 @@ import type { ProjectManifest } from '@onezerocompany/project-manager';
 import { ReleaseEnvironment } from '../release/ReleaseEnvironment';
 import { ReleaseState } from '../release/ReleaseState';
 import { updateStateFromComment } from '../release/updateStateFromComment';
+import { getOptionalInput } from '../utils/getOptionalInput';
 import type { Context } from './Context';
 import { loadReleaseFiles } from './loadReleaseFiles';
 
@@ -28,6 +29,7 @@ function newReleaseState({
   manifest: ProjectManifest;
 }): ReleaseState {
   const newState = new ReleaseState();
+  newState.buildNumber = Number(getOptionalInput('build_number') ?? 0);
   newState.files = loadReleaseFiles();
   newState.environments = manifest.environments.map(
     (environment) =>
