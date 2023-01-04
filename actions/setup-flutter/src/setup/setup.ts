@@ -18,7 +18,7 @@ import {
 import { exec } from '@actions/exec';
 import { fetchFromGoogle } from './fetchFromGoogle';
 import type { FlutterSDKDetails } from './resolveVersionDetails';
-import { alreadyInstalled } from './checkInstall';
+import { checkInstall } from './checkInstall';
 
 /**
  * Function that fetches the Flutter SDK from either the cache or from Google.
@@ -95,7 +95,7 @@ export async function setupSdk({
     downloadUrl,
   };
 
-  if (alreadyInstalled(versionDetails)) {
+  if (checkInstall(versionDetails)) {
     info('Flutter SDK already installed');
     return resolve(homedir(), 'flutter');
   }

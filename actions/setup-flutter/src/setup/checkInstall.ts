@@ -24,10 +24,7 @@ import type { VersionDetails } from './resolveVersionDetails';
  *   channel: 'stable',
  * });
  */
-export function alreadyInstalled({
-  version,
-  channel,
-}: VersionDetails): boolean {
+export function checkInstall({ version, channel }: VersionDetails): boolean {
   // Check if the sdk is already intalled
   const flutterPath = resolve(homedir(), 'flutter', 'bin', 'flutter');
   if (existsSync(flutterPath)) {

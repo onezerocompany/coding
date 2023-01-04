@@ -49,11 +49,11 @@ export async function cache({
       typeof (await restoreCache(paths, cacheKey, ['flutter-', userKey])) ===
       'string'
     ) {
-      info('Cache restored successfully.');
+      info(' cache restored successfully.');
       saveState('cache-hit', 'true');
       setOutput('cache-hit', 'true');
     } else {
-      info('Cache not found.');
+      info(' cache not found.');
       saveState('cache-hit', 'false');
       setOutput('cache-hit', 'false');
     }

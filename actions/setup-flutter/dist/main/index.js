@@ -220,14 +220,14 @@ async function fetchFromGoogle({downloadUrl:t,destinationFolder:i}){(0,a.info)(`
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function alreadyInstalled({version:t,channel:o}){const r=(0,e.resolve)((0,i.homedir)(),"flutter","bin","flutter");if((0,n.existsSync)(r)){const e=`Flutter ${t} • channel ${o}`;const i=(0,s.execSync)(`${r} --version`).toString();if(i.includes(e)){(0,a.info)("Flutter SDK already installed");(0,a.setOutput)("cache-hit","true");return true}}return false}
+function checkInstall({version:t,channel:o}){const r=(0,e.resolve)((0,i.homedir)(),"flutter","bin","flutter");if((0,n.existsSync)(r)){const e=`Flutter ${t} • channel ${o}`;const i=(0,s.execSync)(`${r} --version`).toString();if(i.includes(e)){(0,a.info)("Flutter SDK already installed");(0,a.setOutput)("cache-hit","true");return true}}return false}
 /**
  * @file Function that sets up the flutter environment.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function fetchSdk({downloadUrl:t}){(0,a.info)("Fetching Flutter SDK...");const n=(0,e.resolve)((0,i.homedir)(),"flutter");(0,a.info)(" not found in cache, downloading...");await fetchFromGoogle({downloadUrl:t,destinationFolder:n});(0,a.setOutput)("cache-hit","false");return{sdkPath:(0,e.resolve)(n,"flutter")}}async function setupSdk({version:t,channel:n,platform:r,arch:s,downloadUrl:p,podsDirectory:l}){const d={version:t,channel:n,platform:r,arch:s,downloadUrl:p};if(alreadyInstalled(d)){(0,a.info)("Flutter SDK already installed");return(0,e.resolve)((0,i.homedir)(),"flutter")}const{sdkPath:c}=await fetchSdk({downloadUrl:p});(0,a.info)("Installing...");const m=(0,e.resolve)(c,"bin");if((0,a.isDebug)()){(0,a.debug)(`Adding ${m} to PATH`);(0,a.debug)(`Contents of ${m}:`);await(0,o.exec)("ls",["-l",m])}(0,a.addPath)(m);(0,a.info)(" done\n");(0,a.setOutput)("sdk-path",c);(0,a.saveState)("sdk-path",c);(0,a.saveState)("pods-path",l);(0,a.setOutput)("flutter-bin-path",(0,e.resolve)(m,"flutter"));return c}
+async function fetchSdk({downloadUrl:t}){(0,a.info)("Fetching Flutter SDK...");const n=(0,e.resolve)((0,i.homedir)(),"flutter");(0,a.info)(" not found in cache, downloading...");await fetchFromGoogle({downloadUrl:t,destinationFolder:n});(0,a.setOutput)("cache-hit","false");return{sdkPath:(0,e.resolve)(n,"flutter")}}async function setupSdk({version:t,channel:n,platform:r,arch:s,downloadUrl:p,podsDirectory:l}){const d={version:t,channel:n,platform:r,arch:s,downloadUrl:p};if(checkInstall(d)){(0,a.info)("Flutter SDK already installed");return(0,e.resolve)((0,i.homedir)(),"flutter")}const{sdkPath:c}=await fetchSdk({downloadUrl:p});(0,a.info)("Installing...");const m=(0,e.resolve)(c,"bin");if((0,a.isDebug)()){(0,a.debug)(`Adding ${m} to PATH`);(0,a.debug)(`Contents of ${m}:`);await(0,o.exec)("ls",["-l",m])}(0,a.addPath)(m);(0,a.info)(" done\n");(0,a.setOutput)("sdk-path",c);(0,a.saveState)("sdk-path",c);(0,a.saveState)("pods-path",l);(0,a.setOutput)("flutter-bin-path",(0,e.resolve)(m,"flutter"));return c}
 /**
  * @file Contains a function to detect the current architecture.
  * @copyright 2022 OneZero Company
@@ -262,7 +262,7 @@ async function installDependencies({workingDirectory:e}){(0,a.info)("Installing 
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function cache_cache({version:t,channel:n}){(0,a.info)("Restoring cache...");const o=(0,e.resolve)((0,i.homedir)(),"flutter","flutter");const r=[o,(0,e.resolve)((0,i.homedir)(),".pub-cache"),(0,a.getState)("pods-path")];const s=(0,a.getInput)("cache-key");const p=`${s}-${t}-${n}`;try{if(typeof await(0,d.restoreCache)(r,p,["flutter-",s])==="string"){(0,a.info)("Cache restored successfully.");(0,a.saveState)("cache-hit","true");(0,a.setOutput)("cache-hit","true")}else{(0,a.info)("Cache not found.");(0,a.saveState)("cache-hit","false");(0,a.setOutput)("cache-hit","false")}}catch(e){(0,a.error)(e);(0,a.saveState)("cache-hit","false");(0,a.setOutput)("cache-hit","false")}}var c=__nccwpck_require__(2197);var m=__nccwpck_require__.n(c);
+async function cache_cache({version:t,channel:n}){(0,a.info)("Restoring cache...");const o=(0,e.resolve)((0,i.homedir)(),"flutter","flutter");const r=[o,(0,e.resolve)((0,i.homedir)(),".pub-cache"),(0,a.getState)("pods-path")];const s=(0,a.getInput)("cache-key");const p=`${s}-${t}-${n}`;try{if(typeof await(0,d.restoreCache)(r,p,["flutter-",s])==="string"){(0,a.info)(" cache restored successfully.");(0,a.saveState)("cache-hit","true");(0,a.setOutput)("cache-hit","true")}else{(0,a.info)(" cache not found.");(0,a.saveState)("cache-hit","false");(0,a.setOutput)("cache-hit","false")}}catch(e){(0,a.error)(e);(0,a.saveState)("cache-hit","false");(0,a.setOutput)("cache-hit","false")}}var c=__nccwpck_require__(2197);var m=__nccwpck_require__.n(c);
 /**
  * @file Contains a function to determine the version of Flutter to install.
  * @copyright 2022 OneZero Company
