@@ -65,10 +65,7 @@ async function run(): Promise<void> {
     }),
   });
 
-  if (shouldCache)
-    await cache({
-      ...versionDetails,
-    });
+  if (shouldCache) await cache(versionDetails);
   await setupSdk({ ...versionDetails, podsDirectory });
   if (isDebug()) checkFlutter();
 
