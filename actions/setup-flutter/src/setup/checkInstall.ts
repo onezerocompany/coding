@@ -26,10 +26,17 @@ import type { VersionDetails } from './resolveVersionDetails';
  */
 export function checkInstall({ version, channel }: VersionDetails): boolean {
   // Check if the sdk is already intalled
-  const flutterPath = resolve(homedir(), 'flutter', 'bin', 'flutter');
+  const flutterPath = resolve(
+    homedir(),
+    'flutter',
+    'flutter',
+    'bin',
+    'flutter',
+  );
   if (existsSync(flutterPath)) {
     const check = `Flutter ${version} • channel ${channel}`;
     const currentVersion = execSync(`${flutterPath} --version`).toString();
+    info(`Current version:\n${currentVersion}`);
     if (currentVersion.includes(check)) {
       info('Flutter SDK already installed');
       setOutput('cache-hit', 'true');

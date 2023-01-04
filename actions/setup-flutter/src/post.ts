@@ -16,6 +16,7 @@ import {
   info,
 } from '@actions/core';
 import { saveCache } from '@actions/cache';
+import { mkdirP } from '@actions/io';
 
 /**
  * Entry function for the post action.
@@ -36,7 +37,17 @@ async function post(): Promise<void> {
     sdkPath,
     resolve(homedir(), '.pub-cache'),
     getState('pods-path'),
-  ].filter((path) => existsSync(path));
+  ];
+
+  // Create any missing directories
+  await Promise.all(
+    paths.map(async (path): Promise<void> => {
+      if (!existsSync(path)) {
+        return mkdirP(path);
+      }
+      return Promise.resolve();
+    }),
+  );
 
   if (paths.length > 0) {
     try {

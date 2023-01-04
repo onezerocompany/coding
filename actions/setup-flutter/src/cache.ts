@@ -44,6 +44,8 @@ export async function cache({
   const userKey = getInput('cache-key');
   const cacheKey = `${userKey}-${version}-${channel}`;
 
+  info(` cache key: ${cacheKey}.`);
+
   try {
     if (
       typeof (await restoreCache(paths, cacheKey, ['flutter-', userKey])) ===
