@@ -8,7 +8,7 @@
 import { resolve } from 'path';
 import { homedir } from 'os';
 import { existsSync } from 'fs';
-import { getInput, getState, info } from '@actions/core';
+import { error, getInput, getState, info } from '@actions/core';
 import { restoreCache } from '@actions/cache';
 
 /**
@@ -25,9 +25,13 @@ export async function cache(): Promise<void> {
     resolve(homedir(), '.pub-cache'),
     getState('pods-path'),
   ];
-  await restoreCache(
-    paths.filter((path) => existsSync(path)),
-    getInput('cache-key'),
-    ['flutter-'],
-  );
+  try {
+    await restoreCache(
+      paths.filter((path) => existsSync(path)),
+      getInput('cache-key'),
+      ['flutter-'],
+    );
+  } catch (cacheError: unknown) {
+    error(cacheError as string);
+  }
 }

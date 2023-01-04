@@ -262,7 +262,7 @@ async function installDependencies({workingDirectory:e}){(0,a.info)("Installing 
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function cache_cache(){(0,a.info)("Restoring cache...");const t=(0,e.resolve)((0,i.homedir)(),"flutter","flutter");const o=[t,(0,e.resolve)((0,i.homedir)(),".pub-cache"),(0,a.getState)("pods-path")];await(0,m.restoreCache)(o.filter((e=>(0,n.existsSync)(e))),(0,a.getInput)("cache-key"),["flutter-"])}
+async function cache_cache(){(0,a.info)("Restoring cache...");const t=(0,e.resolve)((0,i.homedir)(),"flutter","flutter");const o=[t,(0,e.resolve)((0,i.homedir)(),".pub-cache"),(0,a.getState)("pods-path")];try{await(0,m.restoreCache)(o.filter((e=>(0,n.existsSync)(e))),(0,a.getInput)("cache-key"),["flutter-"])}catch(e){(0,a.error)(e)}}
 /**
  * @file Index file for the setup-flutter action.
  * @copyright 2022 OneZero Company
