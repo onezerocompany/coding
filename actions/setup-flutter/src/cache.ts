@@ -45,9 +45,18 @@ export async function cache({
   const cacheKey = `${userKey}-${version}-${channel}`;
 
   try {
-    await restoreCache(paths, cacheKey, ['flutter-', userKey]);
-    saveState('cache-hit', 'true');
-    setOutput('cache-hit', 'true');
+    if (
+      typeof (await restoreCache(paths, cacheKey, ['flutter-', userKey])) ===
+      'string'
+    ) {
+      info('Cache restored successfully.');
+      saveState('cache-hit', 'true');
+      setOutput('cache-hit', 'true');
+    } else {
+      info('Cache not found.');
+      saveState('cache-hit', 'false');
+      setOutput('cache-hit', 'false');
+    }
   } catch (cacheError: unknown) {
     logError(cacheError as string);
     saveState('cache-hit', 'false');
