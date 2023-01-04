@@ -14,6 +14,7 @@ import { determineArch } from './setup/determineArch';
 import { determinePlatform } from './setup/determinePlatform';
 import { checkFlutter } from './check';
 import { installDependencies } from './dependencies';
+import { cache } from './cache';
 
 // Inputs
 
@@ -62,18 +63,14 @@ async function run(): Promise<void> {
     podsDirectory,
   };
 
-  const sdkPath = await setupSdk({ ...normalized });
+  await cache();
+  await setupSdk({ ...normalized });
   if (isDebug()) checkFlutter();
 
   const shouldInstallDependencies = getBooleanInput('install-dependencies');
   if (shouldInstallDependencies) {
     await installDependencies({
       workingDirectory: directory,
-      recoverCache: getBooleanInput('cache-dependencies'),
-      cacheKey: getInput('dependencies-cache-key'),
-      recoverPods: getBooleanInput('cache-pods'),
-      podsKey: getInput('pods-cache-key'),
-      sdkPath,
     });
   }
 }

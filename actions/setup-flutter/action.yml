@@ -28,28 +28,15 @@ inputs:
     description: 'Whether to run flutter pub get'
     required: false
     default: 'true'
-  cache-dependencies:
+
+  cache:
     description: 'Whether to cache dependencies'
     required: false
     default: 'true'
-  dependencies-cache-key:
+  cache-key:
     description: 'Cache key for dependencies'
     required: false
-    default: pub-cache-${{ hashFiles('**/pubspec.lock') }}
-
-  cache-pods:
-    description: 'Whether to cache pods'
-    required: false
-    default: 'true'
-  pods-cache-key:
-    description: 'Cache key for pods'
-    required: false
-    default: pods-cache-${{ hashFiles('**/Podfile.lock') }}
-
-  cache-sdk:
-    description: 'Cache flutter'
-    required: false
-    default: 'true'
+    default: flutter-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('**/Podfile') }}
 
   pub-credentials:
     description: 'Google account access token from ~/.pub-cache/credentials.json'
@@ -68,10 +55,8 @@ outputs:
     description: 'The path to the Flutter SDK'
   flutter-bin-path:
     description: 'The path to the Flutter binary'
-  flutter-cache-hit:
+  cache-hit:
     description: 'Whether the cache was hit or not'
-  dependencies-cache-hit:
-    description: 'Whether the dependencies cache was hit or not'
 
 runs:
   using: 'node16'
