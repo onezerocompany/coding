@@ -46,11 +46,11 @@ export async function cache({
 
   try {
     await restoreCache(paths, cacheKey, ['flutter-', userKey]);
-    saveState('cache-hit', true);
-    setOutput('cache-hit', true);
+    saveState('cache-hit', 'true');
+    setOutput('cache-hit', 'true');
   } catch (cacheError: unknown) {
     logError(cacheError as string);
-    saveState('cache-hit', false);
-    setOutput('cache-hit', false);
+    saveState('cache-hit', 'false');
+    setOutput('cache-hit', 'false');
   }
 }

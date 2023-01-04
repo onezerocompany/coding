@@ -262,7 +262,7 @@ async function installDependencies({workingDirectory:e}){(0,a.info)("Installing 
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function cache_cache({version:t,channel:n}){(0,a.info)("Restoring cache...");const o=(0,e.resolve)((0,i.homedir)(),"flutter","flutter");const r=[o,(0,e.resolve)((0,i.homedir)(),".pub-cache"),(0,a.getState)("pods-path")];const s=(0,a.getInput)("cache-key");const p=`${s}-${t}-${n}`;try{await(0,d.restoreCache)(r,p,["flutter-",s]);(0,a.saveState)("cache-hit",true);(0,a.setOutput)("cache-hit",true)}catch(e){(0,a.error)(e);(0,a.saveState)("cache-hit",false);(0,a.setOutput)("cache-hit",false)}}var c=__nccwpck_require__(2197);var m=__nccwpck_require__.n(c);
+async function cache_cache({version:t,channel:n}){(0,a.info)("Restoring cache...");const o=(0,e.resolve)((0,i.homedir)(),"flutter","flutter");const r=[o,(0,e.resolve)((0,i.homedir)(),".pub-cache"),(0,a.getState)("pods-path")];const s=(0,a.getInput)("cache-key");const p=`${s}-${t}-${n}`;try{await(0,d.restoreCache)(r,p,["flutter-",s]);(0,a.saveState)("cache-hit","true");(0,a.setOutput)("cache-hit","true")}catch(e){(0,a.error)(e);(0,a.saveState)("cache-hit","false");(0,a.setOutput)("cache-hit","false")}}var c=__nccwpck_require__(2197);var m=__nccwpck_require__.n(c);
 /**
  * @file Contains a function to determine the version of Flutter to install.
  * @copyright 2022 OneZero Company
