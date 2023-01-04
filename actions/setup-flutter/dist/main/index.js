@@ -227,14 +227,21 @@ async function fetchFromGoogle({downloadUrl:t,destinationFolder:i}){(0,a.info)(`
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function checkInstall({version:e,channel:t}){if((0,n.existsSync)(p)){const i=`Flutter ${e} • channel ${t}`;const n=(0,h.execSync)(`${p} --version`).toString();(0,a.info)(`Current version:\n${n}`);if(n.includes(i)){(0,a.info)("Flutter SDK already installed");(0,a.setOutput)("cache-hit","true");return true}}return false}
+function checkInstall({version:e,channel:t}){if((0,n.existsSync)(p)){const i=`Flutter ${e} • channel ${t}`;const n=(0,h.execSync)(`${p} --version`).toString();(0,a.info)(`Current version:\n${n}`);if(n.includes(i)){(0,a.setOutput)("cache-hit","true");return true}}return false}
+/**
+ * @file Contains a function to disable Flutter analytics.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+async function disableAnalytics(){(0,a.info)("Disabling analytics...");await(0,o.exec)(p,["config","--no-analytics"]);(0,a.info)(" analytics disabled.")}
 /**
  * @file Function that sets up the flutter environment.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function fetchSdk({downloadUrl:e}){(0,a.info)("Fetching Flutter SDK...");await fetchFromGoogle({downloadUrl:e,destinationFolder:r});(0,a.setOutput)("cache-hit","false")}async function setupSdk({version:t,channel:n,platform:p,arch:l,downloadUrl:d}){const c={version:t,channel:n,platform:p,arch:l,downloadUrl:d};if(checkInstall(c)){(0,a.info)("Flutter SDK already installed");return(0,e.resolve)((0,i.homedir)(),"flutter")}await fetchSdk({downloadUrl:d});(0,a.info)("Installing...");if((0,a.isDebug)()){(0,a.debug)(`Adding ${s} to PATH`);(0,a.debug)(`Contents of ${s}:`);await(0,o.exec)("ls",["-l",s])}(0,a.addPath)(s);(0,a.info)(" done\n");return r}
+async function fetchSdk({downloadUrl:e}){(0,a.info)("Fetching Flutter SDK...");await fetchFromGoogle({downloadUrl:e,destinationFolder:r});(0,a.setOutput)("cache-hit","false")}async function setupSdk({version:e,channel:t,platform:i,arch:n,downloadUrl:r}){const p={version:e,channel:t,platform:i,arch:n,downloadUrl:r};if(checkInstall(p)){(0,a.info)("Flutter SDK already installed...")}else{(0,a.info)("Installing...");await fetchSdk({downloadUrl:r})}if((0,a.isDebug)()){(0,a.debug)(`Adding ${s} to PATH`);(0,a.debug)(`Contents of ${s}:`);await(0,o.exec)("ls",["-l",s])}(0,a.addPath)(s);(0,a.info)(" done\n");await disableAnalytics()}
 /**
  * @file Contains a function to detect the current architecture.
  * @copyright 2022 OneZero Company

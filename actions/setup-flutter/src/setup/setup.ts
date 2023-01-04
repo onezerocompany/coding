@@ -5,14 +5,13 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { resolve } from 'path';
-import { homedir } from 'os';
 import { addPath, debug, info, isDebug, setOutput } from '@actions/core';
 import { exec } from '@actions/exec';
 import { binPath, sdkPath } from '../paths';
 import { fetchFromGoogle } from './fetchFromGoogle';
 import type { FlutterSDKDetails } from './resolveVersionDetails';
 import { checkInstall } from './checkInstall';
+import { disableAnalytics } from './disableAnalytics';
 
 /**
  * Function that fetches the Flutter SDK from either the cache or from Google.
@@ -71,7 +70,7 @@ export async function setupSdk({
   platform,
   arch,
   downloadUrl,
-}: SetupInputs): Promise<string> {
+}: SetupInputs): Promise<void> {
   // Download the sdk
 
   const versionDetails = {
@@ -83,14 +82,14 @@ export async function setupSdk({
   };
 
   if (checkInstall(versionDetails)) {
-    info('Flutter SDK already installed');
-    return resolve(homedir(), 'flutter');
+    info('Flutter SDK already installed...');
+  } else {
+    info('Installing...');
+    await fetchSdk({ downloadUrl });
   }
 
-  await fetchSdk({ downloadUrl });
-
   // Install flutter into profiles
-  info('Installing...');
+
   if (isDebug()) {
     // Show contents of flutter bin folder
     debug(`Adding ${binPath} to PATH`);
@@ -99,6 +98,5 @@ export async function setupSdk({
   }
   addPath(binPath);
   info(' done\n');
-
-  return sdkPath;
+  await disableAnalytics();
 }

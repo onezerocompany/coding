@@ -30,7 +30,6 @@ export function checkInstall({ version, channel }: VersionDetails): boolean {
     const currentVersion = execSync(`${flutterPath} --version`).toString();
     info(`Current version:\n${currentVersion}`);
     if (currentVersion.includes(check)) {
-      info('Flutter SDK already installed');
       setOutput('cache-hit', 'true');
       return true;
     }
