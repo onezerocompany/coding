@@ -19,7 +19,7 @@ import { restoreCache } from '@actions/cache';
 export async function cache(): Promise<void> {
   info('Restoring cache...');
 
-  const sdkPath = getState('sdk-path');
+  const sdkPath = resolve(homedir(), 'flutter', 'flutter');
   const paths = [
     sdkPath,
     resolve(homedir(), '.pub-cache'),
