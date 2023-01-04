@@ -43,6 +43,7 @@ export async function cache({
 
   const userKey = getInput('cache-key');
   const cacheKey = `${userKey}-${version}-${channel}`;
+  saveState('full-cache-key', cacheKey);
 
   info(` cache key: ${cacheKey}.`);
 

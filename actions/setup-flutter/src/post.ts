@@ -11,7 +11,6 @@ import { homedir } from 'os';
 import {
   error as logError,
   getBooleanInput,
-  getInput,
   getState,
   info,
 } from '@actions/core';
@@ -49,9 +48,13 @@ async function post(): Promise<void> {
     }),
   );
 
+  const cacheKey = getState('full-cache-key');
+  info('Saving cache...');
+  info(` key: ${cacheKey}.`);
+
   if (paths.length > 0) {
     try {
-      await saveCache(paths, getInput('cache-key'));
+      await saveCache(paths, cacheKey);
     } catch (cacheError: unknown) {
       logError(cacheError as string);
     }
