@@ -5,11 +5,10 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { resolve } from 'path';
 import { existsSync } from 'fs';
-import { homedir } from 'os';
 import { execSync } from 'child_process';
 import { info, setOutput } from '@actions/core';
+import { flutterPath } from '../paths';
 import type { VersionDetails } from './resolveVersionDetails';
 
 /**
@@ -24,17 +23,13 @@ import type { VersionDetails } from './resolveVersionDetails';
  *   channel: 'stable',
  * });
  */
-export function alreadyInstalled({
-  version,
-  channel,
-}: VersionDetails): boolean {
+export function checkInstall({ version, channel }: VersionDetails): boolean {
   // Check if the sdk is already intalled
-  const flutterPath = resolve(homedir(), 'flutter', 'bin', 'flutter');
   if (existsSync(flutterPath)) {
     const check = `Flutter ${version} • channel ${channel}`;
     const currentVersion = execSync(`${flutterPath} --version`).toString();
+    info(`Current version:\n${currentVersion}`);
     if (currentVersion.includes(check)) {
-      info('Flutter SDK already installed');
       setOutput('cache-hit', 'true');
       return true;
     }

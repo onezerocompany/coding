@@ -5,17 +5,16 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { resolve } from 'path';
 import { existsSync } from 'fs';
-import { homedir } from 'os';
 import {
   error as logError,
   getBooleanInput,
-  getInput,
   getState,
   info,
 } from '@actions/core';
 import { saveCache } from '@actions/cache';
+import { mkdirP } from '@actions/io';
+import { cachePaths } from './paths';
 
 /**
  * Entry function for the post action.
@@ -31,19 +30,24 @@ async function post(): Promise<void> {
     return;
   }
 
-  const sdkPath = getState('sdk-path');
-  const paths = [
-    sdkPath,
-    resolve(homedir(), '.pub-cache'),
-    getState('pods-path'),
-  ].filter((path) => existsSync(path));
+  // Create any missing directories
+  await Promise.all(
+    cachePaths.map(async (path): Promise<void> => {
+      if (!existsSync(path)) {
+        return mkdirP(path);
+      }
+      return Promise.resolve();
+    }),
+  );
 
-  if (paths.length > 0) {
-    try {
-      await saveCache(paths, getInput('cache-key'));
-    } catch (cacheError: unknown) {
-      logError(cacheError as string);
-    }
+  const cacheKey = getState('full-cache-key');
+  info('Saving cache...');
+  info(` key: ${cacheKey}.`);
+
+  try {
+    await saveCache(cachePaths, cacheKey);
+  } catch (cacheError: unknown) {
+    logError(cacheError as string);
   }
 }
 

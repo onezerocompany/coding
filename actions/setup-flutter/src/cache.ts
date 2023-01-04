@@ -5,17 +5,15 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { resolve } from 'path';
-import { homedir } from 'os';
 import {
   error as logError,
   getInput,
-  getState,
   info,
   saveState,
   setOutput,
 } from '@actions/core';
 import { restoreCache } from '@actions/cache';
+import { cachePaths } from './paths';
 
 /**
  * Restores the cache.
@@ -34,23 +32,30 @@ export async function cache({
 }): Promise<void> {
   info('Restoring cache...');
 
-  const sdkPath = resolve(homedir(), 'flutter', 'flutter');
-  const paths = [
-    sdkPath,
-    resolve(homedir(), '.pub-cache'),
-    getState('pods-path'),
-  ];
-
   const userKey = getInput('cache-key');
   const cacheKey = `${userKey}-${version}-${channel}`;
+  saveState('full-cache-key', cacheKey);
+
+  info(` cache key: ${cacheKey}.`);
 
   try {
-    await restoreCache(paths, cacheKey, ['flutter-', userKey]);
-    saveState('cache-hit', true);
-    setOutput('cache-hit', true);
+    if (
+      typeof (await restoreCache(cachePaths, cacheKey, [
+        'flutter-',
+        userKey,
+      ])) === 'string'
+    ) {
+      info(' cache restored successfully.');
+      saveState('cache-hit', 'true');
+      setOutput('cache-hit', 'true');
+    } else {
+      info(' cache not found.');
+      saveState('cache-hit', 'false');
+      setOutput('cache-hit', 'false');
+    }
   } catch (cacheError: unknown) {
     logError(cacheError as string);
-    saveState('cache-hit', false);
-    setOutput('cache-hit', false);
+    saveState('cache-hit', 'false');
+    setOutput('cache-hit', 'false');
   }
 }

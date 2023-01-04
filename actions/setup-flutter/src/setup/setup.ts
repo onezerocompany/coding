@@ -5,20 +5,13 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { resolve } from 'path';
-import { homedir } from 'os';
-import {
-  addPath,
-  debug,
-  info,
-  isDebug,
-  setOutput,
-  saveState,
-} from '@actions/core';
+import { addPath, debug, info, isDebug, setOutput } from '@actions/core';
 import { exec } from '@actions/exec';
+import { binPath, sdkPath } from '../paths';
 import { fetchFromGoogle } from './fetchFromGoogle';
 import type { FlutterSDKDetails } from './resolveVersionDetails';
-import { alreadyInstalled } from './checkInstall';
+import { checkInstall } from './checkInstall';
+import { disableAnalytics } from './disableAnalytics';
 
 /**
  * Function that fetches the Flutter SDK from either the cache or from Google.
@@ -32,26 +25,21 @@ import { alreadyInstalled } from './checkInstall';
  *   arch: 'x64',
  * });
  */
-async function fetchSdk({ downloadUrl }: { downloadUrl: string }): Promise<{
-  sdkPath: string;
-}> {
+async function fetchSdk({
+  downloadUrl,
+}: {
+  downloadUrl: string;
+}): Promise<void> {
   info('Fetching Flutter SDK...');
-  const destinationFolder = resolve(homedir(), 'flutter');
-  info(' not found in cache, downloading...');
   await fetchFromGoogle({
     downloadUrl,
-    destinationFolder,
+    destinationFolder: sdkPath,
   });
   setOutput('cache-hit', 'false');
-  return {
-    sdkPath: resolve(destinationFolder, 'flutter'),
-  };
 }
 
 /** Inputs for the setup. */
 export interface SetupInputs extends FlutterSDKDetails {
-  /** The directory to install the pods in. */
-  podsDirectory: string;
   /** The URL to download the SDK from. */
   downloadUrl: string;
 }
@@ -64,7 +52,6 @@ export interface SetupInputs extends FlutterSDKDetails {
  * @param input.channel - The channel of the SDK to download.
  * @param input.platform - The platform to download the SDK for.
  * @param input.arch - The architecture to download the SDK for.
- * @param input.podsDirectory - The directory to install the pods in.
  * @param input.downloadUrl - The URL to download the SDK from.
  * @example
  * setup({
@@ -83,8 +70,7 @@ export async function setupSdk({
   platform,
   arch,
   downloadUrl,
-  podsDirectory,
-}: SetupInputs): Promise<string> {
+}: SetupInputs): Promise<void> {
   // Download the sdk
 
   const versionDetails = {
@@ -95,29 +81,22 @@ export async function setupSdk({
     downloadUrl,
   };
 
-  if (alreadyInstalled(versionDetails)) {
-    info('Flutter SDK already installed');
-    return resolve(homedir(), 'flutter');
+  if (checkInstall(versionDetails)) {
+    info('Flutter SDK already installed...');
+  } else {
+    info('Installing...');
+    await fetchSdk({ downloadUrl });
   }
-
-  const { sdkPath } = await fetchSdk({ downloadUrl });
 
   // Install flutter into profiles
-  info('Installing...');
-  const flutterBin = resolve(sdkPath, 'bin');
+
   if (isDebug()) {
     // Show contents of flutter bin folder
-    debug(`Adding ${flutterBin} to PATH`);
-    debug(`Contents of ${flutterBin}:`);
-    await exec('ls', ['-l', flutterBin]);
+    debug(`Adding ${binPath} to PATH`);
+    debug(`Contents of ${binPath}:`);
+    await exec('ls', ['-l', binPath]);
   }
-  addPath(flutterBin);
+  addPath(binPath);
   info(' done\n');
-
-  setOutput('sdk-path', sdkPath);
-  saveState('sdk-path', sdkPath);
-  saveState('pods-path', podsDirectory);
-  setOutput('flutter-bin-path', resolve(flutterBin, 'flutter'));
-
-  return sdkPath;
+  await disableAnalytics();
 }

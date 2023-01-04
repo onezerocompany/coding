@@ -23,6 +23,7 @@ jobs:
         uses: ./actions/setup-flutter
         with:
           install-dependencies: false
+          cache-key: flutter-hello-world-${{ matrix.os }}
 
       - name: Check Dart
         run: |
