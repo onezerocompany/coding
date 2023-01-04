@@ -49,7 +49,6 @@ function getOptionalInput(name: string): string | undefined {
 async function run(): Promise<void> {
   const workspace = process.env['GITHUB_WORKSPACE'] ?? cwd();
   const directory = resolve(workspace, workingDirectory);
-  const podsDirectory = resolve(directory, 'ios/Pods');
   debug(`Running in directory: ${directory}`);
 
   applyCredentials(pubCredentials);
@@ -66,7 +65,7 @@ async function run(): Promise<void> {
   });
 
   if (shouldCache) await cache(versionDetails);
-  await setupSdk({ ...versionDetails, podsDirectory });
+  await setupSdk(versionDetails);
   if (isDebug()) checkFlutter();
 
   const shouldInstallDependencies = getBooleanInput('install-dependencies');

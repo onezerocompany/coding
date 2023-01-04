@@ -5,11 +5,10 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
-import { resolve } from 'path';
 import { existsSync } from 'fs';
-import { homedir } from 'os';
 import { execSync } from 'child_process';
 import { info, setOutput } from '@actions/core';
+import { flutterPath } from '../paths';
 import type { VersionDetails } from './resolveVersionDetails';
 
 /**
@@ -26,13 +25,6 @@ import type { VersionDetails } from './resolveVersionDetails';
  */
 export function checkInstall({ version, channel }: VersionDetails): boolean {
   // Check if the sdk is already intalled
-  const flutterPath = resolve(
-    homedir(),
-    'flutter',
-    'flutter',
-    'bin',
-    'flutter',
-  );
   if (existsSync(flutterPath)) {
     const check = `Flutter ${version} • channel ${channel}`;
     const currentVersion = execSync(`${flutterPath} --version`).toString();
