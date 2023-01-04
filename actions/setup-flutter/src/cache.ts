@@ -7,16 +7,31 @@
 
 import { resolve } from 'path';
 import { homedir } from 'os';
-import { existsSync } from 'fs';
-import { error, getInput, getState, info } from '@actions/core';
+import {
+  error as logError,
+  getInput,
+  getState,
+  info,
+  saveState,
+  setOutput,
+} from '@actions/core';
 import { restoreCache } from '@actions/cache';
 
 /**
  * Restores the cache.
  *
+ * @param parameters - Object containing the input parameters.
+ * @param parameters.version - The version of the SDK to install.
+ * @param parameters.channel - The channel of the SDK to install.
  * @example await cache();
  */
-export async function cache(): Promise<void> {
+export async function cache({
+  version,
+  channel,
+}: {
+  version: string;
+  channel: string;
+}): Promise<void> {
   info('Restoring cache...');
 
   const sdkPath = resolve(homedir(), 'flutter', 'flutter');
@@ -25,13 +40,17 @@ export async function cache(): Promise<void> {
     resolve(homedir(), '.pub-cache'),
     getState('pods-path'),
   ];
+
+  const userKey = getInput('cache-key');
+  const cacheKey = `${userKey}-${version}-${channel}`;
+
   try {
-    await restoreCache(
-      paths.filter((path) => existsSync(path)),
-      getInput('cache-key'),
-      ['flutter-'],
-    );
+    await restoreCache(paths, cacheKey, ['flutter-', userKey]);
+    saveState('cache-hit', true);
+    setOutput('cache-hit', true);
   } catch (cacheError: unknown) {
-    error(cacheError as string);
+    logError(cacheError as string);
+    saveState('cache-hit', false);
+    setOutput('cache-hit', false);
   }
 }

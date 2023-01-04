@@ -198,4 +198,4 @@ e.exports=a(7104)},5517:(e,t,a)=>{"use strict";
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
- */async function post(){const t=(0,r.getBooleanInput)("cache")&&(0,r.getState)("should-cache")==="true";if(!t){(0,r.info)("No cache specified, skipping...");return}const i=(0,r.getState)("sdk-path");const o=[i,(0,e.resolve)((0,n.homedir)(),".pub-cache"),(0,r.getState)("pods-path")];await(0,p.saveCache)(o.filter((e=>(0,a.existsSync)(e))),(0,r.getInput)("cache-key"))}void post()})();module.exports=__webpack_exports__})();
+ */async function post(){const t=(0,r.getBooleanInput)("cache")&&(0,r.getState)("cache-hit")!=="true";if(!t){(0,r.info)("No caching needed, skipping...");return}const i=(0,r.getState)("sdk-path");const o=[i,(0,e.resolve)((0,n.homedir)(),".pub-cache"),(0,r.getState)("pods-path")].filter((e=>(0,a.existsSync)(e)));if(o.length>0){try{await(0,p.saveCache)(o,(0,r.getInput)("cache-key"))}catch(e){(0,r.error)(e)}}}void post()})();module.exports=__webpack_exports__})();

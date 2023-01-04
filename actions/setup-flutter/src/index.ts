@@ -1,3 +1,4 @@
+/* eslint-disable import/max-dependencies */
 /**
  * @file Index file for the setup-flutter action.
  * @copyright 2022 OneZero Company
@@ -15,11 +16,13 @@ import { determinePlatform } from './setup/determinePlatform';
 import { checkFlutter } from './check';
 import { installDependencies } from './dependencies';
 import { cache } from './cache';
+import { resolveVersionDetails } from './setup/resolveVersionDetails';
 
 // Inputs
 
 const workingDirectory = getInput('working-directory');
 const pubCredentials = getInput('pub-credentials');
+const shouldCache = getBooleanInput('cache');
 
 /**
  * Function that gets an action input but allows it to be undefined.
@@ -51,7 +54,7 @@ async function run(): Promise<void> {
 
   applyCredentials(pubCredentials);
 
-  const normalized = {
+  const versionDetails = await resolveVersionDetails({
     version: getOptionalInput('version') ?? 'latest',
     channel: getOptionalInput('channel') ?? 'stable',
     platform: determinePlatform({
@@ -60,11 +63,13 @@ async function run(): Promise<void> {
     arch: determineArch({
       arch: getOptionalInput('arch'),
     }),
-    podsDirectory,
-  };
+  });
 
-  await cache();
-  await setupSdk({ ...normalized });
+  if (shouldCache)
+    await cache({
+      ...versionDetails,
+    });
+  await setupSdk({ ...versionDetails, podsDirectory });
   if (isDebug()) checkFlutter();
 
   const shouldInstallDependencies = getBooleanInput('install-dependencies');

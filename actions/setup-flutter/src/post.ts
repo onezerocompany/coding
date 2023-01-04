@@ -8,7 +8,13 @@
 import { resolve } from 'path';
 import { existsSync } from 'fs';
 import { homedir } from 'os';
-import { getBooleanInput, getInput, getState, info } from '@actions/core';
+import {
+  error as logError,
+  getBooleanInput,
+  getInput,
+  getState,
+  info,
+} from '@actions/core';
 import { saveCache } from '@actions/cache';
 
 /**
@@ -18,10 +24,10 @@ import { saveCache } from '@actions/cache';
  */
 async function post(): Promise<void> {
   const willCache =
-    getBooleanInput('cache') && getState('should-cache') === 'true';
+    getBooleanInput('cache') && getState('cache-hit') !== 'true';
 
   if (!willCache) {
-    info('No cache specified, skipping...');
+    info('No caching needed, skipping...');
     return;
   }
 
@@ -30,12 +36,15 @@ async function post(): Promise<void> {
     sdkPath,
     resolve(homedir(), '.pub-cache'),
     getState('pods-path'),
-  ];
+  ].filter((path) => existsSync(path));
 
-  await saveCache(
-    paths.filter((path) => existsSync(path)),
-    getInput('cache-key'),
-  );
+  if (paths.length > 0) {
+    try {
+      await saveCache(paths, getInput('cache-key'));
+    } catch (cacheError: unknown) {
+      logError(cacheError as string);
+    }
+  }
 }
 
 // eslint-disable-next-line no-void
