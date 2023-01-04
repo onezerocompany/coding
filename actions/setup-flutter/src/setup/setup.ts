@@ -6,7 +6,9 @@
  */
 
 import { resolve } from 'path';
+import { existsSync } from 'fs';
 import { homedir } from 'os';
+import { execSync } from 'child_process';
 import {
   addPath,
   debug,
@@ -16,20 +18,48 @@ import {
   saveState,
 } from '@actions/core';
 import { exec } from '@actions/exec';
-import { restoreCache } from '@actions/cache';
 import type { FlutterArch } from './determineArch';
 import type { FlutterPlatform } from './determinePlatform';
 import { determineVersion } from './determineVersion';
 import { fetchFromGoogle } from './fetchFromGoogle';
 
 /**
+ * Function that checks the install.
+ *
+ * @param input - Object containing the input parameters.
+ * @param input.version - The version of the SDK to install.
+ * @param input.channel - The channel of the SDK to install.
+ * @returns Whether the SDK is already installed.
+ * @example checkInstall({
+ *   version: '2.5.3',
+ *   channel: 'stable',
+ * });
+ */
+function alreadyInstalled({
+  version,
+  channel,
+}: {
+  version: string;
+  channel: string;
+}): boolean {
+  // Check if the sdk is already intalled
+  const flutterPath = resolve(homedir(), 'flutter', 'bin', 'flutter');
+  if (existsSync(flutterPath)) {
+    const check = `Flutter ${version} • channel ${channel}`;
+    const currentVersion = execSync(`${flutterPath} --version`).toString();
+    if (currentVersion.includes(check)) {
+      info('Flutter SDK already installed');
+      setOutput('cache-hit', 'true');
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Function that fetches the Flutter SDK from either the cache or from Google.
  *
  * @param input - Object containing the input parameters.
- * @param input.version - The version of the SDK to fetch.
- * @param input.channel - The channel of the SDK to fetch.
- * @param input.platform - The platform of the SDK to fetch.
- * @param input.arch - The architecture of the SDK to fetch.
  * @param input.downloadUrl - The URL to download the SDK from.
  * @example await setupFlutter({
  *   version: '2.5.3',
@@ -38,38 +68,11 @@ import { fetchFromGoogle } from './fetchFromGoogle';
  *   arch: 'x64',
  * });
  */
-async function fetchSdk({
-  version,
-  channel,
-  platform,
-  arch,
-  downloadUrl,
-}: {
-  version: string;
-  channel: string;
-  platform: FlutterPlatform;
-  arch: FlutterArch;
-  downloadUrl: string;
-}): Promise<{
+async function fetchSdk({ downloadUrl }: { downloadUrl: string }): Promise<{
   sdkPath: string;
 }> {
   info('Fetching Flutter SDK...');
-  info(' checking cache...');
   const destinationFolder = resolve(homedir(), 'flutter');
-  const cacheVersion = `${version}-${channel}`;
-  const cachePlatform = `${platform}-${arch}`;
-  const cacheKey = `flutter-${cacheVersion}-${cachePlatform}`;
-  saveState('sdk-cache-key', cacheKey);
-  const restoredCache = await restoreCache([destinationFolder], cacheKey, [
-    cacheKey,
-  ]);
-  info(` cache: ${restoredCache ?? 'not found'}`);
-  if (typeof restoredCache !== 'undefined') {
-    setOutput('cache-hit', 'true');
-    return {
-      sdkPath: resolve(destinationFolder, 'flutter'),
-    };
-  }
   info(' not found in cache, downloading...');
   await fetchFromGoogle({
     downloadUrl,
@@ -101,6 +104,7 @@ async function fetchSdk({
  *   channel: 'stable',
  * })
  */
+// eslint-disable-next-line max-lines-per-function
 export async function setupSdk({
   version,
   channel,
@@ -124,9 +128,23 @@ export async function setupSdk({
     platform,
     arch,
   });
+  setOutput('version', resolvedVersion.version);
+  setOutput('channel', resolvedVersion.channel);
+  setOutput('platform', resolvedVersion.platform);
+  setOutput('arch', resolvedVersion.arch);
   info(
     ` resolved to: ${resolvedVersion.version} (${resolvedVersion.channel}) for ${resolvedVersion.platform} (${resolvedVersion.arch})`,
   );
+
+  if (
+    alreadyInstalled({
+      version: resolvedVersion.version,
+      channel: resolvedVersion.channel,
+    })
+  ) {
+    info('Flutter SDK already installed');
+    return resolve(homedir(), 'flutter');
+  }
 
   const { sdkPath } = await fetchSdk({
     ...resolvedVersion,
@@ -144,10 +162,6 @@ export async function setupSdk({
   addPath(flutterBin);
   info(' done\n');
 
-  setOutput('version', resolvedVersion.version);
-  setOutput('channel', resolvedVersion.channel);
-  setOutput('platform', resolvedVersion.platform);
-  setOutput('arch', resolvedVersion.arch);
   setOutput('sdk-path', sdkPath);
   saveState('sdk-path', sdkPath);
   saveState('pods-path', podsDirectory);
