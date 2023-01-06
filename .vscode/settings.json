@@ -41,7 +41,8 @@
     "packages/tsconfig",
     "actions/pr-commit-check",
     "actions/release-tracker",
-    "actions/setup-flutter"
+    "actions/setup-flutter",
+    "actions/setup-ssh-key"
   ],
   "eslint.codeAction.showDocumentation": {
     "enable": true
