@@ -21,9 +21,16 @@ async function setupGitHubKeys(){(0,n.info)("Adding GitHub.com keys to known_hos
  */
 async function configureKeys(){(0,n.info)("Configuring keys...");const t=(0,e.execFileSync)(a.sshAdd,["-L"]).toString().trim().split(/\r?\n/u);for(const r of t){(0,n.info)(` - ${r}`);const t=/\bgithub\.com[:/](?:[_.a-z0-9-]+\/[_.a-z0-9-]+)/iu.exec(r);if(!t||t.length===0)return;const i=(0,p.createHash)("sha256").update(r).digest("hex");const s=(t[1]??"").replace(/\.git$/u,"");const l=(0,o.resolve)(u,`key-${i}`);(0,f.writeFileSync)(l,`${r}\n`,{mode:384});(0,e.execFileSync)(a.git,["config","--global","--replace-all",`url."git@key-${i}.github.com:${s}".insteadOf`,`https://github.com/${s}`]);(0,e.execFileSync)(a.git,["config","--global","--add",`url."git@key-${i}.github.com:${s}".insteadOf`,`git@github.com:${s}`]);(0,e.execFileSync)(a.git,["config","--global","--add",`url."git@key-${i}.github.com:${s}".insteadOf`,`ssh://git@github.com/${s}`]);const d=`\nHost key-${i}.github.com\n`+`  HostName github.com\n`+`  IdentityFile ${l}\n`+`  IdentitiesOnly yes\n`;(0,f.appendFileSync)(c,d);(0,n.info)(` - ${l}`)}}
 /**
+ * @file Contains a function to start the SSH agent and returns the PID and socket path.
+ * @copyright 2022 OneZero Company
+ * @license MIT
+ * @author Luca Silverentand <luca@onezero.company>
+ */
+function startAgent(){(0,n.info)("Starting the SSH agent...");const t=(0,e.execFileSync)(a.sshAgent).toString().split("\n");const r=t[0]?.match(/SSH_AGENT_PID=(?:\d+)/u)?.[1];const i=t[1]?.match(/SSH_AUTH_SOCK=(?:\S+)/u)?.[1];(0,n.info)(` PID: ${r??"-"}.`);(0,n.info)(` Socket: ${i??"-"}.`);return{pid:r,socket:i}}
+/**
  * @file This file is the entry point for the setup-ssh-key action.
  * @copyright 2022 OneZero Company
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-async function main(){const r=(0,n.getInput)("ssh-key");if(!r){(0,n.setFailed)("No private key provided");return}(0,n.info)("Creating .ssh folder...");await(0,t.mkdirP)(u);await setupGitHubKeys();(0,n.info)("Starting ssh-agent...");const i=(0,e.execFileSync)(a.sshAgent).toString().split("\n");for(const e of i){const t=/^(?:SSH_AUTH_SOCK|SSH_AGENT_PID)=(?:.*); export/u.exec(e);if(t&&typeof t[1]==="string"&&typeof t[2]==="string"){(0,n.info)(`Exporting ${t[1]}...`);(0,n.exportVariable)(t[1],t[2])}}(0,n.info)("Adding private key to the agent...");r.split(/(?=-----BEGIN)/u).forEach((t=>{(0,e.execFileSync)(a.sshAdd,["-"],{input:`${t.trim()}\n`})}));await configureKeys()}try{void main()}catch(e){(0,n.setFailed)(e);process.exit(1)}})();module.exports=r})();
+async function main(){const r=(0,n.getInput)("ssh-key");if(!r){(0,n.setFailed)("No private key provided");return}(0,n.info)("Creating .ssh folder...");await(0,t.mkdirP)(u);await setupGitHubKeys();const{socket:i,pid:o}=startAgent();(0,n.exportVariable)("SSH_AUTH_SOCK",i);(0,n.exportVariable)("SSH_AGENT_PID",o);(0,n.info)("Adding private key to the agent...");r.split(/(?=-----BEGIN)/u).forEach((t=>{(0,e.execFileSync)(a.sshAdd,["-"],{input:`${t.trim()}\n`})}));await configureKeys()}try{void main()}catch(e){(0,n.setFailed)(e);process.exit(1)}})();module.exports=r})();

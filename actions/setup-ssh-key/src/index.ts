@@ -11,6 +11,7 @@ import { exportVariable, getInput, info, setFailed } from '@actions/core';
 import { sshFolder, tools } from './paths';
 import { setupGitHubKeys } from './setupGitHubKeys';
 import { configureKeys } from './configureKeys';
+import { startAgent } from './startAgent';
 
 /**
  * The main entry point for the action.
@@ -32,22 +33,10 @@ async function main(): Promise<void> {
   // Add GitHub.com keys to known_hosts
   await setupGitHubKeys();
 
-  // Get PID and socket path from ssh-agent
-  info('Starting ssh-agent...');
-  const sshAgentOutput = execFileSync(tools.sshAgent).toString().split('\n');
-  for (const line of sshAgentOutput) {
-    const matches = /^(?:SSH_AUTH_SOCK|SSH_AGENT_PID)=(?:.*); export/u.exec(
-      line,
-    );
-    if (
-      matches &&
-      typeof matches[1] === 'string' &&
-      typeof matches[2] === 'string'
-    ) {
-      info(`Exporting ${matches[1]}...`);
-      exportVariable(matches[1], matches[2]);
-    }
-  }
+  // Start the SSH agent and export the socket path
+  const { socket, pid } = startAgent();
+  exportVariable('SSH_AUTH_SOCK', socket);
+  exportVariable('SSH_AGENT_PID', pid);
 
   // Add the private key to the agent
   info('Adding private key to the agent...');
