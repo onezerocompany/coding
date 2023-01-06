@@ -26,7 +26,7 @@ async function configureKeys(){(0,n.info)("Configuring keys...");const t=(0,e.ex
  * @license MIT
  * @author Luca Silverentand <luca@onezero.company>
  */
-function startAgent(){(0,n.info)("Starting the SSH agent...");const t=(0,e.execFileSync)(a.sshAgent).toString().split("\n");const r=t[0]?.match(/SSH_AGENT_PID=(?:\d+)/u)?.[1];const i=t[1]?.match(/SSH_AUTH_SOCK=(?:\S+)/u)?.[1];(0,n.info)(` PID: ${r??"-"}.`);(0,n.info)(` Socket: ${i??"-"}.`);return{pid:r,socket:i}}
+const h=/(?<key>SSH_AUTH_SOCK|SSH_AGENT_PID)=(?<value>\S+);/gu;function startAgent(){(0,n.info)("Starting the SSH agent...");const t=(0,e.execFileSync)(a.sshAgent).toString();const r=[...t.matchAll(h)];const i=r.reduce(((e,t)=>{const{key:r,value:n}=t.groups??{};if(typeof r==="string"&&typeof n==="string"){return{...e,[r]:n}}return e}),{});return{pid:i["SSH_AGENT_PID"],socket:i["SSH_AUTH_SOCK"]}}
 /**
  * @file This file is the entry point for the setup-ssh-key action.
  * @copyright 2022 OneZero Company
