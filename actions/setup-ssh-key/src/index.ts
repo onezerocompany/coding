@@ -33,10 +33,10 @@ async function main(): Promise<void> {
   await setupGitHubKeys();
 
   // Get PID and socket path from ssh-agent
+  info('Starting ssh-agent...');
   const sshAgentOutput = execFileSync(tools.sshAgent).toString().split('\n');
   for (const line of sshAgentOutput) {
-    // eslint-disable-next-line require-unicode-regexp
-    const matches = /^(?:SSH_AUTH_SOCK|SSH_AGENT_PID)=(?:.*); export \1/.exec(
+    const matches = /^(?:SSH_AUTH_SOCK|SSH_AGENT_PID)=(?:.*); export/u.exec(
       line,
     );
     if (
@@ -44,6 +44,7 @@ async function main(): Promise<void> {
       typeof matches[1] === 'string' &&
       typeof matches[2] === 'string'
     ) {
+      info(`Exporting ${matches[1]}...`);
       exportVariable(matches[1], matches[2]);
     }
   }
