@@ -7,10 +7,11 @@
 
 import { execFileSync } from 'child_process';
 import { mkdirP } from '@actions/io';
-import { getInput, info, setFailed } from '@actions/core';
+import { exportVariable, getInput, info, setFailed } from '@actions/core';
 import { sshFolder, tools } from './paths';
 import { setupGitHubKeys } from './setupGitHubKeys';
 import { configureKeys } from './configureKeys';
+import { startAgent } from './startAgent';
 
 /**
  * The main entry point for the action.
@@ -19,7 +20,7 @@ import { configureKeys } from './configureKeys';
  */
 async function main(): Promise<void> {
   // Get the private key from the inputs
-  const privateKey = getInput('private-key');
+  const privateKey = getInput('ssh-key');
   if (!privateKey) {
     setFailed('No private key provided');
     return;
@@ -32,8 +33,10 @@ async function main(): Promise<void> {
   // Add GitHub.com keys to known_hosts
   await setupGitHubKeys();
 
-  // Start the ssh-agent
-  execFileSync(tools.sshAgent);
+  // Start the SSH agent and export the socket path
+  const { socket, pid } = startAgent();
+  exportVariable('SSH_AUTH_SOCK', socket);
+  exportVariable('SSH_AGENT_PID', pid);
 
   // Add the private key to the agent
   info('Adding private key to the agent...');

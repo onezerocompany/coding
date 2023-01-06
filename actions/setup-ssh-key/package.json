@@ -9,20 +9,14 @@
     "test": "npx jest"
   },
   "devDependencies": {
-    "@onezerocompany/commit": "file:../../packages/commit",
     "@onezerocompany/eslint-config": "file:../../packages/eslint-config",
     "@onezerocompany/prettier-config": "file:../../packages/prettier-config",
-    "@types/node-fetch": "^2.6.2",
     "@vercel/ncc": "^0.33.4"
   },
+  "prettier": "@onezerocompany/prettier-config",
   "dependencies": {
-    "@actions/cache": "^3.0.6",
     "@actions/core": "^1.6.0",
-    "@actions/exec": "^1.1.1",
-    "@actions/github": "^5.0.1",
-    "@actions/io": "^1.1.2",
-    "@actions/tool-cache": "^2.0.1",
-    "node-fetch": "^2.6.7"
+    "@actions/io": "^1.1.2"
   },
   "jest": {
     "globals": {
