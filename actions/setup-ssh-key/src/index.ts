@@ -19,7 +19,7 @@ import { configureKeys } from './configureKeys';
  */
 async function main(): Promise<void> {
   // Get the private key from the inputs
-  const privateKey = getInput('private-key');
+  const privateKey = getInput('ssh-key');
   if (!privateKey) {
     setFailed('No private key provided');
     return;
