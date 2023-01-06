@@ -5,8 +5,9 @@
  * @author Luca Silverentand <luca@onezero.company>
  */
 
+import { execFileSync } from 'child_process';
 import { info, setFailed } from '@actions/core';
-import { exec } from '@actions/exec';
+import { tools } from './paths';
 
 /**
  * Cleanup the ssh-agent.
@@ -16,7 +17,7 @@ import { exec } from '@actions/exec';
 async function cleanup(): Promise<void> {
   try {
     info('Stopping ssh-agent...');
-    await exec('ssh-agent', ['-k']);
+    execFileSync(tools.sshAgent, ['-k']);
   } catch (cleanupError: unknown) {
     setFailed(cleanupError as string);
     process.exit(1);
