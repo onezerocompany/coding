@@ -1,0 +1,17 @@
+name: 'Setup SSH Key'
+description: 'Setup an SSH key for usage with Git'
+author: 'OneZero Company'
+inputs:
+  ssh-key:
+    description: 'Contents of the SSH key to use'
+    required: true
+
+runs:
+  using: 'node16'
+  main: 'dist/main/index.js'
+  post: 'dist/post/index.js'
+  post-if: 'always()'
+
+branding:
+  icon: terminal
+  color: 'blue'

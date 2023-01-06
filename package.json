@@ -32,7 +32,8 @@
     "packages/onezero-themes",
     "actions/pr-commit-check",
     "actions/setup-flutter",
-    "actions/release-tracker"
+    "actions/release-tracker",
+    "actions/setup-ssh-key"
   ],
   "scripts": {
     "build": "npm run -ws build",
@@ -66,7 +67,8 @@
       "<rootDir>/packages/onezero-themes",
       "<rootDir>/actions/pr-commit-check",
       "<rootDir>/actions/setup-flutter",
-      "<rootDir>/actions/release-tracker"
+      "<rootDir>/actions/release-tracker",
+      "<rootDir>/actions/setup-ssh-key"
     ],
     "rootDir": "./"
   },

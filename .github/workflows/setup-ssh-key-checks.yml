@@ -1,0 +1,25 @@
+name: Setup SSH Keys Action
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  setup_test:
+    name: Setup Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          path: .
+
+      - name: Setup
+        uses: ./actions/setup-ssh-key
+        with:
+          ssh-key: ${{ secrets.SSH_KEY_ACTION }}

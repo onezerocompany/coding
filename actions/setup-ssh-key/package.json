@@ -1,0 +1,65 @@
+{
+  "name": "setup-ssh-key",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "npx ncc build -m src/index.ts -o dist/main && npx ncc build -m src/post.ts -o dist/post",
+    "format": "prettier --write . && eslint --fix .",
+    "lint": "prettier --check . && eslint .",
+    "test": "npx jest"
+  },
+  "devDependencies": {
+    "@onezerocompany/commit": "file:../../packages/commit",
+    "@onezerocompany/eslint-config": "file:../../packages/eslint-config",
+    "@onezerocompany/prettier-config": "file:../../packages/prettier-config",
+    "@types/node-fetch": "^2.6.2",
+    "@vercel/ncc": "^0.33.4"
+  },
+  "dependencies": {
+    "@actions/cache": "^3.0.6",
+    "@actions/core": "^1.6.0",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^5.0.1",
+    "@actions/io": "^1.1.2",
+    "@actions/tool-cache": "^2.0.1",
+    "node-fetch": "^2.6.7"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "<rootDir>/tsconfig.json"
+      }
+    },
+    "rootDir": "./",
+    "testPathIgnorePatterns": [
+      "node_modules/",
+      "dist/"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "parserOptions": {
+      "project": "./tsconfig.spec.json",
+      "tsconfigRootDir": "./",
+      "ecmaVersion": 2021,
+      "sourceType": "module"
+    },
+    "extends": "@onezerocompany/eslint-config/typescript",
+    "ignorePatterns": [
+      "dist/",
+      "dist-reference/",
+      "coverage/",
+      "jest.config.js",
+      "tsconfig.json",
+      "package.json",
+      "README.md",
+      "yarn.lock"
+    ],
+    "root": true
+  }
+}
