@@ -4,10 +4,14 @@ These are the default rules all OneZero Flutter projects should follow, however 
 
 ## How to use these linting rules
 
-#### 1. Add the `onezero_flutter_lints` package as a dev dependency
+#### 1. Add the `onezero_flutter_lints` package as a dev dependency using git
 
-```sh
-dart pub add --dev onezero_flutter_lints
+```YAML
+dev_dependencies:
+  onezero_flutter_lints:
+    git:
+      url: https://github.com/onezerocompany/coding.git
+      path: packages/onezero_flutter_lints
 ```
 
 #### 2. Create the file `analysis_options.yaml`, or open the existing one add the following include line:

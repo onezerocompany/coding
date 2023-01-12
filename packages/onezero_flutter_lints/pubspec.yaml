@@ -1,8 +1,8 @@
 name: onezero_flutter_lints
-description: Recommended lints for Flutter projects for OneZero projects.
+description: Recommended lints in Flutter projects for OneZero projects.
 repository: https://github.com/onezerocompany/coding/tree/main/packages/onezero_flutter_lints
 issue_tracker: https://github.com/onezerocompany/coding/issues
 version: 0.0.1
 
 environment:
-  sdk: '>=2.0.0 <3.0.0'
+  sdk: '>=2.0.0 <4.0.0'
