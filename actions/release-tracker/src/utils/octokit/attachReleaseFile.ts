@@ -6,9 +6,40 @@
  */
 
 import { readFileSync } from 'fs';
-import { basename } from 'path';
+import { basename, extname } from 'path';
 import { context } from '@actions/github';
+import AdmZip from 'adm-zip';
 import { octokit } from '../octokit';
+
+/**
+ * Returns the data of a file or folder.
+ *
+ * @param parameters - The parameters for the function.
+ * @param parameters.path - The path to the file or folder.
+ * @example const fileData = await fileData({ path });
+ */
+async function readFileData({
+  path,
+}: {
+  path: string;
+}): Promise<{ fileData: string; isZip: boolean }> {
+  const fileName = basename(path);
+  const fileExtension = extname(path);
+  const isFolder = !fileExtension;
+
+  if (isFolder) {
+    const zip = new AdmZip();
+    zip.addLocalFolder(path, fileName);
+    return {
+      fileData: zip.toBuffer().toString('base64'),
+      isZip: true,
+    };
+  }
+  return {
+    fileData: readFileSync(path, 'base64'),
+    isZip: false,
+  };
+}
 
 /**
  * Attaches a file to a release.
@@ -26,11 +57,12 @@ export async function attachReleaseFile({
   path: string;
   releaseId: number;
 }): Promise<number> {
-  const fileData = readFileSync(path).toString();
+  const fileName = basename(path);
+  const { fileData, isZip } = await readFileData({ path });
   const { data: attachResult } = await octokit.rest.repos.uploadReleaseAsset({
     ...context.repo,
     release_id: releaseId,
-    name: basename(path),
+    name: isZip ? `${fileName}.zip` : fileName,
     // eslint-disable-next-line id-denylist
     data: fileData,
   });
