@@ -12,7 +12,7 @@ describe('typescript config', () => {
       new ConfigValidator({
         config: ConfigFile.typescript,
         testFiles: [TestFile.javascript],
-        plugins: [PluginKey.import, PluginKey.jsdoc, PluginKey.jsdoc],
+        plugins: [PluginKey.import],
       }).validate(),
     ).resolves.toStrictEqual([]);
   });
@@ -22,7 +22,7 @@ describe('typescript config', () => {
       new ConfigValidator({
         config: ConfigFile.typescript,
         testFiles: [TestFile.typescript],
-        plugins: [PluginKey.import, PluginKey.typescript, PluginKey.jsdoc],
+        plugins: [PluginKey.import, PluginKey.typescript],
       }).validate(),
     ).resolves.toStrictEqual([]);
   });

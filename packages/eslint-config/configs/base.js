@@ -22,13 +22,6 @@ module.exports = {
     'prettier',
   ],
   overrides: [
-    // Documentation for JavaScript
-    {
-      plugins: ['jsdoc'],
-      files: ['*.js?(x)', '*.ts?(x)'],
-      excludedFiles: ['*.test.js', '*.test.ts', '*.spec.js', '*.spec.ts'],
-      extends: ['../rules/javascript/docs.js', 'prettier'],
-    },
     // Rules for jest test files
     {
       plugins: ['jest'],

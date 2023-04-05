@@ -18,7 +18,6 @@ describe('vue config', () => {
           PluginKey.reactHooks,
           PluginKey.jsxA11y,
           PluginKey.vue,
-          PluginKey.jsdoc,
         ],
       }).validate(),
     ).resolves.toStrictEqual([]);
@@ -36,7 +35,6 @@ describe('vue config', () => {
           PluginKey.reactHooks,
           PluginKey.jsxA11y,
           PluginKey.vue,
-          PluginKey.jsdoc,
         ],
       }).validate(),
     ).resolves.toStrictEqual([]);
