@@ -72,7 +72,7 @@ module.exports = {
     'import/no-cycle': ['error'],
 
     // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-default-export.md
-    'import/no-default-export': ['error'],
+    'import/no-default-export': ['off'],
 
     // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-deprecated.md
     'import/no-deprecated': ['error'],
