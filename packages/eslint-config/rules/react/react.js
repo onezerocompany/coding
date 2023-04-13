@@ -671,7 +671,7 @@ module.exports = {
      * Validate JSX maximum depth
      * https://github.com/yannickcr/eslint-plugin-react/blob/abe8381c0d6748047224c430ce47f02e40160ed0/docs/rules/jsx-max-depth.md
      */
-    'react/jsx-max-depth': 'off',
+    'react/jsx-max-depth': ['off', { max: 10 }],
 
     /*
      * Disallow multiple spaces between inline JSX props
