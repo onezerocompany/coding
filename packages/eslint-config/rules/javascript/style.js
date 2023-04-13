@@ -186,7 +186,7 @@ module.exports = {
     ],
 
     // https://eslint.org/docs/rules/max-depth
-    'max-depth': ['warn', { max: 3 }],
+    'max-depth': ['warn', { max: 5 }],
 
     // https://eslint.org/docs/rules/max-len
     'max-len': [
