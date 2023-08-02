@@ -1,0 +1,21 @@
+{
+  "name": "@onezerocompany/cli",
+  "dependencies": {
+    "@onezerocompany/atlas": "file:../onezero-atlas",
+    "commander": "^10.0.1",
+    "listr2": "^6.6.0"
+  },
+  "bin": {
+    "onezero": "./dist/index.js",
+    "oz": "./dist/index.js"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "compile:watch": "tsc -w",
+    "cli": "ts-node src/index.ts"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  }
+}

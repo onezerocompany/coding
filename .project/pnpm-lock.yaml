@@ -1,0 +1,6 @@
+lockfileVersion: '6.0'
+
+devDependencies:
+  '@onezerocompany/config':
+    specifier: file:../packages/onezero-config
+    version: link:../packages/onezero-config

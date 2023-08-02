@@ -24,12 +24,13 @@
     "url": "https://onezero.company"
   },
   "workspaces": [
-    "packages/prettier-config",
-    "packages/tsconfig",
-    "packages/eslint-config",
+    "configs/prettier-config",
+    "configs/tsconfig",
+    "configs/eslint-config",
+    "configs/onezero-themes",
     "packages/project-manager",
     "packages/commit",
-    "packages/onezero-themes",
+    "packages/onezero-config",
     "actions/pr-commit-check",
     "actions/setup-flutter",
     "actions/release-tracker",
@@ -76,7 +77,7 @@
     "@actions/core": "^1.6.0"
   },
   "devDependencies": {
-    "@onezerocompany/prettier-config": "file:packages/prettier-config",
+    "@onezerocompany/prettier-config": "file:configs/prettier-config",
     "@types/jest": "^27.4.1",
     "clean-jsdoc-theme": "^4.1.8",
     "husky": "^7.0.4",

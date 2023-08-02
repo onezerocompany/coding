@@ -1,0 +1,6 @@
+{
+  "name": "project-details",
+  "devDependencies": {
+    "@onezerocompany/config": "file:../packages/onezero-config"
+  }
+}

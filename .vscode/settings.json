@@ -16,7 +16,7 @@
     "**/node_modules": true,
     "**/package-lock.json": true,
     "**/.git": true,
-    "**/dist": true,
+    "**/dist": false,
     "**/coverage": true,
     "**/dist-reference": true
   },
@@ -88,16 +88,7 @@
   "editor.minimap.enabled": true,
   "editor.minimap.autohide": true,
   "workbench.preferredDarkColorTheme": "OneZero Dark",
-  "workbench.preferredLightColorTheme": "OneZero Light",
 
-  "indentRainbow.colors": [
-    "#f32a8b",
-    "#724cf1",
-    "#0ed19a",
-    "#e8d60e",
-    "#2c7dd3",
-    "#dd39cc"
-  ],
-
-  "markdown-preview-github-styles.colorTheme": "system"
+  "markdown-preview-github-styles.colorTheme": "system",
+  "workbench.colorTheme": "OneZero Dark"
 }

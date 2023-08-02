@@ -1,0 +1,14 @@
+{
+  "name": "@onezerocompany/config",
+  "main": "dist/index.js",
+  "scripts": {
+    "compile": "tsc",
+    "compile:watch": "tsc -w"
+  },
+  "dependencies": {
+    "simple-git": "^3.18.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}

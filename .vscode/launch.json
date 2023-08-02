@@ -5,15 +5,6 @@
 {
   "version": "0.2.0",
   "configurations": [
-    // {
-    //   "name": "Run Commit Extension",
-    //   "type": "extensionHost",
-    //   "request": "launch",
-    //   "args": [
-    //     "--extensionDevelopmentPath=${workspaceFolder}/extensions/onezero-commit"
-    //   ],
-    //   "outFiles": ["${workspaceFolder}/extensions/onezero-commit/out/**/*.js"]
-    // },
     {
       "name": "Run Theme Extension",
       "type": "extensionHost",
@@ -21,6 +12,20 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/extensions/onezero-themes"
       ]
+    },
+    {
+      "name": "Run Web Extension",
+      "type": "extensionHost",
+      "debugWebWorkerHost": true,
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/onezero-tool",
+        "--extensionDevelopmentKind=web"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/extensions/onezero-extension/dist/web/**/*.js"
+      ],
+      "preLaunchTask": "npm: watch-web"
     }
   ]
 }
